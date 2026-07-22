@@ -1,0 +1,7130 @@
+{
+  "noms": [
+    {
+      "word": "Un accident",
+      "arabe": "حادث",
+      "units": [
+        1,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un auteur",
+      "arabe": "كاتب",
+      "units": [
+        1,
+        3,
+        4,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un accord",
+      "arabe": "توافق – انسجام",
+      "units": [
+        2,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un avis",
+      "arabe": "رأي",
+      "units": [
+        1,
+        2,
+        4,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une action",
+      "arabe": "حدث – فعل - مهمة",
+      "units": [
+        2,
+        3,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une activité",
+      "arabe": "نشاط",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un besoin",
+      "arabe": "حاجات",
+      "units": [
+        2,
+        3,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une affiche",
+      "arabe": "ملصق إعلانات",
+      "units": [
+        2,
+        3
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une brochure",
+      "arabe": "نشرة – كُتُب",
+      "units": [
+        2,
+        3
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un âge",
+      "arabe": "عمر - سن",
+      "units": [
+        2,
+        4,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un budget",
+      "arabe": "ميزانية",
+      "units": [
+        1,
+        2,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une agence",
+      "arabe": "وكالة",
+      "units": [
+        2,
+        3
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un but",
+      "arabe": "هدف",
+      "units": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un agenda",
+      "arabe": "مفكرة",
+      "units": [
+        1,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une aide",
+      "arabe": "مساعدة",
+      "units": [
+        2,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un cadre",
+      "arabe": "إطار",
+      "units": [
+        1,
+        3
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un air",
+      "arabe": "هواء",
+      "units": [
+        1,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une campagne",
+      "arabe": "حملة",
+      "units": [
+        2,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une alimentation",
+      "arabe": "غذاء",
+      "units": [
+        1,
+        2
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une capacité",
+      "arabe": "قدرة – قدرات",
+      "units": [
+        2,
+        4,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une ambiance",
+      "arabe": "جو",
+      "units": [
+        1,
+        2
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un cas",
+      "arabe": "حالة",
+      "units": [
+        3,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un ami",
+      "arabe": "صديق",
+      "units": [
+        1,
+        3
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une case",
+      "arabe": "خانة",
+      "units": [
+        1,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un an",
+      "arabe": "عام",
+      "units": [
+        1,
+        3,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une cause",
+      "arabe": "قضية – مسألة",
+      "units": [
+        2,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un animateur",
+      "arabe": "مقدم",
+      "units": [
+        1,
+        2,
+        3
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un centre",
+      "arabe": "مركز",
+      "units": [
+        1,
+        3,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une animation",
+      "arabe": "نشاطات",
+      "units": [
+        1,
+        3
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une chaine",
+      "arabe": "سلسة",
+      "units": [
+        3,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une année",
+      "arabe": "سنة",
+      "units": [
+        1,
+        2,
+        4,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une chance",
+      "arabe": "حظ – فرصة",
+      "units": [
+        3,
+        4,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une annonce",
+      "arabe": "إعلان",
+      "units": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un changement",
+      "arabe": "تغيير",
+      "units": [
+        1,
+        2,
+        3
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un argument",
+      "arabe": "حجة",
+      "units": [
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une chanson",
+      "arabe": "أغنية",
+      "units": [
+        4,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un art",
+      "arabe": "فن",
+      "units": [
+        1,
+        3
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une chanteuse",
+      "arabe": "مغنية",
+      "units": [
+        4,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un article",
+      "arabe": "مقال",
+      "units": [
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un choix",
+      "arabe": "اختيار",
+      "units": [
+        3,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un artiste",
+      "arabe": "فنان",
+      "units": [
+        1,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une chose",
+      "arabe": "شيء",
+      "units": [
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une association",
+      "arabe": "منظمة",
+      "units": [
+        1,
+        2,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un cinéma",
+      "arabe": "سينما",
+      "units": [
+        1,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un auditeur",
+      "arabe": "المستمعين",
+      "units": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un citoyen",
+      "arabe": "مواطن",
+      "units": [
+        1,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un débat",
+      "arabe": "مناقشة - حوار",
+      "units": [
+        3,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une classe",
+      "arabe": "صف",
+      "units": [
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un décès",
+      "arabe": "وفاء - موت",
+      "units": [
+        2,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un cœur",
+      "arabe": "رافعة - (قلب)",
+      "units": [
+        2,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un défi",
+      "arabe": "تحد - منافسة",
+      "units": [
+        2,
+        4,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un coin",
+      "arabe": "جهة - زاوية",
+      "units": [
+        1,
+        3
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un dépliant",
+      "arabe": "نشرة",
+      "units": [
+        2,
+        3
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une collaboration",
+      "arabe": "تعاون",
+      "units": [
+        2,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un désaccord",
+      "arabe": "عدم توافق",
+      "units": [
+        3,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une communauté",
+      "arabe": "جالية / مجتمع",
+      "units": [
+        1,
+        2,
+        3
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une destination",
+      "arabe": "وجهة",
+      "units": [
+        1,
+        3
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une compétence",
+      "arabe": "مؤهلات - مهارة",
+      "units": [
+        1,
+        2,
+        3,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un développement",
+      "arabe": "تطور",
+      "units": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une compréhension",
+      "arabe": "استيعاب - فهم",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un dialogue",
+      "arabe": "حوار",
+      "units": [
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un concert",
+      "arabe": "حفلة موسيقية",
+      "units": [
+        1,
+        2,
+        3
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une différence",
+      "arabe": "اختلاف",
+      "units": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une condition",
+      "arabe": "شرو، ظرو",
+      "units": [
+        2,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une difficulté",
+      "arabe": "صعوبة - مشكلة",
+      "units": [
+        2,
+        4,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une conférence",
+      "arabe": "مؤتمر / محاضرة",
+      "units": [
+        1,
+        3,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un directeur",
+      "arabe": "مدير",
+      "units": [
+        2,
+        3,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une confiance",
+      "arabe": "ثقة",
+      "units": [
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une discussion",
+      "arabe": "محادثة - حوار",
+      "units": [
+        1,
+        3
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une conjonction",
+      "arabe": "رابط",
+      "units": [
+        1,
+        2,
+        3
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une diversité",
+      "arabe": "الاختلاف - التنوع",
+      "units": [
+        1,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une connaissance",
+      "arabe": "معرفة",
+      "units": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un document",
+      "arabe": "مستند - وثيقة",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un connecteur",
+      "arabe": "موصل",
+      "units": [
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un domaine",
+      "arabe": "مجال",
+      "units": [
+        1,
+        2,
+        4,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une conscience",
+      "arabe": "إدراك",
+      "units": [
+        2,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une donnée",
+      "arabe": "معطيات - معلومات",
+      "units": [
+        3,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un conseil",
+      "arabe": "نصيحة",
+      "units": [
+        3,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une douleur",
+      "arabe": "ألم",
+      "units": [
+        2,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une conséquence",
+      "arabe": "نتيجة",
+      "units": [
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un droit",
+      "arabe": "حق",
+      "units": [
+        1,
+        2,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une conversation",
+      "arabe": "محادثة",
+      "units": [
+        3,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une durée",
+      "arabe": "مدة",
+      "units": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une coopération",
+      "arabe": "تعاون",
+      "units": [
+        1,
+        2
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une copie",
+      "arabe": "ورقة - نسخة",
+      "units": [
+        1,
+        2,
+        3,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un échange",
+      "arabe": "تبادل",
+      "units": [
+        3,
+        4,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un cosmos",
+      "arabe": "كون - فضاء",
+      "units": [
+        3,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un échec",
+      "arabe": "فشل",
+      "units": [
+        3,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une couleur",
+      "arabe": "لون",
+      "units": [
+        3,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une école",
+      "arabe": "مدرسة",
+      "units": [
+        1,
+        4,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un courage",
+      "arabe": "شجاعة - حظ",
+      "units": [
+        2,
+        3
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une écriture",
+      "arabe": "كتابة",
+      "units": [
+        4,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un courriel",
+      "arabe": "بريد إلكتروني",
+      "units": [
+        1,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une édition",
+      "arabe": "إصدار",
+      "units": [
+        3,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une création",
+      "arabe": "إبداع - خلق",
+      "units": [
+        4,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un effet",
+      "arabe": "أثر - تأثير",
+      "units": [],
+      "type": "Nom"
+    },
+    {
+      "word": "Une crise",
+      "arabe": "أزمة - أزمات",
+      "units": [
+        2,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une égalité",
+      "arabe": "مساواة",
+      "units": [
+        1,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un critère",
+      "arabe": "مقياس - معيار",
+      "units": [],
+      "type": "Nom"
+    },
+    {
+      "word": "Un élément",
+      "arabe": "عنصر",
+      "units": [
+        1,
+        2,
+        4,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un critère",
+      "arabe": "معيار - قانون",
+      "units": [
+        2,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une émission",
+      "arabe": "بت - برنامج -",
+      "units": [
+        1,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une culture",
+      "arabe": "ثقافة",
+      "units": [
+        1,
+        3,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une émotion",
+      "arabe": "مشاعر - انفعالات",
+      "units": [
+        2,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une émotion",
+      "arabe": "مشاعر",
+      "units": [
+        2,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un enfant",
+      "arabe": "طفل",
+      "units": [
+        1,
+        2,
+        3,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un engagement",
+      "arabe": "التزام",
+      "units": [
+        2,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une enquête",
+      "arabe": "بحث/تقصي",
+      "units": [
+        4,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un danger",
+      "arabe": "خطر - تهديد",
+      "units": [
+        2,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une date",
+      "arabe": "التاريخ",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un enregistrement",
+      "arabe": "تسجيل",
+      "units": [
+        2,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une entrée",
+      "arabe": "دخول",
+      "units": [
+        3,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une entrevue",
+      "arabe": "مقابلة",
+      "units": [
+        4,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une envie",
+      "arabe": "رغبة",
+      "units": [
+        1,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un environnement",
+      "arabe": "بيئة",
+      "units": [
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un espace",
+      "arabe": "مكان_ حيز",
+      "units": [
+        3,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une espace",
+      "arabe": "فضاء",
+      "units": [
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un esprit",
+      "arabe": "روح",
+      "units": [
+        2,
+        3
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un établissement",
+      "arabe": "مؤسسة",
+      "units": [
+        1,
+        2
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une étude",
+      "arabe": "دراسة",
+      "units": [
+        2,
+        4,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un étudiant",
+      "arabe": "طالب",
+      "units": [
+        1,
+        2,
+        3,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un événement",
+      "arabe": "حدث",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une évolution",
+      "arabe": "التطور",
+      "units": [
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un examen",
+      "arabe": "امتحان",
+      "units": [
+        3,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une exception",
+      "arabe": "استثناء",
+      "units": [
+        3,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un exemple",
+      "arabe": "مثال",
+      "units": [
+        2,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une exposition",
+      "arabe": "معرض",
+      "units": [
+        1,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une expression",
+      "arabe": "تعبير / مصطلح",
+      "units": [
+        1,
+        2,
+        4,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une faim",
+      "arabe": "جوع",
+      "units": [
+        2,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une famille",
+      "arabe": "عائلة – أسرة",
+      "units": [
+        2,
+        4,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une femme",
+      "arabe": "امرأة",
+      "units": [
+        1,
+        3,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une fête",
+      "arabe": "حفلة-عيد",
+      "units": [
+        1,
+        2
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un film",
+      "arabe": "فلم",
+      "units": [
+        1,
+        3,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une fin",
+      "arabe": "نهاية",
+      "units": [
+        1,
+        3,
+        4,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une fleur",
+      "arabe": "زهرة",
+      "units": [
+        1,
+        3
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une fois",
+      "arabe": "مرة",
+      "units": [
+        1,
+        3,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une formation",
+      "arabe": "تأهيل – تدريب",
+      "units": [
+        3,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une forme",
+      "arabe": "شكل",
+      "units": [
+        1,
+        2,
+        3,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un forum",
+      "arabe": "منتدى",
+      "units": [
+        1,
+        3,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une fréquence",
+      "arabe": "تكرار – ترديد-اعادة",
+      "units": [
+        1,
+        3
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un futur",
+      "arabe": "مستقبل",
+      "units": [
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un genre",
+      "arabe": "نوع",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Des gens",
+      "arabe": "الناس.",
+      "units": [
+        2,
+        3,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un goût",
+      "arabe": "ذوق- طعم- اقبال",
+      "units": [
+        1,
+        3
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un gouvernement",
+      "arabe": "حكومة",
+      "units": [
+        1,
+        2,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une grille",
+      "arabe": "جدول",
+      "units": [
+        1,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un groupe",
+      "arabe": "مجموعة شلة",
+      "units": [
+        1,
+        2,
+        3,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un habitant",
+      "arabe": "ساكن",
+      "units": [
+        1,
+        2,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une habitude",
+      "arabe": "عادة",
+      "units": [
+        1,
+        3,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une heure",
+      "arabe": "ساعة",
+      "units": [
+        1,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une histoire",
+      "arabe": "تاريخ- قصة",
+      "units": [
+        3,
+        4,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un hommage",
+      "arabe": "ولاء",
+      "units": [
+        2,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un homme",
+      "arabe": "رجل- انسان",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une humanité",
+      "arabe": "إنسانية",
+      "units": [
+        4,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une idée",
+      "arabe": "فكرة",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une image",
+      "arabe": "صورة",
+      "units": [
+        4,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un impact",
+      "arabe": "تأثير",
+      "units": [
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une importance",
+      "arabe": "أهمية",
+      "units": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un inconvénient",
+      "arabe": "عيب- سيئة",
+      "units": [
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un infinitif",
+      "arabe": "مصدر",
+      "units": [
+        1,
+        2,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une influence",
+      "arabe": "نفوذ- أثر",
+      "units": [
+        3,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une information",
+      "arabe": "معلومة",
+      "units": [
+        1,
+        3,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une inquiétude",
+      "arabe": "قلق – خوف كبير",
+      "units": [
+        2,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une instruction",
+      "arabe": "تعليمات",
+      "units": [
+        1,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une intelligence",
+      "arabe": "ذكاء",
+      "units": [
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une Interaction",
+      "arabe": "تفاعل",
+      "units": [
+        1,
+        4,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un intérêt",
+      "arabe": "فائدة",
+      "units": [
+        1,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un intervenant",
+      "arabe": "مشارك- مدعو",
+      "units": [
+        3
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une idée",
+      "arabe": "فكرة",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une interview",
+      "arabe": "مقابلة، لقاء لقاء",
+      "units": [
+        1,
+        2,
+        3,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une manifestation",
+      "arabe": "مظاهرة، فعالية",
+      "units": [
+        1,
+        3,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une invitation",
+      "arabe": "دعوة",
+      "units": [
+        2,
+        3
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un marathon",
+      "arabe": "سباق جري",
+      "units": [
+        1,
+        2
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une invitation",
+      "arabe": "دعوة",
+      "units": [],
+      "type": "Nom"
+    },
+    {
+      "word": "Un marché",
+      "arabe": "سوق",
+      "units": [
+        1,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un invité",
+      "arabe": "ضيف، مدعو",
+      "units": [
+        3,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une matière",
+      "arabe": "مادة",
+      "units": [
+        3,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un jeu",
+      "arabe": "لعبة",
+      "units": [
+        2,
+        3
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un mél",
+      "arabe": "بريد الكتروني",
+      "units": [
+        1,
+        2,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une jeunesse",
+      "arabe": "شباب",
+      "units": [
+        1,
+        3
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un membre",
+      "arabe": "عضو – فرد",
+      "units": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une joie",
+      "arabe": "فرح",
+      "units": [
+        1,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une menace",
+      "arabe": "قلق",
+      "units": [
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un jour",
+      "arabe": "يوم",
+      "units": [
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un message",
+      "arabe": "رسالة",
+      "units": [
+        1,
+        3,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un journal",
+      "arabe": "صحيفة – مجلة",
+      "units": [
+        2,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une mesure",
+      "arabe": "اجراء",
+      "units": [
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un journaliste",
+      "arabe": "صحفي",
+      "units": [
+        3,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un million",
+      "arabe": "مليون",
+      "units": [
+        2,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une journée",
+      "arabe": "يوم",
+      "units": [
+        1,
+        2,
+        4,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un million",
+      "arabe": "مليون",
+      "units": [],
+      "type": "Nom"
+    },
+    {
+      "word": "Un lecteur",
+      "arabe": "مطالع / قارئ",
+      "units": [
+        1,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une minute",
+      "arabe": "دقيقة",
+      "units": [
+        3,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une lecture",
+      "arabe": "قراءة",
+      "units": [
+        1,
+        3,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une mise",
+      "arabe": "رهان وقت",
+      "units": [
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une lettre",
+      "arabe": "الآداب - رسالة",
+      "units": [
+        3,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une mission",
+      "arabe": "مهمة",
+      "units": [
+        2,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un lieu",
+      "arabe": "مكان",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un mode",
+      "arabe": "صيغة",
+      "units": [
+        1,
+        3,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une limite",
+      "arabe": "حد",
+      "units": [
+        1,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un modèle",
+      "arabe": "نموذج",
+      "units": [
+        4,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une liste",
+      "arabe": "قائمة",
+      "units": [
+        1,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un mois",
+      "arabe": "شهر",
+      "units": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une littérature",
+      "arabe": "الأدب",
+      "units": [
+        2,
+        3
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un monde",
+      "arabe": "عالم",
+      "units": [
+        1,
+        2,
+        3,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un livre",
+      "arabe": "كتاب",
+      "units": [
+        3,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un mot",
+      "arabe": "كلمة",
+      "units": [
+        1,
+        2,
+        3,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une Locution",
+      "arabe": "شبه جملة - عبارة",
+      "units": [
+        1,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un mouvement",
+      "arabe": "حركة",
+      "units": [
+        3,
+        4,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un loisir",
+      "arabe": "أوقات الفراغ",
+      "units": [
+        1,
+        3
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un moyen",
+      "arabe": "أداة \\ وسيلة",
+      "units": [
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une lumière",
+      "arabe": "النور، الضوء",
+      "units": [
+        1,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un musée",
+      "arabe": "متحف",
+      "units": [
+        1,
+        3
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une lutte",
+      "arabe": "كفاح / نضال",
+      "units": [
+        1,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un musicien",
+      "arabe": "موسيقى",
+      "units": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un lycée",
+      "arabe": "مدرسة ثانوية",
+      "units": [
+        2,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une musique",
+      "arabe": "موسيقا",
+      "units": [
+        1,
+        3
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une machine",
+      "arabe": "آلة",
+      "units": [
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une naissance",
+      "arabe": "ولادة",
+      "units": [
+        3,
+        4,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une maison",
+      "arabe": "بيت – منزل",
+      "units": [
+        2,
+        4,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une nécessité",
+      "arabe": "ضرورة – حاجة",
+      "units": [
+        2,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une maladie",
+      "arabe": "مريضة",
+      "units": [
+        4,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un nom",
+      "arabe": "اسم",
+      "units": [
+        1,
+        2,
+        4,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une manière",
+      "arabe": "طريقة – وسيلة",
+      "units": [
+        2,
+        3
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un nombre",
+      "arabe": "عدد",
+      "units": [
+        1,
+        3,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une machine",
+      "arabe": "آلة",
+      "units": [
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un objectif",
+      "arabe": "هدف-غرض",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une Place",
+      "arabe": "مكان",
+      "units": [
+        1,
+        3,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une occasion",
+      "arabe": "فرصة-مناسبة",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un plaisir",
+      "arabe": "تسلية",
+      "units": [
+        3,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une œuvre",
+      "arabe": "عمل",
+      "units": [
+        1,
+        3,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un plan",
+      "arabe": "مخطط",
+      "units": [
+        3,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un office",
+      "arabe": "مكتب-مركز",
+      "units": [
+        1,
+        3
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une poésie",
+      "arabe": "شعر",
+      "units": [
+        3,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une opinion",
+      "arabe": "رأي",
+      "units": [
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un Point de vue",
+      "arabe": "وجهة نظر",
+      "units": [
+        3,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un ordre",
+      "arabe": "ترتيب",
+      "units": [
+        1,
+        2
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une politique",
+      "arabe": "سياسة",
+      "units": [
+        2,
+        3
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un organisateur",
+      "arabe": "منظم-مدير",
+      "units": [
+        1,
+        2
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une porte",
+      "arabe": "الباب",
+      "units": [
+        1,
+        3
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une organisation",
+      "arabe": "منظمة",
+      "units": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une préoccupation",
+      "arabe": "اهتمام",
+      "units": [
+        2,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une origine",
+      "arabe": "أصل",
+      "units": [
+        2,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une présence",
+      "arabe": "بحضور",
+      "units": [
+        3,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une orthographe",
+      "arabe": "كتابة إملائية",
+      "units": [
+        1,
+        2,
+        3,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un présentateur",
+      "arabe": "المقدم",
+      "units": [
+        1,
+        3,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un outil",
+      "arabe": "أداة",
+      "units": [
+        1,
+        2,
+        3,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une présentation",
+      "arabe": "تقديم",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une ouverture",
+      "arabe": "افتتاح",
+      "units": [
+        1,
+        3
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un prix",
+      "arabe": "جائزة",
+      "units": [
+        3,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un objectif",
+      "arabe": "هدف-غرض",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un problème",
+      "arabe": "مشكلة",
+      "units": [
+        2,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une production",
+      "arabe": "إنتاج",
+      "units": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un produit",
+      "arabe": "منتجات",
+      "units": [
+        2,
+        3,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un professeur",
+      "arabe": "مدرس",
+      "units": [
+        3,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un profit",
+      "arabe": "فائدة – منفعة",
+      "units": [
+        2,
+        3
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une programmation",
+      "arabe": "برمجة",
+      "units": [
+        3,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un Programme",
+      "arabe": "برنامج",
+      "units": [
+        1,
+        2,
+        3,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un progrès",
+      "arabe": "تقدم",
+      "units": [
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un projet",
+      "arabe": "مشروع",
+      "units": [
+        2,
+        3,
+        4,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un pronom",
+      "arabe": "ضمير",
+      "units": [
+        3,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une Proposition",
+      "arabe": "جملة",
+      "units": [
+        1,
+        2,
+        3
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une protection",
+      "arabe": "حماية",
+      "units": [
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un public",
+      "arabe": "الشعب-الجمهور",
+      "units": [
+        1,
+        2,
+        3
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une publication",
+      "arabe": "نشر",
+      "units": [
+        1,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une page",
+      "arabe": "صفحة",
+      "units": [
+        1,
+        2,
+        3,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un paragraphe",
+      "arabe": "فقرة",
+      "units": [
+        2,
+        3,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une quantité",
+      "arabe": "كمية – مقدار",
+      "units": [
+        2,
+        3,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un Parapluie",
+      "arabe": "مظلة",
+      "units": [
+        1,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une question",
+      "arabe": "سؤال",
+      "units": [
+        1,
+        2,
+        3,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une Parenthèse",
+      "arabe": "قوسين",
+      "units": [
+        1,
+        2
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un quotidien",
+      "arabe": "يوم",
+      "units": [
+        2,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une part",
+      "arabe": "جهة",
+      "units": [
+        4,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une part",
+      "arabe": "جزء – قسم",
+      "units": [],
+      "type": "Nom"
+    },
+    {
+      "word": "Un partage",
+      "arabe": "تشارك-تقاسم",
+      "units": [
+        1,
+        2,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un participant",
+      "arabe": "مشارك",
+      "units": [
+        1,
+        3,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une participation",
+      "arabe": "مشاركة",
+      "units": [
+        1,
+        3,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une passion",
+      "arabe": "شغف",
+      "units": [
+        3,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un pays",
+      "arabe": "بلد",
+      "units": [
+        1,
+        3
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une performance",
+      "arabe": "أداء",
+      "units": [
+        1,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une Personne",
+      "arabe": "شخص",
+      "units": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un philosophe",
+      "arabe": "فيلسوف",
+      "units": [
+        3,
+        4,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une photo",
+      "arabe": "صورة",
+      "units": [
+        1,
+        2,
+        4,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une Phrase",
+      "arabe": "جملة",
+      "units": [
+        1,
+        2,
+        3,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une pièce de théâtre",
+      "arabe": "مسرحية",
+      "units": [
+        1,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une place",
+      "arabe": "مكان",
+      "units": [
+        1,
+        3,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un plaisir",
+      "arabe": "تسلية",
+      "units": [
+        3,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un plan",
+      "arabe": "مخطط",
+      "units": [
+        3,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une poésie",
+      "arabe": "شعر",
+      "units": [
+        3,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un Point de vue",
+      "arabe": "وجهة نظر",
+      "units": [
+        3,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une politique",
+      "arabe": "سياسة",
+      "units": [
+        2,
+        3
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une porte",
+      "arabe": "الباب",
+      "units": [
+        1,
+        3
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une préoccupation",
+      "arabe": "اهتمام",
+      "units": [
+        2,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une présence",
+      "arabe": "بحضور",
+      "units": [
+        3,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un présentateur",
+      "arabe": "المقدم",
+      "units": [
+        1,
+        3,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une présentation",
+      "arabe": "تقديم",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un prix",
+      "arabe": "جائزة",
+      "units": [
+        3,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un problème",
+      "arabe": "مشكلة",
+      "units": [
+        2,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une production",
+      "arabe": "إنتاج",
+      "units": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un produit",
+      "arabe": "منتجات",
+      "units": [
+        2,
+        3,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un professeur",
+      "arabe": "مدرس",
+      "units": [
+        3,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un profit",
+      "arabe": "فائدة – منفعة",
+      "units": [
+        2,
+        3
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une programmation",
+      "arabe": "برمجة",
+      "units": [
+        3,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un Programme",
+      "arabe": "برنامج",
+      "units": [
+        1,
+        2,
+        3,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un progrès",
+      "arabe": "تقدم",
+      "units": [
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un projet",
+      "arabe": "مشروع",
+      "units": [
+        2,
+        3,
+        4,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un pronom",
+      "arabe": "ضمير",
+      "units": [
+        3,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une Proposition",
+      "arabe": "جملة",
+      "units": [
+        1,
+        2,
+        3
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une protection",
+      "arabe": "حماية",
+      "units": [
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un public",
+      "arabe": "الشعب-الجمهور",
+      "units": [
+        1,
+        2,
+        3
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une publication",
+      "arabe": "نشر",
+      "units": [
+        1,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une quantité",
+      "arabe": "كمية – مقدار",
+      "units": [
+        2,
+        3,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une question",
+      "arabe": "سؤال",
+      "units": [
+        1,
+        2,
+        3,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un quotidien",
+      "arabe": "يوم",
+      "units": [
+        2,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une science",
+      "arabe": "علم",
+      "units": [
+        1,
+        3,
+        4,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une radio",
+      "arabe": "راديو",
+      "units": [
+        1,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une séance",
+      "arabe": "ندوة- اجتماع-",
+      "units": [
+        1,
+        2,
+        3
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une raison",
+      "arabe": "سبب",
+      "units": [
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une sécurité",
+      "arabe": "أمن – أمان",
+      "units": [
+        2,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un rapport",
+      "arabe": "تقرير",
+      "units": [
+        1,
+        2
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une semaine",
+      "arabe": "أسبوع",
+      "units": [
+        1,
+        2,
+        3
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une réalisation",
+      "arabe": "إنجاز",
+      "units": [
+        2,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un service",
+      "arabe": "خدمات",
+      "units": [
+        2,
+        3
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une réalité",
+      "arabe": "واقع - حقيقة",
+      "units": [
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un siècle",
+      "arabe": "قرن",
+      "units": [
+        2,
+        3,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une recherche",
+      "arabe": "بحث",
+      "units": [
+        4,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un site",
+      "arabe": "موقع",
+      "units": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un reflet",
+      "arabe": "انعكاس – أثر",
+      "units": [
+        2,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une situation",
+      "arabe": "موقف – حالة",
+      "units": [
+        2,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un regard",
+      "arabe": "نظرة",
+      "units": [
+        1,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une société",
+      "arabe": "المجتمع",
+      "units": [
+        2,
+        3,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une règle",
+      "arabe": "قاعدة",
+      "units": [
+        1,
+        2,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une sociologie",
+      "arabe": "علم اجتماع",
+      "units": [
+        4,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une relation",
+      "arabe": "علاقة",
+      "units": [
+        1,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un sondage",
+      "arabe": "استطلاع للرأي",
+      "units": [
+        1,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une rencontre",
+      "arabe": "لقاء",
+      "units": [
+        1,
+        2,
+        3
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une sorte",
+      "arabe": "نوع",
+      "units": [
+        1,
+        4,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un rendez- vous",
+      "arabe": "موعد",
+      "units": [
+        1,
+        3,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un souci",
+      "arabe": "خوف – قلق-هم",
+      "units": [
+        2
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un renseignement",
+      "arabe": "إشارة / إعلام",
+      "units": [
+        3,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une souffrance",
+      "arabe": "معاناة",
+      "units": [
+        2,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une réponse",
+      "arabe": "جواب",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un spécialiste",
+      "arabe": "متخصص",
+      "units": [
+        3,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un reportage",
+      "arabe": "تقرير - مقال",
+      "units": [
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un spectateur",
+      "arabe": "مشاهد",
+      "units": [
+        1,
+        2
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un respect",
+      "arabe": "احترام",
+      "units": [
+        3,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un sport",
+      "arabe": "رياضة",
+      "units": [
+        1,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un responsable",
+      "arabe": "مسؤول",
+      "units": [
+        3,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un studio",
+      "arabe": "ستوديو",
+      "units": [
+        1,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une ressource",
+      "arabe": "مصدر",
+      "units": [
+        4,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un style",
+      "arabe": "أسلوب",
+      "units": [
+        3,
+        4,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un restaurant",
+      "arabe": "مطعم",
+      "units": [
+        1,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un sujet",
+      "arabe": "الفاعل",
+      "units": [
+        1,
+        3
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un résumé",
+      "arabe": "تلخيص – إنجاز",
+      "units": [
+        2,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une surveillance",
+      "arabe": "مراقبة",
+      "units": [
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une réussite",
+      "arabe": "نجاح",
+      "units": [
+        3,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une revue",
+      "arabe": "مجلة",
+      "units": [
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un tableau",
+      "arabe": "جدول",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un robot",
+      "arabe": "رجل آلي",
+      "units": [
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une télé",
+      "arabe": "تلفاز",
+      "units": [
+        1,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un rôle",
+      "arabe": "دور – مهمة",
+      "units": [
+        2,
+        4,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un téléphone",
+      "arabe": "الهاتف",
+      "units": [
+        2,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une rubrique",
+      "arabe": "عنوان",
+      "units": [
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une télévision satellite",
+      "arabe": "التلفزة بالأفكار الصناعية",
+      "units": [
+        2,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une rue",
+      "arabe": "شارع",
+      "units": [
+        1,
+        3,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un témoignage",
+      "arabe": "شهادة – إفادة",
+      "units": [
+        2,
+        3,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un temps",
+      "arabe": "وقت- زمن",
+      "units": [
+        1,
+        2,
+        3,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un terme",
+      "arabe": "مصطلح",
+      "units": [
+        3,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un texte",
+      "arabe": "نص",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un théâtre",
+      "arabe": "مسرح",
+      "units": [
+        1,
+        3,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un thème",
+      "arabe": "موضوع",
+      "units": [
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un titre",
+      "arabe": "عنوان",
+      "units": [
+        3,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un tour",
+      "arabe": "دور",
+      "units": [
+        3,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "المستوى",
+      "arabe": "المستوى",
+      "units": [
+        1,
+        3,
+        4,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un salon",
+      "arabe": "صالون",
+      "units": [
+        3,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un texte",
+      "arabe": "مسرح",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une santé",
+      "arabe": "الصحة",
+      "units": [
+        2,
+        3,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un théâtre",
+      "arabe": "موضوع",
+      "units": [
+        1,
+        3,
+        4
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un satellite",
+      "arabe": "قمر صناعي",
+      "units": [
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un thème",
+      "arabe": "عنوان",
+      "units": [
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une scène",
+      "arabe": "مشهد-عرض",
+      "units": [
+        1,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un titre",
+      "arabe": "دور",
+      "units": [
+        3,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un tourisme",
+      "arabe": "سياحة",
+      "units": [
+        1,
+        3
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un transport",
+      "arabe": "نقل – انتقال",
+      "units": [
+        2,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un travail",
+      "arabe": "عمل",
+      "units": [
+        1,
+        2,
+        5,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une tristesse",
+      "arabe": "خزن – أحزان",
+      "units": [
+        2,
+        5
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Un type",
+      "arabe": "نمط نوع -",
+      "units": [
+        3,
+        6
+      ],
+      "type": "Nom"
+    },
+    {
+      "word": "Une technologie",
+      "arabe": "تقنية",
+      "units": [
+        5,
+        6
+      ],
+      "type": "Nom"
+    }
+  ],
+  "adj": [
+    {
+      "word": "Adapté",
+      "arabe": "مقتبس – متأقلم",
+      "units": [
+        2,
+        3,
+        5,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Capable",
+      "arabe": "قادر",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Administratif",
+      "arabe": "إداري",
+      "units": [
+        3,
+        5
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Célèbre",
+      "arabe": "مشهور",
+      "units": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Âgé",
+      "arabe": "معمر مسن،",
+      "units": [
+        2,
+        5
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Certain",
+      "arabe": "عديد-عدة-بعض",
+      "units": [
+        1,
+        2,
+        4,
+        5
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Américain",
+      "arabe": "أمريكي",
+      "units": [
+        1,
+        4,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Chaque",
+      "arabe": "كل",
+      "units": [
+        1,
+        2,
+        4,
+        5,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Amusant",
+      "arabe": "مسل-أليف",
+      "units": [
+        1,
+        3
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Cher",
+      "arabe": "غال-عزيز",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Ancien",
+      "arabe": "قديم",
+      "units": [
+        3,
+        4,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Cité",
+      "arabe": "مذكور",
+      "units": [
+        1,
+        2,
+        5,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Animé",
+      "arabe": "حيوي-نشط",
+      "units": [
+        1,
+        3
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Commun",
+      "arabe": "عمل مشترك",
+      "units": [
+        2,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Annuel",
+      "arabe": "حولي-سوي",
+      "units": [
+        1,
+        2
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Complet",
+      "arabe": "كامل-تام",
+      "units": [
+        1,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Appelé",
+      "arabe": "مسمى",
+      "units": [
+        3,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Complexe",
+      "arabe": "معقد",
+      "units": [
+        2,
+        4
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Arabe",
+      "arabe": "عربي",
+      "units": [
+        1,
+        3
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Conçu",
+      "arabe": "مصمم-محمول",
+      "units": [
+        1,
+        5,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Argumenté",
+      "arabe": "ميرهن",
+      "units": [
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Connu",
+      "arabe": "معروف شهير",
+      "units": [
+        3,
+        4
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Artificiel",
+      "arabe": "مصطنع",
+      "units": [
+        5,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Consacré",
+      "arabe": "مخصص،",
+      "units": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Artistique",
+      "arabe": "فني",
+      "units": [
+        1,
+        4
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Considéré",
+      "arabe": "يعتبر",
+      "units": [
+        3,
+        4
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Attendu",
+      "arabe": "متوقع – منتظر",
+      "units": [
+        2,
+        3,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Correct",
+      "arabe": "صحيح",
+      "units": [
+        3,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Attrayant",
+      "arabe": "مغ-جذاب-فتان",
+      "units": [
+        1,
+        2,
+        4
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Court",
+      "arabe": "قصير",
+      "units": [
+        3,
+        4
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Aucun",
+      "arabe": "لا أحد",
+      "units": [
+        4,
+        5,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Cultivé",
+      "arabe": "متقف",
+      "units": [
+        3,
+        4
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Automatique",
+      "arabe": "آلي",
+      "units": [
+        5,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Culturel",
+      "arabe": "ثقافي",
+      "units": [
+        1,
+        2,
+        4
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Autonome",
+      "arabe": "مستقل بذاته",
+      "units": [
+        3,
+        5,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Autre",
+      "arabe": "آخر/غير",
+      "units": [
+        1,
+        2,
+        4,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Dangereux",
+      "arabe": "خطير",
+      "units": [
+        2,
+        5,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Avancé",
+      "arabe": "متقدم",
+      "units": [
+        2
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Décoré",
+      "arabe": "مزين",
+      "units": [
+        1,
+        2,
+        4,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Dédié",
+      "arabe": "مخصص-مكرس",
+      "units": [
+        1,
+        3
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Dernier",
+      "arabe": "أخير",
+      "units": [
+        3,
+        5
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Deuxième",
+      "arabe": "ثاني",
+      "units": [
+        4,
+        5
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Beau",
+      "arabe": "جميل",
+      "units": [
+        3,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Différent",
+      "arabe": "مختلف",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Bénévole",
+      "arabe": "تطوعي",
+      "units": [
+        2,
+        4
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Difficile",
+      "arabe": "صعب",
+      "units": [
+        2,
+        4,
+        5,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Bon",
+      "arabe": "جيد-حسن-طيب",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Diffusé",
+      "arabe": "مذاع، منشور",
+      "units": [
+        4,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Distribué",
+      "arabe": "موزع",
+      "units": [
+        2,
+        3
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Durable",
+      "arabe": "دائم- مستمر",
+      "units": [
+        1,
+        2
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Economique",
+      "arabe": "Important",
+      "units": [
+        1,
+        5
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Entouré",
+      "arabe": "Impossible",
+      "units": [],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Entouré",
+      "arabe": "Incontournable",
+      "units": [
+        3,
+        4
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Etranger",
+      "arabe": "Indéfini",
+      "units": [
+        1,
+        5
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Européen",
+      "arabe": "أوروبي",
+      "units": [
+        4,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Évolué",
+      "arabe": "Intellectuel",
+      "units": [
+        3,
+        5
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Fait",
+      "arabe": "منجز",
+      "units": [
+        2,
+        4,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Fameux",
+      "arabe": "مشهور",
+      "units": [
+        2,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Fatigué",
+      "arabe": "متعب",
+      "units": [
+        2,
+        5
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Faux",
+      "arabe": "غلط/خطأ",
+      "units": [
+        1,
+        2
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Favorable",
+      "arabe": "ملائم",
+      "units": [
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Féminin",
+      "arabe": "أنثوي",
+      "units": [
+        3,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Festif",
+      "arabe": "يتعلق بالعيد",
+      "units": [
+        1,
+        2,
+        3
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Final",
+      "arabe": "نهائي",
+      "units": [
+        2,
+        5
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Financé",
+      "arabe": "ممول",
+      "units": [
+        1
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Financier",
+      "arabe": "مالي/ نقدي",
+      "units": [
+        2,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Fort",
+      "arabe": "قوي",
+      "units": [
+        2,
+        5
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Français",
+      "arabe": "فرنسي",
+      "units": [
+        1,
+        3,
+        4,
+        5
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Grand",
+      "arabe": "كبير-عظيم",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Gratuit",
+      "arabe": "مجاني",
+      "units": [
+        1,
+        3
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Grave",
+      "arabe": "خطير",
+      "units": [
+        4,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Humain",
+      "arabe": "انساني",
+      "units": [
+        2,
+        5,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "هام",
+      "arabe": "مستحيل",
+      "units": [],
+      "type": "Adjectif"
+    },
+    {
+      "word": "مستحيل",
+      "arabe": "لا بد منه",
+      "units": [],
+      "type": "Adjectif"
+    },
+    {
+      "word": "لا بد منه",
+      "arabe": "نكرة، غير معرف",
+      "units": [],
+      "type": "Adjectif"
+    },
+    {
+      "word": "نكرة، غير معرف",
+      "arabe": "قلق",
+      "units": [],
+      "type": "Adjectif"
+    },
+    {
+      "word": "قلق",
+      "arabe": "ذهني/فكري",
+      "units": [],
+      "type": "Adjectif"
+    },
+    {
+      "word": "مهم",
+      "arabe": "مهم",
+      "units": [],
+      "type": "Adjectif"
+    },
+    {
+      "word": "دولي",
+      "arabe": "دولي",
+      "units": [],
+      "type": "Adjectif"
+    },
+    {
+      "word": "متحدث/الملتقى به",
+      "arabe": "غير متغير.",
+      "units": [],
+      "type": "Adjectif"
+    },
+    {
+      "word": "غير متغير.",
+      "arabe": "منزل",
+      "units": [],
+      "type": "Adjectif"
+    },
+    {
+      "word": "سليمان، متحدر من",
+      "arabe": "سليل، متحدر من",
+      "units": [],
+      "type": "Adjectif"
+    },
+    {
+      "word": "إيطالي",
+      "arabe": "إيطالي",
+      "units": [],
+      "type": "Adjectif"
+    },
+    {
+      "word": "شاب، فني",
+      "arabe": "شاب، فني",
+      "units": [],
+      "type": "Adjectif"
+    },
+    {
+      "word": "خر، طليق، شاغر",
+      "arabe": "مرتبط",
+      "units": [],
+      "type": "Adjectif"
+    },
+    {
+      "word": "لغوي",
+      "arabe": "أر، طليق، شاغر",
+      "units": [],
+      "type": "Adjectif"
+    },
+    {
+      "word": "ادبي",
+      "arabe": "أدبي",
+      "units": [],
+      "type": "Adjectif"
+    },
+    {
+      "word": "طويل",
+      "arabe": "طويل",
+      "units": [],
+      "type": "Adjectif"
+    },
+    {
+      "word": "ذكوري",
+      "arabe": "سيء",
+      "units": [],
+      "type": "Adjectif"
+    },
+    {
+      "word": "سيء",
+      "arabe": "نفس، ذات",
+      "units": [],
+      "type": "Adjectif"
+    },
+    {
+      "word": "مترافق",
+      "arabe": "مترافق",
+      "units": [],
+      "type": "Adjectif"
+    },
+    {
+      "word": "حديث - عصري",
+      "arabe": "حديث - عصري",
+      "units": [],
+      "type": "Adjectif"
+    },
+    {
+      "word": "عالمي",
+      "arabe": "عالمي",
+      "units": [],
+      "type": "Adjectif"
+    },
+    {
+      "word": "ذكوري",
+      "arabe": "سيء",
+      "units": [],
+      "type": "Adjectif"
+    },
+    {
+      "word": "سيء",
+      "arabe": "سليمان، متحدر من",
+      "units": [],
+      "type": "Adjectif"
+    },
+    {
+      "word": "عالمي",
+      "arabe": "إيطالي",
+      "units": [],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Propre",
+      "arabe": "نظيف – خاص",
+      "units": [
+        1,
+        2,
+        3,
+        5,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "National",
+      "arabe": "قومي/وطني",
+      "units": [
+        1,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Public",
+      "arabe": "مشترك عام",
+      "units": [
+        1,
+        3
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Nécessaire",
+      "arabe": "ضروري",
+      "units": [
+        1,
+        3,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Publié",
+      "arabe": "منشور",
+      "units": [
+        2,
+        4,
+        5
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Négatif",
+      "arabe": "سلبي",
+      "units": [
+        5,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Noble",
+      "arabe": "نبيل",
+      "units": [
+        3,
+        4
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Radiophonique",
+      "arabe": "إذاعي",
+      "units": [
+        2,
+        5
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Noir",
+      "arabe": "اسود، مظلم",
+      "units": [
+        4,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Réalisé",
+      "arabe": "منجز",
+      "units": [
+        2,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Nombreux",
+      "arabe": "متعدد-كثير",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Récent",
+      "arabe": "حديث",
+      "units": [
+        2,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Nouveau",
+      "arabe": "جديد",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Réel",
+      "arabe": "واقعي",
+      "units": [
+        4,
+        5
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Relatif",
+      "arabe": "متعلق",
+      "units": [
+        1,
+        2,
+        4,
+        5,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Optimiste",
+      "arabe": "متفائل",
+      "units": [
+        2,
+        5
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Remarquable",
+      "arabe": "جدير بالملاحظة",
+      "units": [
+        4,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Oral",
+      "arabe": "شفهي-سمعي",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Réservé",
+      "arabe": "مخصص",
+      "units": [
+        3,
+        4
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Organisé",
+      "arabe": "مصمم-منسق",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Responsable",
+      "arabe": "مسؤول",
+      "units": [
+        2,
+        3,
+        5
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Ouvert",
+      "arabe": "مفتوح",
+      "units": [
+        1,
+        3
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Scientifique",
+      "arabe": "علمي",
+      "units": [
+        1,
+        2,
+        3,
+        5,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Partiel",
+      "arabe": "جزئي",
+      "units": [
+        3,
+        4,
+        5
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Seul",
+      "arabe": "وحيد",
+      "units": [
+        2,
+        5,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Performant",
+      "arabe": "تنافسي",
+      "units": [
+        4,
+        5
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Simple",
+      "arabe": "بسيط",
+      "units": [
+        4,
+        5
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Personnel",
+      "arabe": "شخصي",
+      "units": [
+        3,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Social",
+      "arabe": "اجتماعي",
+      "units": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Petit",
+      "arabe": "صغير",
+      "units": [
+        1,
+        4,
+        5
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Solidaire",
+      "arabe": "متعاون متضامن",
+      "units": [
+        1,
+        2
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Physique",
+      "arabe": "جسدي",
+      "units": [
+        2,
+        4
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Sonore",
+      "arabe": "صوتي",
+      "units": [
+        1,
+        3
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Politique",
+      "arabe": "سياسي",
+      "units": [
+        3,
+        4,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Souligné",
+      "arabe": "مشار اليه",
+      "units": [
+        2,
+        4
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Populaire",
+      "arabe": "شعبي-شائع",
+      "units": [
+        1,
+        5
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Spatial",
+      "arabe": "فضائي",
+      "units": [
+        5,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Possessif",
+      "arabe": "ملكي",
+      "units": [
+        3,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Suivant",
+      "arabe": "تالي",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Précédé",
+      "arabe": "مسبوق",
+      "units": [
+        3,
+        4,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Syrien",
+      "arabe": "سوري",
+      "units": [
+        2,
+        4
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Précis",
+      "arabe": "محدد",
+      "units": [
+        5,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Premier",
+      "arabe": "أول",
+      "units": [
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Téléphonique",
+      "arabe": "هاتفي",
+      "units": [
+        3,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Présenté",
+      "arabe": "مقدم",
+      "units": [
+        2,
+        4,
+        5,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Téléphonique",
+      "arabe": "هاتفية",
+      "units": [
+        3,
+        4
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Prêt",
+      "arabe": "جاهز",
+      "units": [
+        4,
+        5,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Total",
+      "arabe": "كلي / اجمالي",
+      "units": [
+        3,
+        5
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Principal",
+      "arabe": "أساسي",
+      "units": [
+        1,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Tout",
+      "arabe": "كل",
+      "units": [
+        2,
+        4
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Privé",
+      "arabe": "خاص / محروم",
+      "units": [
+        3,
+        5
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Traditionnel",
+      "arabe": "تقليدي",
+      "units": [
+        1,
+        4
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Prochain",
+      "arabe": "قادم",
+      "units": [
+        3,
+        4
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Profond",
+      "arabe": "عميق",
+      "units": [
+        5,
+        6
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Utilisé",
+      "arabe": "مستعمل",
+      "units": [
+        2,
+        5
+      ],
+      "type": "Adjectif"
+    },
+    {
+      "word": "Proposé",
+      "arabe": "مقترح",
+      "units": [
+        1,
+        3
+      ],
+      "type": "Adjectif"
+    }
+  ],
+  "verbs": [
+    {
+      "word": "Variable",
+      "arabe": "متجدد ،متغير",
+      "units": [
+        4,
+        5
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Varié",
+      "arabe": "متنوع",
+      "units": [
+        1,
+        2,
+        4,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Accepter",
+      "arabe": "قبل",
+      "units": [
+        2,
+        5
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Arriver",
+      "arabe": "وصل",
+      "units": [
+        1,
+        3,
+        4,
+        5
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Accomplir",
+      "arabe": "انجز",
+      "units": [
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Assister",
+      "arabe": "حضر",
+      "units": [
+        1,
+        3,
+        5
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Accorder",
+      "arabe": "منح - وافق",
+      "units": [
+        3,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Assurer (s')",
+      "arabe": "أمن - تأكد - أكد",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Accueillir",
+      "arabe": "استقبال",
+      "units": [
+        1,
+        3,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Attendre",
+      "arabe": "انتظر - توقع",
+      "units": [
+        1,
+        2
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Adapter",
+      "arabe": "لاعم - اقتبس",
+      "units": [
+        3,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Attirer",
+      "arabe": "جذب",
+      "units": [
+        3,
+        5
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Affirmer",
+      "arabe": "أكد",
+      "units": [
+        2,
+        3
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Augmenter",
+      "arabe": "ازداد",
+      "units": [
+        4,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Affronter",
+      "arabe": "واجه",
+      "units": [
+        4,
+        5
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Avoir",
+      "arabe": "امتلك",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Agir",
+      "arabe": "تصرف - تحدث عن",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Aider",
+      "arabe": "ساعد",
+      "units": [
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Bénévoler",
+      "arabe": "تطوع",
+      "units": [
+        2,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Aimer",
+      "arabe": "أحب",
+      "units": [
+        1,
+        2,
+        4
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Ajouter",
+      "arabe": "أضاف",
+      "units": [
+        2,
+        3
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Causer",
+      "arabe": "سبب",
+      "units": [
+        2,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Aller",
+      "arabe": "ذهب",
+      "units": [
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Célébrer",
+      "arabe": "احتفل",
+      "units": [
+        1,
+        2
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Améliorer",
+      "arabe": "حسن",
+      "units": [
+        2,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Changer",
+      "arabe": "غير",
+      "units": [
+        3,
+        4,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Analyser",
+      "arabe": "حلل",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Charger",
+      "arabe": "تحمل - تكلف",
+      "units": [
+        2,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Animer",
+      "arabe": "أحيا - حرك - آثار",
+      "units": [
+        1,
+        3
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Choisir",
+      "arabe": "اختار",
+      "units": [
+        1,
+        2,
+        3,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Annoncer",
+      "arabe": "أعلن",
+      "units": [
+        1,
+        3
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Citer",
+      "arabe": "ذكر",
+      "units": [
+        2,
+        3,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Appeler",
+      "arabe": "دعا إلى",
+      "units": [
+        1,
+        2,
+        4,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Cocher",
+      "arabe": "وضع علامة",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Appliquer",
+      "arabe": "طبق",
+      "units": [
+        1,
+        2,
+        3
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Apprendre",
+      "arabe": "تعلم، علم",
+      "units": [
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Commencer",
+      "arabe": "بدأ",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Discuter",
+      "arabe": "ناقش",
+      "units": [
+        3,
+        5
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Compléter",
+      "arabe": "أكمل",
+      "units": [
+        1,
+        2,
+        4,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Distribuer",
+      "arabe": "وزع",
+      "units": [
+        2,
+        3
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Comprendre",
+      "arabe": "فهم",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Donner",
+      "arabe": "أعطى",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Concerner",
+      "arabe": "تعلق",
+      "units": [
+        1,
+        2,
+        4,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Connaître",
+      "arabe": "عرف",
+      "units": [
+        1,
+        4,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Ecouter",
+      "arabe": "استمع",
+      "units": [],
+      "type": "Verbe"
+    },
+    {
+      "word": "Consacrer",
+      "arabe": "خصص",
+      "units": [
+        2,
+        3
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Écrire",
+      "arabe": "كتب",
+      "units": [],
+      "type": "Verbe"
+    },
+    {
+      "word": "Considérer",
+      "arabe": "اعتبر",
+      "units": [
+        3,
+        4
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Effectuer",
+      "arabe": "أنجز",
+      "units": [],
+      "type": "Verbe"
+    },
+    {
+      "word": "Constater",
+      "arabe": "لاحظ",
+      "units": [
+        1,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Elever",
+      "arabe": "رفع",
+      "units": [],
+      "type": "Verbe"
+    },
+    {
+      "word": "Construire",
+      "arabe": "بنى",
+      "units": [
+        2,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Encourager",
+      "arabe": "شجع",
+      "units": [],
+      "type": "Verbe"
+    },
+    {
+      "word": "Consulter",
+      "arabe": "استشار",
+      "units": [
+        3,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Entendre",
+      "arabe": "سمع",
+      "units": [],
+      "type": "Verbe"
+    },
+    {
+      "word": "Contacter",
+      "arabe": "اتصل",
+      "units": [
+        1,
+        2,
+        3
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Entourer",
+      "arabe": "أحاط",
+      "units": [],
+      "type": "Verbe"
+    },
+    {
+      "word": "Contenir",
+      "arabe": "احتوى على",
+      "units": [
+        2,
+        4,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Entraîner",
+      "arabe": "درب",
+      "units": [],
+      "type": "Verbe"
+    },
+    {
+      "word": "Contribuer",
+      "arabe": "ساهم",
+      "units": [
+        2,
+        3,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Envahir",
+      "arabe": "غزا",
+      "units": [],
+      "type": "Verbe"
+    },
+    {
+      "word": "Convenir",
+      "arabe": "ناسب",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Envoyer",
+      "arabe": "أرسل",
+      "units": [],
+      "type": "Verbe"
+    },
+    {
+      "word": "Créer",
+      "arabe": "خلق - أنشأ - أبدع",
+      "units": [
+        2,
+        5
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Espérer",
+      "arabe": "رجى",
+      "units": [],
+      "type": "Verbe"
+    },
+    {
+      "word": "Croire",
+      "arabe": "اعتقد",
+      "units": [
+        2,
+        5
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Être",
+      "arabe": "كان",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Etudier",
+      "arabe": "درس",
+      "units": [
+        2,
+        4,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Décider",
+      "arabe": "قرر",
+      "units": [
+        1,
+        4,
+        5
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Évaluer",
+      "arabe": "قيم",
+      "units": [
+        1,
+        2,
+        3
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Déclarer",
+      "arabe": "صرح",
+      "units": [
+        2,
+        3,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Exister",
+      "arabe": "تواجد",
+      "units": [
+        3,
+        4
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Décorer",
+      "arabe": "زين",
+      "units": [
+        1,
+        4
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Exprimer",
+      "arabe": "عبر",
+      "units": [
+        1,
+        2,
+        4,
+        5
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Découvrir",
+      "arabe": "اكتشف",
+      "units": [
+        1,
+        2,
+        3,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Déduire",
+      "arabe": "استنتج",
+      "units": [
+        1,
+        2,
+        3
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Faciliter",
+      "arabe": "سهل",
+      "units": [
+        3,
+        5
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Définir",
+      "arabe": "عرف",
+      "units": [
+        1,
+        4
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Faire",
+      "arabe": "فعل",
+      "units": [
+        1,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Demander",
+      "arabe": "سأل",
+      "units": [
+        1,
+        3,
+        5
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Falloir",
+      "arabe": "توجب",
+      "units": [
+        1,
+        3,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Dépenser",
+      "arabe": "أنفق",
+      "units": [
+        2,
+        3
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Favoriser",
+      "arabe": "فضل",
+      "units": [
+        1,
+        3
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Dérouler (se)",
+      "arabe": "جرى - حدث",
+      "units": [
+        1,
+        2,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Désigner",
+      "arabe": "أشار",
+      "units": [
+        3,
+        5
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Guider",
+      "arabe": "قاد",
+      "units": [
+        3,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Déterminer",
+      "arabe": "حدد",
+      "units": [
+        3,
+        4
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Développer",
+      "arabe": "طور",
+      "units": [
+        3,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Habiter",
+      "arabe": "سكن",
+      "units": [
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Devenir",
+      "arabe": "أصبح - صار",
+      "units": [
+        3,
+        4,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Honorer",
+      "arabe": "كرم",
+      "units": [
+        1,
+        3
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Dévoiler",
+      "arabe": "كشف",
+      "units": [
+        3,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Devoir",
+      "arabe": "توجب",
+      "units": [
+        3,
+        4,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Dire",
+      "arabe": "قال",
+      "units": [
+        3,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Identifier",
+      "arabe": "حدد",
+      "units": [
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Paraître",
+      "arabe": "ظهر",
+      "units": [
+        1,
+        2
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Imposer",
+      "arabe": "فرض",
+      "units": [
+        1,
+        3
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Parler",
+      "arabe": "تحدث",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Installer",
+      "arabe": "أنشأ",
+      "units": [
+        1,
+        2
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Participer",
+      "arabe": "شارك",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Intéresser",
+      "arabe": "اهتم",
+      "units": [
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Partir",
+      "arabe": "غادر",
+      "units": [
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Inviter",
+      "arabe": "دعا",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Passer",
+      "arabe": "مر - أمضى - حدث",
+      "units": [
+        1,
+        3,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Penser",
+      "arabe": "فكر",
+      "units": [
+        3,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Jouer",
+      "arabe": "لعب",
+      "units": [
+        1,
+        4
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Perdre",
+      "arabe": "أضاع",
+      "units": [
+        1,
+        2
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Permettre",
+      "arabe": "سمح",
+      "units": [
+        1,
+        3,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Lancer",
+      "arabe": "عرض - أطلق",
+      "units": [
+        1,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Planifier",
+      "arabe": "خطط",
+      "units": [
+        3,
+        5
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Lire",
+      "arabe": "قرأ",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Pouvoir",
+      "arabe": "استطاع",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Lutter",
+      "arabe": "ناضل",
+      "units": [
+        1,
+        2,
+        4
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Préciser",
+      "arabe": "حدد",
+      "units": [
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Préférez",
+      "arabe": "فضل",
+      "units": [
+        2,
+        4,
+        5
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Maintenir",
+      "arabe": "ثبت - أكد",
+      "units": [
+        2,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Prendre",
+      "arabe": "أخذ",
+      "units": [
+        2,
+        3
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Marquer",
+      "arabe": "أشار إلى",
+      "units": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Préparer",
+      "arabe": "حضر",
+      "units": [
+        1,
+        2,
+        3,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Mener",
+      "arabe": "قاد",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Présenter",
+      "arabe": "قدم",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Mobiliser",
+      "arabe": "نقل - حرك",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Prier",
+      "arabe": "استعطف - رجي",
+      "units": [
+        2,
+        3
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Montrer",
+      "arabe": "أظهر",
+      "units": [
+        1,
+        2,
+        3,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Procurer",
+      "arabe": "أمد، زود",
+      "units": [
+        3,
+        5
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Produire(se)",
+      "arabe": "انتج - نتج",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Naître",
+      "arabe": "ولد",
+      "units": [
+        3,
+        4
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "profiter",
+      "arabe": "استفاد",
+      "units": [
+        2,
+        4,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Programmer",
+      "arabe": "برمج - نظم",
+      "units": [
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Obliger",
+      "arabe": "ولد",
+      "units": [
+        1,
+        4
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Proposer",
+      "arabe": "اقترح",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Observer",
+      "arabe": "لا حظ",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Publier",
+      "arabe": "نشر",
+      "units": [
+        1,
+        2,
+        4,
+        5
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Obtenir",
+      "arabe": "حصل",
+      "units": [
+        1,
+        3,
+        4
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Occuper (s')",
+      "arabe": "شغل - اعتنى",
+      "units": [
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Raconter",
+      "arabe": "روى",
+      "units": [
+        3,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Offrir",
+      "arabe": "قدم",
+      "units": [
+        2,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Rappeler",
+      "arabe": "تذكر",
+      "units": [
+        1,
+        3
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Organiser",
+      "arabe": "نظم",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Réaliser",
+      "arabe": "حقق - أنجز",
+      "units": [
+        2,
+        4,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Oublier",
+      "arabe": "نسي",
+      "units": [
+        1,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Recevoir",
+      "arabe": "تلقى - استقبل",
+      "units": [
+        2,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Ouvrir",
+      "arabe": "فتح",
+      "units": [
+        3,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Rechercher",
+      "arabe": "بحث",
+      "units": [
+        3,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Reconnaître",
+      "arabe": "تعرف",
+      "units": [
+        2,
+        3,
+        5
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Rédiger",
+      "arabe": "كتب",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Réduire",
+      "arabe": "قلص - قلل",
+      "units": [
+        1,
+        2,
+        5
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Reformuler",
+      "arabe": "أعاد تشكيل",
+      "units": [
+        2,
+        3
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Relever",
+      "arabe": "استخرج",
+      "units": [
+        3,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Relier",
+      "arabe": "ربط",
+      "units": [
+        1,
+        2,
+        5
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Remercier",
+      "arabe": "شكر",
+      "units": [
+        1,
+        2
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Remplacer",
+      "arabe": "استبدل",
+      "units": [
+        1,
+        2,
+        3,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Remplir",
+      "arabe": "ملأ",
+      "units": [
+        1,
+        3,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Rencontre",
+      "arabe": "التقى",
+      "units": [
+        3,
+        4
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Rendre",
+      "arabe": "جعل - أرجع",
+      "units": [
+        1,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Rendre hommage",
+      "arabe": "أشاد، مدح",
+      "units": [
+        1,
+        2,
+        3
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Répondre",
+      "arabe": "أجاب",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Réserver",
+      "arabe": "حجز - حافظ على",
+      "units": [
+        1,
+        3
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Respecter",
+      "arabe": "احترم",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Ressentir",
+      "arabe": "شعر",
+      "units": [
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Rester",
+      "arabe": "بقي",
+      "units": [
+        1,
+        4,
+        5
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Résumer",
+      "arabe": "أوجز - اختصر",
+      "units": [
+        1,
+        5
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Réunir ( se )",
+      "arabe": "جمع - اجتمع",
+      "units": [
+        1,
+        3
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Rêver",
+      "arabe": "حلم",
+      "units": [
+        3,
+        5
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "S'agir",
+      "arabe": "تعلق الموضوع ب",
+      "units": [
+        1,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "S'assurer",
+      "arabe": "تأكد",
+      "units": [
+        1,
+        4,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Sauver",
+      "arabe": "أنفذ",
+      "units": [
+        2,
+        5
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Savoir",
+      "arabe": "علم - عرف",
+      "units": [
+        1,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Se passer",
+      "arabe": "جرى / حدث - استغنى",
+      "units": [
+        1,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Sensibiliser",
+      "arabe": "وعى",
+      "units": [
+        1,
+        2,
+        3
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "S'entraîner",
+      "arabe": "تدرب",
+      "units": [
+        4,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Servir",
+      "arabe": "قدم / خدم",
+      "units": [
+        2,
+        3,
+        4,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "S'évaluer",
+      "arabe": "قيم",
+      "units": [
+        4,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Souffrir",
+      "arabe": "عانى",
+      "units": [
+        2,
+        4
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Souhaiter",
+      "arabe": "تمنى",
+      "units": [
+        2,
+        3,
+        4,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Souligner",
+      "arabe": "اشار إلى",
+      "units": [
+        3,
+        4
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Suivre",
+      "arabe": "تبع - لحق - تابع",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Surmonter",
+      "arabe": "تغلب على",
+      "units": [
+        4,
+        5
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Tenir",
+      "arabe": "امسك - أخذ",
+      "units": [
+        1,
+        4,
+        5
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Terminer",
+      "arabe": "أنهى",
+      "units": [
+        1,
+        2,
+        3
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Toucher",
+      "arabe": "لامس",
+      "units": [
+        2,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Traiter",
+      "arabe": "عالج",
+      "units": [
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Transformer (se)",
+      "arabe": "حول - تحول",
+      "units": [
+        3
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Travailler",
+      "arabe": "عمل",
+      "units": [
+        2,
+        4
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Trouver(se)",
+      "arabe": "تواجد، تواجد",
+      "units": [
+        1,
+        2,
+        3,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Utiliser",
+      "arabe": "استخدم - استعمل",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Varier",
+      "arabe": "نوع",
+      "units": [
+        1,
+        2
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Venir",
+      "arabe": "أتى - جاء",
+      "units": [
+        1,
+        2,
+        3,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Viser",
+      "arabe": "هدف إلى",
+      "units": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Visiter",
+      "arabe": "زار",
+      "units": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Vivre",
+      "arabe": "عاش",
+      "units": [
+        1,
+        2
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Voir",
+      "arabe": "رأى",
+      "units": [
+        1,
+        2,
+        4,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Voter",
+      "arabe": "صوت - اقترع",
+      "units": [
+        2,
+        4
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Vouloir",
+      "arabe": "اراد",
+      "units": [
+        3,
+        4,
+        6
+      ],
+      "type": "Verbe"
+    },
+    {
+      "word": "Voyager",
+      "arabe": "سافر",
+      "units": [
+        1,
+        3
+      ],
+      "type": "Verbe"
+    }
+  ]
+}

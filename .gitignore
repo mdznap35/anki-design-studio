@@ -1,0 +1,6 @@
+node_modules/
+server.js.bak
+public/index.html.bak
+start.sh
+test_and_run.sh
+build_gallery.py
