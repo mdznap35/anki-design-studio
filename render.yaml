@@ -1,11 +1,8 @@
 services:
   - type: web
     name: anki-design-studio
-    runtime: node
+    runtime: python
     plan: free
-    buildCommand: npm install && pip install genanki
-    startCommand: node server.js
+    buildCommand: pip install -r requirements.txt
+    startCommand: python app.py
     autoDeploy: true
-    envVars:
-      - key: PYTHON_VERSION
-        value: "3.12"
