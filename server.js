@@ -212,8 +212,8 @@ async function generateApkg(config){
       latexPre:'\\\\documentclass[12pt]{article}\\\\usepackage{polyglossia}\\\\usepackage{amsmath}\\\\pagestyle{empty}\\\\begin{document}',
       latexPost:'\\\\end{document}',latexsvg:false};
     const decks={};
-    const deckConf={"id":1,"mod":0,"name":"Default","browserCollapsed":false,"new":{"bury":true,"delays":[1,10],"initialFactor":2500,"ints":[1,4,0],"order":1,"perDay":20,"separate":true},"lapse":{"delays":[10],"ease1":0,"goodInterval":1,"ivlFct":1,"minInt":1,"mult":0,"resetsTo":0,"leechAction":0},"rev":{"bury":true,"ease4":1.3,"ivlFct":1,"maxIvl":36500,"perDay":200,"softLimit":0,"hardFactor":1.2,"fuzz":0.05},"revlog":{"useFuzz":true},"timer":0,"dyn":0,"maxTake":0};
-    function createDeck(name){const id=stableId(name);decks[id]={collapsed:false,conf:1,desc:'',dyn:0,extendNew:0,extendRev:0,id,lrnToday:[0,0],name,newToday:[0,0],revToday:[0,0],timeToday:[0,0],usn:0};return id;}
+    const deckConf={"id":1,"mod":0,"name":"Default","usn":-1,"maxTaken":60,"autoplay":true,"timer":0,"dyn":0,"new":{"bury":true,"delays":[1,10],"initialFactor":2500,"ints":[1,4,0],"order":1,"perDay":20,"separate":true},"lapse":{"delays":[10],"ease1":0,"goodInterval":1,"ivlFct":1,"minInt":1,"mult":0,"resetsTo":0,"leechAction":0},"rev":{"bury":true,"ease4":1.3,"ivlFct":1,"maxIvl":36500,"perDay":200,"softLimit":0,"hardFactor":1.2,"fuzz":0.05},"revlog":{"useFuzz":true},"browserCollapsed":false};
+    function createDeck(name){const id=stableId(name);decks[id]={id,collapsed:false,conf:1,desc:'',dyn:0,extendNew:0,extendRev:0,lrnToday:[0,0],name,newToday:[0,0],revToday:[0,0],timeToday:[0,0],usn:0,mod:0,rep:0};return id;}
     const deckIds={};
     if(split==='separate'){for(let d=1;d<=6;d++){deckIds[`fr${d}`]=createDeck(`${deckName}::Unit ${d}::🇫🇷 FR→AR`);deckIds[`ar${d}`]=createDeck(`${deckName}::Unit ${d}::🇸🇾 AR→FR`);}}
     else{for(let d=1;d<=6;d++)deckIds[`u${d}`]=createDeck(`${deckName}::Unit ${d}`);}
