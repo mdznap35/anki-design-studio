@@ -232,7 +232,7 @@ async function generateApkg(config){
     for(const w of getImportantWords())addWord(w,'imp',true);
     db.run('INSERT INTO col VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)',[1,now,now,now,11,0,-1,0,
       JSON.stringify({"activeDecks":[],"curDeck":0,"newSpread":0,"collapseTime":1200,"timeLim":0,"estTimes":true,"dueCounts":true,"dayLearnFirst":false,"schedVer":2}),
-      JSON.stringify({[modelId]:model}),JSON.stringify(decks),JSON.stringify(deckConf),'{}']);
+      JSON.stringify({[modelId]:model}),JSON.stringify(decks),JSON.stringify({"1":deckConf}),'{}']);
     const result=Buffer.from(db.export());
     return result;
   }finally{
