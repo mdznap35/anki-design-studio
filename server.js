@@ -204,9 +204,9 @@ async function generateApkg(config){
     const css=buildCSS(config);
     const front=buildFront(config);
     const back=buildBack(config);
-    const model={css,name:'FrancaisBac2021',sortf:0,tags:[],
-      tmpls:[{name:'FR→AR',qfmt:front,afmt:back,did:null,bafmt:'',bfont:'',bsize:0,bformat:0},
-             {name:'AR→FR',qfmt:front.replace(/\{\{French\}\}/g,'{{Arabic}}'),afmt:back,did:null,bafmt:'',bfont:'',bsize:0,bformat:0}],
+    const model={id:modelId,css,name:'FrancaisBac2021',sortf:0,tags:[],
+      tmpls:[{name:'FR→AR',qfmt:front,afmt:back,did:null,bafmt:'',bfont:'',bsize:0,bformat:0,ocard:null,bqfmt:null},
+             {name:'AR→FR',qfmt:front.replace(/\{\{French\}\}/g,'{{Arabic}}'),afmt:back,did:null,bafmt:'',bfont:'',bsize:0,bformat:0,ocard:null,bqfmt:null}],
       fields,req:[[0,'any',[0]],[1,'any',[1]]],type:0,ver:1,
       vers:[{minor:1,busy:0}],
       latexPre:'\\\\documentclass[12pt]{article}\\\\usepackage{polyglossia}\\\\usepackage{amsmath}\\\\pagestyle{empty}\\\\begin{document}',
