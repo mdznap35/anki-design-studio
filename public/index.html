@@ -598,6 +598,17 @@ function nextTpl(){
 function renderCtrls(){
   let html='';
 
+  // ===== LAYOUT MODE =====
+  html+='<div class="ctrl-sep"><div class="ctrl-sep-t">📐 نمط التخطيط</div></div>';
+  html+='<div style="grid-column:1/-1"><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:6px">';
+  LAYOUTS.forEach(l=>{
+    html+=`<div style="padding:10px 8px;border:2px solid ${(S.layoutMode||'classic')===l.k?'var(--gn)':'var(--bd)'};border-radius:10px;background:${(S.layoutMode||'classic')===l.k?'rgba(34,197,94,.08)':'var(--s2)'};cursor:pointer;text-align:center;transition:all .2s" onclick="setVal('layoutMode','${l.k}');renderCtrls()">
+      <div style="font-size:1.1em;margin-bottom:2px">${l.n}</div>
+      <div style="font-size:.55em;color:var(--tx2)">${l.d}</div>
+    </div>`;
+  });
+  html+='</div></div>';
+
   // ===== COLORS SECTION =====
   html+='<div class="ctrl-sep"><div class="ctrl-sep-t">🎨 الألوان</div></div>';
   html+='<div style="grid-column:1/-1"><div class="ctrl-grid">';
