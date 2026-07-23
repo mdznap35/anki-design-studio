@@ -532,7 +532,7 @@ function renderCardHTML(c){
   const mSc=c.meaningScale||1;
   const fMt=c.frenchMarginTop||0;const fMb=c.frenchMarginBottom||4;
   const mMt=c.meaningMarginTop||6;const mMb=c.meaningMarginBottom||0;
-  const badgeN=c.showBadge!==false?'<span style="display:inline-block;font-size:.72em;font-weight:700;padding:4px 14px;border-radius:20px;direction:ltr;margin:2px;background:'+(c.badgeNomBg||'#dbeafe')+';color:'+(c.badgeNomColor||'#1e40af')+';opacity:'+bOp+'">Nom</span>':'';
+  const badgeN=c.showBadge!==false?'<span style="display:inline-block;font-size:.72em;font-weight:700;padding:4px 14px;border-radius:20px;direction:ltr;margin:2px;background:'+(c.badgeNomBg||'#dbeafe')+';color:'+(c.badgeNomColor||'#1e40af')+';opacity:'+bOp+'">Nom</span>':"";
   const unitB='<span style="display:inline-block;font-size:.68em;font-weight:700;padding:3px 12px;border-radius:20px;direction:ltr;margin:2px;background:'+(c.unitBg||'#f0fdf4')+';color:'+(c.unitColor||'#166534')+';border:1px solid '+(c.unitBorder||'#bbf7d0')+';opacity:'+bOp+'">Unit 1</span>';
   const badges=badgeN+(c.showBadge!==false?unitB:'');
   const french='<div style="opacity:'+fOp+';width:'+fW+';transform:scale('+fSc+');margin-top:'+fMt+'px;margin-bottom:'+fMb+'px;font-family:'+fF+',sans-serif;font-size:'+fsFr+'em;font-weight:'+fwFr+';direction:ltr;unicode-bidi:embed;color:'+fc+';letter-spacing:'+(c.frenchLetterSpacing||0)+'px;line-height:'+(c.frenchLineHeight||1.2)+';'+(c.frenchTextShadow?'text-shadow:'+c.frenchTextShadow+';':'')+'">'+SAMP.f+'</div>';
@@ -627,6 +627,17 @@ function renderCtrls(){
   // Background Pattern
   h+='<div class="cs-t">نمط الخلفية</div><div style="display:flex;gap:3px;flex-wrap:wrap">';
   BG_PATTERNS.forEach((p,i)=>h+=`<button class="btn bo bs" onclick="setVal('bgPattern',${i})">${p.n}</button>`);
+  h+='</div>';
+  // Background Image Upload
+  h+='<div class="cs-t">صورة خلفية مخصصة</div>';
+  h+='<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">';
+  h+='<label class="btn bo bs" style="cursor:pointer">📎 اختر صورة<input type="file" accept="image/*" onchange="uploadBG(event)" style="display:none"></label>';
+  if(S.cardBgImage)h+='<button class="btn br bs" onclick="S.cardBgImage=\'\';pushHist();renderCtrls();renderAll()">✕ حذف</button>';
+  h+='</div>';
+  if(S.cardBgImage)h+='<div style="margin-top:4px;font-size:.6em;color:var(--tx2)">صورة مرفقة</div>';
+  h+='<div class="cg">';
+  h+='<div class="ct"><div class="cl-b">شفافية الصورة</div><div class="rw"><input type="range" min="0" max="1" step="0.05" value="'+(S.cardBgOpacity||1)+'" oninput="setVal(\'cardBgOpacity\',parseFloat(this.value));this.nextElementSibling.textContent=Math.round(this.value*100)+\'%\'"><span class="rv">'+Math.round((S.cardBgOpacity||1)*100)+'%</span></div></div>';
+  h+='<div class="ct"><div class="cl-b">ضبابية الصورة</div><div class="rw"><input type="range" min="0" max="20" step="1" value="'+(S.cardBgBlur||0)+'" oninput="setVal(\'cardBgBlur\',parseInt(this.value));this.nextElementSibling.textContent=this.value+\'px\'"><span class="rv">'+(S.cardBgBlur||0)+'px</span></div></div>';
   h+='</div>';
   // Element Opacity
   h+='<div class="cs-t">شفافية العناصر</div><div class="cg">';
@@ -737,54 +748,133 @@ function nextTpl(){const t=getFilteredTemplates();curTplIdx=(curTplIdx+1)%t.leng
 function prevTpl(){const t=getFilteredTemplates();curTplIdx=(curTplIdx-1+t.length)%t.length;renderFullscreen();}
 
 // ============================================================
-// VISUAL EDITOR
+// VISUAL EDITOR - Complete Control
 // ============================================================
-const VE_ELEMENTS=[{id:'badge',lb:'🏷️ الشارات'},{id:'french',lb:'🇫🇷 الكلمة الفرنسية'},{id:'separator',lb:'➖ الفاصل'},{id:'meaning',lb:'🇸🇾 المعنى'},{id:'sections',lb:'📋 الأقسام'},{id:'page',lb:'📄 الصفحة'}];
+
+function _clr(id,lb){return {id,lb,type:'color'};}
+function _rng(id,lb,min,max,step,fmt){return {id,lb,type:'range',min,max,step,fmt:fmt||null};}
+function _sel(id,lb,opts){return {id,lb,type:'select',options:opts};}
+function _tog(id,lb){return {id,lb,type:'toggle'};}
+
+const VE_PROPS={
+  card:[
+    _clr('cardBg','خلفية البطاقة'),_clr('cardBg2','خلفية ثانية'),
+    _clr('cardBorderColor','حدود البطاقة'),_rng('cardBorderWidth','سمك الحدود',0,10,1),
+    _rng('borderRadius','استدارة البطاقة',0,50,1),
+    _rng('cardPadding','الحشو',8,60,2),_rng('cardGap','المسافة',0,30,2),
+    _rng('cardMinHeight','الارتفاع الأدنى',150,600,10),
+  ],
+  badge:[
+    _clr('badgeNomBg','خلفية الشارة'),_clr('badgeNomColor','لون الشارة'),
+    _clr('unitBg','خلفية الوحدة'),_clr('unitColor','لون الوحدة'),_clr('unitBorder','حدود الوحدة'),
+    _rng('badgeOpacity','الشفافية',0,1,0.05,v=>Math.round(v*100)+'%'),
+    _tog('showBadge','إظهار الشارات'),
+  ],
+  french:[
+    _clr('frenchColor','اللون'),_rng('frenchFontSize','الحجم',0.8,5,0.1),
+    _rng('frenchFontWeight','السمك',100,900,100),
+    _rng('frenchOpacity','الشفافية',0,1,0.05,v=>Math.round(v*100)+'%'),
+    _rng('frenchWidth','العرض',30,100,5,v=>v+'%'),
+    _rng('frenchScale','التكبير',0.5,2,0.05,v=>Math.round(v*100)+'%'),
+    _rng('frenchLetterSpacing','التباعد',-5,20,0.5),
+    _rng('frenchLineHeight','الارتفاع',0.8,3,0.1),
+    _rng('frenchMarginTop','هامش أعلى',0,40,1),_rng('frenchMarginBottom','هامش أسفل',0,40,1),
+    _sel('fontFrench','الخط',FONTS),
+  ],
+  separator:[
+    _clr('separatorColor','اللون'),_rng('separatorWidth','السمك',1,8,1),
+    _sel('separatorStyle','النمط',[{v:'none',l:'بدون'},{v:'solid',l:'خط'},{v:'dashed',l:'متقطع'},{v:'dotted',l:'منقط'}]),
+  ],
+  meaning:[
+    _clr('meaningColor','لون النص'),_clr('meaningBg','الخلفية'),_clr('meaningBorder','الحدود'),
+    _rng('meaningFontSize','الحجم',0.5,3,0.1),_rng('meaningFontWeight','السمك',100,900,100),
+    _rng('meaningBorderRadius','الاستدارة',0,50,1),_rng('meaningBorderWidth','سمك الحدود',0,10,1),
+    _rng('meaningOpacity','الشفافية',0,1,0.05,v=>Math.round(v*100)+'%'),
+    _rng('meaningWidth','العرض',30,100,5,v=>v+'%'),
+    _rng('meaningScale','التكبير',0.5,2,0.05,v=>Math.round(v*100)+'%'),
+    _rng('meaningMarginTop','هامش أعلى',0,40,1),_rng('meaningMarginBottom','هامش أسفل',0,40,1),
+    _sel('fontArabic','الخط',ARFONTS),
+    _tog('showMeaning','إظهار المعنى'),
+  ],
+  pluriel:[
+    _clr('secBg','الخلفية'),_clr('secBorder','الحدود'),_clr('secTextColor','لون النص'),_clr('labelColor','لون التسميات'),
+    _rng('sectionOpacity','الشفافية',0,1,0.05,v=>Math.round(v*100)+'%'),
+  ],
+  synonyme:[
+    _clr('secBg','الخلفية'),_clr('secBorder','الحدود'),_clr('secTextColor','لون النص'),_clr('labelColor','لون التسميات'),
+    _rng('sectionOpacity','الشفافية',0,1,0.05,v=>Math.round(v*100)+'%'),
+  ],
+  contraire:[
+    _clr('secBg','الخلفية'),_clr('secBorder','الحدود'),_clr('secTextColor','لون النص'),_clr('labelColor','لون التسميات'),
+    _rng('sectionOpacity','الشفافية',0,1,0.05,v=>Math.round(v*100)+'%'),
+  ],
+  page:[
+    _clr('labelColor','لون النص'),_tog('showPage','إظهار الصفحة'),
+  ],
+};
+
+const VE_LABELS={card:' البطاقة',badge:' الشارات',french:' الكلمة الفرنسية',separator:' الفاصل',meaning:' المعنى',pluriel:' Pluriel',synonyme:' Synonyme',contraire:' Contraire',page:' الصفحة'};
 
 function renderVE(){
   const cv=document.getElementById('veCanvas');if(!cv)return;
   cv.innerHTML=renderCardHTML(S);
   const card=cv.querySelector('.card');if(!card)return;
   const children=Array.from(card.children);
-  children.forEach((ch,i)=>{
+  const order=S.elementOrder||['badge','french','separator','meaning','sections','page'];
+  let ci=0;
+  order.forEach(part=>{
+    if(ci>=children.length)return;
+    const ch=children[ci];
+    if(part==='sections'){
+      const secChildren=Array.from(ch.children);
+      const secOrder=S.sectionOrder||['Pluriel','Synonyme','Contraire'];
+      secChildren.forEach((sc,si)=>{
+        const sn=(secOrder[si]||('sec'+si)).toLowerCase();
+        sc.dataset.ve=sn;
+        sc.style.cursor='pointer';sc.style.border='2px dashed transparent';sc.style.borderRadius='5px';sc.style.transition='all .2s';
+        sc.addEventListener('click',(e)=>{
+          e.stopPropagation();
+          card.querySelectorAll('[data-ve]').forEach(el=>{el.style.borderColor='transparent';el.style.borderStyle='dashed';});
+          sc.style.borderColor='var(--gn)';sc.style.borderStyle='solid';
+          selectedVEEl=sn;renderVEProps(sn);
+        });
+      });
+    }
+    ch.dataset.ve=part;
     ch.style.cursor='pointer';ch.style.border='2px dashed transparent';ch.style.borderRadius='5px';ch.style.transition='all .2s';
-    const veId=i<VE_ELEMENTS.length?VE_ELEMENTS[i].id:'unknown';
     ch.addEventListener('click',(e)=>{
       e.stopPropagation();
-      card.querySelectorAll('*').forEach(el=>{el.style.borderColor='transparent';el.style.borderStyle='dashed';});
+      card.querySelectorAll('[data-ve]').forEach(el=>{el.style.borderColor='transparent';el.style.borderStyle='dashed';});
       ch.style.borderColor='var(--gn)';ch.style.borderStyle='solid';
-      selectedVEEl=veId;renderVEProps(veId);
+      selectedVEEl=part;renderVEProps(part);
     });
+    ci++;
   });
-  card.addEventListener('click',()=>{card.querySelectorAll('*').forEach(el=>{el.style.borderColor='transparent';el.style.borderStyle='dashed';});selectedVEEl=null;document.getElementById('vePropPanel').innerHTML='<div style="font-size:.65em;color:var(--tx2)">اضغط على عنصر بالبطاقة</div>';});
+  card.addEventListener('click',()=>{
+    card.querySelectorAll('[data-ve]').forEach(el=>{el.style.borderColor='transparent';el.style.borderStyle='dashed';});
+    card.style.border='2px solid var(--gn)';
+    selectedVEEl='card';renderVEProps('card');
+  });
 }
 
 function updateVEPreview(){if(document.getElementById('sec-editor').classList.contains('on'))renderVE();}
 
 function renderVEProps(elId){
   const p=document.getElementById('vePropPanel');if(!p)return;
-  const propMap={
-    french:[{id:'frenchColor',lb:'اللون',type:'color'},{id:'frenchFontSize',lb:'الحجم',type:'range',min:0.8,max:5,step:0.1},{id:'frenchFontWeight',lb:'السمك',type:'range',min:100,max:900,step:100},{id:'frenchOpacity',lb:'الشفافية',type:'range',min:0,max:1,step:0.05,fmt:v=>Math.round(v*100)+'%'},{id:'frenchWidth',lb:'العرض',type:'range',min:30,max:100,step:5,fmt:v=>v+'%'},{id:'frenchScale',lb:'التكبير',type:'range',min:0.5,max:2,step:0.05,fmt:v=>Math.round(v*100)+'%'},{id:'frenchLetterSpacing',lb:'التباعد',type:'range',min:-5,max:20,step:0.5},{id:'frenchMarginTop',lb:'هامش أعلى',type:'range',min:0,max:40,step:1},{id:'frenchMarginBottom',lb:'هامش أسفل',type:'range',min:0,max:40,step:1},{id:'fontFrench',lb:'الخط',type:'select',options:FONTS}],
-    meaning:[{id:'meaningColor',lb:'اللون',type:'color'},{id:'meaningBg',lb:'الخلفية',type:'color'},{id:'meaningBorder',lb:'الحدود',type:'color'},{id:'meaningFontSize',lb:'الحجم',type:'range',min:0.5,max:3,step:0.1},{id:'meaningFontWeight',lb:'السمك',type:'range',min:100,max:900,step:100},{id:'meaningBorderRadius',lb:'الاستدارة',type:'range',min:0,max:50,step:1},{id:'meaningBorderWidth',lb:'سمك الحدود',type:'range',min:0,max:10,step:1},{id:'meaningOpacity',lb:'الشفافية',type:'range',min:0,max:1,step:0.05,fmt:v=>Math.round(v*100)+'%'},{id:'meaningWidth',lb:'العرض',type:'range',min:30,max:100,step:5,fmt:v=>v+'%'},{id:'meaningScale',lb:'التكبير',type:'range',min:0.5,max:2,step:0.05,fmt:v=>Math.round(v*100)+'%'},{id:'meaningMarginTop',lb:'هامش أعلى',type:'range',min:0,max:40,step:1},{id:'meaningMarginBottom',lb:'هامش أسفل',type:'range',min:0,max:40,step:1},{id:'fontArabic',lb:'الخط',type:'select',options:ARFONTS}],
-    badge:[{id:'badgeNomBg',lb:'خلفية الشارة',type:'color'},{id:'badgeNomColor',lb:'لون الشارة',type:'color'},{id:'unitBg',lb:'خلفية الوحدة',type:'color'},{id:'unitColor',lb:'لون الوحدة',type:'color'},{id:'unitBorder',lb:'حدود الوحدة',type:'color'},{id:'badgeOpacity',lb:'الشفافية',type:'range',min:0,max:1,step:0.05,fmt:v=>Math.round(v*100)+'%'}],
-    separator:[{id:'separatorColor',lb:'اللون',type:'color'},{id:'separatorWidth',lb:'السمك',type:'range',min:1,max:8,step:1},{id:'separatorStyle',lb:'النمط',type:'select',options:[{v:'none',l:'بدون'},{v:'solid',l:'خط'},{v:'dashed',l:'متقطع'},{v:'dotted',l:'منقط'}]}],
-    sections:[{id:'secBg',lb:'الخلفية',type:'color'},{id:'secBorder',lb:'الحدود',type:'color'},{id:'secTextColor',lb:'لون النص',type:'color'},{id:'labelColor',lb:'لون التسميات',type:'color'},{id:'sectionOpacity',lb:'الشفافية',type:'range',min:0,max:1,step:0.05,fmt:v=>Math.round(v*100)+'%'}],
-    page:[{id:'labelColor',lb:'لون النص',type:'color'},{id:'showPage',lb:'إظهار الصفحة',type:'toggle'}],
-  };
-  const elN={french:'الكلمة الفرنسية',meaning:'المعنى',badge:'الشارات',separator:'الفاصل',sections:'الأقسام',page:'الصفحة'};
-  const props=propMap[elId]||[];
-  let h='<div style="font-size:.78em;font-weight:700;color:var(--tx);margin-bottom:6px">'+(elN[elId]||elId)+'</div>';
-  props.forEach(p=>{
-    const v=S[p.id]!==undefined?S[p.id]:(p.type==='range'?0.5:p.type==='toggle'?true:'#000000');
-    if(p.type==='color'){
-      h+=`<div class="ct"><div class="cl-b">${p.lb}</div><div class="rw"><input type="color" value="${v}" oninput="setVal('${p.id}',this.value)"><span class="rv" style="font-size:.55em">${v}</span></div></div>`;
-    }else if(p.type==='range'){
-      const fmt=p.fmt||(vv=>vv);
-      h+=`<div class="ct"><div class="cl-b">${p.lb}</div><div class="rw"><input type="range" min="${p.min}" max="${p.max}" step="${p.step}" value="${v}" oninput="setVal('${p.id}',parseFloat(this.value));this.nextElementSibling.textContent=((${p.fmt?'('+p.fmt.toString()+')':'(x=>x)'})(parseFloat(this.value)))"><span class="rv">${fmt(v)}</span></div></div>`;
-    }else if(p.type==='select'){
-      h+=`<div class="ct"><div class="cl-b">${p.lb}</div><div class="rw"><select class="sl" onchange="setVal('${p.id}',this.value)">${p.options.map(o=>'<option value="'+(o.v||o.l)+'"'+(S[p.id]===(o.v||o.l)?' selected':'')+'>'+(o.l||o.v)+'</option>').join('')}</select></div></div>`;
-    }else if(p.type==='toggle'){
-      h+=`<div class="ct"><div class="cl-b">${p.lb}</div><div class="rw"><button class="btn ${(S[p.id]!==false)?'bg':'br'} bs" onclick="setVal('${p.id}',${S[p.id]===false})">${(S[p.id]!==false)?'✓':'✗'} ${p.lb}</button></div></div>`;
+  const props=VE_PROPS[elId]||[];
+  let h='<div style="font-size:.78em;font-weight:700;color:var(--tx);margin-bottom:6px">'+(VE_LABELS[elId]||elId)+'</div>';
+  props.forEach(pr=>{
+    const v=S[pr.id]!==undefined?S[pr.id]:(pr.type==='range'?0.5:pr.type==='toggle'?true:'#000000');
+    if(pr.type==='color'){
+      h+='<div class="ct"><div class="cl-b">'+pr.lb+'</div><div class="rw"><input type="color" value="'+v+'" oninput="setVal(\''+pr.id+'\',this.value)"><span class="rv" style="font-size:.55em">'+v+'</span></div></div>';
+    }else if(pr.type==='range'){
+      const fmt=pr.fmt||(vv=>vv);
+      const fmtStr=pr.fmt?pr.fmt.toString():'(x=>x)';
+      h+='<div class="ct"><div class="cl-b">'+pr.lb+'</div><div class="rw"><input type="range" min="'+pr.min+'" max="'+pr.max+'" step="'+pr.step+'" value="'+v+'" oninput="setVal(\''+pr.id+'\',parseFloat(this.value));this.nextElementSibling.textContent=(('+fmtStr+')(parseFloat(this.value)))"><span class="rv">'+fmt(v)+'</span></div></div>';
+    }else if(pr.type==='select'){
+      h+='<div class="ct"><div class="cl-b">'+pr.lb+'</div><div class="rw"><select class="sl" onchange="setVal(\''+pr.id+'\',this.value)">'+pr.options.map(o=>'<option value="'+(o.v||o.l)+'"'+(S[pr.id]===(o.v||o.l)?' selected':'')+'>'+(o.l||o.v)+'</option>').join('')+'</select></div></div>';
+    }else if(pr.type==='toggle'){
+      h+='<div class="ct"><div class="cl-b">'+pr.lb+'</div><div class="rw"><button class="btn '+(S[pr.id]!==false?'bg':'br')+' bs" onclick="setVal(\''+pr.id+'\','+(S[pr.id]===false)+')">'+(S[pr.id]!==false?'✓':'✗')+' '+pr.lb+'</button></div></div>';
     }
   });
   p.innerHTML=h;
@@ -839,6 +929,17 @@ async function downloadAPKG(){
     const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=config.deckName+'.apkg';a.click();URL.revokeObjectURL(url);
     if(di)di.textContent='تم التنزيل ('+Math.round(blob.size/1024)+' KB)';
   }catch(e){if(di)di.textContent='خطأ: '+e.message;}finally{if(ld)ld.style.display='none';}
+}
+
+function uploadBG(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    S.cardBgImage=ev.target.result;
+    pushHist();renderCtrls();renderAll();
+    toast('تم تحميل الصورة');
+  };
+  reader.readAsDataURL(file);
 }
 
 // ============================================================
