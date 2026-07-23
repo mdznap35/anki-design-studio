@@ -178,6 +178,8 @@ input[type=range]{flex:1;accent-color:var(--ac);height:3px}
 <div class="ctn">
 <div class="tabs">
 <button class="tab on" onclick="show('gal')">🖼️ المعرض</button>
+  <button class="tab" onclick="show('preview')">👁️ معاينة حقيقية</button>
+  <button class="tab" onclick="show('editor')">🎨 محرر بصري</button>
 <button class="tab" onclick="show('full')">🔍 معاينة كاملة</button>
 <button class="tab" onclick="show('ctl')">🎛️ التحكم</button>
 <button class="tab" onclick="show('dl')">⬇️ التحميل</button>
@@ -192,6 +194,56 @@ input[type=range]{flex:1;accent-color:var(--ac);height:3px}
 </div>
 
 <!-- ===== SECTION: FULLSCREEN PREVIEW ===== -->
+<!-- ===== REAL ANKI PREVIEW ===== -->
+<div id="sec-preview" class="sec">
+<div style="max-width:800px;margin:0 auto">
+  <div style="text-align:center;margin-bottom:12px">
+    <h2 style="font-size:1.1em;font-weight:800;color:var(--ac2)">👁️ معاينة حقيقية — كيف ستبدو داخل Anki</h2>
+    <p style="color:var(--tx2);font-size:.75em">الحجم الحقيقي للبطاقة بعد الاستيراد</p>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start">
+    <div>
+      <div style="text-align:center;font-size:.72em;font-weight:700;color:var(--tx2);margin-bottom:6px">🔵 الوجه الأمامي (FR→AR)</div>
+      <div id="realPreviewFront" style="background:#e8e8e8;padding:12px;border-radius:10px;display:flex;justify-content:center"></div>
+    </div>
+    <div>
+      <div style="text-align:center;font-size:.72em;font-weight:700;color:var(--tx2);margin-bottom:6px">🔴 الوجه الخلفي (AR→FR)</div>
+      <div id="realPreviewBack" style="background:#e8e8e8;padding:12px;border-radius:10px;display:flex;justify-content:center"></div>
+    </div>
+  </div>
+  <div style="margin-top:12px;padding:10px;background:var(--s2);border-radius:8px;border:1px solid var(--bd)">
+    <div style="font-size:.7em;font-weight:700;color:var(--ac2);margin-bottom:6px">📊 معلومات البطاقة</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;font-size:.65em;color:var(--tx2)">
+      <div>الخط الفرنسي: <span style="color:var(--tx);font-weight:600" id="infoFontFr">Inter</span></div>
+      <div>الخط العربي: <span style="color:var(--tx);font-weight:600" id="infoFontAr">Noto Sans Arabic</span></div>
+      <div>النمط: <span style="color:var(--tx);font-weight:600" id="infoLayout">كلاسيكي</span></div>
+      <div>التأثير: <span style="color:var(--tx);font-weight:600" id="infoEffect">بدون</span></div>
+      <div>الظل: <span style="color:var(--tx);font-weight:600" id="infoShadow">بدون</span></div>
+      <div>الخلفية: <span style="color:var(--tx);font-weight:600" id="infoBg">أبيض</span></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ===== VISUAL DRAG EDITOR ===== -->
+<div id="sec-editor" class="sec">
+<div style="max-width:900px;margin:0 auto">
+  <div style="text-align:center;margin-bottom:12px">
+    <h2 style="font-size:1.1em;font-weight:800;color:var(--ac2)">🎨 محرر بصري — حرّك العناصر كيف ما بدك</h2>
+    <p style="color:var(--tx2);font-size:.75em">اسحب العناصر لتغيير موضعها — عدّل الحجم بالماوس</p>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 260px;gap:16px;align-items:start">
+    <div id="visualEditorCanvas" style="background:#e8e8e8;padding:20px;border-radius:12px;min-height:400px;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px">
+      <!-- Visual elements will be rendered here -->
+    </div>
+    <div id="visualEditorProps" style="background:var(--s1);border:1px solid var(--bd);border-radius:10px;padding:12px">
+      <div style="font-size:.78em;font-weight:800;color:var(--ac2);margin-bottom:8px">⚙️ خصائص العنصر المحدد</div>
+      <div id="vePropPanel" style="font-size:.7em;color:var(--tx2)">اضغط على عنصر في البطاقة لتعديل خصائصه</div>
+    </div>
+  </div>
+</div>
+</div>
+
 <div id="sec-full" class="sec">
 <div class="sec-t">معاينة كاملة</div>
 <div class="sec-d">تصفح القوالب بالكامل — اضغط على الأسهم للتنقل</div>
@@ -473,7 +525,7 @@ function show(id){
   document.getElementById('sec-'+id).classList.add('on');
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
   event.target.classList.add('on');
-  if(id==='full')renderFullscreen();renderSavedList();
+  if(id==='full')renderFullscreen();renderSavedList();updateRealPreview();initVisualEditor();
   if(id==='ctl')renderCtrls();
 }
 
@@ -661,12 +713,12 @@ function renderFullscreen(){
 function prevTpl(){
   const tpls=getFilteredTemplates();
   curTplIdx=(curTplIdx-1+tpls.length)%tpls.length;
-  renderFullscreen();renderSavedList();
+  renderFullscreen();renderSavedList();updateRealPreview();initVisualEditor();
 }
 function nextTpl(){
   const tpls=getFilteredTemplates();
   curTplIdx=(curTplIdx+1)%tpls.length;
-  renderFullscreen();renderSavedList();
+  renderFullscreen();renderSavedList();updateRealPreview();initVisualEditor();
 }
 </script>
 <script>
@@ -1112,7 +1164,7 @@ function dragDrop(e){e.preventDefault();const toIdx=parseInt(e.target.closest('.
 function updatePreview(){
   // Update fullscreen preview if visible
   if(document.getElementById('sec-full').classList.contains('on')){
-    renderFullscreen();renderSavedList();
+    renderFullscreen();renderSavedList();updateRealPreview();initVisualEditor();
   }
 }
 
@@ -1410,6 +1462,147 @@ function importConfig(e){
     try{S=JSON.parse(ev.target.result);pushHist();renderCtrls();updatePreview();toast('📥 تم الاستيراد');}catch(err){toast('❌ ملف غير صحيح');}
   };
   reader.readAsText(file);
+}
+
+// ============================================================
+// REAL ANKI PREVIEW
+// ============================================================
+function updateRealPreview(){
+  const c=S;
+  const frontHTML=renderCardHTML(c);
+  const fEl=document.getElementById('realPreviewFront');
+  const bEl=document.getElementById('realPreviewBack');
+  if(fEl)fEl.innerHTML=frontHTML;
+  if(bEl)bEl.innerHTML=frontHTML.replace(/\{\{French\}\}/g,'{{Arabic}}').replace(/\{\{Arabic\}\}/g,'{{French}}');
+  // Update info
+  const lf=document.getElementById('infoFontFr');if(lf)lf.textContent=c.fontFrench||'Inter';
+  const la=document.getElementById('infoFontAr');if(la)la.textContent=c.fontArabic||'Noto Sans Arabic';
+  const ll=document.getElementById('infoLayout');if(ll)ll.textContent=(c.layoutMode||'classic');
+  const le=document.getElementById('infoEffect');if(le)le.textContent=c.effect||'بدون';
+  const ls=document.getElementById('infoShadow');if(ls)ls.textContent=c.cardShadow&&c.cardShadow!=='none'?'مفعّل':'بدون';
+  const lb=document.getElementById('infoBg');if(lb)lb.textContent=c.cardBg2?c.cardBg+' → '+c.cardBg2:c.cardBg;
+}
+
+// ============================================================
+// VISUAL DRAG & DROP EDITOR
+// ============================================================
+let selectedElement=null;
+let dragOffset={x:0,y:0};
+const VE_ELEMENTS=[
+  {id:'badge',label:'🏷️ الشارات',defaultPos:{x:50,y:10}},
+  {id:'french',label:'🇫🇷 الكلمة الفرنسية',defaultPos:{x:50,y:30}},
+  {id:'separator',label:'➖ الفاصل',defaultPos:{x:50,y:45}},
+  {id:'meaning',label:'🇸🇾 المعنى',defaultPos:{x:50,y:55}},
+  {id:'sections',label:'📋 الأقسام',defaultPos:{x:50,y:72}},
+  {id:'page',label:'📄 الصفحة',defaultPos:{x:50,y:90}},
+];
+
+function initVisualEditor(){
+  const canvas=document.getElementById('visualEditorCanvas');
+  if(!canvas)return;
+  renderVisualEditor();
+}
+
+function renderVisualEditor(){
+  const canvas=document.getElementById('visualEditorCanvas');
+  if(!canvas)return;
+  const c=S;
+  const elemPos=c.elementPositions||{};
+  
+  let html=renderCardHTML(c);
+  canvas.innerHTML=html;
+  
+  // Make elements draggable
+  const card=canvas.querySelector('.card')||canvas.querySelector('div');
+  if(!card)return;
+  
+  const elems=card.children;
+  for(let i=0;i<elems.length&&i<VE_ELEMENTS.length;i++){
+    const el=elems[i];
+    const ve=VE_ELEMENTS[i];
+    el.style.cursor='move';
+    el.style.border='2px dashed transparent';
+    el.style.borderRadius='8px';
+    el.style.transition='border-color .2s';
+    el.style.position='relative';
+    
+    const label=document.createElement('div');
+    label.textContent=ve.label;
+    label.style.cssText='position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:10px;background:var(--ac);color:#fff;padding:1px 6px;border-radius:4px;white-space:nowrap;opacity:0;transition:opacity .2s;pointer-events:none;z-index:10;font-family:Inter,sans-serif';
+    el.appendChild(label);
+    
+    el.addEventListener('mouseenter',function(){this.style.borderColor='var(--ac)';label.style.opacity='1';});
+    el.addEventListener('mouseleave',function(){if(selectedElement!==ve.id)this.style.borderColor='transparent';label.style.opacity='0';});
+    el.addEventListener('click',function(e){
+      e.stopPropagation();
+      selectVEElement(ve.id);
+      this.style.borderColor='var(--gn)';
+    });
+  }
+  
+  canvas.addEventListener('click',function(){selectedElement=null;showVEProps();});
+  showVEProps();
+}
+
+function selectVEElement(id){
+  selectedElement=id;
+  renderVisualEditor();
+  showVEProps();
+}
+
+function showVEProps(){
+  const panel=document.getElementById('vePropPanel');
+  if(!panel)return;
+  if(!selectedElement){panel.innerHTML='<div style="color:var(--tx2);font-size:.7em">اضغط على عنصر في البطاقة لتعديل خصائصه</div>';return;}
+  
+  const c=S;
+  let html='<div style="margin-bottom:8px;font-weight:700;color:var(--tx)">'+VE_ELEMENTS.find(e=>e.id===selectedElement)?.label+'</div>';
+  
+  // Opacity
+  const opKey=selectedElement+'Opacity';
+  const opVal=c[opKey]!==undefined?c[opKey]:1;
+  html+=`<div style="margin-bottom:6px"><div style="color:var(--tx2);margin-bottom:2px">الشفافية</div>
+    <div style="display:flex;align-items:center;gap:6px"><input type="range" min="0" max="1" step="0.05" value="${opVal}" oninput="setVal('${opKey}',parseFloat(this.value));renderVisualEditor();this.nextElementSibling.textContent=Math.round(this.value*100)+'%'" style="flex:1"><span style="font-size:.8em;color:var(--ac2)">${Math.round(opVal*100)}%</span></div></div>`;
+  
+  // Width
+  const wKey=selectedElement+'Width';
+  const wVal=c[wKey]!==undefined?c[wKey]:100;
+  html+=`<div style="margin-bottom:6px"><div style="color:var(--tx2);margin-bottom:2px">العرض</div>
+    <div style="display:flex;align-items:center;gap:6px"><input type="range" min="30" max="100" step="5" value="${wVal}" oninput="setVal('${wKey}',parseInt(this.value));renderVisualEditor();this.nextElementSibling.textContent=this.value+'%'" style="flex:1"><span style="font-size:.8em;color:var(--ac2)">${wVal}%</span></div></div>`;
+  
+  // Scale
+  if(selectedElement!=='separator'&&selectedElement!=='page'){
+    const sKey=selectedElement+'Scale';
+    const sVal=c[sKey]!==undefined?c[sKey]:1;
+    html+=`<div style="margin-bottom:6px"><div style="color:var(--tx2);margin-bottom:2px">الحجم</div>
+      <div style="display:flex;align-items:center;gap:6px"><input type="range" min="0.5" max="2" step="0.05" value="${sVal}" oninput="setVal('${sKey}',parseFloat(this.value));renderVisualEditor();this.nextElementSibling.textContent=Math.round(this.value*100)+'%'" style="flex:1"><span style="font-size:.8em;color:var(--ac2)">${Math.round(sVal*100)}%</span></div></div>`;
+  }
+  
+  // Color (for specific elements)
+  if(selectedElement==='french'){
+    html+=`<div style="margin-bottom:6px"><div style="color:var(--tx2);margin-bottom:2px">لون الكلمة</div>
+      <div style="display:flex;align-items:center;gap:6px"><input type="color" class="cp" value="${c.frenchColor||'#1e293b'}" oninput="setVal('frenchColor',this.value);renderVisualEditor()"><span style="font-size:.7em;color:var(--tx2)">${c.frenchColor||'#1e293b'}</span></div></div>`;
+  }
+  if(selectedElement==='meaning'){
+    html+=`<div style="margin-bottom:6px"><div style="color:var(--tx2);margin-bottom:2px">لون المعنى</div>
+      <div style="display:flex;align-items:center;gap:6px"><input type="color" class="cp" value="${c.meaningColor||'#1e40af'}" oninput="setVal('meaningColor',this.value);renderVisualEditor()"><span style="font-size:.7em;color:var(--tx2)">${c.meaningColor||'#1e40af'}</span></div></div>`;
+    html+=`<div style="margin-bottom:6px"><div style="color:var(--tx2);margin-bottom:2px">خلفية المعنى</div>
+      <div style="display:flex;align-items:center;gap:6px"><input type="color" class="cp" value="${c.meaningBg||'#eff6ff'}" oninput="setVal('meaningBg',this.value);renderVisualEditor()"><span style="font-size:.7em;color:var(--tx2)">${c.meaningBg||'#eff6ff'}</span></div></div>`;
+  }
+  
+  // Margin
+  html+=`<div style="margin-top:8px;padding-top:6px;border-top:1px solid var(--bd)">
+    <div style="color:var(--tx2);margin-bottom:4px;font-size:.9em">المسافات</div>`;
+  [{k:selectedElement+'MarginTop',l:'أعلى',d:0},{k:selectedElement+'MarginBottom',l:'أسفل',d:4}].forEach(s=>{
+    const v=c[s.k]!==undefined?c[s.k]:s.d;
+    html+=`<div style="display:flex;align-items:center;gap:4px;margin-bottom:3px">
+      <span style="width:24px;font-size:.7em;color:var(--tx2)">${s.l}</span>
+      <input type="range" min="0" max="40" value="${v}" oninput="setVal('${s.k}',parseInt(this.value));renderVisualEditor();this.nextElementSibling.textContent=this.value+'px'" style="flex:1">
+      <span style="font-size:.7em;color:var(--ac2);min-width:24px">${v}px</span></div>`;
+  });
+  html+='</div>';
+  
+  panel.innerHTML=html;
 }
 
 // ============================================================
