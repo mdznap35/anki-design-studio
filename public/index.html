@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#6366f1">
 <title>🎨 Anki Design Studio — المعرض الاحترافي</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@400;600;700;800&family=Playfair+Display:wght@400;700;900&family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;500;700;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
 <style>
@@ -183,6 +185,7 @@ input[type=range]{flex:1;accent-color:var(--ac);height:3px}
 <button class="tab" onclick="show('full')">🔍 معاينة كاملة</button>
 <button class="tab" onclick="show('ctl')">🎛️ التحكم</button>
 <button class="tab" onclick="show('dl')">⬇️ التحميل</button>
+  <button class="tab" onclick="show('features')">🚀 الميزات</button>
 </div>
 
 <!-- ===== SECTION: GALLERY ===== -->
@@ -275,6 +278,113 @@ input[type=range]{flex:1;accent-color:var(--ac);height:3px}
 <div class="ctl-preview-card" id="ctlPreviewCard"></div>
 <div class="ctl-preview-back" id="ctlPreviewBack"></div>
 </div>
+</div>
+</div>
+
+<!-- ===== FEATURES SECTION ===== -->
+<div id="sec-features" class="sec">
+<div style="max-width:900px;margin:0 auto">
+  
+  <!-- 1. TTS -->
+  <div class="ctrl-wrap" style="margin-bottom:16px">
+    <div style="font-size:1em;font-weight:800;color:var(--ac2);margin-bottom:10px">🎙️ نطق الكلمة بالفرنسية</div>
+    <p style="color:var(--tx2);font-size:.78em;margin-bottom:10px">اضغط لسماع نطق الكلمة — يستخدم محرر المتصفح</p>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <button onclick="speakFrench()" style="padding:10px 20px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--ac),#a78bfa);color:#fff;font-weight:700;cursor:pointer;font-size:.85em">🔊 نطق الكلمة</button>
+      <select id="ttsVoice" style="padding:8px;border:1px solid var(--bd);border-radius:8px;background:var(--s2);color:var(--tx);font-size:.75em"></select>
+      <div style="display:flex;align-items:center;gap:6px">
+        <span style="font-size:.7em;color:var(--tx2)">السرعة:</span>
+        <input type="range" id="ttsRate" min="0.5" max="2" step="0.1" value="0.8" style="width:80px">
+        <span id="ttsRateVal" style="font-size:.65em;color:var(--ac2)">0.8x</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <span style="font-size:.7em;color:var(--tx2)">النغمة:</span>
+        <input type="range" id="ttsPitch" min="0.5" max="2" step="0.1" value="1" style="width:80px">
+        <span id="ttsPitchVal" style="font-size:.65em;color:var(--ac2)">1.0</span>
+      </div>
+    </div>
+    <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap" id="ttsWordList"></div>
+  </div>
+
+  <!-- 2. Stats -->
+  <div class="ctrl-wrap" style="margin-bottom:16px">
+    <div style="font-size:1em;font-weight:800;color:var(--ac2);margin-bottom:10px">📊 إحصائيات الاستخدام</div>
+    <div id="statsPanel" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px"></div>
+    <button onclick="resetStats()" style="margin-top:8px;padding:6px 12px;border:1px solid var(--rd);border-radius:6px;background:none;color:var(--rd);cursor:pointer;font-size:.7em">🗑️ مسح الإحصائيات</button>
+  </div>
+
+  <!-- 3. Spaced Repetition -->
+  <div class="ctrl-wrap" style="margin-bottom:16px">
+    <div style="font-size:1em;font-weight:800;color:var(--ac2);margin-bottom:10px">🧠 نظام التعلم المتكرر</div>
+    <p style="color:var(--tx2);font-size:.78em;margin-bottom:10px">تتبع الكلمات الصعبة — يعطيك أولوية أكبر للحفظ</p>
+    <div id="srsPanel"></div>
+    <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+      <button onclick="showSRSWords('hard')" style="padding:8px 14px;border:1px solid var(--rd);border-radius:8px;background:none;color:var(--rd);cursor:pointer;font-size:.75em;font-weight:600">🔴 صعبة</button>
+      <button onclick="showSRSWords('medium')" style="padding:8px 14px;border:1px solid var(--or);border-radius:8px;background:none;color:var(--or);cursor:pointer;font-size:.75em;font-weight:600">🟡 متوسطة</button>
+      <button onclick="showSRSWords('easy')" style="padding:8px 14px;border:1px solid var(--gn);border-radius:8px;background:none;color:var(--gn);cursor:pointer;font-size:.75em;font-weight:600">🟢 سهلة</button>
+    </div>
+  </div>
+
+  <!-- 4. Multi-language -->
+  <div class="ctrl-wrap" style="margin-bottom:16px">
+    <div style="font-size:1em;font-weight:800;color:var(--ac2);margin-bottom:10px">🌍 ترجمة متعددة اللغات</div>
+    <p style="color:var(--tx2);font-size:.78em;margin-bottom:10px">أضف ترجمة إضافية بجانب العربية</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button onclick="addLang('en')" class="undo-btn" style="font-size:.7em">🇬🇧 إنجليزية</button>
+      <button onclick="addLang('tr')" class="undo-btn" style="font-size:.7em">🇹🇷 تركية</button>
+      <button onclick="addLang('de')" class="undo-btn" style="font-size:.7em">🇩🇪 ألمانية</button>
+      <button onclick="addLang('fa')" class="undo-btn" style="font-size:.7em">🇮🇷 فارسية</button>
+      <button onclick="addLang('es')" class="undo-btn" style="font-size:.7em">🇪🇸 إسبانية</button>
+      <button onclick="addLang('ru')" class="undo-btn" style="font-size:.7em">🇷🇺 روسية</button>
+    </div>
+    <div id="langList" style="margin-top:8px"></div>
+    <div style="margin-top:8px;padding:8px;background:var(--s2);border-radius:8px;border:1px solid var(--bd)">
+      <div style="font-size:.7em;color:var(--tx2);margin-bottom:4px">💡 كيف يعمل:</div>
+      <div style="font-size:.68em;color:var(--tx2)">كل لغة مختارة تضاف كحقل جديد في البطاقة — يظهر في الوجه الخلفي بجانب العربية</div>
+    </div>
+  </div>
+
+  <!-- 6. PWA -->
+  <div class="ctrl-wrap" style="margin-bottom:16px">
+    <div style="font-size:1em;font-weight:800;color:var(--ac2);margin-bottom:10px">📱 تطبيق موبايل (PWA)</div>
+    <p style="color:var(--tx2);font-size:.78em;margin-bottom:10px">أضف الموقع للشاشة الرئيسية كتطبيق</p>
+    <div id="pwaInstall" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+  </div>
+
+  <!-- 7. AI Design -->
+  <div class="ctrl-wrap" style="margin-bottom:16px">
+    <div style="font-size:1em;font-weight:800;color:var(--ac2);margin-bottom:10px">🤖 تصميم بالذكاء الاصطناعي</div>
+    <p style="color:var(--tx2);font-size:.78em;margin-bottom:10px">اكتب وصفاً → يولّد لك التصميم</p>
+    <div style="display:flex;gap:8px">
+      <input class="tx" id="aiPrompt" placeholder="مثال: بطاقة بسيطة بألوان زرقاء وتأثير توهج" style="flex:1">
+      <button onclick="generateAIDesign()" style="padding:8px 16px;border:none;border-radius:8px;background:var(--ac);color:#fff;font-weight:700;cursor:pointer;font-size:.78em;white-space:nowrap">✨ ولّد</button>
+    </div>
+    <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">
+      <button onclick="aiPreset('night')" class="undo-btn" style="font-size:.65em">🌙 ليلي</button>
+      <button onclick="aiPreset('neon')" class="undo-btn" style="font-size:.65em">⚡ نيون</button>
+      <button onclick="aiPreset('minimal')" class="undo-btn" style="font-size:.65em">◻️ بسيط</button>
+      <button onclick="aiPreset('colorful')" class="undo-btn" style="font-size:.65em">🌈 ملون</button>
+      <button onclick="aiPreset('elegant')" class="undo-btn" style="font-size:.65em">👑 أنيق</button>
+      <button onclick="aiPreset('nature')" class="undo-btn" style="font-size:.65em">🌿 طبيعي</button>
+      <button onclick="aiPreset('retro')" class="undo-btn" style="font-size:.65em">📻 كلاسيكي</button>
+      <button onclick="aiPreset('cyber')" class="undo-btn" style="font-size:.65em">🦾 سايبر</button>
+    </div>
+    <div id="aiResult" style="margin-top:8px"></div>
+  </div>
+
+  <!-- 10. Backup -->
+  <div class="ctrl-wrap" style="margin-bottom:16px">
+    <div style="font-size:1em;font-weight:800;color:var(--ac2);margin-bottom:10px">💾 نسخ احتياطي واسترجاع</div>
+    <p style="color:var(--tx2);font-size:.78em;margin-bottom:10px">احفظ كل تصاميمك واسترجعها من أي جهاز</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button onclick="exportAllData()" style="padding:8px 16px;border:1px solid var(--gn);border-radius:8px;background:none;color:var(--gn);cursor:pointer;font-size:.78em;font-weight:600">📤 تصدير كلشي</button>
+      <button onclick="document.getElementById('importAllFile').click()" style="padding:8px 16px;border:1px solid var(--ac);border-radius:8px;background:none;color:var(--ac2);cursor:pointer;font-size:.78em;font-weight:600">📥 استيراد</button>
+      <input type="file" id="importAllFile" accept=".json" style="display:none" onchange="importAllData(event)">
+      <button onclick="exportBackupHTML()" style="padding:8px 16px;border:1px solid var(--or);border-radius:8px;background:none;color:var(--or);cursor:pointer;font-size:.78em;font-weight:600">📄 تصدير كملف HTML</button>
+    </div>
+    <div id="backupInfo" style="margin-top:8px;font-size:.7em;color:var(--tx2)"></div>
+  </div>
+
 </div>
 </div>
 
@@ -579,7 +689,7 @@ function selectTemplate(id){
   S={...JSON.parse(JSON.stringify(tpl.cfg)),_templateId:id};
   pushHist();
   renderGrid();
-  toast('✅ تم اختيار: '+tpl.nm);
+  trackTemplate(id);toast('✅ تم اختيار: '+tpl.nm);
 }
 
 // ============================================================
@@ -1233,6 +1343,8 @@ function downloadHTML(){
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#6366f1">
 <title>بطاقات Anki — ${c.deckName}</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@400;600;700;800&family=Playfair+Display:wght@400;700;900&family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;500;700;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
 <style>
@@ -1288,7 +1400,7 @@ async function downloadAPKG(){
     a.click();
     document.getElementById('dlInfo').textContent='✅ تم التحميل! ('+Math.round(blob.size/1024)+' KB)';
     document.getElementById('loading').classList.remove('on');
-    toast('✅ تم تحميل الرزمة');
+    trackDownload();updateStats();toast('✅ تم تحميل الرزمة');
   }catch(e){
     document.getElementById('dlInfo').textContent='❌ خطأ: '+e.message;
     document.getElementById('loading').classList.remove('on');
@@ -1606,9 +1718,234 @@ function showVEProps(){
 }
 
 // ============================================================
+// FEATURE 1: TTS - Text to Speech
+// ============================================================
+function initTTS(){
+  const voices=speechSynthesis.getVoices();
+  const sel=document.getElementById('ttsVoice');
+  if(!sel)return;
+  sel.innerHTML='';
+  const frVoices=voices.filter(v=>v.lang.startsWith('fr'));
+  const allVoices=frVoices.length?frVoices:voices;
+  allVoices.forEach((v,i)=>{
+    const opt=document.createElement('option');
+    opt.value=i;opt.textContent=v.name+' ('+v.lang+')';
+    sel.appendChild(opt);
+  });
+  document.getElementById('ttsRate').oninput=function(){document.getElementById('ttsRateVal').textContent=this.value+'x';};
+  document.getElementById('ttsPitch').oninput=function(){document.getElementById('ttsPitchVal').textContent=parseFloat(this.value).toFixed(1);};
+  // Show sample words
+  const words=['Maison','Bonjour','Merci','S'il vous plaît','Au revoir','Comment','Pourquoi','Parce que'];
+  const wl=document.getElementById('ttsWordList');
+  if(wl)wl.innerHTML=words.map(w=>`<button onclick="speakWord('${w}')" style="padding:4px 10px;border:1px solid var(--bd);border-radius:6px;background:var(--s2);color:var(--tx);cursor:pointer;font-size:.7em;font-weight:600">${w}</button>`).join('');
+}
+function speakFrench(){
+  const sel=document.getElementById('ttsVoice');
+  const rate=parseFloat(document.getElementById('ttsRate').value);
+  const pitch=parseFloat(document.getElementById('ttsPitch').value);
+  const u=new SpeechSynthesisUtterance(S.frenchWord||'Bonjour');
+  u.lang='fr-FR';u.rate=rate;u.pitch=pitch;
+  if(sel&&sel.options.length)u.voice=speechSynthesis.getVoices()[parseInt(sel.value)];
+  speechSynthesis.speak(u);
+}
+function speakWord(word){
+  const sel=document.getElementById('ttsVoice');
+  const rate=parseFloat(document.getElementById('ttsRate').value);
+  const u=new SpeechSynthesisUtterance(word);
+  u.lang='fr-FR';u.rate=rate;u.pitch=1;
+  if(sel&&sel.options.length)u.voice=speechSynthesis.getVoices()[parseInt(sel.value)];
+  speechSynthesis.speak(u);
+}
+
+// ============================================================
+// FEATURE 2: Statistics
+// ============================================================
+function getStats(){
+  try{return JSON.parse(localStorage.getItem('anki_stats')||'{"downloads":0,"templatesUsed":{},"totalWords":0,"sessions":0,"lastVisit":null}');}catch(e){return{downloads:0,templatesUsed:{},totalWords:0,sessions:0,lastVisit:null};}
+}
+function saveStats(s){localStorage.setItem('anki_stats',JSON.stringify(s));}
+function trackDownload(){const s=getStats();s.downloads++;saveStats(s);}
+function trackTemplate(id){const s=getStats();s.templatesUsed[id]=(s.templatesUsed[id]||0)+1;saveStats(s);}
+function updateStats(){
+  const s=getStats();
+  const el=document.getElementById('statsPanel');if(!el)return;
+  const tplCount=Object.keys(s.templatesUsed).length;
+  const topTpl=Object.entries(s.templatesUsed).sort((a,b)=>b[1]-a[1])[0];
+  el.innerHTML=`
+    <div style="background:var(--s2);padding:12px;border-radius:8px;text-align:center"><div style="font-size:1.5em;font-weight:900;color:var(--ac2)">${s.downloads}</div><div style="font-size:.65em;color:var(--tx2)">تحميلات</div></div>
+    <div style="background:var(--s2);padding:12px;border-radius:8px;text-align:center"><div style="font-size:1.5em;font-weight:900;color:var(--gn)">${tplCount}</div><div style="font-size:.65em;color:var(--tx2)">قوالب مختارة</div></div>
+    <div style="background:var(--s2);padding:12px;border-radius:8px;text-align:center"><div style="font-size:1.5em;font-weight:900;color:var(--or)">${topTpl?topTpl[0]:'-'}</div><div style="font-size:.65em;color:var(--tx2)">أكثر قالب استخداماً</div></div>
+    <div style="background:var(--s2);padding:12px;border-radius:8px;text-align:center"><div style="font-size:1.5em;font-weight:900;color:var(--rd)">${s.sessions}</div><div style="font-size:.65em;color:var(--tx2)">جلسات</div></div>
+  `;
+}
+function resetStats(){localStorage.removeItem('anki_stats');updateStats();toast('🗑️ مسحت الإحصائيات');}
+
+// ============================================================
+// FEATURE 3: Spaced Repetition
+// ============================================================
+function getSRS(){try{return JSON.parse(localStorage.getItem('anki_srs')||'{}');}catch(e){return{}};}
+function saveSRS(s){localStorage.setItem('anki_srs',JSON.stringify(s));}
+function trackSRSWord(word,difficulty){
+  const srs=getSRS();
+  if(!srs[word])srs[word]={times:0,correct:0,streak:0,diff:'medium'};
+  srs[word].times++;
+  if(difficulty==='easy')srs[word].correct++;
+  srs[word].streak=difficulty==='easy'?srs[word].streak+1:0;
+  srs[word].diff=srs[word].streak>=3?'easy':srs[word].streak===0?'hard':'medium';
+  saveSRS(srs);
+}
+function showSRSWords(diff){
+  const srs=getSRS();
+  const words=Object.entries(srs).filter(([k,v])=>v.diff===diff);
+  const el=document.getElementById('srsPanel');if(!el)return;
+  if(!words.length){el.innerHTML='<p style="font-size:.75em;color:var(--tx2);text-align:center">لا توجد كلمات في هذه الفئة</p>';return;}
+  el.innerHTML=words.map(([w,v])=>`
+    <div style="display:flex;align-items:center;gap:8px;padding:6px 8px;background:var(--s2);border-radius:6px;margin-bottom:4px;font-size:.75em">
+      <span style="flex:1;font-weight:600">${w}</span>
+      <span style="color:var(--tx2)">مرات: ${v.times}</span>
+      <span style="color:${diff==='easy'?'var(--gn)':diff==='hard'?'var(--rd)':'var(--or)'}">${diff==='easy'?'🟢':diff==='hard'?'🔴':'🟡'}</span>
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// FEATURE 4: Multi-language Translation
+// ============================================================
+function getExtraLangs(){try{return JSON.parse(localStorage.getItem('anki_langs')||'[]');}catch(e){return[];}}
+function saveExtraLangs(l){localStorage.setItem('anki_langs',JSON.stringify(l));}
+function addLang(code){
+  const langs=getExtraLangs();
+  if(langs.includes(code)){toast('⚠️ اللغة مضاف فعلاً');return;}
+  langs.push(code);saveExtraLangs(langs);updateLangList();
+  toast('✅ تمت إضافة اللغة');
+}
+function removeLang(code){
+  const langs=getExtraLangs().filter(l=>l!==code);
+  saveExtraLangs(langs);updateLangList();
+}
+function updateLangList(){
+  const langs=getExtraLangs();
+  const names={en:'🇬🇧 إنجليزية',tr:'🇹🇷 تركية',de:'🇩🇪 ألمانية',fa:'🇮🇷 فارسية',es:'🇪🇸 إسبانية',ru:'🇷🇺 روسية'};
+  const el=document.getElementById('langList');if(!el)return;
+  if(!langs.length){el.innerHTML='';return;}
+  el.innerHTML=langs.map(l=>`<span style="display:inline-flex;align-items:center;gap:4px;padding:4px 10px;background:var(--s2);border-radius:6px;font-size:.72em;font-weight:600">${names[l]||l} <span onclick="removeLang('${l}')" style="cursor:pointer;color:var(--rd)">✕</span></span>`).join(' ');
+}
+
+// ============================================================
+// FEATURE 6: PWA
+// ============================================================
+function initPWA(){
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('/sw.js').catch(()=>{});
+  }
+  let deferredPrompt;
+  window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;});
+  const el=document.getElementById('pwaInstall');
+  if(!el)return;
+  el.innerHTML=`<button onclick="installPWA()" style="padding:10px 20px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--ac),#a78bfa);color:#fff;font-weight:700;cursor:pointer;font-size:.85em">📱 تثبيت على الموبايل</button>
+    <span style="font-size:.7em;color:var(--tx2);align-self:center">أو افتح في Safari/Chrome واضغط "إضافة للشاشة"</span>`;
+}
+function installPWA(){
+  toast('📱 افتح في Chrome/Safari واضغط "إضافة للشاشة الرئيسية"');
+}
+
+// ============================================================
+// FEATURE 7: AI Design Generator
+// ============================================================
+const AI_PRESETS={
+  night:{cardBg:'#0f172a',cardBg2:'#1e293b',frenchColor:'#e2e8f0',meaningColor:'#818cf8',meaningBg:'rgba(99,102,241,.1)',meaningBorder:'rgba(99,102,241,.3)',labelColor:'#666',secBg:'rgba(255,255,255,.05)',secBorder:'rgba(255,255,255,.1)',secTextColor:'#ccc',borderRadius:16,cardShadow:'0 8px 32px rgba(0,0,0,.4)'},
+  neon:{cardBg:'#0a0a0a',frenchColor:'#00ff88',meaningColor:'#00ccff',meaningBg:'rgba(0,255,136,.05)',meaningBorder:'rgba(0,255,136,.2)',badgeNomBg:'rgba(0,255,136,.1)',badgeNomColor:'#00ff88',borderRadius:4,cardShadow:'0 0 20px rgba(0,255,136,.2),0 0 40px rgba(0,255,136,.1)',effect:'neon'},
+  minimal:{cardBg:'#ffffff',frenchColor:'#111827',meaningColor:'#6b7280',meaningBg:'transparent',meaningBorder:'transparent',meaningBorderRadius:0,meaningBorderWidth:0,badgeNomBg:'#f3f4f6',badgeNomColor:'#374151',borderRadius:0,cardShadow:'none',cardBorderWidth:1,cardBorderColor:'#f3f4f6',cardGap:6},
+  colorful:{cardBg:'#ff6b6b',cardBg2:'#4ecdc4',bgGradientDir:'135deg',frenchColor:'#ffffff',meaningColor:'#ffffff',meaningBg:'rgba(255,255,255,.2)',meaningBorder:'rgba(255,255,255,.4)',badgeNomBg:'rgba(255,255,255,.25)',badgeNomColor:'#fff',borderRadius:20,cardShadow:'0 8px 32px rgba(255,107,107,.3)',effect:'wave'},
+  elegant:{cardBg:'#fefefe',frenchColor:'#8b4513',meaningColor:'#2e7d32',meaningBg:'#f1f8e9',meaningBorder:'#c5e1a5',badgeNomBg:'#e8f5e9',badgeNomColor:'#2e7d32',fontArabic:'Amiri',fontFrench:'Playfair Display',borderRadius:12,cardShadow:'0 4px 16px rgba(0,0,0,.08)'},
+  nature:{cardBg:'#f0fdf4',cardBg2:'#dcfce7',frenchColor:'#166534',meaningColor:'#15803d',meaningBg:'rgba(21,128,61,.05)',meaningBorder:'rgba(21,128,61,.15)',badgeNomBg:'#dcfce7',badgeNomColor:'#166534',borderRadius:24,cardShadow:'0 8px 32px rgba(22,101,52,.1)'},
+  retro:{cardBg:'#fef3c7',cardBg2:'#fde68a',frenchColor:'#78350f',meaningColor:'#92400e',meaningBg:'rgba(146,64,14,.05)',meaningBorder:'rgba(146,64,14,.15)',badgeNomBg:'#fde68a',badgeNomColor:'#78350f',fontArabic:'Amiri',fontFrench:'Playfair Display',borderRadius:16,cardShadow:'0 4px 16px rgba(0,0,0,.08)'},
+  cyber:{cardBg:'#0f0f23',cardBg2:'#1a1a3e',frenchColor:'#ff6b9d',meaningColor:'#c44dff',meaningBg:'rgba(196,77,255,.05)',meaningBorder:'rgba(196,77,255,.15)',borderRadius:16,cardShadow:'0 0 30px rgba(196,77,255,.15)',effect:'pulse'},
+};
+function aiPreset(key){
+  const p=AI_PRESETS[key];if(!p)return;
+  Object.assign(S,p);pushHist();renderCtrls();updatePreview();
+  toast('🤖 تم تطبيق التصميم');
+}
+function generateAIDesign(){
+  const prompt=document.getElementById('aiPrompt').value.toLowerCase();
+  if(!prompt){toast('⚠️ اكتب وصفاً');return;}
+  // Simple keyword matching
+  const base={};
+  if(prompt.includes('ليل')||prompt.includes('dark')||prompt.includes('أسود'))Object.assign(base,AI_PRESETS.night);
+  else if(prompt.includes('نيون')||prompt.includes('neon'))Object.assign(base,AI_PRESETS.neon);
+  else if(prompt.includes('بسيط')||prompt.includes('minimal')||prompt.includes('نظيف'))Object.assign(base,AI_PRESETS.minimal);
+  else if(prompt.includes('ملون')||prompt.includes('colorful'))Object.assign(base,AI_PRESETS.colorful);
+  else if(prompt.includes('أنيق')||prompt.includes('elegant'))Object.assign(base,AI_PRESETS.elegant);
+  else if(prompt.includes('طبيعي')||prompt.includes('nature')||prompt.includes('أخضر'))Object.assign(base,AI_PRESETS.nature);
+  else if(prompt.includes('كلاسيكي')||prompt.includes('retro'))Object.assign(base,AI_PRESETS.retro);
+  else if(prompt.includes('سايبر')||prompt.includes('cyber')||prompt.includes('مستقبل'))Object.assign(base,AI_PRESETS.cyber);
+  else{
+    // Random adjustments based on prompt
+    if(prompt.includes('أزرق')){base.cardBg='#1e3a5f';base.frenchColor='#fbbf24';base.meaningColor='#f59e0b';}
+    if(prompt.includes('أحمر')||prompt.includes('حريق')){base.cardBg='#dc2626';base.frenchColor='#fff';base.meaningColor='#fecaca';}
+    if(prompt.includes('ذهبي')||prompt.includes('gold')){base.cardBg='#fffbeb';base.frenchColor='#92400e';base.meaningColor='#b45309';}
+    if(prompt.includes('وردي')||prompt.includes('pink')){base.cardBg='#fdf2f8';base.frenchColor='#be185d';base.meaningColor='#db2777';}
+    if(prompt.includes('دائري')||prompt.includes('circle'))base.borderRadius=50;
+    if(prompt.includes('مربع')||prompt.includes('square'))base.borderRadius=0;
+    if(prompt.includes('كبير'))base.frenchFontSize=3.5;
+    if(prompt.includes('صغير'))base.frenchFontSize=1.5;
+    if(prompt.includes('ظل'))base.cardShadow='0 8px 32px rgba(0,0,0,.2)';
+    if(prompt.includes('توهج')||prompt.includes('glow'))base.effect='glow';
+    if(prompt.includes('نبض')||prompt.includes('pulse'))base.effect='pulse';
+    if(prompt.includes('زجاج')){base.cardBgBlur=20;base.cardBg='rgba(255,255,255,.1)';}
+  }
+  Object.assign(S,base);pushHist();renderCtrls();updatePreview();
+  toast('🤖 تم توليد التصميم من الوصف');
+}
+
+// ============================================================
+// FEATURE 10: Backup
+// ============================================================
+function exportAllData(){
+  const data={config:S,templates:JSON.parse(localStorage.getItem('anki_custom')||'[]'),stats:getStats(),srs:getSRS(),languages:getExtraLangs(),exportDate:new Date().toISOString()};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='anki-studio-backup-'+new Date().toISOString().split('T')[0]+'.json';a.click();
+  toast('📤 تم تصدير كلشي');
+}
+function importAllData(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    try{
+      const data=JSON.parse(ev.target.result);
+      if(data.config)Object.assign(S,data.config);
+      if(data.templates)localStorage.setItem('anki_custom',JSON.stringify(data.templates));
+      if(data.stats)saveStats(data.stats);
+      if(data.srs)saveSRS(data.srs);
+      if(data.languages)saveExtraLangs(data.languages);
+      pushHist();renderCtrls();updatePreview();updateStats();updateLangList();
+      toast('📥 تم استيراد كلشي — '+data.exportDate);
+    }catch(err){toast('❌ ملف غير صحيح');}
+  };
+  reader.readAsText(file);
+}
+function exportBackupHTML(){
+  const c=S;
+  let bg=c.cardBg;
+  if(c.cardBg2&&c.cardBg!==c.cardBg2)bg='linear-gradient('+c.bgGradientDir+','+c.cardBg+','+c.cardBg2+')';
+  const backupData={config:S,date:new Date().toISOString()};
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Anki Design Backup</title></head><body><pre style="font-size:12px;white-space:pre-wrap">${JSON.stringify(backupData,null,2)}</pre></body></html>`;
+  const blob=new Blob([html],{type:'text/html'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='anki-backup.html';a.click();
+  toast('📄 تم التصدير كـ HTML');
+}
+
+// ============================================================
 // INIT
 // ============================================================
 window.addEventListener('load',()=>{
+  if(speechSynthesis){speechSynthesis.onvoiceschanged=()=>initTTS();initTTS();}
+  const s=getStats();s.sessions++;s.lastVisit=new Date().toISOString();saveStats(s);updateStats();
+  updateLangList();initPWA();
+
   // Load from URL if present
   if(location.hash.startsWith('#config=')){
     try{
