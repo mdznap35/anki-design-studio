@@ -568,6 +568,45 @@ function renderCardHTML(c){
   if(mode==='circle')return '<div style="background:'+bg+';'+base+'padding:'+pd+'px;min-height:'+mh+'px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:'+cg+'px;width:100%;max-width:'+mw+'px;'+extras+'"><div style="width:160px;height:160px;border-radius:50%;background:rgba(0,0,0,.05);border:3px solid rgba(0,0,0,.1);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px">'+french+(c.showBadge!==false?'<div style="margin-top:4px">'+badges+'</div>':'')+'</div>'+meaning+secs+'</div>';
   if(mode==='mobile')return '<div style="background:'+bg+';'+base+'padding:0;min-height:'+mh+'px;display:flex;flex-direction:column;gap:0;width:100%;max-width:'+Math.min(mw,320)+'px;'+extras+'"><div style="background:rgba(0,0,0,.08);padding:10px;font-size:.6em;color:var(--tx2);display:flex;justify-content:space-between"><span>9:41</span><span>●●●</span></div><div style="flex:1;padding:'+pd+'px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:'+cg+'px">'+french+(c.showBadge!==false?badges:'')+meaning+secs+'</div><div style="background:rgba(0,0,0,.05);padding:8px;font-size:.55em;color:var(--tx2)">━━━━</div></div>';
   if(mode==='glass')return '<div style="background:'+bg+';'+base+'padding:'+pd+'px;min-height:'+mh+'px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:'+cg+'px;width:100%;max-width:'+mw+'px;border:1px solid rgba(255,255,255,.2);'+(c.cardShadow&&c.cardShadow!=='none'?'box-shadow:'+c.cardShadow+';':'')+(c.cardBgImage?'background-image:url('+c.cardBgImage+');background-size:cover;background-position:center;':'')+'backdrop-filter:blur('+(c.cardBgBlur||20)+'px);-webkit-backdrop-filter:blur('+(c.cardBgBlur||20)+'px);"><div style="background:rgba(255,255,255,.1);border-radius:'+br+'px;padding:20px;border:1px solid rgba(255,255,255,.15)">'+french+'</div>'+(c.showBadge!==false?badges:'')+meaning+secs+'</div>';
+  // Apply element ordering, opacity, width, scale
+  const eo=c.elementOrder||['badge','french','separator','meaning','sections','page'];
+  const fOp=c.frenchOpacity!==undefined?c.frenchOpacity:1;
+  const mOp=c.meaningOpacity!==undefined?c.meaningOpacity:1;
+  const bOp=c.badgeOpacity!==undefined?c.badgeOpacity:1;
+  const sOp=c.sectionOpacity!==undefined?c.sectionOpacity:1;
+  const fW=(c.frenchWidth||100)+'%';
+  const mW=(c.meaningWidth||90)+'%';
+  const sW=(c.sectionWidth||80)+'%';
+  const fSc=c.frenchScale||1;
+  const mSc=c.meaningScale||1;
+  const bSc=c.badgeScale||1;
+  const bgPat=c.bgPattern||0;
+  const patStyle=BG_PATTERNS[bgPat]&&BG_PATTERNS[bgPat].v!=='none'?';background-image:'+BG_PATTERNS[bgPat].v+';background-size:20px 20px':'';
+  const customCSS=c.customCSS?'<style>'+c.customCSS+'</style>':'';
+  const fMt=c.frenchMarginTop||0;const fMb=c.frenchMarginBottom||4;
+  const mMt=c.meaningMarginTop||6;const mMb=c.meaningMarginBottom||0;
+  
+  function buildOrderedCard(mode){
+    const parts={};
+    parts.badge=(c.showBadge!==false)?badges:'';
+    parts.french='<div style="opacity:'+fOp+';width:'+fW+';transform:scale('+fSc+');margin-top:'+fMt+'px;margin-bottom:'+fMb+'px">'+french+'</div>';
+    parts.separator=c.separatorStyle&&c.separatorStyle!=='none'?'<div style="border-top:'+(c.separatorWidth||2)+'px '+(c.separatorStyle||'solid')+' '+(c.separatorColor||'#e2e8f0')+';width:80%;margin:4px auto"></div>':'';
+    parts.meaning=c.showMeaning!==false?'<div style="opacity:'+mOp+';width:'+mW+';transform:scale('+mSc+');margin-top:'+mMt+'px;margin-bottom:'+mMb+'px">'+meaning+'</div>':'';
+    parts.sections='<div style="opacity:'+sOp+';width:'+sW+'">'+secs+'</div>';
+    parts.page=c.showPage!==false?'<div style="font-size:.55em;color:'+(c.labelColor||'#999')+';margin-top:4px">Page 12</div>':'';
+    let ordered='';for(const k of eo){ordered+=(parts[k]||'');}return ordered;
+  }
+
+  if(mode==='banner')return customCSS+'<div style="background:'+bg+';'+base+'padding:0;min-height:'+mh+'px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;width:100%;max-width:'+mw+'px;'+extras+patStyle+'">'+buildOrderedCard('banner')+'</div>';
+  if(mode==='centered')return customCSS+'<div style="background:'+bg+';'+base+'padding:'+pd+'px;min-height:'+mh+'px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:'+cg+'px;width:100%;max-width:'+mw+'px;'+extras+patStyle+'"><div style="background:rgba(0,0,0,.04);border:2px dashed rgba(0,0,0,.1);border-radius:'+Math.max(br-4,0)+'px;padding:30px 40px">'+french+(c.showBadge!==false?badges:'')+'</div>'+meaning+secs+'</div>';
+  if(mode==='side')return customCSS+'<div style="background:'+bg+';'+base+'padding:'+pd+'px;min-height:'+mh+'px;display:flex;flex-direction:row;align-items:center;justify-content:center;gap:'+cg+'px;width:100%;max-width:'+mw+'px;'+extras+patStyle+'"><div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px">'+french+(c.showBadge!==false?badges:'')+'</div><div style="width:2px;background:rgba(0,0,0,.1);align-self:stretch;margin:10px 0"></div><div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px">'+meaning+secs+'</div></div>';
+  if(mode==='circle')return customCSS+'<div style="background:'+bg+';'+base+'padding:'+pd+'px;min-height:'+mh+'px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:'+cg+'px;width:100%;max-width:'+mw+'px;'+extras+patStyle+'"><div style="width:160px;height:160px;border-radius:50%;background:rgba(0,0,0,.05);border:3px solid rgba(0,0,0,.1);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px">'+french+'</div>'+meaning+secs+'</div>';
+  if(mode==='mobile')return customCSS+'<div style="background:'+bg+';'+base+'padding:0;min-height:'+mh+'px;display:flex;flex-direction:column;gap:0;width:100%;max-width:'+Math.min(mw,320)+'px;'+extras+patStyle+'"><div style="background:rgba(0,0,0,.08);padding:10px;font-size:.6em;color:var(--tx2);display:flex;justify-content:space-between"><span>9:41</span><span>●●●</span></div><div style="flex:1;padding:'+pd+'px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:'+cg+'px">'+buildOrderedCard('mobile')+'</div><div style="background:rgba(0,0,0,.05);padding:8px;font-size:.55em;color:var(--tx2)">━━━━</div></div>';
+  if(mode==='glass')return customCSS+'<div style="background:'+bg+';'+base+'padding:'+pd+'px;min-height:'+mh+'px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:'+cg+'px;width:100%;max-width:'+mw+'px;border:1px solid rgba(255,255,255,.2);'+(c.cardShadow&&c.cardShadow!=='none'?'box-shadow:'+c.cardShadow+';':'')+(c.cardBgImage?'background-image:url('+c.cardBgImage+');background-size:cover;background-position:center;':'')+'backdrop-filter:blur('+(c.cardBgBlur||20)+'px);-webkit-backdrop-filter:blur('+(c.cardBgBlur||20)+'px);'+patStyle+'"><div style="background:rgba(255,255,255,.1);border-radius:'+br+'px;padding:20px;border:1px solid rgba(255,255,255,.15)">'+french+'</div>'+(c.showBadge!==false?badges:'')+meaning+secs+'</div>';
+  
+  // default classic - with element ordering
+  return customCSS+'<div class="card" style="background:'+bg+';'+base+'padding:'+pd+'px;min-height:'+mh+'px;max-width:'+(c.previewWidth||mw)+'px;flex-direction:'+(c.cardDirection||'column')+';align-items:'+(c.cardAlign||'center')+';justify-content:'+(c.cardJustify||'center')+';gap:'+cg+'px;'+extras+patStyle+'">'+buildOrderedCard('classic')+'</div>';
+
   // default classic
   return '<div class="card" style="background:'+bg+';'+base+'padding:'+pd+'px;min-height:'+mh+'px;max-width:'+mw+'px;flex-direction:'+(c.cardDirection||'column')+';align-items:'+(c.cardAlign||'center')+';justify-content:'+(c.cardJustify||'center')+';gap:'+cg+'px;'+extras+'">'+(c.showBadge!==false?badges:'')+french+meaning+secs+(c.showPage!==false?'<div style="font-size:.55em;color:'+(c.labelColor||'#999')+';margin-top:4px">Page 12</div>':'')+'</div>';
 }
@@ -648,6 +687,128 @@ function renderCtrls(){
     </div>`;
   });
   html+='</div>';
+
+  // ===== 10 EXTRA CONTROL FEATURES =====
+  
+  // 1. Background Pattern
+  html+='<div class="ctrl-sep"><div class="ctrl-sep-t">🔲 نمط الخلفية</div></div>';
+  html+='<div style="grid-column:1/-1;display:flex;gap:5px;flex-wrap:wrap">';
+  BG_PATTERNS.forEach((p,i)=>{
+    html+=`<div onclick="S.bgPattern='${i}';pushHist();renderCtrls();updatePreview()" style="width:40px;height:40px;border-radius:8px;border:2px solid ${(S.bgPattern||0)===i?'var(--gn)':'var(--bd)'};background:${p.v!=='none'?p.v+',rgba(255,255,255,.5)':'var(--s2)'};cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.45em;color:var(--tx2)" title="${p.n}">${i===0?'✕':i}</div>`;
+  });
+  html+='</div>';
+
+  // 2. Gradient Angle Visual Picker
+  html+='<div class="ctrl-sep"><div class="ctrl-sep-t">🧭 زاوية التدرج</div></div>';
+  html+='<div style="grid-column:1/-1;display:flex;gap:5px;flex-wrap:wrap">';
+  GRAD_ANGLES.forEach(g=>{
+    html+=`<div onclick="setVal('bgGradientDir','${g}');renderCtrls()" style="width:40px;height:40px;border-radius:8px;border:2px solid ${(S.bgGradientDir||'135deg')===g?'var(--gn)':'var(--bd)'};background:linear-gradient(${g},#667eea,#764ba2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.5em;color:#fff;font-weight:700" title="${g}">${g.replace('deg','°')}</div>`;
+  });
+  html+='</div>';
+
+  // 3. Element Opacity
+  html+='<div class="ctrl-sep"><div class="ctrl-sep-t">👁️ شفافية العناصر</div></div>';
+  html+='<div style="grid-column:1/-1"><div class="ctrl-grid">';
+  const opacities=[
+    {id:'frenchOpacity',lb:'شفافية الكلمة',d:1},
+    {id:'meaningOpacity',lb:'شفافية المعنى',d:1},
+    {id:'badgeOpacity',lb:'شفافية الشارات',d:1},
+    {id:'sectionOpacity',lb:'شفافية الأقسام',d:1},
+  ];
+  opacities.forEach(o=>{
+    const v=S[o.id]!==undefined?S[o.id]:o.d;
+    html+=`<div class="ctrl"><div class="ctrl-lb">${o.lb}</div><div class="ctrl-r"><div class="rw">
+      <input type="range" min="0" max="1" step="0.05" value="${v}" oninput="setVal('${o.id}',parseFloat(this.value));this.nextElementSibling.textContent=Math.round(this.value*100)+'%'">
+      <span class="rv">${Math.round(v*100)}%</span></div></div></div>`;
+  });
+  html+='</div></div>';
+
+  // 4. Element Width Control
+  html+='<div class="ctrl-sep"><div class="ctrl-sep-t">↔️ عرض العناصر (%)</div></div>';
+  html+='<div style="grid-column:1/-1"><div class="ctrl-grid">';
+  const widths=[
+    {id:'frenchWidth',lb:'عرض الكلمة',d:100},
+    {id:'meaningWidth',lb:'عرض المعنى',d:90},
+    {id:'sectionWidth',lb:'عرض الأقسام',d:80},
+    {id:'badgeWidth',lb:'عرض الشارات',d:100},
+  ];
+  widths.forEach(w=>{
+    const v=S[w.id]!==undefined?S[w.id]:w.d;
+    html+=`<div class="ctrl"><div class="ctrl-lb">${w.lb}</div><div class="ctrl-r"><div class="rw">
+      <input type="range" min="30" max="100" step="5" value="${v}" oninput="setVal('${w.id}',parseInt(this.value));this.nextElementSibling.textContent=this.value+'%'">
+      <span class="rv">${v}%</span></div></div></div>`;
+  });
+  html+='</div></div>';
+
+  // 5. Element Scale
+  html+='<div class="ctrl-sep"><div class="ctrl-sep-t">🔍 تكبير/تصغير العناصر</div></div>';
+  html+='<div style="grid-column:1/-1"><div class="ctrl-grid">';
+  const scales=[
+    {id:'frenchScale',lb:'تكبير الكلمة',min:0.5,max:2,step:0.05,d:1},
+    {id:'meaningScale',lb:'تكبير المعنى',min:0.5,max:2,step:0.05,d:1},
+    {id:'badgeScale',lb:'تكبير الشارات',min:0.5,max:2,step:0.05,d:1},
+  ];
+  scales.forEach(s=>{
+    const v=S[s.id]!==undefined?S[s.id]:s.d;
+    html+=`<div class="ctrl"><div class="ctrl-lb">${s.lb}</div><div class="ctrl-r"><div class="rw">
+      <input type="range" min="${s.min}" max="${s.max}" step="${s.step}" value="${v}" oninput="setVal('${s.id}',parseFloat(this.value));this.nextElementSibling.textContent=Math.round(this.value*100)+'%'">
+      <span class="rv">${Math.round(v*100)}%</span></div></div></div>`;
+  });
+  html+='</div></div>';
+
+  // 6. Element Border per element
+  html+='<div class="ctrl-sep"><div class="ctrl-sep-t">🔲 حدود كل عنصر</div></div>';
+  html+='<div style="grid-column:1/-1"><div class="ctrl-grid">';
+  html+=`<div class="ctrl"><div class="ctrl-lb">حدود المعنى</div><div class="ctrl-r">
+    <input type="number" class="tx" style="width:50px" value="${S.meaningBorderWidth||2}" onchange="setVal('meaningBorderWidth',parseInt(this.value))"> px
+  </div></div>`;
+  html+=`<div class="ctrl"><div class="ctrl-lb">استدارة المعنى</div><div class="ctrl-r"><div class="rw">
+    <input type="range" min="0" max="50" value="${S.meaningBorderRadius||16}" oninput="setVal('meaningBorderRadius',parseInt(this.value));this.nextElementSibling.textContent=this.value+'px'">
+    <span class="rv">${S.meaningBorderRadius||16}px</span></div></div></div>`;
+  html+=`<div class="ctrl"><div class="ctrl-lb">حدود البطاقة</div><div class="ctrl-r">
+    <input type="number" class="tx" style="width:50px" value="${S.cardBorderWidth||0}" onchange="setVal('cardBorderWidth',parseInt(this.value))"> px
+  </div></div>`;
+  html+='</div></div>';
+
+  // 7. Element Order (visual)
+  html+='<div class="ctrl-sep"><div class="ctrl-sep-t">📋 ترتيب العناصر</div></div>';
+  html+='<div style="grid-column:1/-1"><div class="sort-list" id="elemOrder">';
+  const elemOrder=S.elementOrder||['badge','french','separator','meaning','sections','page'];
+  const elemLabels={badge:'🏷️ الشارات',french:'🇫🇷 الكلمة',separator:'➖ الفاصل',meaning:'🇸🇾 المعنى',sections:'📋 الأقسام',page:'📄 الصفحة'};
+  elemOrder.forEach((e,i)=>{
+    html+=`<div class="sort-item" draggable="true" data-eidx="${i}" ondragstart="dragElemStart(event)" ondragover="event.preventDefault()" ondrop="dragElemDrop(event)">
+      <span class="sort-handle">⠿</span><span class="sort-num">${i+1}</span><span class="sort-lb">${elemLabels[e]||e}</span></div>`;
+  });
+  html+='</div></div>';
+
+  // 8. Custom CSS
+  html+='<div class="ctrl-sep"><div class="ctrl-sep-t">💻 CSS مخصص</div></div>';
+  html+='<div style="grid-column:1/-1"><textarea class="hx" style="width:100%;min-height:60px;font-size:.65em;direction:ltr" placeholder=".card { /* custom CSS */ }" onchange="S.customCSS=this.value;pushHist();updatePreview()">'+(S.customCSS||'')+'</textarea></div>';
+
+  // 9. Responsive Preview
+  html+='<div class="ctrl-sep"><div class="ctrl-sep-t">📱 معاينة حسب الحجم</div></div>';
+  html+='<div style="grid-column:1/-1;display:flex;gap:6px;flex-wrap:wrap">';
+  [{n:'💻 كمبيوتر',w:480},{n:'📱 موبايل',w:320},{n:'📱 صغير',w:280}].forEach((r,i)=>{
+    html+=`<button class="undo-btn" style="font-size:.7em" onclick="S.previewWidth=${r.w};updatePreview()">${r.n} (${r.w}px)</button>`;
+  });
+  html+='</div>';
+
+  // 10. Spacing per element
+  html+='<div class="ctrl-sep"><div class="ctrl-sep-t">📐 مسافات مخصصة</div></div>';
+  html+='<div style="grid-column:1/-1"><div class="ctrl-grid">';
+  const spacings=[
+    {id:'frenchMarginTop',lb:'هامش الكلمة أعلى',min:0,max:40,d:0},
+    {id:'frenchMarginBottom',lb:'هامش الكلمة أسفل',min:0,max:40,d:4},
+    {id:'meaningMarginTop',lb:'هامش المعنى أعلى',min:0,max:40,d:6},
+    {id:'meaningMarginBottom',lb:'هامش المعنى أسفل',min:0,max:40,d:0},
+  ];
+  spacings.forEach(s=>{
+    const v=S[s.id]!==undefined?S[s.id]:s.d;
+    html+=`<div class="ctrl"><div class="ctrl-lb">${s.lb}</div><div class="ctrl-r"><div class="rw">
+      <input type="range" min="${s.min}" max="${s.max}" step="1" value="${v}" oninput="setVal('${s.id}',parseInt(this.value));this.nextElementSibling.textContent=this.value+'px'">
+      <span class="rv">${v}px</span></div></div></div>`;
+  });
+  html+='</div></div>';
 
   // ===== COLOR PRESETS (visual swatches) =====
   html+='<div class="ctrl-sep"><div class="ctrl-sep-t">🎨 ألوان جاهزة</div></div>';
@@ -1146,6 +1307,28 @@ function applyFontPreset(i){
   pushHist();renderCtrls();updatePreview();
 }
 
+// ===== 10 IDEAS FOR MORE USER CONTROL =====
+// 1. Margin/Padding per element (top, right, bottom, left)
+// 2. Element opacity control
+// 3. Element order via drag & drop
+// 4. Background pattern (dots, lines, grid)
+// 5. Gradient angle visual picker (circle)
+// 6. Element width control (%)
+// 7. Custom CSS editor
+// 8. Border per element
+// 9. Element scale (transform)
+// 10. Responsive breakpoint preview
+
+const BG_PATTERNS=[
+  {n:'بدون',v:'none'},
+  {n:'نقاط',v:'radial-gradient(circle,rgba(0,0,0,.05) 1px,transparent 1px)'},
+  {n:'شبكة',v:'linear-gradient(rgba(0,0,0,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,.03) 1px,transparent 1px)'},
+  {n:'خطوط',v:'repeating-linear-gradient(0deg,rgba(0,0,0,.02),rgba(0,0,0,.02) 1px,transparent 1px,transparent 20px)'},
+  {n:'شطرنج',v:'conic-gradient(rgba(0,0,0,.03) 25%,transparent 25%,transparent 75%,rgba(0,0,0,.03) 75%)'},
+  {n:'متدرج',v:'linear-gradient(135deg,rgba(0,0,0,.02) 25%,transparent 25%,transparent 50%,rgba(0,0,0,.02) 50%,rgba(0,0,0,.02) 75%,transparent 75%)'},
+];
+const GRAD_ANGLES=['0deg','45deg','90deg','135deg','180deg','225deg','270deg','315deg'];
+
 // Quick one-click complete designs
 const QUICK_DESIGNS=[
   {n:'🏫 مدرسي',desc:'تصميم بسيط وأنيق للمدارس',apply:function(){S={...defCfg(),cardBg:'#ffffff',frenchColor:'#1e293b',meaningColor:'#1e40af',meaningBg:'#eff6ff',meaningBorder:'#bfdbfe',borderRadius:12,cardShadow:'0 2px 8px rgba(0,0,0,.08)',effect:'none'};}},
@@ -1159,6 +1342,23 @@ const QUICK_DESIGNS=[
 function applyQuickDesign(i){
   QUICK_DESIGNS[i].apply();S._templateId='quick-'+i;pushHist();renderCtrls();updatePreview();
   toast('✅ تم تطبيق: '+QUICK_DESIGNS[i].n);
+}
+
+// ============================================================
+// ELEMENT ORDER DRAG & DROP
+// ============================================================
+let dragElemIdx=null;
+function dragElemStart(e){dragElemIdx=parseInt(e.target.closest('.sort-item').dataset.eidx);}
+function dragElemDrop(e){
+  e.preventDefault();
+  const toIdx=parseInt(e.target.closest('.sort-item').dataset.eidx);
+  if(dragElemIdx===null||dragElemIdx===toIdx)return;
+  if(!S.elementOrder)S.elementOrder=['badge','french','separator','meaning','sections','page'];
+  const arr=S.elementOrder;
+  const item=arr.splice(dragElemIdx,1)[0];
+  arr.splice(toIdx,0,item);
+  dragElemIdx=null;
+  pushHist();renderCtrls();updatePreview();
 }
 
 // ============================================================
