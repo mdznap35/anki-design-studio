@@ -637,6 +637,52 @@ function nextTpl(){
 function renderCtrls(){
   let html='';
 
+  // ===== QUICK DESIGNS (big buttons for beginners) =====
+  html+='<div class="ctrl-sep"><div class="ctrl-sep-t">⚡ تصميم سريع بضغطة واحدة</div></div>';
+  html+='<div style="grid-column:1/-1;display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px">';
+  QUICK_DESIGNS.forEach((d,i)=>{
+    html+=`<div style="padding:12px 8px;border:2px solid var(--bd);border-radius:12px;background:var(--s2);cursor:pointer;text-align:center;transition:all .3s" onmouseover="this.style.borderColor='var(--ac)';this.style.transform='translateY(-3px)'" onmouseout="this.style.borderColor='var(--bd)';this.style.transform='none'" onclick="applyQuickDesign(${i})">
+      <div style="font-size:1.4em;margin-bottom:4px">${d.n.split(' ')[0]}</div>
+      <div style="font-size:.65em;font-weight:700">${d.n.split(' ').slice(1).join(' ')}</div>
+      <div style="font-size:.55em;color:var(--tx2);margin-top:2px">${d.desc}</div>
+    </div>`;
+  });
+  html+='</div>';
+
+  // ===== COLOR PRESETS (visual swatches) =====
+  html+='<div class="ctrl-sep"><div class="ctrl-sep-t">🎨 ألوان جاهزة</div></div>';
+  html+='<div style="grid-column:1/-1;display:flex;gap:6px;flex-wrap:wrap">';
+  PRESETS.colors.forEach((p,i)=>{
+    html+=`<div onclick="applyColorPreset(${i})" style="width:44px;height:44px;border-radius:10px;background:${p.bg};border:2px solid var(--bd);cursor:pointer;position:relative;transition:all .2s;display:flex;align-items:center;justify-content:center" title="${p.n}" onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1)'">
+      <div style="width:16px;height:16px;border-radius:50%;background:${p.fc}"></div>
+    </div>`;
+  });
+  html+='</div>';
+
+  // ===== STYLE PRESETS =====
+  html+='<div class="ctrl-sep"><div class="ctrl-sep-t">🔲 أشكال جاهزة</div></div>';
+  html+='<div style="grid-column:1/-1;display:flex;gap:6px;flex-wrap:wrap">';
+  PRESETS.styles.forEach((p,i)=>{
+    html+=`<button class="undo-btn" style="font-size:.7em" onclick="applyStylePreset(${i})" title="${p.n}">${p.n}</button>`;
+  });
+  html+='</div>';
+
+  // ===== TEXT SIZE PRESETS =====
+  html+='<div class="ctrl-sep"><div class="ctrl-sep-t">📐 أحجام النص</div></div>';
+  html+='<div style="grid-column:1/-1;display:flex;gap:6px;flex-wrap:wrap">';
+  PRESETS.texts.forEach((p,i)=>{
+    html+=`<button class="undo-btn" style="font-size:.7em" onclick="applyTextPreset(${i})" title="${p.n}">${p.n}</button>`;
+  });
+  html+='</div>';
+
+  // ===== FONT PRESETS =====
+  html+='<div class="ctrl-sep"><div class="ctrl-sep-t">🔤 خطوط جاهزة</div></div>';
+  html+='<div style="grid-column:1/-1;display:flex;gap:6px;flex-wrap:wrap">';
+  PRESETS.fonts.forEach((p,i)=>{
+    html+=`<button class="undo-btn" style="font-size:.7em" onclick="applyFontPreset(${i})" title="${p.n}">${p.n}</button>`;
+  });
+  html+='</div>';
+
   // ===== LAYOUT MODE =====
   html+='<div class="ctrl-sep"><div class="ctrl-sep-t">📐 نمط التخطيط</div></div>';
   html+='<div style="grid-column:1/-1"><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:6px">';
@@ -1034,6 +1080,85 @@ async function downloadAPKG(){
     document.getElementById('dlInfo').textContent='❌ خطأ: '+e.message;
     document.getElementById('loading').classList.remove('on');
   }
+}
+
+// ============================================================
+// BEGINNER PRESETS (90% control)
+// ============================================================
+const PRESETS={
+  colors:[
+    {n:'أبيض نظيف',bg:'#ffffff',fc:'#1e293b',mc:'#1e40af',mb:'#eff6ff',mbd:'#bfdbfe'},
+    {n:'أسود أنيق',bg:'#111827',fc:'#f9fafb',mc:'#9ca3af',mb:'transparent',mbd:'transparent'},
+    {n:'أزرق داكن',bg:'#1e3a5f',fc:'#fbbf24',mc:'#f59e0b',mb:'rgba(251,191,36,.08)',mbd:'rgba(251,191,36,.2)'},
+    {n:'وردي',bg:'#fdf2f8',fc:'#be185d',mc:'#db2777',mb:'rgba(219,39,119,.05)',mbd:'rgba(219,39,119,.15)'},
+    {n:'أخضر زمردي',bg:'#022c22',fc:'#6ee7b7',mc:'#a7f3d0',mb:'rgba(110,231,183,.08)',mbd:'rgba(110,231,183,.2)'},
+    {n:'ذهبي',bg:'#fffbeb',fc:'#92400e',mc:'#b45309',mb:'rgba(245,158,11,.1)',mbd:'#fbbf24'},
+    {n:'بنفسجي',bg:'#1e1b4b',fc:'#c4b5fd',mc:'#a78bfa',mb:'rgba(167,139,250,.08)',mbd:'rgba(167,139,250,.2)'},
+    {n:'سماوي',bg:'#0f172a',fc:'#38bdf8',mc:'#94a3b8',mb:'rgba(56,189,248,.08)',mbd:'rgba(56,189,248,.2)'},
+    {n:'نعناعي',bg:'#f0fdf4',fc:'#166534',mc:'#15803d',mb:'rgba(21,128,61,.05)',mbd:'rgba(21,128,61,.15)'},
+    {n:'متوهج',bg:'#0a0a0a',fc:'#00ff88',mc:'#00ccff',mb:'rgba(0,255,136,.05)',mbd:'rgba(0,255,136,.2)'},
+  ],
+  styles:[
+    {n:'كلاسيكي',br:16,pd:28,sh:'none',bw:0,dir:'column',al:'center',gap:10},
+    {n:'دائري',br:50,pd:28,sh:'0 8px 32px rgba(0,0,0,.2)',bw:0,dir:'column',al:'center',gap:10},
+    {n:'مربع صلب',br:0,pd:28,sh:'none',bw:2,dir:'column',al:'center',gap:10},
+    {n:'زجاجي',br:20,pd:28,sh:'0 8px 32px rgba(0,0,0,.3)',bw:1,dir:'column',al:'center',gap:10},
+    {n:'بطاقة كلاسيكية',br:8,pd:20,sh:'0 4px 16px rgba(0,0,0,.08)',bw:1,dir:'column',al:'center',gap:8},
+    {n:'عملاق',br:24,pd:40,sh:'0 12px 48px rgba(0,0,0,.2)',bw:0,dir:'column',al:'center',gap:16},
+    {n:'نازف',br:16,pd:16,sh:'none',bw:0,dir:'column',al:'center',gap:4},
+    {n:'أفقي',br:16,pd:28,sh:'0 8px 32px rgba(0,0,0,.15)',bw:0,dir:'row',al:'center',gap:12},
+  ],
+  texts:[
+    {n:'كبير جريء',fsFr:3.0,fwFr:900,fsAr:1.8,fwAr:800},
+    {n:'متوسط متوازن',fsFr:2.4,fwFr:900,fsAr:1.5,fwAr:800},
+    {n:'صغير أنيق',fsFr:1.8,fwFr:700,fsAr:1.2,fwAr:600},
+    {n:'عملاق',fsFr:4.0,fwFr:900,fsAr:2.2,fwAr:800},
+    {n:'رفيع',fsFr:2.0,fwFr:300,fsAr:1.3,fwAr:400},
+  ],
+  fonts:[
+    {n:'Inter + Noto',fr:'Inter',ar:'Noto Sans Arabic'},
+    {n:'Poppins + Cairo',fr:'Poppins',ar:'Cairo'},
+    {n:'Montserrat + Tajawal',fr:'Montserrat',ar:'Tajawal'},
+    {n:'Playfair + Amiri',fr:'Playfair Display',ar:'Amiri'},
+    {n:'Roboto + Cairo',fr:'Roboto',ar:'Cairo'},
+    {n:'Lato + Noto',fr:'Lato',ar:'Noto Sans Arabic'},
+  ]
+};
+
+function applyColorPreset(i){
+  const p=PRESETS.colors[i];if(!p)return;
+  S.cardBg=p.bg;S.frenchColor=p.fc;S.meaningColor=p.mc;S.meaningBg=p.mb;S.meaningBorder=p.mbd;
+  pushHist();renderCtrls();updatePreview();
+}
+function applyStylePreset(i){
+  const p=PRESETS.styles[i];if(!p)return;
+  S.borderRadius=p.br;S.cardPadding=p.pd;S.cardShadow=p.sh;S.cardBorderWidth=p.bw;S.cardDirection=p.dir;S.cardAlign=p.al;S.cardGap=p.gap;
+  pushHist();renderCtrls();updatePreview();
+}
+function applyTextPreset(i){
+  const p=PRESETS.texts[i];if(!p)return;
+  S.frenchFontSize=p.fsFr;S.frenchFontWeight=p.fwFr;S.meaningFontSize=p.fsAr;S.meaningFontWeight=p.fwAr;
+  pushHist();renderCtrls();updatePreview();
+}
+function applyFontPreset(i){
+  const p=PRESETS.fonts[i];if(!p)return;
+  S.fontFrench=p.fr;S.fontArabic=p.ar;
+  pushHist();renderCtrls();updatePreview();
+}
+
+// Quick one-click complete designs
+const QUICK_DESIGNS=[
+  {n:'🏫 مدرسي',desc:'تصميم بسيط وأنيق للمدارس',apply:function(){S={...defCfg(),cardBg:'#ffffff',frenchColor:'#1e293b',meaningColor:'#1e40af',meaningBg:'#eff6ff',meaningBorder:'#bfdbfe',borderRadius:12,cardShadow:'0 2px 8px rgba(0,0,0,.08)',effect:'none'};}},
+  {n:'🌙 ليلي',desc:'تصميم داكن أنيق',apply:function(){S={...defCfg(),cardBg:'#0f172a',cardBg2:'#1e293b',frenchColor:'#e2e8f0',meaningColor:'#818cf8',meaningBg:'rgba(99,102,241,.1)',meaningBorder:'rgba(99,102,241,.3)',labelColor:'#666',secBg:'rgba(255,255,255,.05)',secBorder:'rgba(255,255,255,.1)',secTextColor:'#ccc',borderRadius:16,cardShadow:'0 8px 32px rgba(0,0,0,.4)'};}},
+  {n:'⚡ نيون',desc:'تأثير نيون متوهج',apply:function(){S={...defCfg(),cardBg:'#0a0a0a',frenchColor:'#00ff88',meaningColor:'#00ccff',meaningBg:'rgba(0,255,136,.05)',meaningBorder:'rgba(0,255,136,.2)',badgeNomBg:'rgba(0,255,136,.1)',badgeNomColor:'#00ff88',borderRadius:4,cardShadow:'0 0 20px rgba(0,255,136,.2),0 0 40px rgba(0,255,136,.1)',effect:'neon'};}},
+  {n:'💎 زجاجي',desc:'تأثير زجاجي شفاف',apply:function(){S={...defCfg(),cardBg:'rgba(255,255,255,.1)',frenchColor:'#ffffff',meaningColor:'rgba(255,255,255,.8)',meaningBg:'rgba(255,255,255,.05)',meaningBorder:'rgba(255,255,255,.15)',badgeNomBg:'rgba(255,255,255,.1)',badgeNomColor:'#fff',cardBorderWidth:1,cardBorderColor:'rgba(255,255,255,.2)',cardShadow:'0 8px 32px rgba(0,0,0,.2)',cardBgBlur:20,borderRadius:20};}},
+  {n:'🌹 وردي',desc:'تصميم أنثوي ناعم',apply:function(){S={...defCfg(),cardBg:'#fdf2f8',cardBg2:'#fce7f3',frenchColor:'#be185d',meaningColor:'#db2777',meaningBg:'rgba(219,39,119,.05)',meaningBorder:'rgba(219,39,119,.15)',badgeNomBg:'#fce7f3',badgeNomColor:'#be185d',borderRadius:24,cardShadow:'0 8px 32px rgba(190,24,93,.1)',effect:'sakura'};}},
+  {n:'🏆 احترافي',desc:'تصميم رسمي وأنيق',apply:function(){S={...defCfg(),cardBg:'#ffffff',cardBg2:'#f8fafc',frenchColor:'#1e3a5f',meaningColor:'#2563eb',meaningBg:'#eff6ff',meaningBorder:'#bfdbfe',badgeNomBg:'#dbeafe',badgeNomColor:'#1e40af',borderRadius:12,cardBorderWidth:2,cardBorderColor:'#1e3a5f',cardShadow:'0 4px 16px rgba(0,0,0,.1)'};}},
+];
+
+function applyQuickDesign(i){
+  QUICK_DESIGNS[i].apply();S._templateId='quick-'+i;pushHist();renderCtrls();updatePreview();
+  toast('✅ تم تطبيق: '+QUICK_DESIGNS[i].n);
 }
 
 // ============================================================
