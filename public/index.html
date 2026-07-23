@@ -473,7 +473,7 @@ function show(id){
   document.getElementById('sec-'+id).classList.add('on');
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
   event.target.classList.add('on');
-  if(id==='full')renderFullscreen();
+  if(id==='full')renderFullscreen();renderSavedList();
   if(id==='ctl')renderCtrls();
 }
 
@@ -583,12 +583,12 @@ function renderFullscreen(){
 function prevTpl(){
   const tpls=getFilteredTemplates();
   curTplIdx=(curTplIdx-1+tpls.length)%tpls.length;
-  renderFullscreen();
+  renderFullscreen();renderSavedList();
 }
 function nextTpl(){
   const tpls=getFilteredTemplates();
   curTplIdx=(curTplIdx+1)%tpls.length;
-  renderFullscreen();
+  renderFullscreen();renderSavedList();
 }
 </script>
 <script>
@@ -667,10 +667,27 @@ function renderCtrls(){
   // ===== LAYOUT =====
   html+='<div class="ctrl-sep"><div class="ctrl-sep-t">📏 التخطيط</div></div>';
   html+='<div style="grid-column:1/-1"><div class="ctrl-grid">';
+  html+=`<div class="ctrl"><div class="ctrl-lb">اتجاه العناصر</div><div class="ctrl-r"><select class="sl" onchange="setVal('cardDirection',this.value)">
+    <option value="column"${S.cardDirection==='column'?' selected':''}>عمودي ↓</option>
+    <option value="row"${S.cardDirection==='row'?' selected':''}>أفقي ←</option>
+  </select></div></div>`;
+  html+=`<div class="ctrl"><div class="ctrl-lb">محاذاة أفقية</div><div class="ctrl-r"><select class="sl" onchange="setVal('cardAlign',this.value)">
+    <option value="center"${S.cardAlign==='center'?' selected':''}>وسط</option>
+    <option value="flex-start"${S.cardAlign==='flex-start'?' selected':''}>يمين</option>
+    <option value="flex-end"${S.cardAlign==='flex-end'?' selected':''}>يسار</option>
+    <option value="stretch"${S.cardAlign==='stretch'?' selected':''}>تمدد</option>
+  </select></div></div>`;
+  html+=`<div class="ctrl"><div class="ctrl-lb">محاذاة رأسية</div><div class="ctrl-r"><select class="sl" onchange="setVal('cardJustify',this.value)">
+    <option value="center"${(S.cardJustify||'center')==='center'?' selected':''}>وسط</option>
+    <option value="flex-start"${S.cardJustify==='flex-start'?' selected':''}>أعلى</option>
+    <option value="flex-end"${S.cardJustify==='flex-end'?' selected':''}>أسفل</option>
+    <option value="space-between"${S.cardJustify==='space-between'?' selected':''}>توزيع</option>
+  </select></div></div>`;
   const layout=[
     {id:'borderRadius',lb:'استدارة البطاقة',min:0,max:50,step:1,u:'px',d:16},
     {id:'cardPadding',lb:'الهامش الداخلي',min:4,max:60,step:2,u:'px',d:28},
     {id:'cardMinHeight',lb:'الارتفاع الأدنى',min:100,max:600,step:10,u:'px',d:300},
+    {id:'cardMaxWidth',lb:'الحد الأقصى للعرض',min:250,max:800,step:10,u:'px',d:480},
     {id:'cardGap',lb:'المسافة بين العناصر',min:0,max:40,step:2,u:'px',d:10},
     {id:'cardBorderWidth',lb:'سمك حدود البطاقة',min:0,max:10,step:1,u:'px',d:0}
   ];
@@ -772,7 +789,7 @@ function renderCtrls(){
   html+=`<div class="toggle-row${S.showUnitBadge?' on':''}" onclick="toggleVal('showUnitBadge')"><div class="toggle-dot">✓</div><div class="toggle-lb">شارة الوحدة</div></div>`;
   html+=`<div class="toggle-row${S.showMeaning?' on':''}" onclick="toggleVal('showMeaning')"><div class="toggle-dot">✓</div><div class="toggle-lb">المعنى</div></div>`;
   html+=`<div class="toggle-row${S.showPage?' on':''}" onclick="toggleVal('showPage')"><div class="toggle-dot">✓</div><div class="toggle-lb">رقم الصفحة</div></div>`;
-  ['Pluriel','Synonyme','Contraire'].forEach(s=>{
+  ['Pluriel','Synonyme','Contraire','Preposition','Auxiliaire','Participe'].forEach(s=>{
     html+=`<div class="toggle-row${(S.sectionVisibility||{})[s]?' on':''}" onclick="toggleSec('${s}')"><div class="toggle-dot">✓</div><div class="toggle-lb">${s}</div></div>`;
   });
   html+='</div></div>';
@@ -785,6 +802,16 @@ function renderCtrls(){
       <span class="sort-handle">⠿</span><span class="sort-num">${i+1}</span><span class="sort-lb">${s}</span></div>`;
   });
   html+='</div></div>';
+
+  // ===== TEMPLATE MANAGEMENT =====
+  html+='<div class="ctrl-sep"><div class="ctrl-sep-t">💾 إدارة القوالب</div></div>';
+  html+='<div style="grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap">';
+  html+=`<button class="undo-btn" onclick="saveCustom()">💾 حفظ كقالب</button>`;
+  html+=`<button class="undo-btn" onclick="exportConfig()">📤 تصدير JSON</button>`;
+  html+=`<button class="undo-btn" onclick="document.getElementById('importCfg').click()">📥 استيراد</button>`;
+  html+=`<input type="file" id="importCfg" accept=".json" style="display:none" onchange="importConfig(event)">`;
+  html+='</div>';
+  html+='<div style="grid-column:1/-1;padding:6px 0" id="savedTplList"></div>';
 
   // ===== DECK NAME =====
   html+='<div class="ctrl-sep"><div class="ctrl-sep-t">📦 اسم الرزمة</div></div>';
@@ -828,7 +855,7 @@ function dragDrop(e){e.preventDefault();const toIdx=parseInt(e.target.closest('.
 function updatePreview(){
   // Update fullscreen preview if visible
   if(document.getElementById('sec-full').classList.contains('on')){
-    renderFullscreen();
+    renderFullscreen();renderSavedList();
   }
 }
 
@@ -944,51 +971,70 @@ async function downloadAPKG(){
   document.getElementById('loading').classList.add('on');
   document.getElementById('dlInfo').textContent='';
   try{
-    document.getElementById('dlInfo').textContent='⏳ جاري التوليد...';
-    
-    // Send request with timeout
-    const controller=new AbortController();
-    const timeoutId=setTimeout(()=>controller.abort(),120000); // 2 min timeout
-    const res=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(S),signal:controller.signal});
-    clearTimeout(timeoutId);
-    
-    if(!res.ok){
-      let errMsg='Server error: '+res.status;
-      try{const errData=await res.json();if(errData.error)errMsg=errData.error;}catch(x){}
-      throw new Error(errMsg);
-    }
-    
-    document.getElementById('dlInfo').textContent='⏳ جاري تحميل الملف...';
+    const res=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(S)});
+    if(!res.ok)throw new Error('Server error: '+res.status);
     const blob=await res.blob();
-    
-    // Validate the response
-    if(blob.size<1000)throw new Error('الملف صغير جداً ('+Math.round(blob.size/1024)+' KB) - خطأ في التوليد');
-    
-    // Check ZIP magic bytes (PK)
-    const header=await blob.slice(0,4).arrayBuffer();
-    const magic=String.fromCharCode(...new Uint8Array(header));
-    if(magic!=='PK')throw new Error('الملف ليس صيغة APKG صحيحة - تحقق من إعدادات القالب');
-    
     const a=document.createElement('a');a.href=URL.createObjectURL(blob);
     a.download=(S.deckName||'deck').replace(/[^a-zA-Z0-9\u0600-\u06FF]/g,'_')+'.apkg';
-    document.body.appendChild(a);a.click();document.body.removeChild(a);
-    
-    const sizeKB=Math.round(blob.size/1024);
-    const sizeMB=(blob.size/1024/1024).toFixed(1);
-    const display=sizeKB>1024?sizeMB+' MB':sizeKB+' KB';
-    document.getElementById('dlInfo').textContent='✅ تم التحميل! ('+display+')';
+    a.click();
+    document.getElementById('dlInfo').textContent='✅ تم التحميل! ('+Math.round(blob.size/1024)+' KB)';
     document.getElementById('loading').classList.remove('on');
-    toast('✅ تم تحميل الرزمة ('+display+')');
-    
-    // Cleanup
-    setTimeout(()=>URL.revokeObjectURL(a.href),5000);
+    toast('✅ تم تحميل الرزمة');
   }catch(e){
-    let msg=e.message;
-    if(e.name==='AbortError')msg='انتهت المهلة - حاول مرة أخرى';
-    document.getElementById('dlInfo').textContent='❌ خطأ: '+msg;
+    document.getElementById('dlInfo').textContent='❌ خطأ: '+e.message;
     document.getElementById('loading').classList.remove('on');
-    console.error('Download error:',e);
   }
+}
+
+// ============================================================
+// TEMPLATE MANAGEMENT
+// ============================================================
+function saveCustom(){
+  const name=prompt('اسم القالب:');
+  if(!name)return;
+  const saved=JSON.parse(localStorage.getItem('anki_custom')||'[]');
+  saved.push({name,cfg:{...S},date:Date.now()});
+  localStorage.setItem('anki_custom',JSON.stringify(saved));
+  toast('✅ تم الحفظ: '+name);
+  renderSavedList();
+}
+function renderSavedList(){
+  const saved=JSON.parse(localStorage.getItem('anki_custom')||'[]');
+  const el=document.getElementById('savedTplList');
+  if(!el)return;
+  if(!saved.length){el.innerHTML='';return;}
+  el.innerHTML=saved.map((s,i)=>
+    '<div style="display:flex;align-items:center;gap:6px;padding:6px 8px;background:var(--s2);border-radius:6px;margin-bottom:4px;font-size:.72em">'+
+    '<span style="flex:1;font-weight:600">'+s.name+'</span>'+
+    '<button class="undo-btn" onclick="loadCustom('+i+')" style="font-size:.7em">تحميل</button>'+
+    '<button class="undo-btn" onclick="deleteCustom('+i+')" style="font-size:.7em;color:var(--rd)">حذف</button>'+
+    '</div>'
+  ).join('');
+}
+function loadCustom(i){
+  const saved=JSON.parse(localStorage.getItem('anki_custom')||'[]');
+  if(!saved[i])return;
+  S={...saved[i].cfg};pushHist();renderCtrls();updatePreview();
+  toast('✅ تم التحميل: '+saved[i].name);
+}
+function deleteCustom(i){
+  const saved=JSON.parse(localStorage.getItem('anki_custom')||'[]');
+  saved.splice(i,1);
+  localStorage.setItem('anki_custom',JSON.stringify(saved));
+  renderSavedList();toast('🗑️ تم الحذف');
+}
+function exportConfig(){
+  const blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='anki-design.json';a.click();toast('📤 تم التصدير');
+}
+function importConfig(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    try{S=JSON.parse(ev.target.result);pushHist();renderCtrls();updatePreview();toast('📥 تم الاستيراد');}catch(err){toast('❌ ملف غير صحيح');}
+  };
+  reader.readAsText(file);
 }
 
 // ============================================================
