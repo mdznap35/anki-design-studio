@@ -254,6 +254,7 @@ select.sl{appearance:none;cursor:pointer}
 // ============================================================
 // ESSENTIAL DATA
 // ============================================================
+const SAMP={f:'Maison',a:'منزل',p:'Maisons',s:'Contrat',c:'Désabonnement'};
 const FMAP={"Inter":"'Inter',sans-serif","Noto Sans Arabic":"'Noto Sans Arabic',sans-serif","Poppins":"'Poppins',sans-serif","Playfair Display":"'Playfair Display',serif","Cairo":"'Cairo',sans-serif","Tajawal":"'Tajawal',sans-serif","Amiri":"'Amiri',serif","System":"system-ui,sans-serif"};
 
 
@@ -423,6 +424,87 @@ const BG_PATTERNS=[
   {n:'شطرنج',v:'conic-gradient(rgba(0,0,0,.03) 25%,transparent 25%,transparent 75%,rgba(0,0,0,.03) 75%)'},
   {n:'متدرج',v:'linear-gradient(135deg,rgba(0,0,0,.02) 25%,transparent 25%,transparent 50%,rgba(0,0,0,.02) 50%,rgba(0,0,0,.02) 75%,transparent 75%)'},
 ];
+
+const PRESETS={
+  colors:[
+    {n:'أبيض نظيف',bg:'#ffffff',fc:'#1e293b',mc:'#1e40af',mb:'#eff6ff',mbd:'#bfdbfe'},
+    {n:'أسود أنيق',bg:'#111827',fc:'#f9fafb',mc:'#9ca3af',mb:'transparent',mbd:'transparent'},
+    {n:'أزرق داكن',bg:'#1e3a5f',fc:'#fbbf24',mc:'#f59e0b',mb:'rgba(251,191,36,.08)',mbd:'rgba(251,191,36,.2)'},
+    {n:'وردي',bg:'#fdf2f8',fc:'#be185d',mc:'#db2777',mb:'rgba(219,39,119,.05)',mbd:'rgba(219,39,119,.15)'},
+    {n:'أخضر زمردي',bg:'#022c22',fc:'#6ee7b7',mc:'#a7f3d0',mb:'rgba(110,231,183,.08)',mbd:'rgba(110,231,183,.2)'},
+    {n:'ذهبي',bg:'#fffbeb',fc:'#92400e',mc:'#b45309',mb:'rgba(245,158,11,.1)',mbd:'#fbbf24'},
+    {n:'بنفسجي',bg:'#1e1b4b',fc:'#c4b5fd',mc:'#a78bfa',mb:'rgba(167,139,250,.08)',mbd:'rgba(167,139,250,.2)'},
+    {n:'سماوي',bg:'#0f172a',fc:'#38bdf8',mc:'#94a3b8',mb:'rgba(56,189,248,.08)',mbd:'rgba(56,189,248,.2)'},
+    {n:'نعناعي',bg:'#f0fdf4',fc:'#166534',mc:'#15803d',mb:'rgba(21,128,61,.05)',mbd:'rgba(21,128,61,.15)'},
+    {n:'متوهج',bg:'#0a0a0a',fc:'#00ff88',mc:'#00ccff',mb:'rgba(0,255,136,.05)',mbd:'rgba(0,255,136,.2)'},
+  ],
+  styles:[
+    {n:'كلاسيكي',br:16,pd:28,sh:'none',bw:0,dir:'column',al:'center',gap:10},
+    {n:'دائري',br:50,pd:28,sh:'0 8px 32px rgba(0,0,0,.2)',bw:0,dir:'column',al:'center',gap:10},
+    {n:'مربع صلب',br:0,pd:28,sh:'none',bw:2,dir:'column',al:'center',gap:10},
+    {n:'زجاجي',br:20,pd:28,sh:'0 8px 32px rgba(0,0,0,.3)',bw:1,dir:'column',al:'center',gap:10},
+    {n:'بطاقة كلاسيكية',br:8,pd:20,sh:'0 4px 16px rgba(0,0,0,.08)',bw:1,dir:'column',al:'center',gap:8},
+    {n:'عملاق',br:24,pd:40,sh:'0 12px 48px rgba(0,0,0,.2)',bw:0,dir:'column',al:'center',gap:16},
+    {n:'نازف',br:16,pd:16,sh:'none',bw:0,dir:'column',al:'center',gap:4},
+    {n:'أفقي',br:16,pd:28,sh:'0 8px 32px rgba(0,0,0,.15)',bw:0,dir:'row',al:'center',gap:12},
+  ],
+  texts:[
+    {n:'كبير جريء',fsFr:3.0,fwFr:900,fsAr:1.8,fwAr:800},
+    {n:'متوسط متوازن',fsFr:2.4,fwFr:900,fsAr:1.5,fwAr:800},
+    {n:'صغير أنيق',fsFr:1.8,fwFr:700,fsAr:1.2,fwAr:600},
+    {n:'عملاق',fsFr:4.0,fwFr:900,fsAr:2.2,fwAr:800},
+    {n:'رفيع',fsFr:2.0,fwFr:300,fsAr:1.3,fwAr:400},
+  ],
+  fonts:[
+    {n:'Inter + Noto',fr:'Inter',ar:'Noto Sans Arabic'},
+    {n:'Poppins + Cairo',fr:'Poppins',ar:'Cairo'},
+    {n:'Montserrat + Tajawal',fr:'Montserrat',ar:'Tajawal'},
+    {n:'Playfair + Amiri',fr:'Playfair Display',ar:'Amiri'},
+    {n:'Roboto + Cairo',fr:'Roboto',ar:'Cairo'},
+    {n:'Lato + Noto',fr:'Lato',ar:'Noto Sans Arabic'},
+  ]
+};
+
+function applyColorPreset(i){
+  const p=PRESETS.colors[i];if(!p)return;
+  S.cardBg=p.bg;S.frenchColor=p.fc;S.meaningColor=p.mc;S.meaningBg=p.mb;S.meaningBorder=p.mbd;
+  pushHist();renderCtrls();updatePreview();
+}
+function applyStylePreset(i){
+  const p=PRESETS.styles[i];if(!p)return;
+  S.borderRadius=p.br;S.cardPadding=p.pd;S.cardShadow=p.sh;S.cardBorderWidth=p.bw;S.cardDirection=p.dir;S.cardAlign=p.al;S.cardGap=p.gap;
+  pushHist();renderCtrls();updatePreview();
+}
+function applyTextPreset(i){
+  const p=PRESETS.texts[i];if(!p)return;
+  S.frenchFontSize=p.fsFr;S.frenchFontWeight=p.fwFr;S.meaningFontSize=p.fsAr;S.meaningFontWeight=p.fwAr;
+  pushHist();renderCtrls();updatePreview();
+}
+function applyFontPreset(i){
+  const p=PRESETS.fonts[i];if(!p)return;
+  S.fontFrench=p.fr;S.fontArabic=p.ar;
+  pushHist();renderCtrls();updatePreview();
+}
+
+// ===== 10 IDEAS FOR MORE USER CONTROL =====
+// 1. Margin/Padding per element (top, right, bottom, left)
+// 2. Element opacity control
+// 3. Element order via drag & drop
+// 4. Background pattern (dots, lines, grid)
+// 5. Gradient angle visual picker (circle)
+// 6. Element width control (%)
+// 7. Custom CSS editor
+// 8. Border per element
+// 9. Element scale (transform)
+// 10. Responsive breakpoint preview
+
+
+
+
+// Quick one-click complete designs
+
+
+
 const GRAD_ANGLES=['0deg','45deg','90deg','135deg','180deg','225deg','270deg','315deg'];
 
 // Quick one-click complete designs
