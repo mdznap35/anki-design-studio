@@ -143,7 +143,7 @@ select.sl{appearance:none;cursor:pointer}
 </div>
 <div style="display:flex;flex-direction:column;gap:2px">
 <span style="font-size:.6em;color:var(--tx2)">النغمة</span>
-<div class="rw"><input type="range" id="ttsPitch" min="0.5" max="2" step="0.1" value="0.7"><span class="rv" id="ttsPitchVal">1.0</span></div>
+<div class="rw"><input type="range" id="ttsPitch" min="0.1" max="2" step="0.1" value="0.5"><span class="rv" id="ttsPitchVal">0.5</span></div>
 </div>
 </div>
 <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">
@@ -400,7 +400,7 @@ document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',function
   if(this.dataset.t==='editor')renderVE();
   if(this.dataset.t==='full')renderFullscreen();
 }));
-function syncToggles(){document.querySelectorAll("[data-tog]").forEach(function(el){var k=el.getAttribute("data-tog");if(k.startsWith("sec-"))return;var v=S[k]!==false;el.className="btn "+(v?"bg":"br")+" bs";el.textContent=(v?"✓":"✗")+" "+el.getAttribute("data-lbl");});}
+function syncToggles(){document.querySelectorAll("[data-tog]").forEach(function(el){var k=el.getAttribute("data-tog");if(k.startsWith("sec-"))return;var v=S[k]!==false;el.className="btn bo bs";el.style.borderColor=v?'var(--gn)':'var(--rd)';el.style.color=v?'var(--gn)':'var(--rd)';el.textContent=(v?"\u2713":"\u2717")+" "+el.getAttribute("data-lbl");});}
 function syncSectionToggles(){document.querySelectorAll("[data-tog^=\"sec-\"]").forEach(function(el){var k=el.getAttribute("data-tog").replace("sec-","");var vis=(S.sectionVisibility||{Pluriel:true,Synonyme:true,Contraire:true})[k]!==false;el.className="btn "+(vis?"bg":"br")+" bs";el.textContent=(vis?"✓":"✗")+" "+el.getAttribute("data-lbl");});}
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.className='show';setTimeout(()=>t.className='',2000);}
 
@@ -444,10 +444,10 @@ function renderCardHTML(c){
   const badgeN=c.showBadge!==false?'<span data-ve="badgeNom" style="display:inline-block;font-size:.72em;font-weight:700;padding:4px 14px;border-radius:20px;direction:ltr;margin:2px;background:'+(c.badgeNomBg||'#dbeafe')+';color:'+(c.badgeNomColor||'#1e40af')+';opacity:'+bOp+'">Nom</span>':"";
   const unitB=c.showUnitBadge!==false?'<span data-ve="badgeUnit" style="display:inline-block;font-size:.68em;font-weight:700;padding:3px 12px;border-radius:20px;direction:ltr;margin:2px;background:'+(c.unitBg||'#f0fdf4')+';color:'+(c.unitColor||'#166534')+';border:1px solid '+(c.unitBorder||'#bbf7d0')+';opacity:'+bOp+'">Unit 1</span>':'';
   const sBg2=c.speakerBg||'rgba(124,58,237,.2)';
-  const sClr2=c.speakerColor||'#ffffff';
+  
   const sIco2=c.speakerIcon||'\ud83d\udd0a';
   const sPos=c.speakerPos||'inline';
-  const speakerBtn='<span data-ve="speaker" style="display:inline-block;font-size:.8em;padding:4px 10px;border-radius:20px;cursor:pointer;background:'+sBg2+';color:'+sClr2+';margin:2px;transition:all .2s" onclick="event.stopPropagation();speakWord(SAMP.f,\'fr\');setTimeout(()=>speakWord(SAMP.a,\'ar\'),1500)">'+sIco2+'</span>';
+  const speakerBtn='<span data-ve="speaker" style="display:inline-block;font-size:.8em;padding:4px 10px;border-radius:20px;cursor:pointer;background:'+sBg2+';color:#ffffff;margin:2px;transition:all .2s" onclick="event.stopPropagation();speakWord(SAMP.f,\'fr\');setTimeout(()=>speakWord(SAMP.a,\'ar\'),1500)">'+sIco2+'</span>';
   const badges=sPos==='inline'?badgeN+unitB+speakerBtn:badgeN+unitB;
   const french='<div style="opacity:'+fOp+';width:'+fW+';transform:scale('+fSc+');margin-top:'+fMt+'px;margin-bottom:'+fMb+'px;font-family:'+fF+',sans-serif;font-size:'+fsFr+'em;font-weight:'+fwFr+';direction:ltr;unicode-bidi:embed;color:'+fc+';letter-spacing:'+(c.frenchLetterSpacing||0)+'px;line-height:'+(c.frenchLineHeight||1.2)+'">'+SAMP.f+'</div>';
   const meaning=c.showMeaning!==false?'<div style="opacity:'+mOp+';width:'+mW+';transform:scale('+mSc+');margin-top:'+mMt+'px;margin-bottom:'+mMb+'px;background:'+(c.meaningBg||'#eff6ff')+';border:'+(c.meaningBorderWidth||2)+'px solid '+(c.meaningBorder||'#bfdbfe')+';border-radius:'+(c.meaningBorderRadius||16)+'px;padding:10px 16px"><div style="font-family:'+fA+',sans-serif;font-size:'+fsAr+'em;font-weight:'+fwAr+';color:'+mc+'">'+SAMP.a+'</div></div>':'';
@@ -464,7 +464,8 @@ function renderCardHTML(c){
   const order=c.elementOrder||['badge','french','separator','meaning','sections','page'];
   const parts={badge:'<div data-ve="badge" style="display:flex;flex-wrap:wrap;align-items:center;justify-content:center">'+badges+'</div>',french:'<div data-ve="french">'+french+'</div>',separator:sepHtml,meaning:'<div data-ve="meaning">'+meaning+'</div>',sections:secsHtml,page:pageHtml};
   let ordered='';for(const k of order)ordered+=(parts[k]||'');
-  return '<div class="card" data-ve="card" style="background:'+bg+';'+base+'padding:'+pd+'px;min-height:'+mh+'px;max-width:'+(c.previewWidth||mw)+'px;flex-direction:column;align-items:center;justify-content:center;gap:'+cg+'px;'+extras+';position:relative">'+bgOverlay+'<div style="position:relative;z-index:1;width:100%;display:flex;flex-direction:column;align-items:center;gap:'+cg+'px">'+ordered+'</div></div>';
+    const spkFloat=sPos!=='inline'?'<div data-ve="speaker" style="position:absolute;'+(sPos.indexOf('top')>=0?'top:10px':'bottom:10px')+';'+(sPos.indexOf('right')>=0?'right:10px':'left:10px')+';z-index:5;font-size:.8em;padding:6px 12px;border-radius:20px;cursor:pointer;background:'+sBg2+';color:#ffffff;transition:all .2s;box-shadow:0 2px 8px rgba(0,0,0,.2)" onclick="event.stopPropagation();speakWord(SAMP.f,\'fr\');setTimeout(()=>speakWord(SAMP.a,\'ar\'),1500)">'+sIco2+'</div>':'';
+  return '<div class="card" data-ve="card" style="background:'+bg+';'+base+'padding:'+pd+'px;min-height:'+mh+'px;max-width:'+(c.previewWidth||mw)+'px;flex-direction:column;align-items:center;justify-content:center;gap:'+cg+'px;'+extras+';position:relative">'+bgOverlay+spkFloat+'<div style="position:relative;z-index:1;width:100%;display:flex;flex-direction:column;align-items:center;gap:'+cg+'px">'+ordered+'</div></div>';
 }
 
 // CONTROLS
@@ -562,7 +563,8 @@ function renderCtrls(){
   // Show/Hide
   h+='<div class="cs-t">إظهار العناصر</div><div style="display:flex;gap:4px;flex-wrap:wrap">';
   [{k:'showBadge',lb:'شارة Nom'},{k:'showUnitBadge',lb:'شارة الوحدة'},{k:'showMeaning',lb:'المعنى'},{k:'showPage',lb:'رقم الصفحة'}].forEach(b=>{
-    h+='<button class="btn bs" data-tog="'+b.k+'" data-lbl="'+b.lb+'" onclick="setVal(\''+b.k+'\',S[\''+b.k+'\']===false)">'+(S[b.k]!==false?'✓':'✗')+' '+b.lb+'</button>';
+    const on=S[b.k]!==false;
+    h+='<button class="btn bo bs" data-tog="'+b.k+'" data-lbl="'+b.lb+'" style="border-color:'+(on?'var(--gn)':'var(--rd)')+';color:'+(on?'var(--gn)':'var(--rd)')+'" onclick="setVal(\''+b.k+'\',S[\''+b.k+'\']===false)">'+(on?'✓':'✗')+' '+b.lb+'</button>';
   });
   h+='</div>';
   // Speaker Button
@@ -577,9 +579,7 @@ function renderCtrls(){
     h+='<div class="sw" data-icon="'+ic+'" style="font-size:1em;background:'+(S.speakerIcon===ic?'var(--ac)':'var(--s2)')+';border-color:'+(S.speakerIcon===ic?'var(--gn)':'var(--bd)')+'" onclick="setVal(\'speakerIcon\',\''+ic+'\')">'+ic+'</div>';
   });
   h+='</div></div>';
-  [{id:'speakerBg',lb:'خلفية الزر',d:'rgba(124,58,237,.2)'},{id:'speakerColor',lb:'لون الأيقونة',d:'#ffffff'}].forEach(c2=>{
-    h+='<div class="ct"><div class="cl-b">'+c2.lb+'</div><div class="rw"><input type="color" value="'+(S[c2.id]||c2.d)+'" oninput="setVal(\''+c2.id+'\',this.value);this.nextElementSibling.value=this.value"><input type="text" class="hx" value="'+(S[c2.id]||c2.d)+'" onchange="setVal(\''+c2.id+'\',this.value);this.previousElementSibling.value=this.value"></div></div>';
-  });
+  h+='<div class="ct"><div class="cl-b">خلفية الزر</div><div class="rw"><input type="color" value="'+(S.speakerBg||'rgba(124,58,237,.2)')+'" oninput="setVal(\'speakerBg\',this.value);this.nextElementSibling.value=this.value"><input type="text" class="hx" value="'+(S.speakerBg||'rgba(124,58,237,.2)')+'" onchange="setVal(\'speakerBg\',this.value);this.previousElementSibling.value=this.value"></div></div>';
   h+='</div>';
   // Separator
   h+='<div class="cs-t">الفاصل</div><div class="cg">';
@@ -755,8 +755,7 @@ function speakWord(text,lang){
   const u=new SpeechSynthesisUtterance(text);
   u.lang=lang==='fr'?'fr-FR':'ar-SA';
   const rate=parseFloat(document.getElementById('ttsRate')?.value||0.85);
-  const pitch=parseFloat(document.getElementById('ttsPitch')?.value||0.6);
-  // Force male sound: low pitch + slightly fast rate
+  const pitch=parseFloat(document.getElementById('ttsPitch')?.value||0.5);
   u.rate=rate;
   u.pitch=pitch;
   // Try to find the deepest/most male voice available
