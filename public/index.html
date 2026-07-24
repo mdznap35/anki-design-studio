@@ -548,6 +548,16 @@ function applyPaletteToCard(){if(_lastPalette.length>=4){S.cardBg=_lastPalette[0
 function generateFromBase(){var pick=document.getElementById('baseColorPicker');var base=pick?pick.value:'#7c3aed';var hsl=hexToHSL(base);var p=[base];for(var i=1;i<6;i++){var h=(hsl.h+i*30)%360;p.push(hslToHex(h,Math.min(100,hsl.s+10),Math.min(90,hsl.l+i*8)));}var el=document.getElementById('basePalette');if(el)el.innerHTML=p.map(function(c,i){var k=i===0?'cardBg':i===1?'frenchColor':i===2?'meaningColor':i===3?'meaningBg':i===4?'badgeNomBg':'secBg';return '<div style="width:24px;height:24px;border-radius:5px;background:'+c+';cursor:pointer;border:2px solid var(--bd)" onclick="setVal(\''+k+'\',\''+c+'\')" title="'+c+'"></div>';}).join('');}
 function applyHarmony(type){var base=S.cardBg||'#7c3aed';var hsl=hexToHSL(base);var h=hsl.h,s=hsl.s,l=hsl.l;var harmonies={complementary:[(h+180)%360],analogous:[(h+30)%360,(h+60)%360],triadic:[(h+120)%360,(h+240)%360],'split-complementary':[(h+150)%360,(h+210)%360],tetradic:[(h+90)%360,(h+180)%360,(h+270)%360]};var cols=harmonies[type]||[];cols.unshift(h);var map=['cardBg','frenchColor','meaningColor','badgeNomBg','secBg'];cols.forEach(function(hue,i){if(i<map.length)S[map[i]]=hslToHex(hue,s,l);});pushHist();renderCtrls();renderAll();toast('تم تطبيق التناغم');}
 
+function moveElement(dir,el){
+  var order=S.elementOrder||['badge','french','separator','meaning','sections','page'];
+  var idx=order.indexOf(dir);
+  if(idx<0)return;
+  var ni=idx+el;
+  if(ni<0||ni>=order.length)return;
+  var t=order[idx];order[idx]=order[ni];order[ni]=t;
+  S.elementOrder=order;pushHist();renderCtrls();renderAll();
+}
+
 // NAVIGATION
 document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',function(){
   document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));this.classList.add('on');
@@ -618,15 +628,8 @@ function buildElCSS(p,c){
   if(c[p+'MixBlendMode']&&c[p+'MixBlendMode']!=='normal')s+='mix-blend-mode:'+c[p+'MixBlendMode']+';';
   return s;
 }
-function renderCardHTML(c){
-  const fF=FMAP[c.fontFrench]||"'Inter',sans-serif";
-  const fA=FMAP[c.fontArabic]||"'Noto Sans Arabic',sans-serif";
-  const br=c.borderRadius||16,pd=c.cardPadding||28,mh=c.cardMinHeight||300,mw=c.cardMaxWidth||480,cg=c.cardGap||10;
-  const fsFr=c.frenchFontSize||2.4,fwFr=c.frenchFontWeight||900,fc=c.frenchColor||'#1e293b';
-  const fsAr=c.meaningFontSize||1.5,fwAr=c.meaningFontWeight||800,mc=c.meaningColor||'#1e40af';
-  let bg=c.cardBg;
-  if(c.cardBg2&&c.cardBg!==c.cardBg2)bg='linear-gradient('+(c.bgGradientDir||'135deg')+','+c.cardBg+','+c.cardBg2+')';
-  // Background image overlay (separate from card content)
+
+function _patternCSS(p,col,sz){
   function _patternCSS(p,col,sz){if(!p||p==='none')return '';var pat={
     'dots':'radial-gradient(circle,'+col+' 1px,transparent 1px)',
     'lines':'repeating-linear-gradient(0deg,'+col+' 0px,'+col+' 1px,transparent 1px,transparent '+sz+'px)',
@@ -640,6 +643,17 @@ function renderCardHTML(c){
     'stripes':'repeating-linear-gradient(45deg,'+col+' 0px,'+col+' 2px,transparent 2px,transparent '+sz+'px'),
     'squares':'repeating-conic-gradient('+col+' 0% 25%,transparent 0% 50%) 0 0/'+sz+'px '+sz+'px'
   };var r=pat[p];if(!r)return '';return 'background-image:'+r+';background-size:'+(p==='waves'?sz*2+'px '+sz+'px':p==='halftone'?sz*2+'px '+sz*2+'px':sz+'px '+sz+'px')+';';}
+}
+function renderCardHTML(c){
+  const fF=FMAP[c.fontFrench]||"'Inter',sans-serif";
+  const fA=FMAP[c.fontArabic]||"'Noto Sans Arabic',sans-serif";
+  const br=c.borderRadius||16,pd=c.cardPadding||28,mh=c.cardMinHeight||300,mw=c.cardMaxWidth||480,cg=c.cardGap||10;
+  const fsFr=c.frenchFontSize||2.4,fwFr=c.frenchFontWeight||900,fc=c.frenchColor||'#1e293b';
+  const fsAr=c.meaningFontSize||1.5,fwAr=c.meaningFontWeight||800,mc=c.meaningColor||'#1e40af';
+  let bg=c.cardBg;
+  if(c.cardBg2&&c.cardBg!==c.cardBg2)bg='linear-gradient('+(c.bgGradientDir||'135deg')+','+c.cardBg+','+c.cardBg2+')';
+  // Background image overlay (separate from card content)
+
 const bgOverlay=c.cardBgImage?'<div style="position:absolute;inset:0;background-image:url('+c.cardBgImage+');background-size:cover;background-position:center;filter:blur('+(c.cardBgBlur||0)+'px);opacity:'+(c.cardBgOpacity!==undefined?c.cardBgOpacity:1)+';z-index:0;pointer-events:none"></div>':'';
   const extras=(c.cardBorderWidth>0?'border:'+c.cardBorderWidth+'px solid '+c.cardBorderColor+';':'')+(c.cardShadow&&c.cardShadow!=='none'?'box-shadow:'+c.cardShadow+';':'');
   const base='border-radius:'+br+'px;text-align:center;position:relative;overflow:hidden;font-family:'+fA+',sans-serif;direction:rtl;';
@@ -686,7 +700,7 @@ const bgOverlay=c.cardBgImage?'<div style="position:absolute;inset:0;background-
 function renderCtrls(){
   let h='';
   // Helper functions
-  function acc(title,content,open){return '<div class="acc"><div class="acc-h'+'" onclick="toggleAcc(this)"><span>'+title+'</span><span class="arr">\u25B6</span></div><div class="acc-b'+(+'">'+content+'</div></div>';}
+  function acc(title,content,open){return '<div class="acc"><div class="acc-h' + (open ? ' open' : '') + '" onclick="toggleAcc(this)"><span>'+title+'</span><span class="arr">\u25B6</span></div><div class="acc-b' + (open ? ' open' : '') + '">'+content+'</div></div>';}
   function grp(title,content){return '<div class="acc-grp"><div class="acc-grp-t">'+title+'</div>'+content+'</div>';}
   function rng(id,lb,min,max,step,d,fmt){
     var v=S[id]!==undefined?S[id]:d;var u=fmt||'';
@@ -772,7 +786,7 @@ function renderCtrls(){
   bg+=grp('\u062A\u0623\u062B\u064A\u0631',sl([
     ['cardBgOpacity','\u0634\u0641\u0627\u0641\u064A\u0629',0,1,0.05,1],
     ['cardBgBlur','\u0636\u0628\u0627\u0628\u064A\u0629',0,20,1,0]
-  ])+sel('cardBgPattern','\u0646\u0645\u0637',[{v:'none',l:'\u0628\u062F\u0648\u0646'},{v:'dots',l:'\u0646\u0642\u0637'},{v:'lines',l:'\u062E\u0637\u0648\u0637'},{v:'grid',l:'\u0634\u0628\u0643\u0629'}]));
+  ])+sel('bgPattern','\u0646\u0645\u0637',[{v:'none',l:'\u0628\u062F\u0648\u0646'},{v:'dots',l:'\u0646\u0642\u0637'},{v:'lines',l:'\u062E\u0637\u0648\u0637'},{v:'grid',l:'\u0634\u0628\u0643\u0629'}]));
   h+=acc('\u{1F308} \u0627\u0644\u062E\u0644\u0641\u064A\u0629',bg,false);
 
   // 6. VISIBILITY
