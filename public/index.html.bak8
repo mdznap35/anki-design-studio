@@ -143,7 +143,7 @@ select.sl{appearance:none;cursor:pointer}
 </div>
 <div style="display:flex;flex-direction:column;gap:2px">
 <span style="font-size:.6em;color:var(--tx2)">النغمة</span>
-<div class="rw"><input type="range" id="ttsPitch" min="0.5" max="2" step="0.1" value="0.7"><span class="rv" id="ttsPitchVal">1.0</span></div>
+<div class="rw"><input type="range" id="ttsPitch" min="0.5" max="2" step="0.1" value="1"><span class="rv" id="ttsPitchVal">1.0</span></div>
 </div>
 </div>
 <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">
@@ -228,7 +228,6 @@ function defCfg(overrides={}){
     separatorStyle:'none',separatorWidth:2,separatorColor:'#e2e8f0',
     frenchTextShadow:'',meaningTextShadow:'',
     fontFrench:'Inter',fontArabic:'Noto Sans Arabic',
-    speakerIcon:'🔊',speakerBg:'rgba(124,58,237,.15)',speakerColor:'#7c3aed',
     deckName:'📘 Français Bac 2021-2022'
   },overrides);
 }
@@ -387,7 +386,7 @@ function undo(){if(histIdx>0){histIdx--;S=JSON.parse(JSON.stringify(hist[histIdx
 function redo(){if(histIdx<hist.length-1){histIdx++;S=JSON.parse(JSON.stringify(hist[histIdx]));renderAll();}}
 function updateUndoRedo(){const u=document.getElementById('undoBtn');if(u)u.disabled=histIdx<=0;const r=document.getElementById('redoBtn');if(r)r.disabled=histIdx>=hist.length-1;}
 function setVal(k,v){S[k]=v;pushHist();renderAll();}
-function renderAll(){renderGrid();updateCtlPreview();syncToggles();if(document.getElementById('sec-editor').classList.contains('on'))renderVE();if(document.getElementById('sec-full').classList.contains('on'))renderFullscreen();}
+function renderAll(){renderGrid();updateCtlPreview();if(document.getElementById('sec-editor').classList.contains('on'))renderVE();if(document.getElementById('sec-full').classList.contains('on'))renderFullscreen();}
 
 // NAVIGATION
 document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',function(){
@@ -398,8 +397,6 @@ document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',function
   if(this.dataset.t==='editor')renderVE();
   if(this.dataset.t==='full')renderFullscreen();
 }));
-function syncToggles(){document.querySelectorAll("[data-tog]").forEach(function(el){var k=el.getAttribute("data-tog");if(k.startsWith("sec-"))return;var v=S[k]!==false;el.className="btn "+(v?"bg":"br")+" bs";el.textContent=(v?"✓":"✗")+" "+el.getAttribute("data-lbl");});}
-function syncSectionToggles(){document.querySelectorAll("[data-tog^=\"sec-\"]").forEach(function(el){var k=el.getAttribute("data-tog").replace("sec-","");var vis=(S.sectionVisibility||{Pluriel:true,Synonyme:true,Contraire:true})[k]!==false;el.className="btn "+(vis?"bg":"br")+" bs";el.textContent=(vis?"✓":"✗")+" "+el.getAttribute("data-lbl");});}
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.className='show';setTimeout(()=>t.className='',2000);}
 
 // GALLERY
@@ -456,7 +453,7 @@ function renderCardHTML(c){
   const sepHtml=c.separatorStyle&&c.separatorStyle!=='none'?'<div data-ve="separator" style="border-top:'+(c.separatorWidth||2)+'px '+(c.separatorStyle||'solid')+' '+(c.separatorColor||'#e2e8f0')+';width:80%;margin:4px auto"></div>':'<div data-ve="separator" style="height:1px"></div>';
   const pageHtml=c.showPage!==false?'<div data-ve="page" style="font-size:.55em;color:'+(c.labelColor||'#999')+';margin-top:4px">Page 12</div>':'<div data-ve="page" style="height:1px"></div>';
   const order=c.elementOrder||['badge','french','separator','meaning','sections','page'];
-  const parts={badge:'<div data-ve="badge" style="display:flex;flex-wrap:wrap;align-items:center;justify-content:center">'+badges+'</div>',french:'<div data-ve="french">'+french+'</div>',separator:sepHtml,meaning:'<div data-ve="meaning">'+meaning+'</div>',sections:secsHtml,page:pageHtml};
+  const parts={badge:'<div data-ve="badge">'+badges+'</div>',french:'<div data-ve="french">'+french+'</div>',separator:sepHtml,meaning:'<div data-ve="meaning">'+meaning+'</div>',sections:secsHtml,page:pageHtml};
   let ordered='';for(const k of order)ordered+=(parts[k]||'');
   return '<div class="card" data-ve="card" style="background:'+bg+';'+base+'padding:'+pd+'px;min-height:'+mh+'px;max-width:'+(c.previewWidth||mw)+'px;flex-direction:column;align-items:center;justify-content:center;gap:'+cg+'px;'+extras+';position:relative">'+bgOverlay+'<div style="position:relative;z-index:1;width:100%;display:flex;flex-direction:column;align-items:center;gap:'+cg+'px">'+ordered+'</div></div>';
 }
@@ -557,25 +554,13 @@ function renderCtrls(){
   h+='<div class="cs-t">إظهار الأقسام</div><div style="display:flex;gap:4px;flex-wrap:wrap">';
   ['Pluriel','Synonyme','Contraire'].forEach(s=>{
     const vis=(S.sectionVisibility||{Pluriel:true,Synonyme:true,Contraire:true})[s]!==false;
-    h+='<button class="btn '+(vis?'bg':'br')+' bs" data-tog="sec-'+s+'" data-lbl="'+s+'" onclick="toggleSection(\''+s+'\')">'+(vis?'✓':'✗')+' '+s+'</button>';
+    h+='<button class="btn '+(vis?'bg':'br')+' bs" onclick="toggleSection(\''+s+'\')">'+(vis?'✓':'✗')+' '+s+'</button>';
   });
   h+='</div>';
   // Show/Hide
   h+='<div class="cs-t">إظهار العناصر</div><div style="display:flex;gap:4px;flex-wrap:wrap">';
-  [{k:'showBadge',lb:'الشارات'},{k:'showUnitBadge',lb:'شارة الوحدة'},{k:'showMeaning',lb:'المعنى'},{k:'showPage',lb:'رقم الصفحة'}].forEach(b=>{
-    const sv=S[b.k]!==false;
-    h+='<button class="btn '+(sv?'bg':'br')+' bs" data-tog="'+b.k+'" data-lbl="'+b.lb+'" onclick="setVal(\''+b.k+'\','+(sv?false:true)+')">'+(sv?'✓':'✗')+' '+b.lb+'</button>';
-  });
-  h+='</div>';
-  // Speaker Button
-  h+='<div class="cs-t">زر الصوت</div><div class="cg">';
-  h+='<div class="ct"><div class="cl-b">أيقونة الصوت</div><div class="rw">';
-  ['🔊','🔉','🎵','🎶','🗣️','📢','💬','🔴'].forEach(ic=>{
-    h+='<div class="sw" style="font-size:1em;background:'+(S.speakerIcon===ic?'var(--ac)':'var(--s2)')+';border-color:'+(S.speakerIcon===ic?'var(--gn)':'var(--bd)')+'" onclick="setVal(\'speakerIcon\',\''+ic+'\')">'+ic+'</div>';
-  });
-  h+='</div></div>';
-  [{id:'speakerBg',lb:'خلفية الزر',d:'rgba(124,58,237,.15)'},{id:'speakerColor',lb:'لون الزر',d:'#7c3aed'}].forEach(c2=>{
-    h+='<div class="ct"><div class="cl-b">'+c2.lb+'</div><div class="rw"><input type="color" value="'+(S[c2.id]||c2.d)+'" oninput="setVal(''+c2.id+'',this.value);this.nextElementSibling.value=this.value"><input type="text" class="hx" value="'+(S[c2.id]||c2.d)+'" onchange="setVal(''+c2.id+'',this.value);this.previousElementSibling.value=this.value"></div></div>';
+  [{k:'showBadge',lb:'الشارات'},{k:'showMeaning',lb:'المعنى'},{k:'showPage',lb:'رقم الصفحة'}].forEach(b=>{
+    h+='<button class="btn '+((S[b.k]!==false)?'bg':'br')+' bs" onclick="setVal(\''+b.k+'\','+(S[b.k]===false)+')">'+((S[b.k]!==false)?'✓':'✗')+' '+b.lb+'</button>';
   });
   h+='</div>';
   // Separator
@@ -596,7 +581,7 @@ function renderCtrls(){
   renderSavedList();
 }
 
-function toggleSection(s){if(!S.sectionVisibility)S.sectionVisibility={Pluriel:true,Synonyme:true,Contraire:true};S.sectionVisibility[s]=!S.sectionVisibility[s];pushHist();renderAll();syncSectionToggles();}
+function toggleSection(s){if(!S.sectionVisibility)S.sectionVisibility={Pluriel:true,Synonyme:true,Contraire:true};S.sectionVisibility[s]=!S.sectionVisibility[s];pushHist();renderCtrls();renderAll();}
 function updateCtlPreview(){const e=document.getElementById('ctlPreviewCard');if(e)e.innerHTML=renderCardHTML(S);}
 
 
@@ -643,9 +628,7 @@ function _tog(id,lb){return {id,lb,type:'toggle'};}
 
 const VE_PROPS={
   card:[_clr('cardBg','خلفية البطاقة'),_clr('cardBg2','خلفية ثانية'),_clr('cardBorderColor','حدود البطاقة'),_rng('cardBorderWidth','سمك الحدود',0,10,1),_rng('borderRadius','استدارة البطاقة',0,50,1),_rng('cardPadding','الحشو',8,60,2),_rng('cardGap','المسافة',0,30,2),_rng('cardMinHeight','الارتفاع',150,600,10)],
-  badgeNom:[_clr('badgeNomBg','خلفية Nom'),_clr('badgeNomColor','لون Nom'),_rng('badgeOpacity','الشفافية',0,1,0.05,v=>Math.round(v*100)+'%'),_tog('showBadge','إظهار Nom')],
-  badgeUnit:[_clr('unitBg','خلفية الوحدة'),_clr('unitColor','لون الوحدة'),_clr('unitBorder','حدود الوحدة'),_tog('showUnitBadge','إظهار الوحدة')],
-  badge:[_clr('badgeNomBg','خلفية Nom'),_clr('badgeNomColor','لون Nom'),_clr('unitBg','خلفية الوحدة'),_clr('unitColor','لون الوحدة'),_clr('unitBorder','حدود الوحدة'),_rng('badgeOpacity','الشفافية',0,1,0.05,v=>Math.round(v*100)+'%'),_tog('showBadge','إظهار Nom'),_tog('showUnitBadge','إظهار الوحدة')],
+  badge:[_clr('badgeNomBg','خلفية الشارة'),_clr('badgeNomColor','لون الشارة'),_clr('unitBg','خلفية الوحدة'),_clr('unitColor','لون الوحدة'),_clr('unitBorder','حدود الوحدة'),_rng('badgeOpacity','الشفافية',0,1,0.05,v=>Math.round(v*100)+'%'),_tog('showBadge','إظهار الشارات')],
   french:[_clr('frenchColor','اللون'),_rng('frenchFontSize','الحجم',0.8,5,0.1),_rng('frenchFontWeight','السمك',100,900,100),_rng('frenchOpacity','الشفافية',0,1,0.05,v=>Math.round(v*100)+'%'),_rng('frenchWidth','العرض',30,100,5,v=>v+'%'),_rng('frenchScale','التكبير',0.5,2,0.05,v=>Math.round(v*100)+'%'),_rng('frenchLetterSpacing','التباعد',-5,20,0.5),_rng('frenchLineHeight','الارتفاع',0.8,3,0.1),_rng('frenchMarginTop','هامش أعلى',0,40,1),_rng('frenchMarginBottom','هامش أسفل',0,40,1),_sel('fontFrench','الخط',FONTS)],
   separator:[_clr('separatorColor','اللون'),_rng('separatorWidth','السمك',1,8,1),_sel('separatorStyle','النمط',[{v:'none',l:'بدون'},{v:'solid',l:'خط'},{v:'dashed',l:'متقطع'},{v:'dotted',l:'منقط'}])],
   meaning:[_clr('meaningColor','لون النص'),_clr('meaningBg','الخلفية'),_clr('meaningBorder','الحدود'),_rng('meaningFontSize','الحجم',0.5,3,0.1),_rng('meaningFontWeight','السمك',100,900,100),_rng('meaningBorderRadius','الاستدارة',0,50,1),_rng('meaningBorderWidth','سمك الحدود',0,10,1),_rng('meaningOpacity','الشفافية',0,1,0.05,v=>Math.round(v*100)+'%'),_rng('meaningWidth','العرض',30,100,5,v=>v+'%'),_rng('meaningScale','التكبير',0.5,2,0.05,v=>Math.round(v*100)+'%'),_rng('meaningMarginTop','هامش أعلى',0,40,1),_rng('meaningMarginBottom','هامش أسفل',0,40,1),_sel('fontArabic','الخط',ARFONTS),_tog('showMeaning','إظهار المعنى')],
@@ -653,10 +636,10 @@ const VE_PROPS={
   synonyme:[_clr('secBg','الخلفية'),_clr('secBorder','الحدود'),_clr('secTextColor','لون النص'),_clr('labelColor','لون التسميات'),_rng('sectionOpacity','الشفافية',0,1,0.05,v=>Math.round(v*100)+'%')],
   contraire:[_clr('secBg','الخلفية'),_clr('secBorder','الحدود'),_clr('secTextColor','لون النص'),_clr('labelColor','لون التسميات'),_rng('sectionOpacity','الشفافية',0,1,0.05,v=>Math.round(v*100)+'%')],
   page:[_clr('labelColor','لون النص'),_tog('showPage','إظهار الصفحة')],
-  speaker:[_clr('speakerBg','خلفية الزر'),_clr('speakerColor','لون الزر'),_sel('speakerIcon','الأيقونة',[{v:'🔊',l:'🔊'},{v:'🔉',l:'🔉'},{v:'🎵',l:'🎵'},{v:'🎶',l:'🎶'},{v:'🗣️',l:'🗣️'},{v:'📢',l:'📢'},{v:'💬',l:'💬'},{v:'🔴',l:'🔴'}])],
+  speaker:[_tog('showBadge','إظهار الشارات')],
 };
 
-const VE_LABELS={card:' البطاقة',badge:' الشارات',badgeNom:' شارة Nom',badgeUnit:' شارة الوحدة',french:' الكلمة الفرنسية',separator:' الفاصل',meaning:' المعنى',pluriel:' Pluriel',synonyme:' Synonyme',contraire:' Contraire',page:' الصفحة',speaker:' زر الصوت'};
+const VE_LABELS={card:' البطاقة',badge:' الشارات',french:' الكلمة الفرنسية',separator:' الفاصل',meaning:' المعنى',pluriel:' Pluriel',synonyme:' Synonyme',contraire:' Contraire',page:' الصفحة'};
 
 function renderVE(){
   const cv=document.getElementById('veCanvas');if(!cv)return;
@@ -704,27 +687,22 @@ function renderVEProps(elId){
   p.innerHTML=h;
 }
 
-// TTS - Male Voice Only
+// TTS - Single Male Voice
 let ttsFRVoice=null,ttsARVoice=null;
 function initTTS(){
   if(!window.speechSynthesis)return;
-  speechSynthesis.cancel();
   const voices=speechSynthesis.getVoices();
-  if(!voices.length)return;
-  const maleNames=['thomas','nicolas','lucas','hugo','antoine','philippe','pierre','jacques','michel','andre','georges','paul','charles','henri','marc','daniel','eric','maturity','enhanced','premium','google','david','mark','daniel','james','john','michael','robert','richard','joseph','thomas','charles','christopher','matthew','anthony','donald','steven','paul','andrew','joshua','kenneth','kevin','brian','george','timothy','ronald','edward','jason','jeffrey','ryan','jacob','gary','nicholas','eric','stephen','jonathan','larry','justin','scott','brandon','benjamin','samuel','raymond','gregory','frank','patrick','jack','dennis','jerry','alexander','tyler','aaron','jose','nathan','henry','peter','zachary','douglas','harold','carl','arthur','gerald','roger','keith','jeremy','terry','lawrence','sean','albert','joe','christian','austin','willie','billy','bruce','ralph','roy','eugene','russell','bobby','mason','philip','harry','eugene','fred','bobby'];
-  const femaleNames=['samantha','susan','karen','nancy','linda','betty','margaret','sandra','ashley','dorothy','kimberly','emily','donna','michelle','carol','amanda','melissa','deborah','stephanie','rebecca','sharon','laura','cynthia','kathleen','amy','angela','shirley','anna','brenda','pamela','emma','nicole','helen','samantha','katherine','christine','debra','rachel','carolyn','janet','catherine','maria','heather','diane','ruth','julie','olivia','joyce','virginia','victoria','kelly','lauren','christina','joan','evelyn','judith','megan','andrea','cheryl','hannah','jacqueline','martha','gloria','teresa','ann','sara','madison','frances','kathryn','janice','jean','abigail','alice','judy','sophia','grace','denise','amber','doris','marilyn','danielle','beverly','isabella','theresa','diana','natalie','brittany','charlotte','marie','kayla','alexis','lori'];
-  // Find French voice - strongly prefer male
+  // French male voice - be very specific
   const frV=voices.filter(v=>v.lang.startsWith('fr'));
-  ttsFRVoice=frV.find(v=>{const n=v.name.toLowerCase();return maleNames.some(m=>n.includes(m));})
-    ||frV.find(v=>{const n=v.name.toLowerCase();return !femaleNames.some(m=>n.includes(m));})
-    ||frV.find(v=>!v.name.toLowerCase().includes('female')&&!v.name.toLowerCase().includes('femme'))
-    ||frV[0]||null;
-  // Find Arabic voice - strongly prefer male
+  // Priority: male names > non-female > any French > any voice
+  const maleNames=['thomas','nicolas','lucas','hugo','antoine','philippe','pierre','jacques','michel','andre','georges','paul','charles','henri','marc'];
+  ttsFRVoice=frV.find(v=>{
+    const n=v.name.toLowerCase();
+    return maleNames.some(m=>n.includes(m))||n.includes('male')||n.includes('homme');
+  })||frV.find(v=>!v.name.toLowerCase().includes('female')&&!v.name.toLowerCase().includes('femme'))||frV[0]||voices.find(v=>v.lang.startsWith('fr'))||null;
+  // Arabic voice
   const arV=voices.filter(v=>v.lang.startsWith('ar'));
-  ttsARVoice=arV.find(v=>{const n=v.name.toLowerCase();return maleNames.some(m=>n.includes(m));})
-    ||arV.find(v=>{const n=v.name.toLowerCase();return !femaleNames.some(m=>n.includes(m));})
-    ||arV.find(v=>!v.name.toLowerCase().includes('female')&&!v.name.toLowerCase().includes('femme'))
-    ||arV[0]||null;
+  ttsARVoice=arV[0]||voices.find(v=>v.lang.startsWith('ar'))||null;
   console.log('TTS voices:',ttsFRVoice?.name,ttsARVoice?.name);
   const rateEl=document.getElementById('ttsRate');
   const pitchEl=document.getElementById('ttsPitch');
@@ -736,8 +714,8 @@ function speakWord(text,lang){
   speechSynthesis.cancel();
   const u=new SpeechSynthesisUtterance(text);
   u.lang=lang==='fr'?'fr-FR':'ar-SA';
-  u.rate=parseFloat(document.getElementById('ttsRate')?.value||0.85);
-  u.pitch=parseFloat(document.getElementById('ttsPitch')?.value||0.7);
+  u.rate=parseFloat(document.getElementById('ttsRate')?.value||0.8);
+  u.pitch=parseFloat(document.getElementById('ttsPitch')?.value||1);
   if(lang==='fr'&&ttsFRVoice)u.voice=ttsFRVoice;
   if(lang==='ar'&&ttsARVoice)u.voice=ttsARVoice;
   speechSynthesis.speak(u);

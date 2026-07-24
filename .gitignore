@@ -5,3 +5,5 @@ start.sh
 test_and_run.sh
 build_gallery.py
 __pycache__/
+public/index.html.bak*
+*.bak*
