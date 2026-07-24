@@ -440,10 +440,13 @@ function renderCardHTML(c){
   const fSc=c.frenchScale||1;const mSc=c.meaningScale||1;
   const fMt=c.frenchMarginTop||0;const fMb=c.frenchMarginBottom||4;
   const mMt=c.meaningMarginTop||6;const mMb=c.meaningMarginBottom||0;
-  const badgeN=c.showBadge!==false?'<span style="display:inline-block;font-size:.72em;font-weight:700;padding:4px 14px;border-radius:20px;direction:ltr;margin:2px;background:'+(c.badgeNomBg||'#dbeafe')+';color:'+(c.badgeNomColor||'#1e40af')+';opacity:'+bOp+'">Nom</span>':"";
-  const unitB=c.showBadge!==false?'<span style="display:inline-block;font-size:.68em;font-weight:700;padding:3px 12px;border-radius:20px;direction:ltr;margin:2px;background:'+(c.unitBg||'#f0fdf4')+';color:'+(c.unitColor||'#166534')+';border:1px solid '+(c.unitBorder||'#bbf7d0')+';opacity:'+bOp+'">Unit 1</span>':'';
-  const speakerBtn='<span data-ve="speaker" style="display:inline-block;font-size:.8em;padding:4px 10px;border-radius:20px;cursor:pointer;background:rgba(124,58,237,.15);color:#7c3aed;margin:2px;transition:all .2s" onclick="event.stopPropagation();speakWord(SAMP.f,\'fr\');setTimeout(()=>speakWord(SAMP.a,\'ar\'),1500)">🔊</span>';
-  const badges=(c.showBadge!==false?badgeN+unitB:'')+speakerBtn;
+  const badgeN=c.showBadge!==false?'<span data-ve="badgeNom" style="display:inline-block;font-size:.72em;font-weight:700;padding:4px 14px;border-radius:20px;direction:ltr;margin:2px;background:'+(c.badgeNomBg||'#dbeafe')+';color:'+(c.badgeNomColor||'#1e40af')+';opacity:'+bOp+'">Nom</span>':"";
+  const unitB=c.showUnitBadge!==false?'<span data-ve="badgeUnit" style="display:inline-block;font-size:.68em;font-weight:700;padding:3px 12px;border-radius:20px;direction:ltr;margin:2px;background:'+(c.unitBg||'#f0fdf4')+';color:'+(c.unitColor||'#166534')+';border:1px solid '+(c.unitBorder||'#bbf7d0')+';opacity:'+bOp+'">Unit 1</span>':'';
+  const sBg2=c.speakerBg||'rgba(124,58,237,.15)';
+  const sClr2=c.speakerColor||'#7c3aed';
+  const sIco2=c.speakerIcon||'🔊';
+  const speakerBtn='<span data-ve="speaker" style="display:inline-block;font-size:.8em;padding:4px 10px;border-radius:20px;cursor:pointer;background:'+sBg2+';color:'+sClr2+';margin:2px;transition:all .2s" onclick="event.stopPropagation();speakWord(SAMP.f,\'fr\');setTimeout(()=>speakWord(SAMP.a,\'ar\'),1500)">'+sIco2+'</span>';
+  const badges=badgeN+unitB+speakerBtn;
   const french='<div style="opacity:'+fOp+';width:'+fW+';transform:scale('+fSc+');margin-top:'+fMt+'px;margin-bottom:'+fMb+'px;font-family:'+fF+',sans-serif;font-size:'+fsFr+'em;font-weight:'+fwFr+';direction:ltr;unicode-bidi:embed;color:'+fc+';letter-spacing:'+(c.frenchLetterSpacing||0)+'px;line-height:'+(c.frenchLineHeight||1.2)+'">'+SAMP.f+'</div>';
   const meaning=c.showMeaning!==false?'<div style="opacity:'+mOp+';width:'+mW+';transform:scale('+mSc+');margin-top:'+mMt+'px;margin-bottom:'+mMb+'px;background:'+(c.meaningBg||'#eff6ff')+';border:'+(c.meaningBorderWidth||2)+'px solid '+(c.meaningBorder||'#bfdbfe')+';border-radius:'+(c.meaningBorderRadius||16)+'px;padding:10px 16px"><div style="font-family:'+fA+',sans-serif;font-size:'+fsAr+'em;font-weight:'+fwAr+';color:'+mc+'">'+SAMP.a+'</div></div>':'';
   const secValues={Pluriel:SAMP.p,Synonyme:SAMP.s,Contraire:SAMP.c};
@@ -703,31 +706,46 @@ function renderVEProps(elId){
 }
 
 // TTS - Male Voice Only
-let ttsFRVoice=null,ttsARVoice=null;
+let ttsFRVoice=null,ttsARVoice=null,ttsFRManual=null,ttsARManual=null,ttsAllVoices=[];
+function isMaleVoice(v){
+  const n=v.name.toLowerCase();
+  if(n.includes('female')||n.includes('femme')||n.includes('zira')||n.includes('samantha')||n.includes('karen')||n.includes('susan')||n.includes('moira')||n.includes('tessa')||n.includes('fiona'))return false;
+  if(n.includes('male')||n.includes('homme')||n.includes('thomas')||n.includes('nicolas')||n.includes('lucas')||n.includes('hugo')||n.includes('antoine')||n.includes('pierre')||n.includes('jacques')||n.includes('michel')||n.includes('paul')||n.includes('henri')||n.includes('daniel')||n.includes('eric')||n.includes('google')||n.includes('enhanced')||n.includes('maturity'))return true;
+  // For unknown gender, prefer non-female names
+  return !n.includes('google uk english female')&&!n.includes('google us english female');
+}
 function initTTS(){
   if(!window.speechSynthesis)return;
   speechSynthesis.cancel();
   const voices=speechSynthesis.getVoices();
   if(!voices.length)return;
-  const maleNames=['thomas','nicolas','lucas','hugo','antoine','philippe','pierre','jacques','michel','andre','georges','paul','charles','henri','marc','daniel','eric','maturity','enhanced','premium','google','david','mark','daniel','james','john','michael','robert','richard','joseph','thomas','charles','christopher','matthew','anthony','donald','steven','paul','andrew','joshua','kenneth','kevin','brian','george','timothy','ronald','edward','jason','jeffrey','ryan','jacob','gary','nicholas','eric','stephen','jonathan','larry','justin','scott','brandon','benjamin','samuel','raymond','gregory','frank','patrick','jack','dennis','jerry','alexander','tyler','aaron','jose','nathan','henry','peter','zachary','douglas','harold','carl','arthur','gerald','roger','keith','jeremy','terry','lawrence','sean','albert','joe','christian','austin','willie','billy','bruce','ralph','roy','eugene','russell','bobby','mason','philip','harry','eugene','fred','bobby'];
-  const femaleNames=['samantha','susan','karen','nancy','linda','betty','margaret','sandra','ashley','dorothy','kimberly','emily','donna','michelle','carol','amanda','melissa','deborah','stephanie','rebecca','sharon','laura','cynthia','kathleen','amy','angela','shirley','anna','brenda','pamela','emma','nicole','helen','samantha','katherine','christine','debra','rachel','carolyn','janet','catherine','maria','heather','diane','ruth','julie','olivia','joyce','virginia','victoria','kelly','lauren','christina','joan','evelyn','judith','megan','andrea','cheryl','hannah','jacqueline','martha','gloria','teresa','ann','sara','madison','frances','kathryn','janice','jean','abigail','alice','judy','sophia','grace','denise','amber','doris','marilyn','danielle','beverly','isabella','theresa','diana','natalie','brittany','charlotte','marie','kayla','alexis','lori'];
-  // Find French voice - strongly prefer male
+  ttsAllVoices=voices;
+  // Populate voice selectors
+  const frSel=document.getElementById('frVoiceSelect');
+  const arSel=document.getElementById('arVoiceSelect');
   const frV=voices.filter(v=>v.lang.startsWith('fr'));
-  ttsFRVoice=frV.find(v=>{const n=v.name.toLowerCase();return maleNames.some(m=>n.includes(m));})
-    ||frV.find(v=>{const n=v.name.toLowerCase();return !femaleNames.some(m=>n.includes(m));})
-    ||frV.find(v=>!v.name.toLowerCase().includes('female')&&!v.name.toLowerCase().includes('femme'))
-    ||frV[0]||null;
-  // Find Arabic voice - strongly prefer male
   const arV=voices.filter(v=>v.lang.startsWith('ar'));
-  ttsARVoice=arV.find(v=>{const n=v.name.toLowerCase();return maleNames.some(m=>n.includes(m));})
-    ||arV.find(v=>{const n=v.name.toLowerCase();return !femaleNames.some(m=>n.includes(m));})
-    ||arV.find(v=>!v.name.toLowerCase().includes('female')&&!v.name.toLowerCase().includes('femme'))
-    ||arV[0]||null;
+  // Sort: male first
+  frV.sort((a,b)=>(isMaleVoice(b)?1:0)-(isMaleVoice(a)?1:0));
+  arV.sort((a,b)=>(isMaleVoice(b)?1:0)-(isMaleVoice(a)?1:0));
+  if(frSel){frSel.innerHTML='<option value="">تلقائي ('+(frV.find(isMaleVoice)?.name||frV[0]?.name||'لا يوجد')+')</option>'+frV.map(v=>'<option value="'+v.name+'">'+(isMaleVoice(v)?'♂ ':'♀ ')+v.name+' ['+v.lang+']</option>').join('');}
+  if(arSel){arSel.innerHTML='<option value="">تلقائي ('+(arV.find(isMaleVoice)?.name||arV[0]?.name||'لا يوجد')+')</option>'+arV.map(v=>'<option value="'+v.name+'">'+(isMaleVoice(v)?'♂ ':'♀ ')+v.name+' ['+v.lang+']</option>').join('');}
+  // Auto-select male voices
+  ttsFRVoice=frV.find(isMaleVoice)||frV[0]||null;
+  ttsARVoice=arV.find(isMaleVoice)||arV[0]||null;
+  // Debug
+  const dbg=document.getElementById('ttsDebug');
+  if(dbg)dbg.innerHTML='<b>صوت فرنسي:</b> '+(ttsFRVoice?.name||'لا يوجد')+'<br><b>صوت عربي:</b> '+(ttsARVoice?.name||'لا يوجد')+'<br><b>إجمالي:</b> '+voices.length+' صوت';
   console.log('TTS voices:',ttsFRVoice?.name,ttsARVoice?.name);
   const rateEl=document.getElementById('ttsRate');
   const pitchEl=document.getElementById('ttsPitch');
   if(rateEl)rateEl.oninput=function(){document.getElementById('ttsRateVal').textContent=this.value+'x';};
   if(pitchEl)pitchEl.oninput=function(){document.getElementById('ttsPitchVal').textContent=parseFloat(this.value).toFixed(1);};
+}
+function selectVoice(lang,name){
+  if(!name){if(lang==='fr')ttsFRManual=null;else ttsARManual=null;return;}
+  const v=ttsAllVoices.find(x=>x.name===name);
+  if(lang==='fr')ttsFRManual=v;else ttsARManual=v;
 }
 function speakWord(text,lang){
   if(!window.speechSynthesis)return;
@@ -736,8 +754,8 @@ function speakWord(text,lang){
   u.lang=lang==='fr'?'fr-FR':'ar-SA';
   u.rate=parseFloat(document.getElementById('ttsRate')?.value||0.85);
   u.pitch=parseFloat(document.getElementById('ttsPitch')?.value||0.6);
-  if(lang==='fr'&&ttsFRVoice)u.voice=ttsFRVoice;
-  if(lang==='ar'&&ttsARVoice)u.voice=ttsARVoice;
+  if(lang==='fr')u.voice=ttsFRManual||ttsFRVoice;
+  if(lang==='ar')u.voice=ttsARManual||ttsARVoice;
   speechSynthesis.speak(u);
 }
 
