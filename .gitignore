@@ -7,3 +7,4 @@ build_gallery.py
 __pycache__/
 public/index.html.bak*
 *.bak*
+public/index_backup_*.html
