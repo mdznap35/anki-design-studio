@@ -38,7 +38,16 @@ body{font-family:'Inter','Noto Sans Arabic',system-ui,sans-serif;background:var(
 .cp-c{width:100%;max-width:360px;border-radius:var(--r);overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.4);border:1px solid var(--bd);background:var(--s1)}
 @media(max-width:800px){.cl{grid-template-columns:1fr}.cp{position:static}}
 .cw{background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:10px;margin-bottom:8px}
-.cs-t{margin:10px 0 6px;font-size:.72em;font-weight:800;color:var(--ac2);padding-bottom:3px;border-bottom:1px solid var(--bd)}
+.acc{margin:4px 0;border:1px solid var(--bd);border-radius:8px;overflow:hidden;background:var(--s1)}
+.acc-h{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;cursor:pointer;font-size:.72em;font-weight:800;color:var(--ac2);background:var(--s1);transition:all .2s;user-select:none}
+.acc-h:hover{background:var(--s2)}
+.acc-h .arr{font-size:.6em;transition:transform .2s;color:var(--tx2)}
+.acc-h.open .arr{transform:rotate(90deg)}
+.acc-b{display:none;padding:6px 10px 10px;background:var(--s1);border-top:1px solid var(--bd)}
+.acc-b.open{display:block;animation:accOpen .2s ease}
+@keyframes accOpen{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:none}}
+.acc-grp{margin:4px 0;padding:6px 8px;background:var(--s2);border-radius:6px}
+.acc-grp-t{font-size:.62em;font-weight:700;color:var(--tx2);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
 .cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:6px}
 .ct{display:flex;flex-direction:column;gap:2px;padding:4px 0}
 .cl-b{font-size:.6em;font-weight:600;color:var(--tx2);text-transform:uppercase;letter-spacing:.3px}
@@ -536,338 +545,199 @@ function renderCardHTML(c){
 // CONTROLS
 function renderCtrls(){
   let h='';
-  // Quick Designs
-  h+='<div class="cs-t">تصميم سريع</div><div style="display:flex;gap:3px;flex-wrap:wrap">';
-  QUICK_DESIGNS.forEach((d,i)=>h+='<button class="btn bo bs" onclick="applyQuickDesign('+i+')">'+d.n+'</button>');
-  h+='</div>';
-  // Colors
-  h+='<div class="cs-t">الألوان</div><div class="cg">';
-  [{id:'cardBg',lb:'خلفية البطاقة',d:'#ffffff'},{id:'cardBg2',lb:'خلفية ثانية',d:''},{id:'frenchColor',lb:'لون الكلمة',d:'#1e293b'},{id:'meaningColor',lb:'لون المعنى',d:'#1e40af'},{id:'meaningBg',lb:'خلفية المعنى',d:'#eff6ff'},{id:'meaningBorder',lb:'حدود المعنى',d:'#bfdbfe'},{id:'badgeNomBg',lb:'خلفية الشارة',d:'#dbeafe'},{id:'badgeNomColor',lb:'لون الشارة',d:'#1e40af'},{id:'unitBg',lb:'خلفية الوحدة',d:'#f0fdf4'},{id:'unitColor',lb:'لون الوحدة',d:'#166534'},{id:'secBg',lb:'خلفية الأقسام',d:'#f8f9fa'},{id:'secBorder',lb:'حدود الأقسام',d:'#e2e8f0'},{id:'secTextColor',lb:'لون نص الأقسام',d:'#333'},{id:'labelColor',lb:'لون التسميات',d:'#999'},{id:'cardBorderColor',lb:'حدود البطاقة',d:'#e2e8f0'},{id:'separatorColor',lb:'لون الفاصل',d:'#e2e8f0'}
-  ].forEach(c=>{
-    h+='<div class="ct"><div class="cl-b">'+c.lb+'</div><div class="rw"><input type="color" value="'+(S[c.id]||c.d)+'" oninput="setVal(\''+c.id+'\',this.value);this.nextElementSibling.value=this.value"><input type="text" class="hx" value="'+(S[c.id]||c.d)+'" onchange="setVal(\''+c.id+'\',this.value);this.previousElementSibling.value=this.value"></div></div>';
-  });
-  h+='</div>';
-  // Color Swatches
-  h+='<div class="cs-t">ألوان جاهزة</div><div style="display:flex;gap:3px;flex-wrap:wrap">';
-  PRESETS.colors.forEach((p,i)=>h+='<div class="sw" style="background:'+p.bg+'" onclick="applyColorPreset('+i+')" title="'+p.n+'"><div style="width:12px;height:12px;border-radius:50%;background:'+p.fc+'"></div></div>');
-  h+='</div>';
-  // Style Presets
-  h+='<div class="cs-t">أشكال جاهزة</div><div style="display:flex;gap:3px;flex-wrap:wrap">';
-  PRESETS.styles.forEach((p,i)=>h+='<button class="btn bo bs" onclick="applyStylePreset('+i+')">'+p.n+'</button>');
-  h+='</div>';
-  // Typography
-  h+='<div class="cs-t">الطباعة</div><div class="cg">';
-  [{id:'frenchFontSize',lb:'حجم الكلمة',min:0.8,max:5,step:0.1,d:2.4},{id:'frenchFontWeight',lb:'سمك الخط',min:100,max:900,step:100,d:900},{id:'frenchLetterSpacing',lb:'التباعد',min:-5,max:20,step:0.5,d:0},{id:'meaningFontSize',lb:'حجم المعنى',min:0.5,max:3,step:0.1,d:1.5},{id:'meaningFontWeight',lb:'سمك المعنى',min:100,max:900,step:100,d:800},{id:'meaningBorderWidth',lb:'سمك حدود المعنى',min:0,max:10,step:1,d:2},{id:'meaningBorderRadius',lb:'استدارة المعنى',min:0,max:50,step:1,d:16},{id:'cardPadding',lb:'الحشو',min:8,max:60,step:2,d:28},{id:'cardGap',lb:'المسافة',min:0,max:30,step:2,d:10},{id:'borderRadius',lb:'استدارة البطاقة',min:0,max:50,step:1,d:16},{id:'cardMinHeight',lb:'الارتفاع',min:150,max:600,step:10,d:300},{id:'cardBorderWidth',lb:'حدود البطاقة',min:0,max:10,step:1,d:0}
-  ].forEach(t=>{
-    const v=S[t.id]!==undefined?S[t.id]:t.d;
-    h+='<div class="ct"><div class="cl-b">'+t.lb+'</div><div class="rw"><input type="range" min="'+t.min+'" max="'+t.max+'" step="'+t.step+'" value="'+v+'" oninput="setVal(\''+t.id+'\',parseFloat(this.value));this.nextElementSibling.textContent=this.value"><span class="rv">'+v+'</span></div></div>';
-  });
-  h+='</div>';
-  // Fonts
-  h+='<div class="cs-t">الخطوط</div><div class="cg">';
-  h+='<div class="ct"><div class="cl-b">خط فرنسي</div><div class="rw"><select class="sl" onchange="setVal(\'fontFrench\',this.value)">'+FONTS.map(f=>'<option value="'+f.v+'"'+(S.fontFrench===f.v?' selected':'')+'>'+f.l+'</option>').join('')+'</select></div></div>';
-  h+='<div class="ct"><div class="cl-b">خط عربي</div><div class="rw"><select class="sl" onchange="setVal(\'fontArabic\',this.value)">'+ARFONTS.map(f=>'<option value="'+f.v+'"'+(S.fontArabic===f.v?' selected':'')+'>'+f.l+'</option>').join('')+'</select></div></div>';
-  h+='</div>';
-  // Text Size Presets
-  h+='<div class="cs-t">أحجام النص</div><div style="display:flex;gap:3px;flex-wrap:wrap">';
-  PRESETS.texts.forEach((p,i)=>h+='<button class="btn bo bs" onclick="applyTextPreset('+i+')">'+p.n+'</button>');
-  h+='</div>';
-  // Font Presets
-  h+='<div class="cs-t">خطوط جاهزة</div><div style="display:flex;gap:3px;flex-wrap:wrap">';
-  PRESETS.fonts.forEach((p,i)=>h+='<button class="btn bo bs" onclick="applyFontPreset('+i+')">'+p.n+'</button>');
-  h+='</div>';
-  // Gradient Angle
-  h+='<div class="cs-t">زاوية التدرج</div><div style="display:flex;gap:3px;flex-wrap:wrap">';
-  ['0deg','45deg','90deg','135deg','180deg','225deg','270deg','315deg'].forEach(g=>{
-    h+='<div data-grad="'+g+'" onclick="setVal(\'bgGradientDir\',\''+g+'\')" style="width:32px;height:32px;border-radius:5px;border:2px solid '+(S.bgGradientDir===g?'var(--gn)':'var(--bd)')+';background:linear-gradient('+g+',#667eea,#764ba2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.4em;color:#fff;font-weight:700">'+g.replace('deg','')+'</div>';
-  });
-  h+='</div>';
-  // Background Image Upload
-  h+='<div class="cs-t">صورة خلفية مخصصة</div>';
-  h+='<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">';
-  h+='<label class="btn bo bs" style="cursor:pointer">📎 اختر صورة<input type="file" accept="image/*" onchange="uploadBG(event)" style="display:none"></label>';
-  if(S.cardBgImage)h+='<button class="btn br bs" onclick="S.cardBgImage=\'\';pushHist();renderCtrls();renderAll()">✕ حذف</button>';
-  h+='</div>';
-  // BG Preview
-  if(S.cardBgImage){
-    h+='<div style="margin-top:6px;border-radius:8px;overflow:hidden;border:1px solid var(--bd)"><img src="'+S.cardBgImage+'" style="width:100%;height:80px;object-fit:cover;display:block"></div>';
+  // Helper functions
+  function acc(title,content,open){return '<div class="acc"><div class="acc-h'+(open?' open':'')+'" onclick="toggleAcc(this)"><span>'+title+'</span><span class="arr">\u25B6</span></div><div class="acc-b'+(open?' open':'')+'">'+content+'</div></div>';}
+  function grp(title,content){return '<div class="acc-grp"><div class="acc-grp-t">'+title+'</div>'+content+'</div>';}
+  function rng(id,lb,min,max,step,d,fmt){
+    var v=S[id]!==undefined?S[id]:d;var u=fmt||'';
+    return '<div class="ct"><div class="cl-b">'+lb+'</div><div class="rw"><input type="range" min="'+min+'" max="'+max+'" step="'+step+'" value="'+v+'" oninput="setVal(\''+id+'\',parseFloat(this.value));this.nextElementSibling.textContent=this.value'+u+'"><span class="rv">'+v+u+'</span></div></div>';
   }
-  h+='<div class="cg">';
-  h+='<div class="ct"><div class="cl-b">شفافية الصورة</div><div class="rw"><input type="range" min="0" max="1" step="0.05" value="'+(S.cardBgOpacity||1)+'" oninput="setVal(\'cardBgOpacity\',parseFloat(this.value));this.nextElementSibling.textContent=Math.round(this.value*100)+\'%\'"><span class="rv">'+Math.round((S.cardBgOpacity||1)*100)+'%</span></div></div>';
-  h+='<div class="ct"><div class="cl-b">ضبابية الصورة</div><div class="rw"><input type="range" min="0" max="20" step="1" value="'+(S.cardBgBlur||0)+'" oninput="setVal(\'cardBgBlur\',parseInt(this.value));this.nextElementSibling.textContent=this.value+\'px\'"><span class="rv">'+(S.cardBgBlur||0)+'px</span></div></div>';
-  h+='</div>';
-  // Element Opacity
-  h+='<div class="cs-t">شفافية العناصر</div><div class="cg">';
-  [{id:'frenchOpacity',lb:'الكلمة',d:1},{id:'meaningOpacity',lb:'المعنى',d:1},{id:'badgeOpacity',lb:'الشارات',d:1},{id:'sectionOpacity',lb:'الأقسام',d:1}].forEach(o=>{
-    const v=S[o.id]!==undefined?S[o.id]:o.d;
-    h+='<div class="ct"><div class="cl-b">'+o.lb+'</div><div class="rw"><input type="range" min="0" max="1" step="0.05" value="'+v+'" oninput="setVal(\''+o.id+'\',parseFloat(this.value));this.nextElementSibling.textContent=Math.round(this.value*100)+\'%\'"><span class="rv">'+Math.round(v*100)+'%</span></div></div>';
-  });
-  h+='</div>';
-  // Element Width/Scale
-  h+='<div class="cs-t">عرض وتكبير</div><div class="cg">';
-  [{id:'frenchWidth',lb:'عرض الكلمة',d:100,min:30,max:100,u:'%'},{id:'meaningWidth',lb:'عرض المعنى',d:90,min:30,max:100,u:'%'},{id:'frenchScale',lb:'تكبير الكلمة',d:1,min:0.5,max:2,u:'x'},{id:'meaningScale',lb:'تكبير المعنى',d:1,min:0.5,max:2,u:'x'}].forEach(w=>{
-    const v=S[w.id]!==undefined?S[w.id]:w.d;
-    h+='<div class="ct"><div class="cl-b">'+w.lb+'</div><div class="rw"><input type="range" min="'+w.min+'" max="'+w.max+'" step="'+(w.u==='x'?0.05:5)+'" value="'+v+'" oninput="setVal(\''+w.id+'\',parseFloat(this.value));this.nextElementSibling.textContent='+((w.u==='x')?'Math.round(this.value*100)+\'%\'':'this.value+\'%\'')+'"><span class="rv">'+(w.u==='x'?Math.round(v*100)+'%':v+'%')+'</span></div></div>';
-  });
-  h+='</div>';
+  function clr(id,lb,d){return '<div class="ct"><div class="cl-b">'+lb+'</div><div class="rw"><input type="color" value="'+(S[id]||d||'#000000')+'" oninput="setVal(\''+id+'\',this.value)"></div></div>';}
+  function sel(id,lb,opts){var o='';opts.forEach(function(op){o+='<option value="'+op.v+'"'+(S[id]===op.v?' selected':'')+'>'+op.l+'</option>';});return '<div class="ct"><div class="cl-b">'+lb+'</div><div class="rw"><select class="sl" onchange="setVal(\''+id+'\',this.value)">'+o+'</select></div></div>';}
+  function tog(id,lb){var on=S[id]!==false;return '<button class="btn bo bs" data-tog="'+id+'" data-lbl="'+lb+'" style="border-color:'+(on?'var(--gn)':'var(--rd)')+';color:'+(on?'var(--gn)':'var(--rd)')+'" onclick="setVal(\''+id+'\',S[\''+id+'\']===false)">'+(on?'\u2713':'\u2717')+' '+lb+'</button>';}
+  function sl(arr){return arr.map(function(t){return rng(t[0],t[1],t[2],t[3],t[4],t[5],t[6]||'');}).join('');}
+  function cls(arr){return arr.map(function(t){return clr(t[0],t[1],t[2]);}).join('');}
 
-  // Margins
-  h+='<div class="cs-t">مسافات</div><div class="cg">';
-  [{id:'frenchMarginTop',lb:'هامش الكلمة أعلى',d:0},{id:'frenchMarginBottom',lb:'هامش الكلمة أسفل',d:4},{id:'meaningMarginTop',lb:'هامش المعنى أعلى',d:6},{id:'meaningMarginBottom',lb:'هامش المعنى أسفل',d:0}].forEach(s=>{
-    const v=S[s.id]!==undefined?S[s.id]:s.d;
-    h+='<div class="ct"><div class="cl-b">'+s.lb+'</div><div class="rw"><input type="range" min="0" max="40" step="1" value="'+v+'" oninput="setVal(\''+s.id+'\',parseInt(this.value));this.nextElementSibling.textContent=this.value+\'px\'"><span class="rv">'+v+'px</span></div></div>';
+  // 1. QUICK DESIGN
+  var qd='<div style="display:flex;gap:3px;flex-wrap:wrap">';
+  QUICK_DESIGNS.forEach(function(d,i){qd+='<button class="btn bo bs" onclick="applyQuickDesign('+i+')">'+d.n+'</button>';});
+  qd+='</div>';
+  h+=acc('\u26A1 \u062A\u0635\u0645\u064A\u0645 \u0633\u0631\u064A\u0639',qd,true);
+
+  // 2. COLORS
+  var clrH=grp('\u0623\u0644\u0648\u0627\u0646',cls([
+    ['cardBg','\u062E\u0644\u0641\u064A\u0629 \u0627\u0644\u0628\u0637\u0627\u0642\u0629','#ffffff'],
+    ['cardBg2','\u062E\u0644\u0641\u064A\u0629 \u062B\u0627\u0646\u064A\u0629',''],
+    ['frenchColor','\u0644\u0648\u0646 \u0627\u0644\u0643\u0644\u0645\u0629','#1e293b'],
+    ['meaningColor','\u0644\u0648\u0646 \u0627\u0644\u0645\u0639\u0646\u0649','#1e40af'],
+    ['meaningBg','\u062E\u0644\u0641\u064A\u0629 \u0627\u0644\u0645\u0639\u0646\u0649','#eff6ff'],
+    ['meaningBorder','\u062D\u062F\u0648\u062F \u0627\u0644\u0645\u0639\u0646\u0649','#bfdbfe'],
+    ['badgeNomBg','\u062E\u0644\u0641\u064A\u0629 Nom','#dbeafe'],
+    ['badgeNomColor','\u0644\u0648\u0646 Nom','#1e40af'],
+    ['unitBg','\u062E\u0644\u0641\u064A\u0629 \u0627\u0644\u0648\u062D\u062F\u0629','#f0fdf4'],
+    ['unitColor','\u0644\u0648\u0646 \u0627\u0644\u0648\u062D\u062F\u0629','#166534'],
+    ['secBg','\u062E\u0644\u0641\u064A\u0629','#f8f9fa'],
+    ['secBorder','\u062D\u062F\u0648\u062F','#e2e8f0'],
+    ['secTextColor','\u0644\u0648\u0646 \u0627\u0644\u0646\u0635','#333'],
+    ['labelColor','\u0644\u0648\u0646 \u0627\u0644\u062A\u0633\u0645\u064A\u0627\u062A','#999'],
+    ['cardBorderColor','\u062D\u062F\u0648\u062F','#e2e8f0'],
+    ['separatorColor','\u0644\u0648\u0646 \u0627\u0644\u0641\u0627\u0635\u0644','#e2e8f0'],
+    ['speakerBg','\u062E\u0644\u0641\u064A\u0629 \u0632\u0631','rgba(124,58,237,.2)']
+  ]));
+  var pr='<div style="display:flex;gap:3px;flex-wrap:wrap">';
+  PRESETS.colors.forEach(function(p,i){pr+='<div class="sw" style="background:'+p.bg+'" onclick="applyColorPreset('+i+')"><div style="width:12px;height:12px;border-radius:50%;background:'+p.fc+'"></div></div>';});
+  pr+='</div>';
+  h+=acc('\u{1F3A8} \u0627\u0644\u0623\u0644\u0648\u0622\u0646',clrH+grp('\u0623\u0644\u0648\u0622\u0646 \u062C\u0627\u0647\u0638\u0629',pr),false);
+
+  // 3. TYPOGRAPHY
+  var ty=grp('\u0627\u0644\u062E\u0637\u0648\u0637',sel('fontFrench','\u0641\u0631\u0646\u0633\u064A',FONTS)+sel('fontArabic','\u0639\u0631\u0628\u064A',ARFONTS));
+  ty+=grp('\u062D\u062C\u0645',sl([
+    ['frenchFontSize','\u0627\u0644\u0643\u0644\u0645\u0629',0.8,5,0.1,2.4],
+    ['frenchFontWeight','\u0627\u0644\u0633\u0645\u0643',100,900,100,900],
+    ['meaningFontSize','\u0627\u0644\u0645\u0639\u0646\u0649',0.5,3,0.1,1.5],
+    ['meaningFontWeight','\u0627\u0644\u0633\u0645\u0643',100,900,100,800],
+    ['frenchLetterSpacing','\u0627\u0644\u062A\u0628\u0639\u0627\u062F',-5,20,0.5,0]
+  ]));
+  h+=acc('\u{1F4DD} \u0627\u0644\u0637\u0628\u0627\u0639\u0629',ty,true);
+
+  // 4. CARD
+  var cd=sl([
+    ['borderRadius','\u0627\u0633\u062A\u062F\u0627\u0631\u0629',0,50,1,16],
+    ['cardPadding','\u0627\u0644\u062D\u0634\u0648',8,60,2,28],
+    ['cardGap','\u0627\u0644\u0645\u0633\u0627\u0641\u0629',0,30,2,10],
+    ['cardMinHeight','\u0627\u0644\u0627\u0631\u062A\u0641\u0627\u0639',150,600,10,300],
+    ['cardMaxWidth','\u0627\u0644\u0639\u0631\u0636',200,800,10,480],
+    ['cardBorderWidth','\u0633\u0645\u0643 \u0627\u0644\u062D\u062F\u0648\u062F',0,10,1,0]
+  ]);
+  cd+=grp('\u0627\u0644\u0638\u0644',sel('cardShadow','\u0627\u0644\u0638\u0644',[{v:'none',l:'\u0628\u062F\u0648\u0646'},{v:'0 2px 8px rgba(0,0,0,.08)',l:'\u062E\u0641\u064A\u0641'},{v:'0 4px 16px rgba(0,0,0,.12)',l:'\u0645\u062A\u0648\u0633\u0637'},{v:'0 8px 32px rgba(0,0,0,.15)',l:'\u0642\u0648\u064A'}]));
+  h+=acc('\u{1F4CB} \u0627\u0644\u0628\u0637\u0627\u0642\u0629',cd,false);
+
+  // 5. BACKGROUND
+  var bg=grp('\u0632\u0627\u0648\u064A\u0629 \u0627\u0644\u062A\u062F\u0631\u064A\u062C','<div style="display:flex;gap:3px;flex-wrap:wrap">'+
+    ['0deg','45deg','90deg','135deg','180deg','225deg','270deg','315deg'].map(function(g){
+      return '<div data-grad="'+g+'" onclick="setVal(\'bgGradientDir\',\''+g+'\')" style="width:32px;height:32px;border-radius:5px;border:2px solid '+(S.bgGradientDir===g?'var(--gn)':'var(--bd)')+';background:linear-gradient('+g+',#667eea,#764ba2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.4em;color:#fff;font-weight:700">'+g.replace('deg','')+'</div>';
+    }).join('')+'</div>');
+  bg+=grp('\u0635\u0648\u0631\u0629','<label class="btn bo bs" style="cursor:pointer">\u{1F4CE} \u0627\u062E\u062A\u0631\u0608<input type="file" accept="image/*" onchange="uploadBG(event)" style="display:none"></label>'+(S.cardBgImage?'<button class="btn br bs" onclick="S.cardBgImage=\'\';pushHist();renderCtrls();renderAll()">\u2715</button>':''));
+  bg+=grp('\u062A\u0623\u062B\u064A\u0631',sl([
+    ['cardBgOpacity','\u0634\u0641\u0627\u0641\u064A\u0629',0,1,0.05,1],
+    ['cardBgBlur','\u0636\u0628\u0627\u0628\u064A\u0629',0,20,1,0]
+  ])+sel('cardBgPattern','\u0646\u0645\u0637',[{v:'none',l:'\u0628\u062F\u0648\u0646'},{v:'dots',l:'\u0646\u0642\u0637'},{v:'lines',l:'\u062E\u0637\u0648\u0637'},{v:'grid',l:'\u0634\u0628\u0643\u0629'}]));
+  h+=acc('\u{1F308} \u0627\u0644\u062E\u0644\u0641\u064A\u0629',bg,false);
+
+  // 6. VISIBILITY
+  var vis='<div style="display:flex;gap:4px;flex-wrap:wrap">';
+  [{k:'showBadge',lb:'Nom'},{k:'showUnitBadge',lb:'\u0627\u0644\u0648\u062D\u062F\u0629'},{k:'showMeaning',lb:'\u0627\u0644\u0645\u0639\u0646\u0649'},{k:'showPage',lb:'\u0627\u0644\u0635\u0641\u062D\u0629'}].forEach(function(b){vis+=tog(b.k,b.lb);});
+  vis+='</div>';
+  h+=acc('\u{1F441}\uFE0F \u0627\u0644\u0639\u0646\u0627\u0635\u0631',vis,true);
+
+  // 7. FRENCH
+  var fr=grp('\u0623\u0633\u0627\u0633\u064A',sl([
+    ['frenchBorderWidth','\u062D\u062F\u0648\u062F',0,10,1,0],
+    ['frenchBorderRadius','\u0627\u0633\u062A\u062F\u0627\u0631\u0629',0,50,1,0],
+    ['frenchMaxWidth','\u0627\u0644\u0639\u0631\u0636',30,100,5,100]
+  ])+clr('frenchBorderColor','\u0644\u0648\u0646','#000000')+sel('frenchTextAlign','\u0645\u062D\u0627\u0630\u0627\u0629',[{v:'center',l:'\u0648\u0633\u0637'},{v:'right',l:'\u064A\u0645\u064A\u0646'},{v:'left',l:'\u064A\u0633\u0627\u0631'}])+sel('frenchFontStyle','\u0646\u0645\u0637',[{v:'normal',l:'\u0639\u0627\u062F\u064A'},{v:'italic',l:'\u0645\u0627\u0626\u0644'}]));
+  fr+=grp('\u062A\u062D\u0648\u064A\u0644',sl([
+    ['frenchRotate','\u062F\u0648\u0631\u0627\u0646',-180,180,1,0],
+    ['frenchSkewX','\u0645\u064A\u0644',-30,30,1,0],
+    ['frenchTranslateX','\u0627\u0641\u0642\u064A',-50,50,1,0],
+    ['frenchTranslateY','\u0639\u0645\u0648\u062F\u064A',-50,50,1,0]
+  ]));
+  fr+=grp('\u0641\u0644\u0627\u062A\u0631',sl([
+    ['frenchBlur','\u062A\u0645\u0648\u064A\u0647',0,20,0.5,0],
+    ['frenchBrightness','\u0633\u0637\u0648\u0639',0,3,0.1,1],
+    ['frenchContrast','\u062A\u0628\u0627\u064A\u0646',0,3,0.1,1],
+    ['frenchGrayscale','\u0631\u0645\u0627\u062F\u064A',0,1,0.1,0],
+    ['frenchSaturate','\u062A\u0634\u0628\u0639',0,3,0.1,1]
+  ]));
+  h+=acc('\u{1F4AC} \u0627\u0644\u0643\u0644\u0645\u0629 \u0627\u0644\u0641\u0631\u0646\u0633\u064A\u0629',fr,false);
+
+  // 8. MEANING
+  var mn=grp('\u0623\u0633\u0627\u0633\u064A',sl([
+    ['meaningBorderWidth','\u062D\u062F\u0648\u062F',0,10,1,2],
+    ['meaningBorderRadius','\u0627\u0633\u062A\u062F\u0627\u0631\u0629',0,50,1,16],
+    ['meaningMaxWidth','\u0627\u0644\u0639\u0631\u0636',30,100,5,90]
+  ])+clr('meaningBg','\u062E\u0644\u0641\u064A\u0629','#eff6ff')+clr('meaningBorder','\u062D\u062F\u0648\u062F','#bfdbfe')+sel('meaningTextAlign','\u0645\u062D\u0627\u0630\u0627\u0629',[{v:'center',l:'\u0648\u0633\u0637'},{v:'right',l:'\u064A\u0645\u064A\u0646'},{v:'left',l:'\u064A\u0633\u0627\u0631'}]));
+  mn+=grp('\u062A\u062D\u0648\u064A\u0644',sl([
+    ['meaningRotate','\u062F\u0648\u0631\u0627\u0646',-180,180,1,0],
+    ['meaningSkewX','\u0645\u064A\u0644',-30,30,1,0],
+    ['meaningTranslateX','\u0627\u0641\u0642\u064A',-50,50,1,0],
+    ['meaningTranslateY','\u0639\u0645\u0648\u062F\u064A',-50,50,1,0]
+  ]));
+  mn+=grp('\u0641\u0644\u0627\u062A\u0631',sl([
+    ['meaningBlur','\u062A\u0645\u0648\u064A\u0647',0,20,0.5,0],
+    ['meaningBrightness','\u0633\u0637\u0648\u0639',0,3,0.1,1],
+    ['meaningContrast','\u062A\u0628\u0627\u064A\u0646',0,3,0.1,1],
+    ['meaningGrayscale','\u0631\u0645\u0627\u062F\u064A',0,1,0.1,0]
+  ]));
+  h+=acc('\u{1F4D6} \u0627\u0644\u0645\u0639\u0646\u0649',mn,false);
+
+  // 9. BADGES
+  var bd=grp('Nom',sl([
+    ['badgeNomPaddingX','\u062D\u0634\u0648',4,30,1,14],
+    ['badgeNomBorderRadius','\u0627\u0633\u062A\u062F\u0627\u0631\u0629',0,50,1,20],
+    ['badgeNomFontSize','\u062D\u062C\u0645',0.4,1.5,0.05,0.72],
+    ['badgeNomRotate','\u062F\u0648\u0631\u0627\u0646',-180,180,1,0]
+  ])+clr('badgeNomBg','\u062E\u0644\u0641\u064A\u0629','#dbeafe')+clr('badgeNomColor','\u0644\u0648\u0646','#1e40af'));
+  bd+=grp('\u0627\u0644\u0648\u062D\u062F\u0629',sl([
+    ['badgeUnitPaddingX','\u062D\u0634\u0648',4,30,1,12],
+    ['badgeUnitBorderRadius','\u0627\u0633\u062A\u062F\u0627\u0631\u0629',0,50,1,20],
+    ['badgeUnitFontSize','\u062D\u062C\u0645',0.4,1.5,0.05,0.68],
+    ['badgeUnitRotate','\u062F\u0648\u0631\u0627\u0646',-180,180,1,0]
+  ])+clr('unitBg','\u062E\u0644\u0641\u064A\u0629','#f0fdf4')+clr('unitColor','\u0644\u0648\u0646','#166534'));
+  h+=acc('\u{1F3F7}\uFE0F \u0627\u0644\u0634\u0627\u0631\u0627\u062A',bd,false);
+
+  // 10. SECTIONS
+  h+=acc('\u{1F4CB} \u0627\u0644\u0623\u0642\u0633\u0627\u0645',sl([
+    ['secBorderRadius','\u0627\u0633\u062A\u062F\u0627\u0631\u0629',0,30,1,6],
+    ['secBorderWidth','\u0633\u0645\u0643',0,5,1,1],
+    ['secFontSize','\u062D\u062C\u0645',0.4,1.5,0.05,0.7],
+    ['secWidth','\u0627\u0644\u0639\u0631\u0636',30,100,5,80]
+  ])+sel('secDirection','\u0627\u0644\u0627\u062A\u062C\u0627\u0647',[{v:'column',l:'\u0639\u0645\u0648\u062F\u064A'},{v:'row',l:'\u0623\u0641\u0642\u064A'}]),false);
+
+  // 11. ANIMATIONS
+  var an='<div class="cg">';
+  an+=sel('frenchAnim','\u0627\u0644\u0643\u0644\u0645\u0629',[{v:'none',l:'\u0628\u062F\u0648\u0646'},{v:'fadeIn',l:'\u0638\u0647\u0648\u0631'},{v:'slideUp',l:'\u0635\u0639\u0648\u062F'},{v:'bounce',l:'\u0627\u0631\u062A\u062F\u0627\u062F'},{v:'glow',l:'\u062A\u0648\u0647\u062C'}]);
+  an+=sel('meaningAnim','\u0627\u0644\u0645\u0639\u0646\u0649',[{v:'none',l:'\u0628\u062F\u0648\u0646'},{v:'fadeIn',l:'\u0638\u0647\u0648\u0631'},{v:'slideUp',l:'\u0635\u0639\u0648\u062F'},{v:'bounce',l:'\u0627\u0631\u062A\u062F\u0627\u062F'}]);
+  an+=sel('badgeAnim','\u0627\u0644\u0634\u0627\u0631\u0627\u062A',[{v:'none',l:'\u0628\u062F\u0648\u0646'},{v:'fadeIn',l:'\u0638\u0647\u0648\u0631'},{v:'bounce',l:'\u0627\u0631\u062A\u062F\u0627\u062F'}]);
+  an+=sl([
+    ['frenchAnimDur','\u0645\u062F\u0629 \u0627\u0644\u0643\u0644\u0645\u0629',0.2,3,0.1,0.5],
+    ['meaningAnimDur','\u0645\u062F\u0629 \u0627\u0644\u0645\u0639\u0646\u0649',0.2,3,0.1,0.5]
+  ]);
+  an+='</div>';
+  h+=acc('\u{1F3AC} \u0627\u0644\u062D\u0631\u0643\u0627\u062A',an,false);
+
+  // 12. SPEAKER
+  var sp=sel('speakerPos','\u0645\u0648\u0642\u0639',[{v:'inline',l:'\u0645\u0639 \u0627\u0644\u0634\u0627\u0631\u0627\u062A'},{v:'top-right',l:'\u0623\u0639\u0644\u0649 \u064A\u0645\u064A\u0646'},{v:'top-left',l:'\u0623\u0639\u0644\u0649 \u064A\u0633\u0627\u0631'},{v:'bottom-right',l:'\u0623\u0633\u0641\u0644 \u064A\u0645\u064A\u0646'},{v:'bottom-left',l:'\u0623\u0633\u0641\u0644 \u064A\u0633\u0627\u0631'}]);
+  sp+=grp('\u0623\u064A\u0642\u0648\u0646\u0629','<div style="display:flex;gap:3px;flex-wrap:wrap">'+
+    ['\ud83d\udd0a','\ud83d\udd09','\ud83c\udfb5','\ud83d\udce2','\ud83d\udcac'].map(function(ic){
+      return '<div class="sw" data-icon="'+ic+'" style="font-size:1em;background:'+(S.speakerIcon===ic?'var(--ac)':'var(--s2)')+';border-color:'+(S.speakerIcon===ic?'var(--gn)':'var(--bd)')+'" onclick="setVal(\'speakerIcon\',\''+ic+'\')">'+ic+'</div>';
+    }).join('')+'</div>');
+  sp+=grp('\u062A\u062D\u0643\u0645',sl([
+    ['speakerSize','\u0627\u0644\u062D\u062C\u0645',0.4,2,0.05,0.8],
+    ['speakerRotate','\u062F\u0648\u0631\u0627\u0646',-180,180,1,0],
+    ['speakerBorderRadius','\u0627\u0633\u062A\u062F\u0627\u0631\u0629',0,50,1,20]
+  ])+clr('speakerBg','\u062E\u0644\u0641\u064A\u0629','rgba(124,58,237,.2)'));
+  h+=acc('\u{1F50A} \u0632\u0631 \u0627\u0644\u0635\u0648\u062A',sp,false);
+
+  // 13. ORDER
+  var or='<div style="display:flex;flex-direction:column;gap:2px">';
+  var orL={badge:'\u0627\u0644\u0634\u0627\u0631\u0627\u062A',french:'\u0627\u0644\u0643\u0644\u0645\u0629',separator:'\u0627\u0644\u0641\u0627\u0635\u0644',meaning:'\u0627\u0644\u0645\u0639\u0646\u0649',sections:'\u0627\u0644\u0623\u0642\u0633\u0627\u0645',page:'\u0627\u0644\u0635\u0641\u062D\u0629'};
+  var or2=S.elementOrder||['badge','french','separator','meaning','sections','page'];
+  or2.forEach(function(k,i){
+    or+='<div style="display:flex;align-items:center;gap:4px;background:var(--s2);padding:4px 8px;border-radius:5px;font-size:.65em">';
+    or+='<span style="color:var(--ac2);font-weight:700;min-width:16px">'+(i+1)+'</span>';
+    or+='<span style="flex:1">'+orL[k]+'</span>';
+    if(i>0)or+='<span style="cursor:pointer;color:var(--ac)" onclick="moveElement(\''+k+'\',-1)">\u25B2</span>';
+    if(i<or2.length-1)or+='<span style="cursor:pointer;color:var(--ac)" onclick="moveElement(\''+k+'\',1)">\u25BC</span>';
+    or+='</div>';
   });
-  h+='</div>';
-  // Section Visibility
-  h+='<div class="cs-t">إظهار الأقسام</div><div style="display:flex;gap:4px;flex-wrap:wrap">';
-  ['Pluriel','Synonyme','Contraire'].forEach(s=>{
-    const vis=(S.sectionVisibility||{Pluriel:true,Synonyme:true,Contraire:true})[s]!==false;
-    h+='<button class="btn '+(vis?'bg':'br')+' bs" data-tog="sec-'+s+'" data-lbl="'+s+'" onclick="toggleSection(\''+s+'\')">'+(vis?'✓':'✗')+' '+s+'</button>';
-  });
-  h+='</div>';
-  // Show/Hide
-  h+='<div class="cs-t">إظهار العناصر</div><div style="display:flex;gap:4px;flex-wrap:wrap">';
-  [{k:'showBadge',lb:'شارة Nom'},{k:'showUnitBadge',lb:'شارة الوحدة'},{k:'showMeaning',lb:'المعنى'},{k:'showPage',lb:'رقم الصفحة'}].forEach(b=>{
-    const on=S[b.k]!==false;
-    h+='<button class="btn bo bs" data-tog="'+b.k+'" data-lbl="'+b.lb+'" style="border-color:'+(on?'var(--gn)':'var(--rd)')+';color:'+(on?'var(--gn)':'var(--rd)')+'" onclick="setVal(\''+b.k+'\',S[\''+b.k+'\']===false)">'+(on?'✓':'✗')+' '+b.lb+'</button>';
-  });
-  h+='</div>';
-  // Speaker Button
-  h+='<div class="cs-t">زر الصوت</div><div class="cg">';
-  h+='<div class="ct"><div class="cl-b">موقع الزر</div><div class="rw"><select class="sl" onchange="setVal(\'speakerPos\',this.value)">';
-  [{v:'inline',l:'مع الشارات'},{v:'top-right',l:'أعلى يمين'},{v:'top-left',l:'أعلى يسار'},{v:'bottom-right',l:'أسفل يمين'},{v:'bottom-left',l:'أسفل يسار'}].forEach(function(p){
-    h+='<option value="'+p.v+'"'+((S.speakerPos||'top')===p.v?' selected':'')+'>'+p.l+'</option>';
-  });
-  h+='</select></div></div>';
-  h+='<div class="ct"><div class="cl-b">أيقونة الصوت</div><div class="rw">';
-  ['🔊','🔉','🎵','🎶','🗣️','📢','💬','🔴'].forEach(ic=>{
-    h+='<div class="sw" data-icon="'+ic+'" style="font-size:1em;background:'+(S.speakerIcon===ic?'var(--ac)':'var(--s2)')+';border-color:'+(S.speakerIcon===ic?'var(--gn)':'var(--bd)')+'" onclick="setVal(\'speakerIcon\',\''+ic+'\')">'+ic+'</div>';
-  });
-  h+='</div></div>';
-  h+='<div class="ct"><div class="cl-b">خلفية الزر</div><div class="rw"><input type="color" value="'+(S.speakerBg||'rgba(124,58,237,.2)')+'" oninput="setVal(\'speakerBg\',this.value);this.nextElementSibling.value=this.value"><input type="text" class="hx" value="'+(S.speakerBg||'rgba(124,58,237,.2)')+'" onchange="setVal(\'speakerBg\',this.value);this.previousElementSibling.value=this.value"></div></div>';
-  h+='</div>';
-  // Separator
-  h+='<div class="cs-t">الفاصل</div><div class="cg">';
-  h+='<div class="ct"><div class="cl-b">نوع الفاصل</div><div class="rw"><select class="sl" onchange="setVal(\'separatorStyle\',this.value)"><option value="none"'+(!S.separatorStyle||S.separatorStyle==='none'?' selected':'')+'>بدون</option><option value="solid"'+(S.separatorStyle==='solid'?' selected':'')+'>خط</option><option value="dashed"'+(S.separatorStyle==='dashed'?' selected':'')+'>متقطع</option><option value="dotted"'+(S.separatorStyle==='dotted'?' selected':'')+'>منقط</option></select></div></div>';
-  h+='<div class="ct"><div class="cl-b">سمك الفاصل</div><div class="rw"><input type="range" min="1" max="8" step="1" value="'+(S.separatorWidth||2)+'" oninput="setVal(\'separatorWidth\',parseInt(this.value));this.nextElementSibling.textContent=this.value+\'px\'"><span class="rv">'+(S.separatorWidth||2)+'px</span></div></div>';
-  h+='</div>';
-  // === FRENCH TEXT ADVANCED (8 controls) ===
-  h+='<div class="cs-t">الكلمة الفرنسية - متقدم</div><div class="cg">';
-  [{id:'frenchBorderWidth',lb:'سمك الحدود',min:0,max:10,step:1,d:0},{id:'frenchBorderRadius',lb:'استدارة الحدود',min:0,max:50,step:1,d:0},{id:'frenchPaddingX',lb:'حشو أفقي',min:0,max:40,step:2,d:0},{id:'frenchPaddingY',lb:'حشو عمودي',min:0,max:40,step:2,d:0},{id:'frenchMaxWidth',lb:'عرض أقصى',min:30,max:100,step:5,d:100},{id:'frenchShadowX',lb:'ظل أفقي',min:-20,max:20,step:1,d:0},{id:'frenchShadowY',lb:'ظل عمودي',min:-20,max:20,step:1,d:0},{id:'frenchShadowBlur',lb:'تمويه الظل',min:0,max:30,step:1,d:0}].forEach(function(t){
-    var v=S[t.id]!==undefined?S[t.id]:t.d;
-    h+='<div class="ct"><div class="cl-b">'+t.lb+'</div><div class="rw"><input type="range" min="'+t.min+'" max="'+t.max+'" step="'+t.step+'" value="'+v+'" oninput="setVal(\''+t.id+'\',parseFloat(this.value));this.nextElementSibling.textContent=this.value"><span class="rv">'+v+'</span></div></div>';
-  });
-  h+='<div class="ct"><div class="cl-b">لون الحدود</div><div class="rw"><input type="color" value="'+(S.frenchBorderColor||'#000000')+'" oninput="setVal(\'frenchBorderColor\',this.value)"></div></div>';
-  h+='<div class="ct"><div class="cl-b">نمط الحدود</div><div class="rw"><select class="sl" onchange="setVal(\'frenchBorderStyle\',this.value)"><option value="solid"'+(S.frenchBorderStyle==='solid'?' selected':'')+'>خط</option><option value="dashed"'+(S.frenchBorderStyle==='dashed'?' selected':'')+'>متقطع</option><option value="dotted"'+(S.frenchBorderStyle==='dotted'?' selected':'')+'>منقط</option><option value="double"'+(S.frenchBorderStyle==='double'?' selected':'')+'>مزدوج</option></select></div></div>';
-  h+='<div class="ct"><div class="cl-b">محاذاة النص</div><div class="rw"><select class="sl" onchange="setVal(\'frenchTextAlign\',this.value)"><option value="center"'+(S.frenchTextAlign==='center'?' selected':'')+'>وسط</option><option value="right"'+(S.frenchTextAlign==='right'?' selected':'')+'>يمين</option><option value="left"'+(S.frenchTextAlign==='left'?' selected':'')+'>يسار</option></select></div></div>';
-  h+='<div class="ct"><div class="cl-b">خلفية الكلمة</div><div class="rw"><input type="color" value="'+(S.frenchBgColor||'#ffffff')+'" oninput="setVal(\'frenchBgColor\',this.value)"></div></div>';
-  h+='<div class="ct"><div class="cl-b">استدارة الخلفية</div><div class="rw"><input type="range" min="0" max="50" step="1" value="'+(S.frenchBgRadius||0)+'" oninput="setVal(\'frenchBgRadius\',parseInt(this.value));this.nextElementSibling.textContent=this.value+\'px\'"><span class="rv">'+(S.frenchBgRadius||0)+'px</span></div></div>';
-  h+='<div class="ct"><div class="cl-b">تأثير النص</div><div class="rw"><select class="sl" onchange="setVal(\'frenchTextShadowX\',parseInt(this.value));setVal(\'frenchTextShadowY\',parseInt(this.value));setVal(\'frenchTextShadowBlur\',Math.abs(parseInt(this.value))*2)"><option value="0">بدون</option><option value="2">ظل خفيف</option><option value="4">ظل متوسط</option><option value="8">ظل قوي</option><option value="-2">ظل داخلي</option></select></div></div>';
-  h+='</div>';
-  // === FRENCH ANIMATION (2 controls) ===
-  h+='<div class="cs-t">حركة الكلمة الفرنسية</div><div class="cg">';
-  h+='<div class="ct"><div class="cl-b">الحركة</div><div class="rw"><select class="sl" onchange="setVal(\'frenchAnim\',this.value)"><option value="none"'+(S.frenchAnim==='none'?' selected':'')+'>بدون</option><option value="fadeIn"'+(S.frenchAnim==='fadeIn'?' selected':'')+'>ظهور تدريجي</option><option value="slideUp"'+(S.frenchAnim==='slideUp'?' selected':'')+'>صعود</option><option value="slideLeft"'+(S.frenchAnim==='slideLeft'?' selected':'')+'>انزلاق يمين</option><option value="slideRight"'+(S.frenchAnim==='slideRight'?' selected':'')+'>انزلاق يسار</option><option value="scaleUp"'+(S.frenchAnim==='scaleUp'?' selected':'')+'>تكبير</option><option value="bounce"'+(S.frenchAnim==='bounce'?' selected':'')+'>ارتداد</option><option value="glow"'+(S.frenchAnim==='glow'?' selected':'')+'>توهج</option></select></div></div>';
-  h+='<div class="ct"><div class="cl-b">مدة الحركة</div><div class="rw"><input type="range" min="0.2" max="3" step="0.1" value="'+(S.frenchAnimDur||0.5)+'" oninput="setVal(\'frenchAnimDur\',parseFloat(this.value));this.nextElementSibling.textContent=this.value+\'s\'"><span class="rv">'+(S.frenchAnimDur||0.5)+'s</span></div></div>';
-  h+='</div>';
-  // === MEANING ADVANCED (10 controls) ===
-  h+='<div class="cs-t">المعنى - متقدم</div><div class="cg">';
-  [{id:'meaningPaddingX',lb:'حشو أفقي',min:0,max:40,step:2,d:16},{id:'meaningPaddingY',lb:'حشو عمودي',min:0,max:30,step:2,d:10},{id:'meaningMarginX',lb:'هامش أفقي',min:0,max:40,step:2,d:0},{id:'meaningMaxWidth',lb:'عرض أقصى',min:30,max:100,step:5,d:90,u:'%'},{id:'meaningLetterSpacing',lb:'تباعد الأحرف',min:-3,max:10,step:0.5,d:0},{id:'meaningShadowX',lb:'ظل أفقي',min:-15,max:15,step:1,d:0},{id:'meaningShadowY',lb:'ظل عمودي',min:-15,max:15,step:1,d:0},{id:'meaningShadowBlur',lb:'تمويه الظل',min:0,max:25,step:1,d:0},{id:'meaningBgRadius',lb:'استدارة الخلفية',min:0,max:50,step:1,d:0}].forEach(t=>{
-    const v=S[t.id]!==undefined?S[t.id]:t.d;
-    h+='<div class="ct"><div class="cl-b">'+t.lb+'</div><div class="rw"><input type="range" min="'+t.min+'" max="'+t.max+'" step="'+t.step+'" value="'+v+'" oninput="setVal(\''+t.id+'\',parseFloat(this.value));this.nextElementSibling.textContent=this.value"><span class="rv">'+v+'</span></div></div>';
-  });
-  h+='<div class="ct"><div class="cl-b">محاذاة المعنى</div><div class="rw"><select class="sl" onchange="setVal(\'meaningTextAlign\',this.value)"><option value="center"'+(S.meaningTextAlign==='center'?' selected':'')+'>وسط</option><option value="right"'+(S.meaningTextAlign==='right'?' selected':'')+'>يمين</option><option value="left"'+(S.meaningTextAlign==='left'?' selected':'')+'>يسار</option></select></div></div>';
-  h+='</div>';
-  // === MEANING ANIMATION (2 controls) ===
-  h+='<div class="cs-t">حركة المعنى</div><div class="cg">';
-  h+='<div class="ct"><div class="cl-b">الحركة</div><div class="rw"><select class="sl" onchange="setVal(\'meaningAnim\',this.value)"><option value="none"'+(S.meaningAnim==='none'?' selected':'')+'>بدون</option><option value="fadeIn"'+(S.meaningAnim==='fadeIn'?' selected':'')+'>ظهور تدريجي</option><option value="slideUp"'+(S.meaningAnim==='slideUp'?' selected':'')+'>صعود</option><option value="slideLeft"'+(S.meaningAnim==='slideLeft'?' selected':'')+'>انزلاق يمين</option><option value="slideRight"'+(S.meaningAnim==='slideRight'?' selected':'')+'>انزلاق يسار</option><option value="scaleUp"'+(S.meaningAnim==='scaleUp'?' selected':'')+'>تكبير</option><option value="bounce"'+(S.meaningAnim==='bounce'?' selected':'')+'>ارتداد</option><option value="pop"'+(S.meaningAnim==='pop'?' selected':'')+'>انفجار</option></select></div></div>';
-  h+='<div class="ct"><div class="cl-b">مدة الحركة</div><div class="rw"><input type="range" min="0.2" max="3" step="0.1" value="'+(S.meaningAnimDur||0.5)+'" oninput="setVal(\'meaningAnimDur\',parseFloat(this.value));this.nextElementSibling.textContent=this.value+\'s\'"><span class="rv">'+(S.meaningAnimDur||0.5)+'s</span></div></div>';
-  h+='</div>';
-  // === BADGE ADVANCED (10 controls) ===
-  h+='<div class="cs-t">الشارات - متقدم</div><div class="cg">';
-  [{id:'badgeNomPaddingX',lb:'حشو Nom أفقي',min:4,max:30,step:1,d:14},{id:'badgeNomPaddingY',lb:'حشو Nom عمودي',min:2,max:20,step:1,d:4},{id:'badgeNomBorderRadius',lb:'استدارة Nom',min:0,max:50,step:1,d:20},{id:'badgeNomFontSize',lb:'حجم Nom',min:0.4,max:1.5,step:0.05,d:0.72},{id:'badgeNomBorderWidth',lb:'سمك حدود Nom',min:0,max:5,step:1,d:0},{id:'badgeUnitPaddingX',lb:'حشو الوحدة أفقي',min:4,max:30,step:1,d:12},{id:'badgeUnitPaddingY',lb:'حشو الوحدة عمودي',min:2,max:20,step:1,d:3},{id:'badgeUnitBorderRadius',lb:'استدارة الوحدة',min:0,max:50,step:1,d:20},{id:'badgeUnitFontSize',lb:'حجم الوحدة',min:0.4,max:1.5,step:0.05,d:0.68},{id:'badgeGap',lb:'مسافة بين الشارات',min:0,max:20,step:1,d:4}].forEach(t=>{
-    const v=S[t.id]!==undefined?S[t.id]:t.d;
-    h+='<div class="ct"><div class="cl-b">'+t.lb+'</div><div class="rw"><input type="range" min="'+t.min+'" max="'+t.max+'" step="'+t.step+'" value="'+v+'" oninput="setVal(\''+t.id+'\',parseFloat(this.value));this.nextElementSibling.textContent=this.value"><span class="rv">'+v+'</span></div></div>';
-  });
-  h+='<div class="ct"><div class="cl-b">لون حدود Nom</div><div class="rw"><input type="color" value="'+(S.badgeNomBorderColor||'#000000')+'" oninput="setVal(\'badgeNomBorderColor\',this.value)"></div></div>';
-  h+='<div class="ct"><div class="cl-b">لون حدود الوحدة</div><div class="rw"><input type="color" value="'+(S.badgeUnitBorderColor||'#000000')+'" oninput="setVal(\'badgeUnitBorderColor\',this.value)"></div></div>';
-  h+='</div>';
-  // === BADGE ANIMATION (2 controls) ===
-  h+='<div class="cs-t">حركة الشارات</div><div class="cg">';
-  h+='<div class="ct"><div class="cl-b">الحركة</div><div class="rw"><select class="sl" onchange="setVal(\'badgeAnim\',this.value)"><option value="none"'+(S.badgeAnim==='none'?' selected':'')+'>بدون</option><option value="fadeIn"'+(S.badgeAnim==='fadeIn'?' selected':'')+'>ظهور</option><option value="bounce"'+(S.badgeAnim==='bounce'?' selected':'')+'>ارتداد</option><option value="slideDown"'+(S.badgeAnim==='slideDown'?' selected':'')+'>نزول</option><option value="wiggle"'+(S.badgeAnim==='wiggle'?' selected':'')+'>اهتزاز</option></select></div></div>';
-  h+='<div class="ct"><div class="cl-b">مدة الحركة</div><div class="rw"><input type="range" min="0.2" max="3" step="0.1" value="'+(S.badgeAnimDur||0.5)+'" oninput="setVal(\'badgeAnimDur\',parseFloat(this.value));this.nextElementSibling.textContent=this.value+\'s\'"><span class="rv">'+(S.badgeAnimDur||0.5)+'s</span></div></div>';
-  h+='</div>';
-  // === SECTION ADVANCED (10 controls) ===
-  h+='<div class="cs-t">الأقسام - متقدم</div><div class="cg">';
-  [{id:'secPaddingX',lb:'حشو أفقي',min:0,max:30,step:1,d:8},{id:'secPaddingY',lb:'حشو عمودي',min:0,max:20,step:1,d:4},{id:'secBorderRadius',lb:'استدارة',min:0,max:30,step:1,d:6},{id:'secBorderWidth',lb:'سمك الحدود',min:0,max:5,step:1,d:1},{id:'secFontSize',lb:'حجم الخط',min:0.4,max:1.5,step:0.05,d:0.7},{id:'secLabelSize',lb:'حجم التسمية',min:0.3,max:1,step:0.05,d:0.5},{id:'secGap',lb:'المسافة',min:0,max:20,step:1,d:4},{id:'secWidth',lb:'العرض',min:30,max:100,step:5,d:80,u:'%'}].forEach(t=>{
-    const v=S[t.id]!==undefined?S[t.id]:t.d;
-    h+='<div class="ct"><div class="cl-b">'+t.lb+'</div><div class="rw"><input type="range" min="'+t.min+'" max="'+t.max+'" step="'+t.step+'" value="'+v+'" oninput="setVal(\''+t.id+'\',parseFloat(this.value));this.nextElementSibling.textContent=this.value"><span class="rv">'+v+'</span></div></div>';
-  });
-  h+='<div class="ct"><div class="cl-b">اتجاه الأقسام</div><div class="rw"><select class="sl" onchange="setVal(\'secDirection\',this.value)"><option value="column"'+(S.secDirection==='column'?' selected':'')+'>عمودي</option><option value="row"'+(S.secDirection==='row'?' selected':'')+'>أفقي</option></select></div></div>';
-  h+='<div class="ct"><div class="cl-b">محاذاة الأقسام</div><div class="rw"><select class="sl" onchange="setVal(\'secAlign\',this.value)"><option value="center"'+(S.secAlign==='center'?' selected':'')+'>وسط</option><option value="flex-start"'+(S.secAlign==='flex-start'?' selected':'')+'>يمين</option><option value="flex-end"'+(S.secAlign==='flex-end'?' selected':'')+'>يسار</option></select></div></div>';
-  h+='</div>';
-  // === SECTION ANIMATION (2 controls) ===
-  h+='<div class="cs-t">حركة الأقسام</div><div class="cg">';
-  h+='<div class="ct"><div class="cl-b">الحركة</div><div class="rw"><select class="sl" onchange="setVal(\'secAnim\',this.value)"><option value="none"'+(S.secAnim==='none'?' selected':'')+'>بدون</option><option value="fadeIn"'+(S.secAnim==='fadeIn'?' selected':'')+'>ظهور</option><option value="slideUp"'+(S.secAnim==='slideUp'?' selected':'')+'>صعود</option><option value="scaleUp"'+(S.secAnim==='scaleUp'?' selected':'')+'>تكبير</option></select></div></div>';
-  h+='<div class="ct"><div class="cl-b">مدة الحركة</div><div class="rw"><input type="range" min="0.2" max="3" step="0.1" value="'+(S.secAnimDur||0.5)+'" oninput="setVal(\'secAnimDur\',parseFloat(this.value));this.nextElementSibling.textContent=this.value+\'s\'"><span class="rv">'+(S.secAnimDur||0.5)+'s</span></div></div>';
-  h+='</div>';
-  // === CARD ADVANCED (6 controls) ===
-  h+='<div class="cs-t">البطاقة - متقدم</div><div class="cg">';
-  [{id:'cardMaxWidth',lb:'عرض أقصى',min:200,max:800,step:10,d:480},{id:'cardBgPatternOpacity',lb:'شفافية النمط',min:0,max:0.3,step:0.01,d:0.05},{id:'cardBgOverlayOpacity',lb:'شفافية الطبقة',min:0,max:1,step:0.05,d:0}].forEach(t=>{
-    const v=S[t.id]!==undefined?S[t.id]:t.d;
-    h+='<div class="ct"><div class="cl-b">'+t.lb+'</div><div class="rw"><input type="range" min="'+t.min+'" max="'+t.max+'" step="'+t.step+'" value="'+v+'" oninput="setVal(\''+t.id+'\',parseFloat(this.value));this.nextElementSibling.textContent=this.value"><span class="rv">'+v+'</span></div></div>';
-  });
-  h+='<div class="ct"><div class="cl-b">نمط الخلفية</div><div class="rw"><select class="sl" onchange="setVal(\'cardBgPattern\',this.value)"><option value="none"'+(S.cardBgPattern==='none'?' selected':'')+'>بدون</option><option value="dots"'+(S.cardBgPattern==='dots'?' selected':'')+'>نقاط</option><option value="lines"'+(S.cardBgPattern==='lines'?' selected':'')+'>خطوط</option><option value="grid"'+(S.cardBgPattern==='grid'?' selected':'')+'>شبكة</option><option value="diagonal"'+(S.cardBgPattern==='diagonal'?' selected':'')+'>مائل</option><option value="cross"'+(S.cardBgPattern==='cross'?' selected':'')+'>صليب</option></select></div></div>';
-  h+='<div class="ct"><div class="cl-b">.overflow</div><div class="rw"><select class="sl" onchange="setVal(\'cardOverflow\',this.value)"><option value="hidden"'+(S.cardOverflow==='hidden'?' selected':'')+'>مخفي</option><option value="visible"'+(S.cardOverflow==='visible'?' selected':'')+'>ظاهر</option><option value="scroll"'+(S.cardOverflow==='scroll'?' selected':'')+'>تمرير</option></select></div></div>';
-  h+='<div class="ct"><div class="cl-b">طبقة الخلفية</div><div class="rw"><input type="color" value="'+(S.cardBgOverlayColor||'#ffffff')+'" oninput="setVal(\'cardBgOverlayColor\',this.value)"></div></div>';
-  h+='</div>';
-  // === SEPARATOR ADVANCED (3 controls) ===
-  h+='<div class="cs-t">الفاصل - متقدم</div><div class="cg">';
-  [{id:'sepMarginX',lb:'هامش أفقي',min:0,max:40,step:2,d:0},{id:'sepMarginY',lb:'هامش عمودي',min:0,max:20,step:1,d:4}].forEach(t=>{
-    const v=S[t.id]!==undefined?S[t.id]:t.d;
-    h+='<div class="ct"><div class="cl-b">'+t.lb+'</div><div class="rw"><input type="range" min="'+t.min+'" max="'+t.max+'" step="'+t.step+'" value="'+v+'" oninput="setVal(\''+t.id+'\',parseFloat(this.value));this.nextElementSibling.textContent=this.value+\'px\'"><span class="rv">'+v+'px</span></div></div>';
-  });
-  h+='</div>';
-  // === PAGE ADVANCED (3 controls) ===
-  h+='<div class="cs-t">رقم الصفحة - متقدم</div><div class="cg">';
-  [{id:'pageMarginTop',lb:'هامش أعلى',min:0,max:20,step:1,d:4},{id:'pageFontSize',lb:'حجم الخط',min:0.3,max:1,step:0.05,d:0.55}].forEach(t=>{
-    const v=S[t.id]!==undefined?S[t.id]:t.d;
-    h+='<div class="ct"><div class="cl-b">'+t.lb+'</div><div class="rw"><input type="range" min="'+t.min+'" max="'+t.max+'" step="'+t.step+'" value="'+v+'" oninput="setVal(\''+t.id+'\',parseFloat(this.value));this.nextElementSibling.textContent=this.value"><span class="rv">'+v+'</span></div></div>';
-  });
-  h+='<div class="ct"><div class="cl-b">محاذاة</div><div class="rw"><select class="sl" onchange="setVal(\'pageTextAlign\',this.value)"><option value="center"'+(S.pageTextAlign==='center'?' selected':'')+'>وسط</option><option value="right"'+(S.pageTextAlign==='right'?' selected':'')+'>يمين</option><option value="left"'+(S.pageTextAlign==='left'?' selected':'')+'>يسار</option></select></div></div>';
-  h+='</div>';
-  // === FRENCH BORDER PER-SIDE (8 controls) ===
-  h+='<div class="cs-t">حدود الكلمة - كل جانب</div><div class="cg">';
-  [{id:'frenchBorderTopWidth',lb:'فوق',min:0,max:10,step:1,d:0},{id:'frenchBorderRightWidth',lb:'يمين',min:0,max:10,step:1,d:0},{id:'frenchBorderBottomWidth',lb:'تحت',min:0,max:10,step:1,d:0},{id:'frenchBorderLeftWidth',lb:'يسار',min:0,max:10,step:1,d:0},{id:'frenchBorderTopRadius',lb:'استدارة فوق',min:0,max:50,step:1,d:0},{id:'frenchBorderRightRadius',lb:'استدارة يمين',min:0,max:50,step:1,d:0},{id:'frenchBorderBottomRadius',lb:'استدارة تحت',min:0,max:50,step:1,d:0},{id:'frenchBorderLeftRadius',lb:'استدارة يسار',min:0,max:50,step:1,d:0}].forEach(function(t){var v=S[t.id]!==undefined?S[t.id]:t.d;h+='<div class="ct"><div class="cl-b">'+t.lb+'</div><div class="rw"><input type="range" min="'+t.min+'" max="'+t.max+'" step="'+t.step+'" value="'+v+'" oninput="setVal(\''+t.id+'\',parseInt(this.value));this.nextElementSibling.textContent=this.value+\'px\'"><span class="rv">'+v+'px</span></div></div>';});
-  h+='</div>';
-  // === FRENCH TRANSFORM (5 controls) ===
-  h+='<div class="cs-t">تحويل الكلمة</div><div class="cg">';
-  [{id:'frenchRotate',lb:'دوران',min:-180,max:180,step:1,d:0,u:'deg'},{id:'frenchSkewX',lb:'ميل أفقي',min:-30,max:30,step:1,d:0,u:'deg'},{id:'frenchSkewY',lb:'ميل عمودي',min:-30,max:30,step:1,d:0,u:'deg'},{id:'frenchTranslateX',lb:'تحريك أفقي',min:-50,max:50,step:1,d:0,u:'px'},{id:'frenchTranslateY',lb:'تحريك عمودي',min:-50,max:50,step:1,d:0,u:'px'}].forEach(function(t){var v=S[t.id]!==undefined?S[t.id]:t.d;h+='<div class="ct"><div class="cl-b">'+t.lb+'</div><div class="rw"><input type="range" min="'+t.min+'" max="'+t.max+'" step="'+t.step+'" value="'+v+'" oninput="setVal(\''+t.id+'\',parseInt(this.value));this.nextElementSibling.textContent=this.value+\''+t.u+'\'"><span class="rv">'+v+t.u+'</span></div></div>';});
-  h+='</div>';
-  // === FRENCH FILTERS (8 controls) ===
-  h+='<div class="cs-t">فلاتر الكلمة</div><div class="cg">';
-  [{id:'frenchBlur',lb:'تمويه',min:0,max:20,step:0.5,d:0},{id:'frenchBrightness',lb:'سطوع',min:0,max:3,step:0.1,d:1},{id:'frenchContrast',lb:'تباين',min:0,max:3,step:0.1,d:1},{id:'frenchGrayscale',lb:'رمادي',min:0,max:1,step:0.1,d:0},{id:'frenchHueRotate',lb:'دوران لوني',min:0,max:360,step:1,d:0,u:'deg'},{id:'frenchSaturate',lb:'تشبع',min:0,max:3,step:0.1,d:1},{id:'frenchInvert',lb:'عكس',min:0,max:1,step:0.1,d:0},{id:'frenchSepia',lb:'بني',min:0,max:1,step:0.1,d:0}].forEach(function(t){var v=S[t.id]!==undefined?S[t.id]:t.d;h+='<div class="ct"><div class="cl-b">'+t.lb+'</div><div class="rw"><input type="range" min="'+t.min+'" max="'+t.max+'" step="'+t.step+'" value="'+v+'" oninput="setVal(\''+t.id+'\',parseFloat(this.value));this.nextElementSibling.textContent=this.value"><span class="rv">'+v+'</span></div></div>';});
-  h+='</div>';
-  // === FRENCH SHADOW & TEXT (8 controls) ===
-  h+='<div class="cs-t">ظل الكلمة ونص</div><div class="cg">';
-  [{id:'frenchBoxShadowX',lb:'ظل صندوق X',min:-20,max:20,step:1,d:0},{id:'frenchBoxShadowY',lb:'ظل صندوق Y',min:-20,max:20,step:1,d:0},{id:'frenchBoxShadowBlur',lb:'تمويه الظل',min:0,max:30,step:1,d:0},{id:'frenchBoxShadowSpread',lb:'انتشار الظل',min:-10,max:20,step:1,d:0},{id:'frenchOutlineWidth',lb:'سمك الإطار',min:0,max:10,step:1,d:0},{id:'frenchOutlineOffset',lb:'بعد الإطار',min:-10,max:10,step:1,d:0}].forEach(function(t){var v=S[t.id]!==undefined?S[t.id]:t.d;h+='<div class="ct"><div class="cl-b">'+t.lb+'</div><div class="rw"><input type="range" min="'+t.min+'" max="'+t.max+'" step="'+t.step+'" value="'+v+'" oninput="setVal(\''+t.id+'\',parseInt(this.value));this.nextElementSibling.textContent=this.value+\'px\'"><span class="rv">'+v+'px</span></div></div>';});
-  h+='<div class="ct"><div class="cl-b">لون ظل الصندوق</div><div class="rw"><input type="color" value="'+(S.frenchBoxShadowColor||'#000000')+'" oninput="setVal(\'frenchBoxShadowColor\',this.value)"></div></div>';
-  h+='<div class="ct"><div class="cl-b">لون الإطار</div><div class="rw"><input type="color" value="'+(S.frenchOutlineColor||'#000000')+'" oninput="setVal(\'frenchOutlineColor\',this.value)"></div></div>';
-  h+='<div class="ct"><div class="cl-b">زخرفة النص</div><div class="rw"><select class="sl" onchange="setVal(\'frenchTextDecoration\',this.value)"><option value="none"'+(S.frenchTextDecoration==='none'?' selected':'')+'>بدون</option><option value="underline"'+(S.frenchTextDecoration==='underline'?' selected':'')+'>تحته خط</option><option value="overline"'+(S.frenchTextDecoration==='overline'?' selected':'')+'>فوقه خط</option><option value="line-through"'+(S.frenchTextDecoration==='line-through'?' selected':'')+'>خط منتصف</option></select></div></div>';
-  h+='<div class="ct"><div class="cl-b">لون زخرفة النص</div><div class="rw"><input type="color" value="'+(S.frenchTextDecorationColor||'#000000')+'" oninput="setVal(\'frenchTextDecorationColor\',this.value)"></div></div>';
-  h+='<div class="ct"><div class="cl-b">تحويل النص</div><div class="rw"><select class="sl" onchange="setVal(\'frenchTextTransform\',this.value)"><option value="none"'+(S.frenchTextTransform==='none'?' selected':'')+'>بدون</option><option value="uppercase"'+(S.frenchTextTransform==='uppercase'?' selected':'')+'>حروف كبيرة</option><option value="lowercase"'+(S.frenchTextTransform==='lowercase'?' selected':'')+'>حروف صغيرة</option><option value="capitalize"'+(S.frenchTextTransform==='capitalize'?' selected':'')+'>أول حرف كبير</option></select></div></div>';
-  h+='<div class="ct"><div class="cl-b">نمط الخط</div><div class="rw"><select class="sl" onchange="setVal(\'frenchFontStyle\',this.value)"><option value="normal"'+(S.frenchFontStyle==='normal'?' selected':'')+'>عادي</option><option value="italic"'+(S.frenchFontStyle==='italic'?' selected':'')+'>مائل</option><option value="oblique"'+(S.frenchFontStyle==='oblique'?' selected':'')+'>مائل حاد</option></select></div></div>';
-  h+='<div class="ct"><div class="cl-b">نمط الحرف</div><div class="rw"><select class="sl" onchange="setVal(\'frenchFontVariant\',this.value)"><option value="normal"'+(S.frenchFontVariant==='normal'?' selected':'')+'>عادي</option><option value="small-caps"'+(S.frenchFontVariant==='small-caps'?' selected':'')+'>حروف صغيرة كبيرة</option></select></div></div>';
-  h+='</div>';
-  // === FRENCH POSITION (6 controls) ===
-  h+='<div class="cs-t">موضع الكلمة</div><div class="cg">';
-  h+='<div class="ct"><div class="cl-b">نوع الموضع</div><div class="rw"><select class="sl" onchange="setVal(\'frenchPosition\',this.value)"><option value="static"'+(S.frenchPosition==='static'?' selected':'')+'>عادي</option><option value="relative"'+(S.frenchPosition==='relative'?' selected':'')+'>نسبي</option><option value="absolute"'+(S.frenchPosition==='absolute'?' selected':'')+'>مطلق</option></select></div></div>';
-  [{id:'frenchTop',lb:'أعلى',min:-100,max:100,step:1,d:0},{id:'frenchLeft',lb:'يسار',min:-100,max:100,step:1,d:0},{id:'frenchRight',lb:'يمين',min:-100,max:100,step:1,d:0},{id:'frenchBottom',lb:'تحت',min:-100,max:100,step:1,d:0},{id:'frenchZIndex',lb:'طبقة Z',min:0,max:100,step:1,d:1}].forEach(function(t){var v=S[t.id]!==undefined?S[t.id]:t.d;h+='<div class="ct"><div class="cl-b">'+t.lb+'</div><div class="rw"><input type="range" min="'+t.min+'" max="'+t.max+'" step="'+t.step+'" value="'+v+'" oninput="setVal(\''+t.id+'\',parseInt(this.value));this.nextElementSibling.textContent=this.value"><span class="rv">'+v+'</span></div></div>';});
-  h+='</div>';
-  // === MEANING BORDER PER-SIDE (8 controls) ===
-  h+='<div class="cs-t">حدود المعنى - كل جانب</div><div class="cg">';
-  [{id:'meaningBorderTopWidth',lb:'فوق',min:0,max:10,step:1,d:0},{id:'meaningBorderRightWidth',lb:'يمين',min:0,max:10,step:1,d:0},{id:'meaningBorderBottomWidth',lb:'تحت',min:0,max:10,step:1,d:0},{id:'meaningBorderLeftWidth',lb:'يسار',min:0,max:10,step:1,d:0},{id:'meaningBorderTopRadius',lb:'استدارة فوق',min:0,max:50,step:1,d:0},{id:'meaningBorderRightRadius',lb:'استدارة يمين',min:0,max:50,step:1,d:0},{id:'meaningBorderBottomRadius',lb:'استدارة تحت',min:0,max:50,step:1,d:0},{id:'meaningBorderLeftRadius',lb:'استدارة يسار',min:0,max:50,step:1,d:0}].forEach(function(t){var v=S[t.id]!==undefined?S[t.id]:t.d;h+='<div class="ct"><div class="cl-b">'+t.lb+'</div><div class="rw"><input type="range" min="'+t.min+'" max="'+t.max+'" step="'+t.step+'" value="'+v+'" oninput="setVal(\''+t.id+'\',parseInt(this.value));this.nextElementSibling.textContent=this.value+\'px\'"><span class="rv">'+v+'px</span></div></div>';});
-  h+='</div>';
-  // === MEANING TRANSFORM (5 controls) ===
-  h+='<div class="cs-t">تحويل المعنى</div><div class="cg">';
-  [{id:'meaningRotate',lb:'دوران',min:-180,max:180,step:1,d:0,u:'deg'},{id:'meaningSkewX',lb:'ميل أفقي',min:-30,max:30,step:1,d:0,u:'deg'},{id:'meaningSkewY',lb:'ميل عمودي',min:-30,max:30,step:1,d:0,u:'deg'},{id:'meaningTranslateX',lb:'تحريك أفقي',min:-50,max:50,step:1,d:0,u:'px'},{id:'meaningTranslateY',lb:'تحريك عمودي',min:-50,max:50,step:1,d:0,u:'px'}].forEach(function(t){var v=S[t.id]!==undefined?S[t.id]:t.d;h+='<div class="ct"><div class="cl-b">'+t.lb+'</div><div class="rw"><input type="range" min="'+t.min+'" max="'+t.max+'" step="'+t.step+'" value="'+v+'" oninput="setVal(\''+t.id+'\',parseInt(this.value));this.nextElementSibling.textContent=this.value+\''+t.u+'\'"><span class="rv">'+v+t.u+'</span></div></div>';});
-  h+='</div>';
-  // === MEANING FILTERS (8 controls) ===
-  h+='<div class="cs-t">فلاتر المعنى</div><div class="cg">';
-  [{id:'meaningBlur',lb:'تمويه',min:0,max:20,step:0.5,d:0},{id:'meaningBrightness',lb:'سطوع',min:0,max:3,step:0.1,d:1},{id:'meaningContrast',lb:'تباين',min:0,max:3,step:0.1,d:1},{id:'meaningGrayscale',lb:'رمادي',min:0,max:1,step:0.1,d:0},{id:'meaningHueRotate',lb:'دوران لوني',min:0,max:360,step:1,d:0,u:'deg'},{id:'meaningSaturate',lb:'تشبع',min:0,max:3,step:0.1,d:1},{id:'meaningInvert',lb:'عكس',min:0,max:1,step:0.1,d:0},{id:'meaningSepia',lb:'بني',min:0,max:1,step:0.1,d:0}].forEach(function(t){var v=S[t.id]!==undefined?S[t.id]:t.d;h+='<div class="ct"><div class="cl-b">'+t.lb+'</div><div class="rw"><input type="range" min="'+t.min+'" max="'+t.max+'" step="'+t.step+'" value="'+v+'" oninput="setVal(\''+t.id+'\',parseFloat(this.value));this.nextElementSibling.textContent=this.value"><span class="rv">'+v+'</span></div></div>';});
-  h+='</div>';
-  // === MEANING SHADOW & TEXT (8 controls) ===
-  h+='<div class="cs-t">ظل المعنى ونص</div><div class="cg">';
-  [{id:'meaningBoxShadowX',lb:'ظل صندوق X',min:-20,max:20,step:1,d:0},{id:'meaningBoxShadowY',lb:'ظل صندوق Y',min:-20,max:20,step:1,d:0},{id:'meaningBoxShadowBlur',lb:'تمويه الظل',min:0,max:30,step:1,d:0},{id:'meaningBoxShadowSpread',lb:'انتشار الظل',min:-10,max:20,step:1,d:0},{id:'meaningOutlineWidth',lb:'سمك الإطار',min:0,max:10,step:1,d:0},{id:'meaningOutlineOffset',lb:'بعد الإطار',min:-10,max:10,step:1,d:0}].forEach(function(t){var v=S[t.id]!==undefined?S[t.id]:t.d;h+='<div class="ct"><div class="cl-b">'+t.lb+'</div><div class="rw"><input type="range" min="'+t.min+'" max="'+t.max+'" step="'+t.step+'" value="'+v+'" oninput="setVal(\''+t.id+'\',parseInt(this.value));this.nextElementSibling.textContent=this.value+\'px\'"><span class="rv">'+v+'px</span></div></div>';});
-  h+='<div class="ct"><div class="cl-b">لون ظل الصندوق</div><div class="rw"><input type="color" value="'+(S.meaningBoxShadowColor||'#000000')+'" oninput="setVal(\'meaningBoxShadowColor\',this.value)"></div></div>';
-  h+='<div class="ct"><div class="cl-b">لون الإطار</div><div class="rw"><input type="color" value="'+(S.meaningOutlineColor||'#000000')+'" oninput="setVal(\'meaningOutlineColor\',this.value)"></div></div>';
-  h+='<div class="ct"><div class="cl-b">زخرفة النص</div><div class="rw"><select class="sl" onchange="setVal(\'meaningTextDecoration\',this.value)"><option value="none"'+(S.meaningTextDecoration==='none'?' selected':'')+'>بدون</option><option value="underline"'+(S.meaningTextDecoration==='underline'?' selected':'')+'>تحته خط</option><option value="overline"'+(S.meaningTextDecoration==='overline'?' selected':'')+'>فوقه خط</option><option value="line-through"'+(S.meaningTextDecoration==='line-through'?' selected':'')+'>خط منتصف</option></select></div></div>';
-  h+='<div class="ct"><div class="cl-b">لون زخرفة النص</div><div class="rw"><input type="color" value="'+(S.meaningTextDecorationColor||'#000000')+'" oninput="setVal(\'meaningTextDecorationColor\',this.value)"></div></div>';
-  h+='<div class="ct"><div class="cl-b">تحويل النص</div><div class="rw"><select class="sl" onchange="setVal(\'meaningTextTransform\',this.value)"><option value="none"'+(S.meaningTextTransform==='none'?' selected':'')+'>بدون</option><option value="uppercase"'+(S.meaningTextTransform==='uppercase'?' selected':'')+'>حروف كبيرة</option><option value="lowercase"'+(S.meaningTextTransform==='lowercase'?' selected':'')+'>حروف صغيرة</option><option value="capitalize"'+(S.meaningTextTransform==='capitalize'?' selected':'')+'>أول حرف كبير</option></select></div></div>';
-  h+='<div class="ct"><div class="cl-b">نمط الخط</div><div class="rw"><select class="sl" onchange="setVal(\'meaningFontStyle\',this.value)"><option value="normal"'+(S.meaningFontStyle==='normal'?' selected':'')+'>عادي</option><option value="italic"'+(S.meaningFontStyle==='italic'?' selected':'')+'>مائل</option><option value="oblique"'+(S.meaningFontStyle==='oblique'?' selected':'')+'>مائل حاد</option></select></div></div>';
-  h+='</div>';
-  // === MEANING POSITION (6 controls) ===
-  h+='<div class="cs-t">موضع المعنى</div><div class="cg">';
-  h+='<div class="ct"><div class="cl-b">نوع الموضع</div><div class="rw"><select class="sl" onchange="setVal(\'meaningPosition\',this.value)"><option value="static"'+(S.meaningPosition==='static'?' selected':'')+'>عادي</option><option value="relative"'+(S.meaningPosition==='relative'?' selected':'')+'>نسبي</option><option value="absolute"'+(S.meaningPosition==='absolute'?' selected':'')+'>مطلق</option></select></div></div>';
-  [{id:'meaningTop',lb:'أعلى',min:-100,max:100,step:1,d:0},{id:'meaningLeft',lb:'يسار',min:-100,max:100,step:1,d:0},{id:'meaningRight',lb:'يمين',min:-100,max:100,step:1,d:0},{id:'meaningBottom',lb:'تحت',min:-100,max:100,step:1,d:0},{id:'meaningZIndex',lb:'طبقة Z',min:0,max:100,step:1,d:1}].forEach(function(t){var v=S[t.id]!==undefined?S[t.id]:t.d;h+='<div class="ct"><div class="cl-b">'+t.lb+'</div><div class="rw"><input type="range" min="'+t.min+'" max="'+t.max+'" step="'+t.step+'" value="'+v+'" oninput="setVal(\''+t.id+'\',parseInt(this.value));this.nextElementSibling.textContent=this.value"><span class="rv">'+v+'</span></div></div>';});
-  h+='</div>';
-  // === BADGE NOM ADVANCED (12 controls) ===
-  h+='<div class="cs-t">شارة Nom - متقدم</div><div class="cg">';
-  [{id:'badgeNomRotate',lb:'دوران',min:-180,max:180,step:1,d:0,u:'deg'},{id:'badgeNomScale',lb:'تكبير',min:0.5,max:2,step:0.05,d:1},{id:'badgeNomBlur',lb:'تمويه',min:0,max:10,step:0.5,d:0},{id:'badgeNomBrightness',lb:'سطوع',min:0,max:3,step:0.1,d:1},{id:'badgeNomContrast',lb:'تباين',min:0,max:3,step:0.1,d:1},{id:'badgeNomGrayscale',lb:'رمادي',min:0,max:1,step:0.1,d:0},{id:'badgeNomBoxShadow',lb:'ظل',min:0,max:15,step:1,d:0,u:'px'},{id:'badgeNomLetterSpacing',lb:'تباعد',min:-3,max:10,step:0.5,d:0},{id:'badgeNomLineHeight',lb:'ارتفاع السطر',min:0.8,max:2.5,step:0.1,d:1.2},{id:'badgeNomOutlineWidth',lb:'سمك الإطار',min:0,max:5,step:1,d:0}].forEach(function(t){var v=S[t.id]!==undefined?S[t.id]:t.d;h+='<div class="ct"><div class="cl-b">'+t.lb+'</div><div class="rw"><input type="range" min="'+t.min+'" max="'+t.max+'" step="'+t.step+'" value="'+v+'" oninput="setVal(\''+t.id+'\',parseFloat(this.value));this.nextElementSibling.textContent=this.value"><span class="rv">'+v+'</span></div></div>';});
-  h+='<div class="ct"><div class="cl-b">لون الإطار</div><div class="rw"><input type="color" value="'+(S.badgeNomOutlineColor||'#000000')+'" oninput="setVal(\'badgeNomOutlineColor\',this.value)"></div></div>';
-  h+='<div class="ct"><div class="cl-b">تحويل النص</div><div class="rw"><select class="sl" onchange="setVal(\'badgeNomTextTransform\',this.value)"><option value="none"'+(S.badgeNomTextTransform==='none'?' selected':'')+'>بدون</option><option value="uppercase"'+(S.badgeNomTextTransform==='uppercase'?' selected':'')+'>كبير</option><option value="lowercase"'+(S.badgeNomTextTransform==='lowercase'?' selected':'')+'>صغير</option></select></div></div>';
-  h+='<div class="ct"><div class="cl-b">نمط الخط</div><div class="rw"><select class="sl" onchange="setVal(\'badgeNomFontStyle\',this.value)"><option value="normal"'+(S.badgeNomFontStyle==='normal'?' selected':'')+'>عادي</option><option value="italic"'+(S.badgeNomFontStyle==='italic'?' selected':'')+'>مائل</option></select></div></div>';
-  h+='</div>';
-  // === BADGE UNIT ADVANCED (12 controls) ===
-  h+='<div class="cs-t">شارة الوحدة - متقدم</div><div class="cg">';
-  [{id:'badgeUnitRotate',lb:'دوران',min:-180,max:180,step:1,d:0,u:'deg'},{id:'badgeUnitScale',lb:'تكبير',min:0.5,max:2,step:0.05,d:1},{id:'badgeUnitBlur',lb:'تمويه',min:0,max:10,step:0.5,d:0},{id:'badgeUnitBrightness',lb:'سطوع',min:0,max:3,step:0.1,d:1},{id:'badgeUnitContrast',lb:'تباين',min:0,max:3,step:0.1,d:1},{id:'badgeUnitGrayscale',lb:'رمادي',min:0,max:1,step:0.1,d:0},{id:'badgeUnitBoxShadow',lb:'ظل',min:0,max:15,step:1,d:0,u:'px'},{id:'badgeUnitLetterSpacing',lb:'تباعد',min:-3,max:10,step:0.5,d:0},{id:'badgeUnitLineHeight',lb:'ارتفاع السطر',min:0.8,max:2.5,step:0.1,d:1.2},{id:'badgeUnitOutlineWidth',lb:'سمك الإطار',min:0,max:5,step:1,d:0}].forEach(function(t){var v=S[t.id]!==undefined?S[t.id]:t.d;h+='<div class="ct"><div class="cl-b">'+t.lb+'</div><div class="rw"><input type="range" min="'+t.min+'" max="'+t.max+'" step="'+t.step+'" value="'+v+'" oninput="setVal(\''+t.id+'\',parseFloat(this.value));this.nextElementSibling.textContent=this.value"><span class="rv">'+v+'</span></div></div>';});
-  h+='<div class="ct"><div class="cl-b">لون الإطار</div><div class="rw"><input type="color" value="'+(S.badgeUnitOutlineColor||'#000000')+'" oninput="setVal(\'badgeUnitOutlineColor\',this.value)"></div></div>';
-  h+='<div class="ct"><div class="cl-b">تحويل النص</div><div class="rw"><select class="sl" onchange="setVal(\'badgeUnitTextTransform\',this.value)"><option value="none"'+(S.badgeUnitTextTransform==='none'?' selected':'')+'>بدون</option><option value="uppercase"'+(S.badgeUnitTextTransform==='uppercase'?' selected':'')+'>كبير</option><option value="lowercase"'+(S.badgeUnitTextTransform==='lowercase'?' selected':'')+'>صغير</option></select></div></div>';
-  h+='<div class="ct"><div class="cl-b">نمط الخط</div><div class="rw"><select class="sl" onchange="setVal(\'badgeUnitFontStyle\',this.value)"><option value="normal"'+(S.badgeUnitFontStyle==='normal'?' selected':'')+'>عادي</option><option value="italic"'+(S.badgeUnitFontStyle==='italic'?' selected':'')+'>مائل</option></select></div></div>';
-  h+='</div>';
-  // === SECTION ADVANCED 2 (10 controls) ===
-  h+='<div class="cs-t">الأقسام - تحويل وفلاتر</div><div class="cg">';
-  [{id:'secRotate',lb:'دوران',min:-180,max:180,step:1,d:0,u:'deg'},{id:'secScale',lb:'تكبير',min:0.5,max:2,step:0.05,d:1},{id:'secBlur',lb:'تمويه',min:0,max:10,step:0.5,d:0},{id:'secBrightness',lb:'سطوع',min:0,max:3,step:0.1,d:1},{id:'secContrast',lb:'تباين',min:0,max:3,step:0.1,d:1},{id:'secGrayscale',lb:'رمادي',min:0,max:1,step:0.1,d:0}].forEach(function(t){var v=S[t.id]!==undefined?S[t.id]:t.d;h+='<div class="ct"><div class="cl-b">'+t.lb+'</div><div class="rw"><input type="range" min="'+t.min+'" max="'+t.max+'" step="'+t.step+'" value="'+v+'" oninput="setVal(\''+t.id+'\',parseFloat(this.value));this.nextElementSibling.textContent=this.value"><span class="rv">'+v+'</span></div></div>';});
-  h+='<div class="ct"><div class="cl-b">ظل القسم</div><div class="rw"><input type="color" value="'+(S.secBoxShadowColor||'#000000')+'" oninput="setVal(\'secBoxShadowColor\',this.value)"></div></div>';
-  [{id:'secBoxShadowX',lb:'ظل X',min:-15,max:15,step:1,d:0},{id:'secBoxShadowY',lb:'ظل Y',min:-15,max:15,step:1,d:0},{id:'secBoxShadowBlur',lb:'تمويه الظل',min:0,max:20,step:1,d:0},{id:'secBoxShadowSpread',lb:'انتشار الظل',min:-5,max:15,step:1,d:0},{id:'secOutlineWidth',lb:'سمك الإطار',min:0,max:5,step:1,d:0},{id:'secLetterSpacing',lb:'تباعد الأحرف',min:-2,max:10,step:0.5,d:0.8},{id:'secLineHeight',lb:'ارتفاع السطر',min:0.8,max:3,step:0.1,d:1.4},{id:'secTextShadowX',lb:'ظل نص X',min:-5,max:5,step:1,d:0},{id:'secTextShadowY',lb:'ظل نص Y',min:-5,max:5,step:1,d:0},{id:'secTextShadowBlur',lb:'تمويه ظل النص',min:0,max:10,step:1,d:0}].forEach(function(t){var v=S[t.id]!==undefined?S[t.id]:t.d;h+='<div class="ct"><div class="cl-b">'+t.lb+'</div><div class="rw"><input type="range" min="'+t.min+'" max="'+t.max+'" step="'+t.step+'" value="'+v+'" oninput="setVal(\''+t.id+'\',parseFloat(this.value));this.nextElementSibling.textContent=this.value"><span class="rv">'+v+'</span></div></div>';});
-  h+='<div class="ct"><div class="cl-b">لون الإطار</div><div class="rw"><input type="color" value="'+(S.secOutlineColor||'#000000')+'" oninput="setVal(\'secOutlineColor\',this.value)"></div></div>';
-  h+='<div class="ct"><div class="cl-b">لون ظل النص</div><div class="rw"><input type="color" value="'+(S.secTextShadowColor||'#000000')+'" oninput="setVal(\'secTextShadowColor\',this.value)"></div></div>';
-  h+='<div class="ct"><div class="cl-b">تحويل النص</div><div class="rw"><select class="sl" onchange="setVal(\'secTextTransform\',this.value)"><option value="none"'+(S.secTextTransform==='none'?' selected':'')+'>بدون</option><option value="uppercase"'+(S.secTextTransform==='uppercase'?' selected':'')+'>كبير</option><option value="lowercase"'+(S.secTextTransform==='lowercase'?' selected':'')+'>صغير</option><option value="capitalize"'+(S.secTextTransform==='capitalize'?' selected':'')+'>أول حرف</option></select></div></div>';
-  h+='<div class="ct"><div class="cl-b">نمط الخط</div><div class="rw"><select class="sl" onchange="setVal(\'secFontStyle\',this.value)"><option value="normal"'+(S.secFontStyle==='normal'?' selected':'')+'>عادي</option><option value="italic"'+(S.secFontStyle==='italic'?' selected':'')+'>مائل</option></select></div></div>';
-  h+='</div>';
-  // === SEPARATOR ADVANCED 2 (5 controls) ===
-  h+='<div class="cs-t">الفاصل - متقدم</div><div class="cg">';
-  [{id:'sepHeight',lb:'ارتفاع',min:1,max:10,step:1,d:2},{id:'sepRotate',lb:'دوران',min:-180,max:180,step:1,d:0},{id:'sepOpacity',lb:'شفافية',min:0,max:1,step:0.05,d:1}].forEach(function(t){var v=S[t.id]!==undefined?S[t.id]:t.d;h+='<div class="ct"><div class="cl-b">'+t.lb+'</div><div class="rw"><input type="range" min="'+t.min+'" max="'+t.max+'" step="'+t.step+'" value="'+v+'" oninput="setVal(\''+t.id+'\',parseFloat(this.value));this.nextElementSibling.textContent=this.value"><span class="rv">'+v+'</span></div></div>';});
-  h+='</div>';
-  // === PAGE ADVANCED 2 (6 controls) ===
-  h+='<div class="cs-t">رقم الصفحة - متقدم</div><div class="cg">';
-  [{id:'pageRotate',lb:'دوران',min:-180,max:180,step:1,d:0},{id:'pageBlur',lb:'تمويه',min:0,max:10,step:0.5,d:0},{id:'pageOpacity',lb:'شفافية',min:0,max:1,step:0.05,d:1},{id:'pageLetterSpacing',lb:'تباعد',min:-2,max:10,step:0.5,d:0}].forEach(function(t){var v=S[t.id]!==undefined?S[t.id]:t.d;h+='<div class="ct"><div class="cl-b">'+t.lb+'</div><div class="rw"><input type="range" min="'+t.min+'" max="'+t.max+'" step="'+t.step+'" value="'+v+'" oninput="setVal(\''+t.id+'\',parseFloat(this.value));this.nextElementSibling.textContent=this.value"><span class="rv">'+v+'</span></div></div>';});
-  h+='<div class="ct"><div class="cl-b">تحويل النص</div><div class="rw"><select class="sl" onchange="setVal(\'pageTextTransform\',this.value)"><option value="none"'+(S.pageTextTransform==='none'?' selected':'')+'>بدون</option><option value="uppercase"'+(S.pageTextTransform==='uppercase'?' selected':'')+'>كبير</option><option value="lowercase"'+(S.pageTextTransform==='lowercase'?' selected':'')+'>صغير</option></select></div></div>';
-  h+='<div class="ct"><div class="cl-b">نمط الخط</div><div class="rw"><select class="sl" onchange="setVal(\'pageFontStyle\',this.value)"><option value="normal"'+(S.pageFontStyle==='normal'?' selected':'')+'>عادي</option><option value="italic"'+(S.pageFontStyle==='italic'?' selected':'')+'>مائل</option></select></div></div>';
-  h+='</div>';
-  // === SPEAKER ADVANCED (10 controls) ===
-  h+='<div class="cs-t">زر الصوت - متقدم</div><div class="cg">';
-  [{id:'speakerSize',lb:'الحجم',min:0.4,max:2,step:0.05,d:0.8},{id:'speakerRotate',lb:'دوران',min:-180,max:180,step:1,d:0},{id:'speakerPaddingX',lb:'حشو أفقي',min:2,max:30,step:1,d:10},{id:'speakerPaddingY',lb:'حشو عمودي',min:2,max:20,step:1,d:4},{id:'speakerBorderRadius',lb:'استدارة',min:0,max:50,step:1,d:20},{id:'speakerShadowX',lb:'ظل X',min:-10,max:10,step:1,d:0},{id:'speakerShadowY',lb:'ظل Y',min:-10,max:10,step:1,d:0},{id:'speakerShadowBlur',lb:'تمويه الظل',min:0,max:20,step:1,d:0}].forEach(function(t){var v=S[t.id]!==undefined?S[t.id]:t.d;h+='<div class="ct"><div class="cl-b">'+t.lb+'</div><div class="rw"><input type="range" min="'+t.min+'" max="'+t.max+'" step="'+t.step+'" value="'+v+'" oninput="setVal(\''+t.id+'\',parseFloat(this.value));this.nextElementSibling.textContent=this.value"><span class="rv">'+v+'</span></div></div>';});
-  h+='<div class="ct"><div class="cl-b">لون الظل</div><div class="rw"><input type="color" value="'+(S.speakerShadowColor||'#000000')+'" oninput="setVal(\'speakerShadowColor\',this.value)"></div></div>';
-  h+='</div>';
-  // === CARD ADVANCED 2 (8 controls) ===
-  h+='<div class="cs-t">البطاقة - تحويل وخلفية</div><div class="cg">';
-  [{id:'cardPerspective',lb:'منظور',min:0,max:2000,step:50,d:0},{id:'cardPatternSize',lb:'حجم النمط',min:5,max:50,step:1,d:20},{id:'cardOutlineWidth',lb:'سمك الإطار الخارجي',min:0,max:10,step:1,d:0},{id:'cardOutlineOffset',lb:'بعد الإطار',min:-10,max:10,step:1,d:0}].forEach(function(t){var v=S[t.id]!==undefined?S[t.id]:t.d;h+='<div class="ct"><div class="cl-b">'+t.lb+'</div><div class="rw"><input type="range" min="'+t.min+'" max="'+t.max+'" step="'+t.step+'" value="'+v+'" oninput="setVal(\''+t.id+'\',parseFloat(this.value));this.nextElementSibling.textContent=this.value"><span class="rv">'+v+'</span></div></div>';});
-  h+='<div class="ct"><div class="cl-b">لون الإطار الخارجي</div><div class="rw"><input type="color" value="'+(S.cardOutlineColor||'#000000')+'" oninput="setVal(\'cardOutlineColor\',this.value)"></div></div>';
-  h+='<div class="ct"><div class="cl-b">نمط الإطار</div><div class="rw"><select class="sl" onchange="setVal(\'cardOutlineStyle\',this.value)"><option value="solid"'+(S.cardOutlineStyle==='solid'?' selected':'')+'>خط</option><option value="dashed"'+(S.cardOutlineStyle==='dashed'?' selected':'')+'>متقطع</option><option value="dotted"'+(S.cardOutlineStyle==='dotted'?' selected':'')+'>منقط</option><option value="double"'+(S.cardOutlineStyle==='double'?' selected':'')+'>مزدوج</option></select></div></div>';
-  h+='<div class="ct"><div class="cl-b">نمط الخلفية</div><div class="rw"><select class="sl" onchange="setVal(\'cardBgRepeat\',this.value)"><option value="no-repeat"'+(S.cardBgRepeat==='no-repeat'?' selected':'')+'>بدون تكرار</option><option value="repeat"'+(S.cardBgRepeat==='repeat'?' selected':'')+'>تكرار</option><option value="repeat-x"'+(S.cardBgRepeat==='repeat-x'?' selected':'')+'>أفقي</option><option value="repeat-y"'+(S.cardBgRepeat==='repeat-y'?' selected':'')+'>عمودي</option><option value="round"'+(S.cardBgRepeat==='round'?' selected':'')+'>دائري</option></select></div></div>';
-  h+='<div class="ct"><div class="cl-b">حجم الخلفية</div><div class="rw"><select class="sl" onchange="setVal(\'cardBgSize\',this.value)"><option value="cover"'+(S.cardBgSize==='cover'?' selected':'')+'>تغطية</option><option value="contain"'+(S.cardBgSize==='contain'?' selected':'')+'>احتواء</option><option value="auto"'+(S.cardBgSize==='auto'?' selected':'')+'>تلقائي</option><option value="100% 100%"'+(S.cardBgSize==='100% 100%'?' selected':'')+'>ملء</option></select></div></div>';
-  h+='<div class="ct"><div class="cl-b">موضع الخلفية</div><div class="rw"><select class="sl" onchange="setVal(\'cardBgPosition\',this.value)"><option value="center"'+(S.cardBgPosition==='center'?' selected':'')+'>وسط</option><option value="top"'+(S.cardBgPosition==='top'?' selected':'')+'>أعلى</option><option value="bottom"'+(S.cardBgPosition==='bottom'?' selected':'')+'>أسفل</option><option value="left"'+(S.cardBgPosition==='left'?' selected':'')+'>يسار</option><option value="right"'+(S.cardBgPosition==='right'?' selected':'')+'>يمين</option></select></div></div>';
-  h+='<div class="ct"><div class="cl-b">لون نمط الخلفية</div><div class="rw"><input type="color" value="'+(S.cardPatternColor||'#000000')+'" oninput="setVal(\'cardPatternColor\',this.value)"></div></div>';
-  h+='<div class="ct"><div class="cl-b">طبقة خلفية</div><div class="rw"><input type="color" value="'+(S.cardBgOverlayColor||'#ffffff')+'" oninput="setVal(\'cardBgOverlayColor\',this.value)"></div></div>';
-  h+='</div>';
-  // === ELEMENT ORDER (6 controls) ===
-  h+='<div class="cs-t">ترتيب العناصر</div><div class="cg">';
-  h+='<div class="ct" style="grid-column:1/-1"><div class="cl-b">ترتيب الظهور</div><div class="rw" style="flex-wrap:wrap;gap:3px">';
-  ['badge','french','separator','meaning','sections','page'].forEach(k=>{
-    const labels={badge:'الشارات',french:'الكلمة',separator:'الفاصل',meaning:'المعنى',sections:'الأقسام',page:'الصفحة'};
-    const ord=S.elementOrder||['badge','french','separator','meaning','sections','page'];
-    const idx=ord.indexOf(k);
-    h+='<div style="display:flex;align-items:center;gap:2px;background:var(--s2);padding:3px 6px;border-radius:5px;font-size:.6em">';
-    h+='<span style="color:var(--ac2);font-weight:700">'+(idx+1)+'</span>';
-    h+='<span>'+labels[k]+'</span>';
-    if(idx>0)h+='<span style="cursor:pointer;color:var(--ac)" onclick="moveElement(\''+k+'\',-1)">▲</span>';
-    if(idx<5)h+='<span style="cursor:pointer;color:var(--ac)" onclick="moveElement(\''+k+'\',1)">▼</span>';
-    h+='</div>';
-  });
-  h+='</div></div>';
-  h+='</div>';
-  // Custom CSS
-  h+='<div class="cs-t">CSS مخصص</div>'
-  h+='<div class="cs-t">CSS مخصص</div>';
-  h+='<textarea class="hx" style="width:100%;min-height:40px;font-size:.6em;direction:ltr" placeholder=".card { /* custom CSS */ }" onchange="S.customCSS=this.value;pushHist();renderAll()">'+(S.customCSS||'')+'</textarea>';
-  // Preview Width
-  h+='<div class="cs-t">حجم المعاينة</div><div style="display:flex;gap:3px;flex-wrap:wrap">';
-  [{n:'كمبيوتر',w:480},{n:'موبايل',w:320},{n:'صغير',w:280}].forEach(r=>h+='<button class="btn bo bs" onclick="S.previewWidth='+r.w+';renderAll()">'+r.n+' ('+r.w+'px)</button>');
-  h+='</div>';
-  // Saved Templates
-  h+='<div class="cs-t">القوالب المحفوظة</div><div id="savedTplList"></div>';
+  or+='</div>';
+  h+=acc('\u{1F503} \u062A\u0631\u062A\u064A\u0628',or,false);
+
+  // 14. CSS & EXPORT
+  h+=acc('\u{1F4BB} CSS','<textarea class="hx" style="width:100%;min-height:50px;font-size:.6em;direction:ltr;font-family:monospace" placeholder=".card{}" onchange="S.customCSS=this.value;pushHist();renderAll()">'+(S.customCSS||'')+'</textarea>',false);
+  h+='<div id="savedTplList" style="margin-top:8px"></div>';
   document.getElementById('ctrlArea').innerHTML=h;
-  renderSavedList();
 }
 
 function toggleSection(s){if(!S.sectionVisibility)S.sectionVisibility={Pluriel:true,Synonyme:true,Contraire:true};S.sectionVisibility[s]=!S.sectionVisibility[s];pushHist();renderAll();syncSectionToggles();}
