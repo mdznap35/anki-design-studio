@@ -468,13 +468,6 @@ function renderCtrls(){
   h+='<div class="cs-t">تصميم سريع</div><div style="display:flex;gap:3px;flex-wrap:wrap">';
   QUICK_DESIGNS.forEach((d,i)=>h+='<button class="btn bo bs" onclick="applyQuickDesign('+i+')">'+d.n+'</button>');
   h+='</div>';
-  // Layout
-  h+='<div class="cs-t">نمط التخطيط</div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:3px">';
-  LAYOUTS.forEach(l=>{
-    const a=(S.layoutMode||'classic')===l.k;
-    h+='<div style="padding:6px 4px;border:2px solid '+(a?'var(--gn)':'var(--bd)')+';border-radius:6px;background:'+(a?'rgba(34,197,94,.08)':'var(--s2)')+';cursor:pointer;text-align:center;transition:all .2s" onclick="setVal(\'layoutMode\',\''+l.k+'\')"><div style="font-size:.8em;font-weight:700">'+l.n+'</div><div style="font-size:.45em;color:var(--tx2)">'+l.d+'</div></div>';
-  });
-  h+='</div>';
   // Colors
   h+='<div class="cs-t">الألوان</div><div class="cg">';
   [{id:'cardBg',lb:'خلفية البطاقة',d:'#ffffff'},{id:'cardBg2',lb:'خلفية ثانية',d:''},{id:'frenchColor',lb:'لون الكلمة',d:'#1e293b'},{id:'meaningColor',lb:'لون المعنى',d:'#1e40af'},{id:'meaningBg',lb:'خلفية المعنى',d:'#eff6ff'},{id:'meaningBorder',lb:'حدود المعنى',d:'#bfdbfe'},{id:'badgeNomBg',lb:'خلفية الشارة',d:'#dbeafe'},{id:'badgeNomColor',lb:'لون الشارة',d:'#1e40af'},{id:'unitBg',lb:'خلفية الوحدة',d:'#f0fdf4'},{id:'unitColor',lb:'لون الوحدة',d:'#166534'},{id:'secBg',lb:'خلفية الأقسام',d:'#f8f9fa'},{id:'secBorder',lb:'حدود الأقسام',d:'#e2e8f0'},{id:'secTextColor',lb:'لون نص الأقسام',d:'#333'},{id:'labelColor',lb:'لون التسميات',d:'#999'},{id:'cardBorderColor',lb:'حدود البطاقة',d:'#e2e8f0'},{id:'separatorColor',lb:'لون الفاصل',d:'#e2e8f0'}
@@ -575,7 +568,7 @@ function renderCtrls(){
   });
   h+='</div></div>';
   [{id:'speakerBg',lb:'خلفية الزر',d:'rgba(124,58,237,.15)'},{id:'speakerColor',lb:'لون الزر',d:'#7c3aed'}].forEach(c2=>{
-    h+='<div class="ct"><div class="cl-b">'+c2.lb+'</div><div class="rw"><input type="color" value="'+(S[c2.id]||c2.d)+'" oninput="setVal(''+c2.id+'',this.value);this.nextElementSibling.value=this.value"><input type="text" class="hx" value="'+(S[c2.id]||c2.d)+'" onchange="setVal(''+c2.id+'',this.value);this.previousElementSibling.value=this.value"></div></div>';
+    h+='<div class="ct"><div class="cl-b">'+c2.lb+'</div><div class="rw"><input type="color" value="'+(S[c2.id]||c2.d)+'" oninput="setVal(\''+c2.id+'\',this.value);this.nextElementSibling.value=this.value"><input type="text" class="hx" value="'+(S[c2.id]||c2.d)+'" onchange="setVal(\''+c2.id+'\',this.value);this.previousElementSibling.value=this.value"></div></div>';
   });
   h+='</div>';
   // Separator
