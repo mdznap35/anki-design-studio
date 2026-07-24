@@ -432,6 +432,7 @@ document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',function
   if(this.dataset.t==='full')renderFullscreen();
 }));
 function syncToggles(){document.querySelectorAll("[data-tog]").forEach(function(el){var k=el.getAttribute("data-tog");if(k.startsWith("sec-"))return;var v=S[k]!==false;el.className="btn bo bs";el.style.borderColor=v?'var(--gn)':'var(--rd)';el.style.color=v?'var(--gn)':'var(--rd)';el.textContent=(v?"\u2713":"\u2717")+" "+el.getAttribute("data-lbl");});}
+function toggleAcc(h){h.classList.toggle('open');h.nextElementSibling.classList.toggle('open');}
 function syncSectionToggles(){document.querySelectorAll("[data-tog^=\"sec-\"]").forEach(function(el){var k=el.getAttribute("data-tog").replace("sec-","");var vis=(S.sectionVisibility||{Pluriel:true,Synonyme:true,Contraire:true})[k]!==false;el.className="btn "+(vis?"bg":"br")+" bs";el.textContent=(vis?"✓":"✗")+" "+el.getAttribute("data-lbl");});}
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.className='show';setTimeout(()=>t.className='',2000);}
 
