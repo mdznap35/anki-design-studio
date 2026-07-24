@@ -328,7 +328,7 @@ function defCfg(overrides={}){
     meaningFontStyle:'normal',meaningTextTransform:'none',
     cardClipPath:'',cardHoverScale:1,
     badgeNomBorderWidth:0,badgeUnitBorderWidth:0,
-    secGap:4},overrides);
+    secGap:4,elementOrder:['badge','french','separator','meaning','sections','page']},overrides);
 }
 
 // Template definitions -- each has a default config and visual preview
@@ -629,8 +629,7 @@ function buildElCSS(p,c){
   return s;
 }
 
-function _patternCSS(p,col,sz){
-  function _patternCSS(p,col,sz){if(!p||p==='none')return '';var pat={
+function _patternCSS(p,col,sz){if(!p||p==='none')return '';var pat={
     'dots':'radial-gradient(circle,'+col+' 1px,transparent 1px)',
     'lines':'repeating-linear-gradient(0deg,'+col+' 0px,'+col+' 1px,transparent 1px,transparent '+sz+'px)',
     'grid':'linear-gradient('+col+' 1px,transparent 1px),linear-gradient(90deg,'+col+' 1px,transparent 1px)',
@@ -940,7 +939,7 @@ function applyQuickDesign(i){QUICK_DESIGNS[i].apply();S._templateId='quick-'+i;p
 
 // TEMPLATE MANAGEMENT
 function saveCustom(){const n=prompt('اسم القالب:');if(!n)return;const s=JSON.parse(localStorage.getItem('anki_custom')||'[]');s.push({name:n,cfg:{...S},date:Date.now()});localStorage.setItem('anki_custom',JSON.stringify(s));toast('تم الحفظ: '+n);renderSavedList();}
-function loadCustom(i){const s=JSON.parse(localStorage.getItem('anki_custom')||'[]');if(!s[i])return;S={...s[i].cfg};pushHist();renderAll();toast(s[i].name);}
+function loadCustom(i){const s=JSON.parse(localStorage.getItem('anki_custom')||'[]');if(!s[i])return;S={...s[i].cfg};pushHist();renderCtrls();renderAll();toast(s[i].name);}
 function deleteCustom(i){const s=JSON.parse(localStorage.getItem('anki_custom')||'[]');s.splice(i,1);localStorage.setItem('anki_custom',JSON.stringify(s));renderSavedList();toast('تم الحذف');}
 function renderSavedList(){const s=JSON.parse(localStorage.getItem('anki_custom')||'[]');const e=document.getElementById('savedTplList');if(!e)return;if(!s.length){e.innerHTML='<div style="font-size:.65em;color:var(--tx3)">لا يوجد</div>';return;}e.innerHTML=s.map((x,i)=>'<div style="display:flex;align-items:center;gap:5px;padding:5px 7px;background:var(--s2);border-radius:5px;margin-bottom:3px;font-size:.68em"><span style="flex:1;font-weight:600">'+x.name+'</span><button class="btn bo bs" onclick="loadCustom('+i+')">تحميل</button><button class="btn br bs" onclick="deleteCustom('+i+')">حذف</button></div>').join('');}
 
