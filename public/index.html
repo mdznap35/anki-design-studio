@@ -114,10 +114,37 @@ select.sl{appearance:none;cursor:pointer}
 @keyframes sec-scaleUp{from{opacity:0;transform:scale(0.8)}to{opacity:1;transform:scale(1)}}
 
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-@keyframes bounce{0%{transform:scale(0.3)}50%{transform:scale(1.05)}70%{transform:scale(0.9)}100%{transform:scale(1)}}
+@keyframes fadeOut{from{opacity:1}to{opacity:0}}
+@keyframes slideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideDown{from{opacity:0;transform:translateY(-30px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideLeft{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
+@keyframes slideRight{from{opacity:0;transform:translateX(-30px)}to{opacity:1;transform:translateX(0)}}
+@keyframes bounce{0%{transform:scale(0.3)}50%{transform:scale(1.08)}70%{transform:scale(0.92)}100%{transform:scale(1)}}
+@keyframes bounceIn{0%{transform:scale(0)}50%{transform:scale(1.15)}70%{transform:scale(0.9)}100%{transform:scale(1)}}
+@keyframes bounceOut{0%{transform:scale(1)}50%{transform:scale(1.1)}70%{transform:scale(0.95)}100%{transform:scale(0)}}
 @keyframes glow{0%,100%{text-shadow:0 0 5px currentColor}50%{text-shadow:0 0 25px currentColor,0 0 50px currentColor}}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+@keyframes pulseScale{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+@keyframes shake{0%,100%{transform:translateX(0)}10%{transform:translateX(-8px)}20%{transform:translateX(8px)}30%{transform:translateX(-6px)}40%{transform:translateX(6px)}50%{transform:translateX(-4px)}60%{transform:translateX(4px)}70%{transform:translateX(-2px)}80%{transform:translateX(2px)}90%{transform:translateX(-1px)}}
+@keyframes wobble{0%,100%{transform:rotate(0)}15%{transform:rotate(-5deg)}30%{transform:rotate(4deg)}45%{transform:rotate(-3deg)}60%{transform:rotate(2deg)}75%{transform:rotate(-1deg)}}
+@keyframes swing{20%{transform:rotate(15deg)}40%{transform:rotate(-10deg)}60%{transform:rotate(5deg)}80%{transform:rotate(-5deg)}100%{transform:rotate(0)}}
+@keyframes rubberBand{0%{transform:scale(1)}30%{transform:scaleX(1.25) scaleY(0.75)}40%{transform:scaleX(0.75) scaleY(1.25)}50%{transform:scaleX(1.15) scaleY(0.85)}65%{transform:scaleX(0.95) scaleY(1.05)}75%{transform:scaleX(1.05) scaleY(0.95)}100%{transform:scale(1)}}
+@keyframes flip{0%{transform:perspective(400px) rotateY(0)}40%{transform:perspective(400px) rotateY(-180deg)}70%{transform:perspective(400px) rotateY(-180deg)}100%{transform:perspective(400px) rotateY(0)}}
+@keyframes rotateIn{from{opacity:0;transform:rotate(-200deg) scale(0.5)}to{opacity:1;transform:rotate(0) scale(1)}}
+@keyframes zoomIn{from{opacity:0;transform:scale(0.3)}to{opacity:1;transform:scale(1)}}
+@keyframes zoomOut{from{opacity:1;transform:scale(1)}to{opacity:0;transform:scale(0.3)}}
+@keyframes flash{0%,50%,100%{opacity:1}25%,75%{opacity:0}}
+@keyframes heartBeat{0%,100%{transform:scale(1)}14%{transform:scale(1.15)}28%{transform:scale(1)}42%{transform:scale(1.15)}70%{transform:scale(1)}}
+@keyframes jackInTheBox{0%{opacity:0;transform:scale(0.1) rotate(-30deg)}50%{transform:scale(1.05) rotate(-10deg)}70%{transform:scale(0.95) rotate(3deg)}100%{opacity:1;transform:scale(1) rotate(0)}}
+@keyframes rollIn{from{opacity:0;transform:translateX(-100%) rotate(-120deg)}to{opacity:1;transform:translateX(0) rotate(0)}}
+@keyframes lightSpeedIn{from{opacity:0;transform:translateX(100%) skewX(-30deg)}60%{opacity:1;transform:translateX(-20px) skewX(8deg)}80%{transform:translateX(-5px) skewX(-4deg)}to{transform:translateX(0) skewX(0)}}
+@keyframes hinge{0%{transform-origin:top left;animation-timing-function:ease-in-out}20%,60%{transform:rotate(-80deg);transform-origin:top left}40%,80%{transform:rotate(60deg);transform-origin:top left;opacity:1}100%{transform:translateY(700px);opacity:0}}
+@keyframes bounceUp{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}
+@keyframes float{0%,100%{transform:translateY(0) rotate(0)}25%{transform:translateY(-8px) rotate(1deg)}75%{transform:translateY(4px) rotate(-1deg)}}
+@keyframes typewriter{from{max-width:0}to{max-width:100%}}
+@keyframes colorCycle{0%{filter:hue-rotate(0deg)}100%{filter:hue-rotate(360deg)}}
+@keyframes ripple{0%{box-shadow:0 0 0 0 rgba(124,58,237,0.4)}100%{box-shadow:0 0 0 20px rgba(124,58,237,0)}}
+@keyframes neonFlicker{0%,19%,21%,23%,25%,54%,56%,100%{text-shadow:0 0 7px currentColor,0 0 10px currentColor,0 0 21px currentColor}20%,24%,55%{text-shadow:none}}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
 
 </style>
@@ -254,7 +281,7 @@ function defCfg(overrides={}){
     cardBorderWidth:0,cardBorderColor:'#e2e8f0',
     cardShadow:'none',cardDirection:'column',cardAlign:'center',cardGap:10,
     frenchColor:'#1e293b',frenchFontSize:2.4,frenchFontWeight:900,
-    frenchLetterSpacing:0,frenchLineHeight:1.2,frenchAnim:'none',frenchAnimDur:0.5,meaningAnim:'none',meaningAnimDur:0.5,badgeAnim:'none',badgeAnimDur:0.5,
+    frenchLetterSpacing:0,frenchLineHeight:1.2,frenchAnim:'none',frenchAnimDur:0.5,frenchAnimDelay:0,frenchAnimIter:1,frenchAnimDir:'normal',frenchAnimFill:'both',frenchAnimTiming:'ease-in-out',meaningAnim:'none',meaningAnimDur:0.5,meaningAnimDelay:0,meaningAnimIter:1,meaningAnimDir:'normal',meaningAnimFill:'both',meaningAnimTiming:'ease-in-out',badgeAnim:'none',badgeAnimDur:0.5,badgeAnimDelay:0,badgeAnimIter:1,badgeAnimDir:'normal',badgeAnimFill:'both',badgeAnimTiming:'ease-in-out',secAnim:'none',secAnimDur:0.5,secAnimDelay:0,
     meaningColor:'#1e40af',meaningFontSize:1.5,meaningFontWeight:800,
     meaningBg:'#eff6ff',meaningBorder:'#bfdbfe',meaningBorderRadius:16,meaningBorderWidth:2,
     badgeNomBg:'#dbeafe',badgeNomColor:'#1e40af',
@@ -532,14 +559,14 @@ function renderCardHTML(c){
   if(c.speakerTransition)spkCSS+='transition:'+c.speakerTransition+';';
   const speakerBtn='<span data-ve="speaker" style="display:inline-block;cursor:pointer;background:'+sBg2+';color:#ffffff;margin:2px;'+spkCSS+'" onclick="event.stopPropagation();speakWord(SAMP.f,\'fr\');setTimeout(()=>speakWord(SAMP.a,\'ar\'),1500)">'+sIco2+'</span>';
   const badges=sPos==='inline'?badgeN+unitB+speakerBtn:badgeN+unitB;
-  const frenchAnimName=c.frenchAnim&&c.frenchAnim!=='none'?c.frenchAnim:'';const frenchAnimDur=c.frenchAnimDur||0.5;const frenchAnimCSS=frenchAnimName?'animation:'+frenchAnimName+' '+frenchAnimDur+'s ease-in-out;':'';const french='<div data-ve="french" style="opacity:'+fOp+';width:'+fW+';transform:scale('+fSc+');margin-top:'+fMt+'px;margin-bottom:'+fMb+'px;font-family:'+fF+',sans-serif;font-size:'+fsFr+'em;font-weight:'+fwFr+';direction:ltr;unicode-bidi:embed;color:'+fc+';letter-spacing:'+(c.frenchLetterSpacing||0)+'px;line-height:'+(c.frenchLineHeight||1.2)+';'+frenchAnimCSS+'">'+SAMP.f+'</div>';
-  const meaningAnimName=c.meaningAnim&&c.meaningAnim!=='none'?c.meaningAnim:'';const meaningAnimDur=c.meaningAnimDur||0.5;const meaningAnimCSS=meaningAnimName?'animation:'+meaningAnimName+' '+meaningAnimDur+'s ease-in-out;':'';const meaning=c.showMeaning!==false?'<div data-ve="meaning" style="opacity:'+mOp+';width:'+mW+';transform:scale('+mSc+');margin-top:'+mMt+'px;margin-bottom:'+mMb+'px;background:'+(c.meaningBg||'#eff6ff')+';border:'+(c.meaningBorderWidth||2)+'px solid '+(c.meaningBorder||'#bfdbfe')+';border-radius:'+(c.meaningBorderRadius||16)+'px;padding:10px 16px;'+meaningAnimCSS+'"><div style="font-family:'+fA+',sans-serif;font-size:'+fsAr+'em;font-weight:'+fwAr+';color:'+mc+'">'+SAMP.a+'</div></div>':'';
+  function _animCSS(prefix,c){var name=c[prefix+'Anim'];if(!name||name==='none')return '';var dur=c[prefix+'AnimDur']||0.5;var delay=c[prefix+'AnimDelay']||0;var iter=c[prefix+'AnimIter']||1;var dir=c[prefix+'AnimDir']||'normal';var fill=c[prefix+'AnimFill']||'both';var timing=c[prefix+'AnimTiming']||'ease-in-out';return 'animation:'+name+' '+dur+'s '+timing+' '+delay+'s '+iter+' '+dir+' '+fill+';';}const frenchAnimCSS=_animCSS('french',c);const french='<div data-ve="french" style="opacity:'+fOp+';width:'+fW+';transform:scale('+fSc+');margin-top:'+fMt+'px;margin-bottom:'+fMb+'px;font-family:'+fF+',sans-serif;font-size:'+fsFr+'em;font-weight:'+fwFr+';direction:ltr;unicode-bidi:embed;color:'+fc+';letter-spacing:'+(c.frenchLetterSpacing||0)+'px;line-height:'+(c.frenchLineHeight||1.2)+';'+frenchAnimCSS+'">'+SAMP.f+'</div>';
+  const meaningAnimCSS=_animCSS('meaning',c);const meaning=c.showMeaning!==false?'<div data-ve="meaning" style="opacity:'+mOp+';width:'+mW+';transform:scale('+mSc+');margin-top:'+mMt+'px;margin-bottom:'+mMb+'px;background:'+(c.meaningBg||'#eff6ff')+';border:'+(c.meaningBorderWidth||2)+'px solid '+(c.meaningBorder||'#bfdbfe')+';border-radius:'+(c.meaningBorderRadius||16)+'px;padding:10px 16px;'+meaningAnimCSS+'"><div style="font-family:'+fA+',sans-serif;font-size:'+fsAr+'em;font-weight:'+fwAr+';color:'+mc+'">'+SAMP.a+'</div></div>':'';
   const secValues={Pluriel:SAMP.p,Synonyme:SAMP.s,Contraire:SAMP.c};
   const vis=c.sectionVisibility||{Pluriel:true,Synonyme:true,Contraire:true};
   let secsInner='';
   (c.sectionOrder||['Pluriel','Synonyme','Contraire']).forEach(s=>{
     if(!vis[s])return;
-    secsInner+='<div data-ve="'+s.toLowerCase()+'" style="opacity:'+sOp+';background:'+(c.secBg||'#f8f9fa')+';border:1px solid '+(c.secBorder||'#e2e8f0')+';border-radius:6px;padding:4px 8px;width:80%;margin:2px 0"><div style="font-size:.5em;text-transform:uppercase;letter-spacing:.8px;color:'+(c.labelColor||'#999')+';font-weight:700">'+s+'</div><div style="font-size:.7em;color:'+(c.secTextColor||'#333')+';direction:ltr;unicode-bidi:embed">'+secValues[s]+'</div></div>';
+    var secAnimCSS=_animCSS('sec',c);secsInner+='<div data-ve="'+s.toLowerCase()+'" style="opacity:'+sOp+';background:'+(c.secBg||'#f8f9fa')+';border:1px solid '+(c.secBorder||'#e2e8f0')+';border-radius:6px;padding:4px 8px;width:80%;margin:2px 0;'+secAnimCSS+'"><div style="font-size:.5em;text-transform:uppercase;letter-spacing:.8px;color:'+(c.labelColor||'#999')+';font-weight:700">'+s+'</div><div style="font-size:.7em;color:'+(c.secTextColor||'#333')+';direction:ltr;unicode-bidi:embed">'+secValues[s]+'</div></div>';
   });
   const secsHtml=secsInner?'<div data-ve="sections">'+secsInner+'</div>':'';
   const sepHtml=c.separatorStyle&&c.separatorStyle!=='none'?'<div data-ve="separator" style="border-top:'+(c.separatorWidth||2)+'px '+(c.separatorStyle||'solid')+' '+(c.separatorColor||'#e2e8f0')+';width:80%;margin:4px auto"></div>':'<div data-ve="separator" style="height:1px"></div>';
@@ -703,16 +730,34 @@ function renderCtrls(){
     ['secWidth','\u0627\u0644\u0639\u0631\u0636',30,100,5,80]
   ])+sel('secDirection','\u0627\u0644\u0627\u062A\u062C\u0627\u0647',[{v:'column',l:'\u0639\u0645\u0648\u062F\u064A'},{v:'row',l:'\u0623\u0641\u0642\u064A'}]),false);
 
-  // 11. ANIMATIONS
-  var an='<div class="cg">';
-  an+=sel('frenchAnim','\u0627\u0644\u0643\u0644\u0645\u0629',[{v:'none',l:'\u0628\u062F\u0648\u0646'},{v:'fadeIn',l:'\u0638\u0647\u0648\u0631'},{v:'slideUp',l:'\u0635\u0639\u0648\u062F'},{v:'bounce',l:'\u0627\u0631\u062A\u062F\u0627\u062F'},{v:'glow',l:'\u062A\u0648\u0647\u062C'}]);
-  an+=sel('meaningAnim','\u0627\u0644\u0645\u0639\u0646\u0649',[{v:'none',l:'\u0628\u062F\u0648\u0646'},{v:'fadeIn',l:'\u0638\u0647\u0648\u0631'},{v:'slideUp',l:'\u0635\u0639\u0648\u062F'},{v:'bounce',l:'\u0627\u0631\u062A\u062F\u0627\u062F'}]);
-  an+=sel('badgeAnim','\u0627\u0644\u0634\u0627\u0631\u0627\u062A',[{v:'none',l:'\u0628\u062F\u0648\u0646'},{v:'fadeIn',l:'\u0638\u0647\u0648\u0631'},{v:'bounce',l:'\u0627\u0631\u062A\u062F\u0627\u062F'}]);
-  an+=sl([
-    ['frenchAnimDur','\u0645\u062F\u0629 \u0627\u0644\u0643\u0644\u0645\u0629',0.2,3,0.1,0.5],
-    ['meaningAnimDur','\u0645\u062F\u0629 \u0627\u0644\u0645\u0639\u0646\u0649',0.2,3,0.1,0.5]
-  ]);
-  an+='</div>';
+  // 11. ANIMATIONS - COMPREHENSIVE
+  var ANIM_OPTS=[{v:'none',l:'بدون'},{v:'fadeIn',l:'ظهور'},{v:'fadeOut',l:'اختفاء'},{v:'slideUp',l:'صعود'},{v:'slideDown',l:'نزول'},{v:'slideLeft',l:'يمين'},{v:'slideRight',l:'يسار'},{v:'bounce',l:'ارتداد'},{v:'bounceIn',l:'ارتداد دخول'},{v:'bounceOut',l:'ارتداد خروج'},{v:'glow',l:'توهج'},{v:'pulse',l:'نبض'},{v:'pulseScale',l:'نبض حجم'},{v:'shake',l:'اهتزاز'},{v:'wobble',l:'تمايل'},{v:'swing',l:'تأرجح'},{v:'rubberBand',l:'مطاطي'},{v:'flip',l:'قلب'},{v:'rotateIn',l:'دوران دخول'},{v:'zoomIn',l:'تكبير'},{v:'zoomOut',l:'تصغير'},{v:'flash',l:'وميض'},{v:'heartBeat',l:'نبض قلب'},{v:'jackInTheBox',l:'صندوق'},{v:'rollIn',l:'لف'},{v:'lightSpeedIn',l:'سرعة الضوء'},{v:'bounceUp',l:'قفز'},{v:'float',l:'عوم'},{v:'typewriter',l:'آلة كاتبة'},{v:'colorCycle',l:'دورة ألوان'},{v:'ripple',l:'تموج'},{v:'neonFlicker',l:'نيون'}];
+  var TIMING_OPTS=[{v:'ease-in-out',l:'سلس'},{v:'linear',l:'ثابت'},{v:'ease-in',l:'بداية'},{v:'ease-out',l:'نهاية'},{v:'ease',l:'افتراضي'},{v:'cubic-bezier(0.68,-0.55,0.27,1.55)',l:'مرن'},{v:'cubic-bezier(0.175,0.885,0.32,1.275)',l:'منبثق'}];
+  var DIR_OPTS=[{v:'normal',l:'عادي'},{v:'reverse',l:'عكس'},{v:'alternate',l:'بديل'},{v:'alternate-reverse',l:'بديل عكس'}];
+  var FILL_OPTS=[{v:'both',l:'الاثنين'},{v:'forwards',l:'الأمام'},{v:'backwards',l:'الخلف'},{v:'none',l:'بدون'}];
+
+  function animCtrl(prefix,label){
+    var h='<div class="acc-grp" style="margin:4px 0"><div class="acc-grp-t">'+label+'</div>';
+    h+=sel(prefix+'Anim','النوع',ANIM_OPTS);
+    h+=sl([
+      [prefix+'AnimDur','المدة',0.1,5,0.1,0.5],
+      [prefix+'AnimDelay','التأخير',0,5,0.1,0]
+    ]);
+    h+=sel(prefix+'AnimDir','الاتجاه',DIR_OPTS);
+    h+=sel(prefix+'AnimTiming','السرعة',TIMING_OPTS);
+    h+=sel(prefix+'AnimFill','الملء',FILL_OPTS);
+    var iterV=S[prefix+'AnimIter']!==undefined?S[prefix+'AnimIter']:1;
+    h+='<div class="ct"><div class="cl-b">التكرار</div><div class="rw"><select class="sl" onchange="setVal(\''+prefix+'AnimIter\',this.value===\'inf\'?\'infinite\':parseInt(this.value))">';
+    ['1','2','3','5','10','inf'].forEach(function(v){h+='<option value="'+v+'"'+(iterV==v||(v==='inf'&&iterV==='infinite')?' selected':'')+'>'+(v==='inf'?'لانهائي':v)+'</option>';});
+    h+='</select></div></div></div>';
+    return h;
+  }
+
+  var an='';
+  an+=animCtrl('french','🇫🇷 الكلمة الفرنسية');
+  an+=animCtrl('meaning','📖 المعنى');
+  an+=animCtrl('badge','🏷️ الشارات');
+  an+=animCtrl('sec','📋 الأقسام');
   h+=acc('\u{1F3AC} \u0627\u0644\u062D\u0631\u0643\u0627\u062A',an,false);
 
   // 12. SPEAKER
