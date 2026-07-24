@@ -424,14 +424,8 @@ function renderCardHTML(c){
   const fsAr=c.meaningFontSize||1.5,fwAr=c.meaningFontWeight||800,mc=c.meaningColor||'#1e40af';
   let bg=c.cardBg;
   if(c.cardBg2&&c.cardBg!==c.cardBg2)bg='linear-gradient('+(c.bgGradientDir||'135deg')+','+c.cardBg+','+c.cardBg2+')';
-  // Background image
-  if(c.cardBgImage){
-    const bgo=c.cardBgOpacity!==undefined?c.cardBgOpacity:1;
-    const bgb=c.cardBgBlur||0;
-    bg+=';background-image:url('+c.cardBgImage+');background-size:cover;background-position:center';
-    if(bgb>0)bg+=';filter:blur('+bgb+'px)';
-    if(bgo<1)bg+=';opacity:'+bgo;
-  }
+  // Background image overlay (separate from card content)
+  const bgOverlay=c.cardBgImage?'<div style="position:absolute;inset:0;background-image:url('+c.cardBgImage+');background-size:cover;background-position:center;filter:blur('+(c.cardBgBlur||0)+'px);opacity:'+(c.cardBgOpacity!==undefined?c.cardBgOpacity:1)+';z-index:0;pointer-events:none"></div>':'';
   const extras=(c.cardBorderWidth>0?'border:'+c.cardBorderWidth+'px solid '+c.cardBorderColor+';':'')+(c.cardShadow&&c.cardShadow!=='none'?'box-shadow:'+c.cardShadow+';':'');
   const base='border-radius:'+br+'px;text-align:center;position:relative;overflow:hidden;font-family:'+fA+',sans-serif;direction:rtl;';
   const fOp=c.frenchOpacity!==undefined?c.frenchOpacity:1;
@@ -443,8 +437,9 @@ function renderCardHTML(c){
   const fMt=c.frenchMarginTop||0;const fMb=c.frenchMarginBottom||4;
   const mMt=c.meaningMarginTop||6;const mMb=c.meaningMarginBottom||0;
   const badgeN=c.showBadge!==false?'<span style="display:inline-block;font-size:.72em;font-weight:700;padding:4px 14px;border-radius:20px;direction:ltr;margin:2px;background:'+(c.badgeNomBg||'#dbeafe')+';color:'+(c.badgeNomColor||'#1e40af')+';opacity:'+bOp+'">Nom</span>':"";
-  const unitB='<span style="display:inline-block;font-size:.68em;font-weight:700;padding:3px 12px;border-radius:20px;direction:ltr;margin:2px;background:'+(c.unitBg||'#f0fdf4')+';color:'+(c.unitColor||'#166534')+';border:1px solid '+(c.unitBorder||'#bbf7d0')+';opacity:'+bOp+'">Unit 1</span>';
-  const badges=badgeN+(c.showBadge!==false?unitB:'');
+  const unitB=c.showBadge!==false?'<span style="display:inline-block;font-size:.68em;font-weight:700;padding:3px 12px;border-radius:20px;direction:ltr;margin:2px;background:'+(c.unitBg||'#f0fdf4')+';color:'+(c.unitColor||'#166534')+';border:1px solid '+(c.unitBorder||'#bbf7d0')+';opacity:'+bOp+'">Unit 1</span>':'';
+  const speakerBtn='<span data-ve="speaker" style="display:inline-block;font-size:.8em;padding:4px 10px;border-radius:20px;cursor:pointer;background:rgba(124,58,237,.15);color:#7c3aed;margin:2px;transition:all .2s" onclick="event.stopPropagation();speakWord(SAMP.f,\'fr\');setTimeout(()=>speakWord(SAMP.a,\'ar\'),1500)">🔊</span>';
+  const badges=(c.showBadge!==false?badgeN+unitB:'')+speakerBtn;
   const french='<div style="opacity:'+fOp+';width:'+fW+';transform:scale('+fSc+');margin-top:'+fMt+'px;margin-bottom:'+fMb+'px;font-family:'+fF+',sans-serif;font-size:'+fsFr+'em;font-weight:'+fwFr+';direction:ltr;unicode-bidi:embed;color:'+fc+';letter-spacing:'+(c.frenchLetterSpacing||0)+'px;line-height:'+(c.frenchLineHeight||1.2)+'">'+SAMP.f+'</div>';
   const meaning=c.showMeaning!==false?'<div style="opacity:'+mOp+';width:'+mW+';transform:scale('+mSc+');margin-top:'+mMt+'px;margin-bottom:'+mMb+'px;background:'+(c.meaningBg||'#eff6ff')+';border:'+(c.meaningBorderWidth||2)+'px solid '+(c.meaningBorder||'#bfdbfe')+';border-radius:'+(c.meaningBorderRadius||16)+'px;padding:10px 16px"><div style="font-family:'+fA+',sans-serif;font-size:'+fsAr+'em;font-weight:'+fwAr+';color:'+mc+'">'+SAMP.a+'</div></div>':'';
   const secValues={Pluriel:SAMP.p,Synonyme:SAMP.s,Contraire:SAMP.c};
@@ -460,7 +455,7 @@ function renderCardHTML(c){
   const order=c.elementOrder||['badge','french','separator','meaning','sections','page'];
   const parts={badge:'<div data-ve="badge">'+badges+'</div>',french:'<div data-ve="french">'+french+'</div>',separator:sepHtml,meaning:'<div data-ve="meaning">'+meaning+'</div>',sections:secsHtml,page:pageHtml};
   let ordered='';for(const k of order)ordered+=(parts[k]||'');
-  return '<div class="card" data-ve="card" style="background:'+bg+';'+base+'padding:'+pd+'px;min-height:'+mh+'px;max-width:'+(c.previewWidth||mw)+'px;flex-direction:column;align-items:center;justify-content:center;gap:'+cg+'px;'+extras+'">'+ordered+'</div>';
+  return '<div class="card" data-ve="card" style="background:'+bg+';'+base+'padding:'+pd+'px;min-height:'+mh+'px;max-width:'+(c.previewWidth||mw)+'px;flex-direction:column;align-items:center;justify-content:center;gap:'+cg+'px;'+extras+';position:relative">'+bgOverlay+'<div style="position:relative;z-index:1;width:100%;display:flex;flex-direction:column;align-items:center;gap:'+cg+'px">'+ordered+'</div></div>';
 }
 
 // CONTROLS
@@ -547,12 +542,7 @@ function renderCtrls(){
     h+='<div class="ct"><div class="cl-b">'+w.lb+'</div><div class="rw"><input type="range" min="'+w.min+'" max="'+w.max+'" step="'+(w.u==='x'?0.05:5)+'" value="'+v+'" oninput="setVal(\''+w.id+'\',parseFloat(this.value));this.nextElementSibling.textContent='+((w.u==='x')?'Math.round(this.value*100)+\'%\'':'this.value+\'%\'')+'"><span class="rv">'+(w.u==='x'?Math.round(v*100)+'%':v+'%')+'</span></div></div>';
   });
   h+='</div>';
-  // Element Order
-  h+='<div class="cs-t">ترتيب العناصر</div><div id="elemOrder">';
-  const eo=S.elementOrder||['badge','french','separator','meaning','sections','page'];
-  const eL={badge:'الشارات',french:'الكلمة الفرنسية',separator:'الفاصل',meaning:'المعنى',sections:'الأقسام',page:'الصفحة'};
-  eo.forEach((e,i)=>h+='<div class="si" draggable="true" data-eidx="'+i+'" ondragstart="dragElemStart(event)" ondragover="event.preventDefault()" ondrop="dragElemDrop(event)"><span style="color:var(--tx3)">⠿</span><span class="si-n">'+(i+1)+'</span><span>'+(eL[e]||e)+'</span></div>');
-  h+='</div>';
+
   // Margins
   h+='<div class="cs-t">مسافات</div><div class="cg">';
   [{id:'frenchMarginTop',lb:'هامش الكلمة أعلى',d:0},{id:'frenchMarginBottom',lb:'هامش الكلمة أسفل',d:4},{id:'meaningMarginTop',lb:'هامش المعنى أعلى',d:6},{id:'meaningMarginBottom',lb:'هامش المعنى أسفل',d:0}].forEach(s=>{
@@ -594,10 +584,7 @@ function renderCtrls(){
 function toggleSection(s){if(!S.sectionVisibility)S.sectionVisibility={Pluriel:true,Synonyme:true,Contraire:true};S.sectionVisibility[s]=!S.sectionVisibility[s];pushHist();renderCtrls();renderAll();}
 function updateCtlPreview(){const e=document.getElementById('ctlPreviewCard');if(e)e.innerHTML=renderCardHTML(S);}
 
-// ELEMENT ORDER
-let dragElemIdx=null;
-function dragElemStart(e){dragElemIdx=parseInt(e.target.closest('.si').dataset.eidx);}
-function dragElemDrop(e){e.preventDefault();const to=parseInt(e.target.closest('.si').dataset.eidx);if(dragElemIdx===null||dragElemIdx===to)return;if(!S.elementOrder)S.elementOrder=['badge','french','separator','meaning','sections','page'];const a=S.elementOrder;const item=a.splice(dragElemIdx,1)[0];a.splice(to,0,item);dragElemIdx=null;pushHist();renderCtrls();renderAll();}
+
 
 // PRESETS
 function applyColorPreset(i){const p=PRESETS.colors[i];if(!p)return;S.cardBg=p.bg;S.frenchColor=p.fc;S.meaningColor=p.mc;S.meaningBg=p.mb;S.meaningBorder=p.mbd;pushHist();renderCtrls();renderAll();}
@@ -649,6 +636,7 @@ const VE_PROPS={
   synonyme:[_clr('secBg','الخلفية'),_clr('secBorder','الحدود'),_clr('secTextColor','لون النص'),_clr('labelColor','لون التسميات'),_rng('sectionOpacity','الشفافية',0,1,0.05,v=>Math.round(v*100)+'%')],
   contraire:[_clr('secBg','الخلفية'),_clr('secBorder','الحدود'),_clr('secTextColor','لون النص'),_clr('labelColor','لون التسميات'),_rng('sectionOpacity','الشفافية',0,1,0.05,v=>Math.round(v*100)+'%')],
   page:[_clr('labelColor','لون النص'),_tog('showPage','إظهار الصفحة')],
+  speaker:[_tog('showBadge','إظهار الشارات')],
 };
 
 const VE_LABELS={card:' البطاقة',badge:' الشارات',french:' الكلمة الفرنسية',separator:' الفاصل',meaning:' المعنى',pluriel:' Pluriel',synonyme:' Synonyme',contraire:' Contraire',page:' الصفحة'};
@@ -704,10 +692,18 @@ let ttsFRVoice=null,ttsARVoice=null;
 function initTTS(){
   if(!window.speechSynthesis)return;
   const voices=speechSynthesis.getVoices();
+  // French male voice - be very specific
   const frV=voices.filter(v=>v.lang.startsWith('fr'));
-  ttsFRVoice=frV.find(v=>v.name.toLowerCase().includes('male')||v.name.toLowerCase().includes('homme')||v.name.toLowerCase().includes('thomas'))||frV.find(v=>!v.name.toLowerCase().includes('female'))||frV[0]||voices[0]||null;
+  // Priority: male names > non-female > any French > any voice
+  const maleNames=['thomas','nicolas','lucas','hugo','antoine','philippe','pierre','jacques','michel','andre','georges','paul','charles','henri','marc'];
+  ttsFRVoice=frV.find(v=>{
+    const n=v.name.toLowerCase();
+    return maleNames.some(m=>n.includes(m))||n.includes('male')||n.includes('homme');
+  })||frV.find(v=>!v.name.toLowerCase().includes('female')&&!v.name.toLowerCase().includes('femme'))||frV[0]||voices.find(v=>v.lang.startsWith('fr'))||null;
+  // Arabic voice
   const arV=voices.filter(v=>v.lang.startsWith('ar'));
-  ttsARVoice=arV[0]||null;
+  ttsARVoice=arV[0]||voices.find(v=>v.lang.startsWith('ar'))||null;
+  console.log('TTS voices:',ttsFRVoice?.name,ttsARVoice?.name);
   const rateEl=document.getElementById('ttsRate');
   const pitchEl=document.getElementById('ttsPitch');
   if(rateEl)rateEl.oninput=function(){document.getElementById('ttsRateVal').textContent=this.value+'x';};
