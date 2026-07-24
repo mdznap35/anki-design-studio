@@ -81,6 +81,28 @@ select.sl{appearance:none;cursor:pointer}
 [data-ve]{cursor:pointer;border:2px dashed transparent;border-radius:5px;transition:all .15s}
 [data-ve]:hover{border-color:rgba(124,58,237,.5);background:rgba(124,58,237,.03)}
 [data-ve].ve-sel{border-color:var(--gn)!important;border-style:solid!important;background:rgba(34,197,94,.05)!important}
+@keyframes french-fadeIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes french-slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes french-slideLeft{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+@keyframes french-slideRight{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
+@keyframes french-scaleUp{from{opacity:0;transform:scale(0.5)}to{opacity:1;transform:scale(1)}}
+@keyframes french-bounce{0%{transform:scale(0.3)}50%{transform:scale(1.05)}70%{transform:scale(0.9)}100%{transform:scale(1)}}
+@keyframes french-glow{0%{text-shadow:0 0 5px currentColor}50%{text-shadow:0 0 20px currentColor}100%{text-shadow:0 0 5px currentColor}}
+@keyframes french-typewriter{from{width:0}to{width:100%}}
+@keyframes meaning-fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes meaning-slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes meaning-slideLeft{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+@keyframes meaning-slideRight{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
+@keyframes meaning-scaleUp{from{opacity:0;transform:scale(0.5)}to{opacity:1;transform:scale(1)}}
+@keyframes meaning-bounce{0%{transform:scale(0.3)}50%{transform:scale(1.05)}70%{transform:scale(0.9)}100%{transform:scale(1)}}
+@keyframes meaning-pop{0%{transform:scale(0);border-radius:50%}100%{transform:scale(1);border-radius:16px}}
+@keyframes badge-fadeIn{from{opacity:0;transform:scale(0)}to{opacity:1;transform:scale(1)}}
+@keyframes badge-bounce{0%{transform:scale(0)}60%{transform:scale(1.2)}100%{transform:scale(1)}}
+@keyframes badge-slideDown{from{opacity:0;transform:translateY(-15px)}to{opacity:1;transform:translateY(0)}}
+@keyframes badge-wiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-5deg)}75%{transform:rotate(5deg)}}
+@keyframes sec-fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes sec-slideUp{from{opacity:0}to{opacity:1}}
+@keyframes sec-scaleUp{from{opacity:0;transform:scale(0.8)}to{opacity:1;transform:scale(1)}}
 </style>
 </head>
 <body>
@@ -586,7 +608,108 @@ function renderCtrls(){
   h+='<div class="ct"><div class="cl-b">نوع الفاصل</div><div class="rw"><select class="sl" onchange="setVal(\'separatorStyle\',this.value)"><option value="none"'+(!S.separatorStyle||S.separatorStyle==='none'?' selected':'')+'>بدون</option><option value="solid"'+(S.separatorStyle==='solid'?' selected':'')+'>خط</option><option value="dashed"'+(S.separatorStyle==='dashed'?' selected':'')+'>متقطع</option><option value="dotted"'+(S.separatorStyle==='dotted'?' selected':'')+'>منقط</option></select></div></div>';
   h+='<div class="ct"><div class="cl-b">سمك الفاصل</div><div class="rw"><input type="range" min="1" max="8" step="1" value="'+(S.separatorWidth||2)+'" oninput="setVal(\'separatorWidth\',parseInt(this.value));this.nextElementSibling.textContent=this.value+\'px\'"><span class="rv">'+(S.separatorWidth||2)+'px</span></div></div>';
   h+='</div>';
+  // === FRENCH TEXT ADVANCED (8 controls) ===
+  h+='<div class="cs-t">الكلمة الفرنسية - متقدم</div><div class="cg">';
+  [{id:'frenchBorderWidth',lb:'سمك الحدود',min:0,max:10,step:1,d:0},{id:'frenchBorderRadius',lb:'استدارة الحدود',min:0,max:50,step:1,d:0},{id:'frenchPaddingX',lb:'حشو أفقي',min:0,max:40,step:2,d:0},{id:'frenchPaddingY',lb:'حشو عمودي',min:0,max:40,step:2,d:0},{id:'frenchMaxWidth',lb:'عرض أقصى',min:30,max:100,step:5,d:100},{id:'frenchShadowX',lb:'ظل أفقي',min:-20,max:20,step:1,d:0},{id:'frenchShadowY',lb:'ظل عمودي',min:-20,max:20,step:1,d:0},{id:'frenchShadowBlur',lb:'تمويه الظل',min:0,max:30,step:1,d:0}].forEach(function(t){
+    var v=S[t.id]!==undefined?S[t.id]:t.d;
+    h+='<div class="ct"><div class="cl-b">'+t.lb+'</div><div class="rw"><input type="range" min="'+t.min+'" max="'+t.max+'" step="'+t.step+'" value="'+v+'" oninput="setVal(\''+t.id+'\',parseFloat(this.value));this.nextElementSibling.textContent=this.value"><span class="rv">'+v+'</span></div></div>';
+  });
+  h+='<div class="ct"><div class="cl-b">لون الحدود</div><div class="rw"><input type="color" value="'+(S.frenchBorderColor||'#000000')+'" oninput="setVal(\'frenchBorderColor\',this.value)"></div></div>';
+  h+='<div class="ct"><div class="cl-b">نمط الحدود</div><div class="rw"><select class="sl" onchange="setVal(\'frenchBorderStyle\',this.value)"><option value="solid"'+(S.frenchBorderStyle==='solid'?' selected':'')+'>خط</option><option value="dashed"'+(S.frenchBorderStyle==='dashed'?' selected':'')+'>متقطع</option><option value="dotted"'+(S.frenchBorderStyle==='dotted'?' selected':'')+'>منقط</option><option value="double"'+(S.frenchBorderStyle==='double'?' selected':'')+'>مزدوج</option></select></div></div>';
+  h+='<div class="ct"><div class="cl-b">محاذاة النص</div><div class="rw"><select class="sl" onchange="setVal(\'frenchTextAlign\',this.value)"><option value="center"'+(S.frenchTextAlign==='center'?' selected':'')+'>وسط</option><option value="right"'+(S.frenchTextAlign==='right'?' selected':'')+'>يمين</option><option value="left"'+(S.frenchTextAlign==='left'?' selected':'')+'>يسار</option></select></div></div>';
+  h+='<div class="ct"><div class="cl-b">خلفية الكلمة</div><div class="rw"><input type="color" value="'+(S.frenchBgColor||'#ffffff')+'" oninput="setVal(\'frenchBgColor\',this.value)"></div></div>';
+  h+='<div class="ct"><div class="cl-b">استدارة الخلفية</div><div class="rw"><input type="range" min="0" max="50" step="1" value="'+(S.frenchBgRadius||0)+'" oninput="setVal(\'frenchBgRadius\',parseInt(this.value));this.nextElementSibling.textContent=this.value+\'px\'"><span class="rv">'+(S.frenchBgRadius||0)+'px</span></div></div>';
+  h+='<div class="ct"><div class="cl-b">تأثير النص</div><div class="rw"><select class="sl" onchange="setVal(\'frenchTextShadowX\',parseInt(this.value));setVal(\'frenchTextShadowY\',parseInt(this.value));setVal(\'frenchTextShadowBlur\',Math.abs(parseInt(this.value))*2)"><option value="0">بدون</option><option value="2">ظل خفيف</option><option value="4">ظل متوسط</option><option value="8">ظل قوي</option><option value="-2">ظل داخلي</option></select></div></div>';
+  h+='</div>';
+  // === FRENCH ANIMATION (2 controls) ===
+  h+='<div class="cs-t">حركة الكلمة الفرنسية</div><div class="cg">';
+  h+='<div class="ct"><div class="cl-b">الحركة</div><div class="rw"><select class="sl" onchange="setVal(\'frenchAnim\',this.value)"><option value="none"'+(S.frenchAnim==='none'?' selected':'')+'>بدون</option><option value="fadeIn"'+(S.frenchAnim==='fadeIn'?' selected':'')+'>ظهور تدريجي</option><option value="slideUp"'+(S.frenchAnim==='slideUp'?' selected':'')+'>صعود</option><option value="slideLeft"'+(S.frenchAnim==='slideLeft'?' selected':'')+'>انزلاق يمين</option><option value="slideRight"'+(S.frenchAnim==='slideRight'?' selected':'')+'>انزلاق يسار</option><option value="scaleUp"'+(S.frenchAnim==='scaleUp'?' selected':'')+'>تكبير</option><option value="bounce"'+(S.frenchAnim==='bounce'?' selected':'')+'>ارتداد</option><option value="glow"'+(S.frenchAnim==='glow'?' selected':'')+'>توهج</option></select></div></div>';
+  h+='<div class="ct"><div class="cl-b">مدة الحركة</div><div class="rw"><input type="range" min="0.2" max="3" step="0.1" value="'+(S.frenchAnimDur||0.5)+'" oninput="setVal(\'frenchAnimDur\',parseFloat(this.value));this.nextElementSibling.textContent=this.value+\'s\'"><span class="rv">'+(S.frenchAnimDur||0.5)+'s</span></div></div>';
+  h+='</div>';
+  // === MEANING ADVANCED (10 controls) ===
+  h+='<div class="cs-t">المعنى - متقدم</div><div class="cg">';
+  [{id:'meaningPaddingX',lb:'حشو أفقي',min:0,max:40,step:2,d:16},{id:'meaningPaddingY',lb:'حشو عمودي',min:0,max:30,step:2,d:10},{id:'meaningMarginX',lb:'هامش أفقي',min:0,max:40,step:2,d:0},{id:'meaningMaxWidth',lb:'عرض أقصى',min:30,max:100,step:5,d:90,u:'%'},{id:'meaningLetterSpacing',lb:'تباعد الأحرف',min:-3,max:10,step:0.5,d:0},{id:'meaningShadowX',lb:'ظل أفقي',min:-15,max:15,step:1,d:0},{id:'meaningShadowY',lb:'ظل عمودي',min:-15,max:15,step:1,d:0},{id:'meaningShadowBlur',lb:'تمويه الظل',min:0,max:25,step:1,d:0},{id:'meaningBgRadius',lb:'استدارة الخلفية',min:0,max:50,step:1,d:0}].forEach(t=>{
+    const v=S[t.id]!==undefined?S[t.id]:t.d;
+    h+='<div class="ct"><div class="cl-b">'+t.lb+'</div><div class="rw"><input type="range" min="'+t.min+'" max="'+t.max+'" step="'+t.step+'" value="'+v+'" oninput="setVal(\''+t.id+'\',parseFloat(this.value));this.nextElementSibling.textContent=this.value"><span class="rv">'+v+'</span></div></div>';
+  });
+  h+='<div class="ct"><div class="cl-b">محاذاة المعنى</div><div class="rw"><select class="sl" onchange="setVal(\'meaningTextAlign\',this.value)"><option value="center"'+(S.meaningTextAlign==='center'?' selected':'')+'>وسط</option><option value="right"'+(S.meaningTextAlign==='right'?' selected':'')+'>يمين</option><option value="left"'+(S.meaningTextAlign==='left'?' selected':'')+'>يسار</option></select></div></div>';
+  h+='</div>';
+  // === MEANING ANIMATION (2 controls) ===
+  h+='<div class="cs-t">حركة المعنى</div><div class="cg">';
+  h+='<div class="ct"><div class="cl-b">الحركة</div><div class="rw"><select class="sl" onchange="setVal(\'meaningAnim\',this.value)"><option value="none"'+(S.meaningAnim==='none'?' selected':'')+'>بدون</option><option value="fadeIn"'+(S.meaningAnim==='fadeIn'?' selected':'')+'>ظهور تدريجي</option><option value="slideUp"'+(S.meaningAnim==='slideUp'?' selected':'')+'>صعود</option><option value="slideLeft"'+(S.meaningAnim==='slideLeft'?' selected':'')+'>انزلاق يمين</option><option value="slideRight"'+(S.meaningAnim==='slideRight'?' selected':'')+'>انزلاق يسار</option><option value="scaleUp"'+(S.meaningAnim==='scaleUp'?' selected':'')+'>تكبير</option><option value="bounce"'+(S.meaningAnim==='bounce'?' selected':'')+'>ارتداد</option><option value="pop"'+(S.meaningAnim==='pop'?' selected':'')+'>انفجار</option></select></div></div>';
+  h+='<div class="ct"><div class="cl-b">مدة الحركة</div><div class="rw"><input type="range" min="0.2" max="3" step="0.1" value="'+(S.meaningAnimDur||0.5)+'" oninput="setVal(\'meaningAnimDur\',parseFloat(this.value));this.nextElementSibling.textContent=this.value+\'s\'"><span class="rv">'+(S.meaningAnimDur||0.5)+'s</span></div></div>';
+  h+='</div>';
+  // === BADGE ADVANCED (10 controls) ===
+  h+='<div class="cs-t">الشارات - متقدم</div><div class="cg">';
+  [{id:'badgeNomPaddingX',lb:'حشو Nom أفقي',min:4,max:30,step:1,d:14},{id:'badgeNomPaddingY',lb:'حشو Nom عمودي',min:2,max:20,step:1,d:4},{id:'badgeNomBorderRadius',lb:'استدارة Nom',min:0,max:50,step:1,d:20},{id:'badgeNomFontSize',lb:'حجم Nom',min:0.4,max:1.5,step:0.05,d:0.72},{id:'badgeNomBorderWidth',lb:'سمك حدود Nom',min:0,max:5,step:1,d:0},{id:'badgeUnitPaddingX',lb:'حشو الوحدة أفقي',min:4,max:30,step:1,d:12},{id:'badgeUnitPaddingY',lb:'حشو الوحدة عمودي',min:2,max:20,step:1,d:3},{id:'badgeUnitBorderRadius',lb:'استدارة الوحدة',min:0,max:50,step:1,d:20},{id:'badgeUnitFontSize',lb:'حجم الوحدة',min:0.4,max:1.5,step:0.05,d:0.68},{id:'badgeGap',lb:'مسافة بين الشارات',min:0,max:20,step:1,d:4}].forEach(t=>{
+    const v=S[t.id]!==undefined?S[t.id]:t.d;
+    h+='<div class="ct"><div class="cl-b">'+t.lb+'</div><div class="rw"><input type="range" min="'+t.min+'" max="'+t.max+'" step="'+t.step+'" value="'+v+'" oninput="setVal(\''+t.id+'\',parseFloat(this.value));this.nextElementSibling.textContent=this.value"><span class="rv">'+v+'</span></div></div>';
+  });
+  h+='<div class="ct"><div class="cl-b">لون حدود Nom</div><div class="rw"><input type="color" value="'+(S.badgeNomBorderColor||'#000000')+'" oninput="setVal(\'badgeNomBorderColor\',this.value)"></div></div>';
+  h+='<div class="ct"><div class="cl-b">لون حدود الوحدة</div><div class="rw"><input type="color" value="'+(S.badgeUnitBorderColor||'#000000')+'" oninput="setVal(\'badgeUnitBorderColor\',this.value)"></div></div>';
+  h+='</div>';
+  // === BADGE ANIMATION (2 controls) ===
+  h+='<div class="cs-t">حركة الشارات</div><div class="cg">';
+  h+='<div class="ct"><div class="cl-b">الحركة</div><div class="rw"><select class="sl" onchange="setVal(\'badgeAnim\',this.value)"><option value="none"'+(S.badgeAnim==='none'?' selected':'')+'>بدون</option><option value="fadeIn"'+(S.badgeAnim==='fadeIn'?' selected':'')+'>ظهور</option><option value="bounce"'+(S.badgeAnim==='bounce'?' selected':'')+'>ارتداد</option><option value="slideDown"'+(S.badgeAnim==='slideDown'?' selected':'')+'>نزول</option><option value="wiggle"'+(S.badgeAnim==='wiggle'?' selected':'')+'>اهتزاز</option></select></div></div>';
+  h+='<div class="ct"><div class="cl-b">مدة الحركة</div><div class="rw"><input type="range" min="0.2" max="3" step="0.1" value="'+(S.badgeAnimDur||0.5)+'" oninput="setVal(\'badgeAnimDur\',parseFloat(this.value));this.nextElementSibling.textContent=this.value+\'s\'"><span class="rv">'+(S.badgeAnimDur||0.5)+'s</span></div></div>';
+  h+='</div>';
+  // === SECTION ADVANCED (10 controls) ===
+  h+='<div class="cs-t">الأقسام - متقدم</div><div class="cg">';
+  [{id:'secPaddingX',lb:'حشو أفقي',min:0,max:30,step:1,d:8},{id:'secPaddingY',lb:'حشو عمودي',min:0,max:20,step:1,d:4},{id:'secBorderRadius',lb:'استدارة',min:0,max:30,step:1,d:6},{id:'secBorderWidth',lb:'سمك الحدود',min:0,max:5,step:1,d:1},{id:'secFontSize',lb:'حجم الخط',min:0.4,max:1.5,step:0.05,d:0.7},{id:'secLabelSize',lb:'حجم التسمية',min:0.3,max:1,step:0.05,d:0.5},{id:'secGap',lb:'المسافة',min:0,max:20,step:1,d:4},{id:'secWidth',lb:'العرض',min:30,max:100,step:5,d:80,u:'%'}].forEach(t=>{
+    const v=S[t.id]!==undefined?S[t.id]:t.d;
+    h+='<div class="ct"><div class="cl-b">'+t.lb+'</div><div class="rw"><input type="range" min="'+t.min+'" max="'+t.max+'" step="'+t.step+'" value="'+v+'" oninput="setVal(\''+t.id+'\',parseFloat(this.value));this.nextElementSibling.textContent=this.value"><span class="rv">'+v+'</span></div></div>';
+  });
+  h+='<div class="ct"><div class="cl-b">اتجاه الأقسام</div><div class="rw"><select class="sl" onchange="setVal(\'secDirection\',this.value)"><option value="column"'+(S.secDirection==='column'?' selected':'')+'>عمودي</option><option value="row"'+(S.secDirection==='row'?' selected':'')+'>أفقي</option></select></div></div>';
+  h+='<div class="ct"><div class="cl-b">محاذاة الأقسام</div><div class="rw"><select class="sl" onchange="setVal(\'secAlign\',this.value)"><option value="center"'+(S.secAlign==='center'?' selected':'')+'>وسط</option><option value="flex-start"'+(S.secAlign==='flex-start'?' selected':'')+'>يمين</option><option value="flex-end"'+(S.secAlign==='flex-end'?' selected':'')+'>يسار</option></select></div></div>';
+  h+='</div>';
+  // === SECTION ANIMATION (2 controls) ===
+  h+='<div class="cs-t">حركة الأقسام</div><div class="cg">';
+  h+='<div class="ct"><div class="cl-b">الحركة</div><div class="rw"><select class="sl" onchange="setVal(\'secAnim\',this.value)"><option value="none"'+(S.secAnim==='none'?' selected':'')+'>بدون</option><option value="fadeIn"'+(S.secAnim==='fadeIn'?' selected':'')+'>ظهور</option><option value="slideUp"'+(S.secAnim==='slideUp'?' selected':'')+'>صعود</option><option value="scaleUp"'+(S.secAnim==='scaleUp'?' selected':'')+'>تكبير</option></select></div></div>';
+  h+='<div class="ct"><div class="cl-b">مدة الحركة</div><div class="rw"><input type="range" min="0.2" max="3" step="0.1" value="'+(S.secAnimDur||0.5)+'" oninput="setVal(\'secAnimDur\',parseFloat(this.value));this.nextElementSibling.textContent=this.value+\'s\'"><span class="rv">'+(S.secAnimDur||0.5)+'s</span></div></div>';
+  h+='</div>';
+  // === CARD ADVANCED (6 controls) ===
+  h+='<div class="cs-t">البطاقة - متقدم</div><div class="cg">';
+  [{id:'cardMaxWidth',lb:'عرض أقصى',min:200,max:800,step:10,d:480},{id:'cardBgPatternOpacity',lb:'شفافية النمط',min:0,max:0.3,step:0.01,d:0.05},{id:'cardBgOverlayOpacity',lb:'شفافية الطبقة',min:0,max:1,step:0.05,d:0}].forEach(t=>{
+    const v=S[t.id]!==undefined?S[t.id]:t.d;
+    h+='<div class="ct"><div class="cl-b">'+t.lb+'</div><div class="rw"><input type="range" min="'+t.min+'" max="'+t.max+'" step="'+t.step+'" value="'+v+'" oninput="setVal(\''+t.id+'\',parseFloat(this.value));this.nextElementSibling.textContent=this.value"><span class="rv">'+v+'</span></div></div>';
+  });
+  h+='<div class="ct"><div class="cl-b">نمط الخلفية</div><div class="rw"><select class="sl" onchange="setVal(\'cardBgPattern\',this.value)"><option value="none"'+(S.cardBgPattern==='none'?' selected':'')+'>بدون</option><option value="dots"'+(S.cardBgPattern==='dots'?' selected':'')+'>نقاط</option><option value="lines"'+(S.cardBgPattern==='lines'?' selected':'')+'>خطوط</option><option value="grid"'+(S.cardBgPattern==='grid'?' selected':'')+'>شبكة</option><option value="diagonal"'+(S.cardBgPattern==='diagonal'?' selected':'')+'>مائل</option><option value="cross"'+(S.cardBgPattern==='cross'?' selected':'')+'>صليب</option></select></div></div>';
+  h+='<div class="ct"><div class="cl-b">.overflow</div><div class="rw"><select class="sl" onchange="setVal(\'cardOverflow\',this.value)"><option value="hidden"'+(S.cardOverflow==='hidden'?' selected':'')+'>مخفي</option><option value="visible"'+(S.cardOverflow==='visible'?' selected':'')+'>ظاهر</option><option value="scroll"'+(S.cardOverflow==='scroll'?' selected':'')+'>تمرير</option></select></div></div>';
+  h+='<div class="ct"><div class="cl-b">طبقة الخلفية</div><div class="rw"><input type="color" value="'+(S.cardBgOverlayColor||'#ffffff')+'" oninput="setVal(\'cardBgOverlayColor\',this.value)"></div></div>';
+  h+='</div>';
+  // === SEPARATOR ADVANCED (3 controls) ===
+  h+='<div class="cs-t">الفاصل - متقدم</div><div class="cg">';
+  [{id:'sepMarginX',lb:'هامش أفقي',min:0,max:40,step:2,d:0},{id:'sepMarginY',lb:'هامش عمودي',min:0,max:20,step:1,d:4}].forEach(t=>{
+    const v=S[t.id]!==undefined?S[t.id]:t.d;
+    h+='<div class="ct"><div class="cl-b">'+t.lb+'</div><div class="rw"><input type="range" min="'+t.min+'" max="'+t.max+'" step="'+t.step+'" value="'+v+'" oninput="setVal(\''+t.id+'\',parseFloat(this.value));this.nextElementSibling.textContent=this.value+\'px\'"><span class="rv">'+v+'px</span></div></div>';
+  });
+  h+='</div>';
+  // === PAGE ADVANCED (3 controls) ===
+  h+='<div class="cs-t">رقم الصفحة - متقدم</div><div class="cg">';
+  [{id:'pageMarginTop',lb:'هامش أعلى',min:0,max:20,step:1,d:4},{id:'pageFontSize',lb:'حجم الخط',min:0.3,max:1,step:0.05,d:0.55}].forEach(t=>{
+    const v=S[t.id]!==undefined?S[t.id]:t.d;
+    h+='<div class="ct"><div class="cl-b">'+t.lb+'</div><div class="rw"><input type="range" min="'+t.min+'" max="'+t.max+'" step="'+t.step+'" value="'+v+'" oninput="setVal(\''+t.id+'\',parseFloat(this.value));this.nextElementSibling.textContent=this.value"><span class="rv">'+v+'</span></div></div>';
+  });
+  h+='<div class="ct"><div class="cl-b">محاذاة</div><div class="rw"><select class="sl" onchange="setVal(\'pageTextAlign\',this.value)"><option value="center"'+(S.pageTextAlign==='center'?' selected':'')+'>وسط</option><option value="right"'+(S.pageTextAlign==='right'?' selected':'')+'>يمين</option><option value="left"'+(S.pageTextAlign==='left'?' selected':'')+'>يسار</option></select></div></div>';
+  h+='</div>';
+  // === ELEMENT ORDER (6 controls) ===
+  h+='<div class="cs-t">ترتيب العناصر</div><div class="cg">';
+  h+='<div class="ct" style="grid-column:1/-1"><div class="cl-b">ترتيب الظهور</div><div class="rw" style="flex-wrap:wrap;gap:3px">';
+  ['badge','french','separator','meaning','sections','page'].forEach(k=>{
+    const labels={badge:'الشارات',french:'الكلمة',separator:'الفاصل',meaning:'المعنى',sections:'الأقسام',page:'الصفحة'};
+    const ord=S.elementOrder||['badge','french','separator','meaning','sections','page'];
+    const idx=ord.indexOf(k);
+    h+='<div style="display:flex;align-items:center;gap:2px;background:var(--s2);padding:3px 6px;border-radius:5px;font-size:.6em">';
+    h+='<span style="color:var(--ac2);font-weight:700">'+(idx+1)+'</span>';
+    h+='<span>'+labels[k]+'</span>';
+    if(idx>0)h+='<span style="cursor:pointer;color:var(--ac)" onclick="moveElement(\''+k+'\',-1)">▲</span>';
+    if(idx<5)h+='<span style="cursor:pointer;color:var(--ac)" onclick="moveElement(\''+k+'\',1)">▼</span>';
+    h+='</div>';
+  });
+  h+='</div></div>';
+  h+='</div>';
   // Custom CSS
+  h+='<div class="cs-t">CSS مخصص</div>'
   h+='<div class="cs-t">CSS مخصص</div>';
   h+='<textarea class="hx" style="width:100%;min-height:40px;font-size:.6em;direction:ltr" placeholder=".card { /* custom CSS */ }" onchange="S.customCSS=this.value;pushHist();renderAll()">'+(S.customCSS||'')+'</textarea>';
   // Preview Width
