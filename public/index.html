@@ -145,6 +145,25 @@ select.sl{appearance:none;cursor:pointer}
 @keyframes colorCycle{0%{filter:hue-rotate(0deg)}100%{filter:hue-rotate(360deg)}}
 @keyframes ripple{0%{box-shadow:0 0 0 0 rgba(124,58,237,0.4)}100%{box-shadow:0 0 0 20px rgba(124,58,237,0)}}
 @keyframes neonFlicker{0%,19%,21%,23%,25%,54%,56%,100%{text-shadow:0 0 7px currentColor,0 0 10px currentColor,0 0 21px currentColor}20%,24%,55%{text-shadow:none}}
+@keyframes bounceInLeft{0%{opacity:0;transform:translateX(-100px)}60%{opacity:1;transform:translateX(10px)}100%{transform:translateX(0)}}
+@keyframes bounceInRight{0%{opacity:0;transform:translateX(100px)}60%{opacity:1;transform:translateX(-10px)}100%{transform:translateX(0)}}
+@keyframes zoomBounce{0%{transform:scale(0)}50%{transform:scale(1.2)}100%{transform:scale(1)}}
+@keyframes rotateBounce{0%{transform:rotate(-10deg) scale(0.8);opacity:0}100%{transform:rotate(0) scale(1);opacity:1}}
+@keyframes slideInDown{from{opacity:0;transform:translateY(-50px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideInUp{from{opacity:0;transform:translateY(50px)}to{opacity:1;transform:translateY(0)}}
+@keyframes expandIn{0%{opacity:0;transform:scaleX(0)}100%{opacity:1;transform:scaleX(1)}}
+@keyframes squeezeIn{0%{opacity:0;transform:scaleY(0)}100%{opacity:1;transform:scaleY(1)}}
+@keyframes flipInX{0%{transform:perspective(400px) rotateX(90deg);opacity:0}100%{transform:perspective(400px) rotateX(0);opacity:1}}
+@keyframes flipInY{0%{transform:perspective(400px) rotateY(90deg);opacity:0}100%{transform:perspective(400px) rotateY(0);opacity:1}}
+@keyframes bounceOutUp{0%{transform:translateY(0)}100%{transform:translateY(-200%);opacity:0}}
+@keyframes fadeOutUp{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-30px)}}
+@keyframes fadeOutDown{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(30px)}}
+@keyframes scaleDown{from{opacity:1;transform:scale(1)}to{opacity:0;transform:scale(0.5)}}
+@keyframes blurIn{from{opacity:0;filter:blur(20px)}to{opacity:1;filter:blur(0)}}
+@keyframes dropIn{0%{opacity:0;transform:translateY(-100px) rotate(10deg)}100%{opacity:1;transform:translateY(0) rotate(0)}}
+@keyframes blink{0%,50%,100%{opacity:1}25%,75%{opacity:0}}
+@keyframes colorShift{0%{filter:hue-rotate(0deg)}100%{filter:hue-rotate(360deg)}}
+@keyframes glowPulse{0%,100%{box-shadow:0 0 5px currentColor}50%{box-shadow:0 0 30px currentColor,0 0 60px currentColor}}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
 
 </style>
@@ -405,6 +424,22 @@ cfg:defCfg({cardBg:'#0f0f23',cardBg2:'#1a1a3e',frenchColor:'#ff6b9d',meaningColo
 cfg:defCfg({cardBg:'#fef3c7',cardBg2:'#fde68a',frenchColor:'#78350f',meaningColor:'#92400e',meaningBg:'rgba(146,64,14,.05)',meaningBorder:'rgba(146,64,14,.15)',badgeNomBg:'#fde68a',badgeNomColor:'#78350f',borderRadius:16,cardShadow:'0 4px 16px rgba(0,0,0,.08)'})},
 {id:'ext-10',nm:'سحابي',en:'Cloudy',cat:'creative',
 cfg:defCfg({cardBg:'#f8fafc',cardBg2:'#f1f5f9',frenchColor:'#334155',meaningColor:'#475569',meaningBg:'rgba(71,85,105,.05)',meaningBorder:'rgba(71,85,105,.15)',badgeNomBg:'#f1f5f9',badgeNomColor:'#334155',borderRadius:24,cardShadow:'0 8px 32px rgba(0,0,0,.06)',effect:'float'})}
+,
+{id:'ext-11',nm:'خط القمر',en:'Crimson',cat:'bold',cfg:defCfg({cardBg:'#450a0a',cardBg2:'#7f1d1d',frenchColor:'#fecaca',meaningColor:'#fca5a5',meaningBg:'rgba(252,165,165,.06)',meaningBorder:'rgba(252,165,165,.15)',badgeNomBg:'rgba(252,165,165,.1)',badgeNomColor:'#fecaca',borderRadius:8,cardShadow:'0 8px 32px rgba(69,10,10,.5)'})},
+{id:'ext-12',nm:'نقطي أزرق',en:'Neon Blue',cat:'bold',cfg:defCfg({cardBg:'#020617',frenchColor:'#38bdf8',meaningColor:'#7dd3fc',meaningBg:'rgba(56,189,248,.05)',meaningBorder:'rgba(56,189,248,.15)',badgeNomBg:'rgba(56,189,248,.08)',badgeNomColor:'#38bdf8',borderRadius:6,cardShadow:'0 0 20px rgba(56,189,248,.15)',effect:'glow'})},
+{id:'ext-13',nm:'ياقوت',en:'Indigo',cat:'modern',cfg:defCfg({cardBg:'#1e1b4b',cardBg2:'#312e81',frenchColor:'#a5b4fc',meaningColor:'#818cf8',meaningBg:'rgba(129,140,248,.06)',meaningBorder:'rgba(129,140,248,.15)',badgeNomBg:'rgba(129,140,248,.1)',badgeNomColor:'#a5b4fc',borderRadius:12,cardShadow:'0 8px 32px rgba(30,27,75,.5)'})},
+{id:'ext-14',nm:'أجلي',en:'Obsidian',cat:'bold',cfg:defCfg({cardBg:'#09090b',cardBg2:'#18181b',frenchColor:'#e4e4e7',meaningColor:'#a1a1aa',meaningBg:'rgba(161,161,170,.04)',meaningBorder:'rgba(161,161,170,.12)',badgeNomBg:'rgba(161,161,170,.08)',badgeNomColor:'#d4d4d8',borderRadius:6,cardShadow:'0 8px 40px rgba(0,0,0,.6)',cardBorderWidth:1,cardBorderColor:'rgba(228,228,231,.1)'})},
+{id:'ext-15',nm:'متوج',en:'Twilight',cat:'creative',cfg:defCfg({cardBg:'#1e1b4b',cardBg2:'#7c3aed',frenchColor:'#ede9fe',meaningColor:'#c4b5fd',meaningBg:'rgba(196,181,253,.08)',meaningBorder:'rgba(196,181,253,.2)',badgeNomBg:'rgba(196,181,253,.12)',badgeNomColor:'#ede9fe',borderRadius:16,cardShadow:'0 12px 48px rgba(30,27,75,.5)',effect:'glow'})},
+{id:'ext-16',nm:'نهار قمري',en:'Ruby',cat:'elegant',cfg:defCfg({cardBg:'#fff1f2',cardBg2:'#ffe4e6',frenchColor:'#881337',meaningColor:'#be123c',meaningBg:'rgba(190,18,60,.04)',meaningBorder:'#fda4af',badgeNomBg:'#ffe4e6',badgeNomColor:'#9f1239',borderRadius:16,cardShadow:'0 4px 20px rgba(136,19,55,.08)'})},
+{id:'ext-17',nm:'عسلي',en:'Bronze',cat:'elegant',cfg:defCfg({cardBg:'#fefce8',cardBg2:'#fef9c3',frenchColor:'#713f12',meaningColor:'#a16207',meaningBg:'rgba(161,98,7,.04)',meaningBorder:'#fde047',badgeNomBg:'#fef9c3',badgeNomColor:'#854d0e',borderRadius:8,cardShadow:'0 2px 12px rgba(113,63,18,.06)',cardBorderWidth:1,cardBorderColor:'#ca8a04'})},
+{id:'ext-18',nm:'فري',en:'Berry',cat:'colorful',cfg:defCfg({cardBg:'#581c87',cardBg2:'#7c3aed',frenchColor:'#f5d0fe',meaningColor:'#e879f9',meaningBg:'rgba(232,121,249,.06)',meaningBorder:'rgba(232,121,249,.15)',badgeNomBg:'rgba(232,121,249,.1)',badgeNomColor:'#f5d0fe',borderRadius:16,cardShadow:'0 8px 32px rgba(88,28,135,.4)'})},
+{id:'ext-19',nm:'رملي',en:'Coral',cat:'colorful',cfg:defCfg({cardBg:'#fff7ed',cardBg2:'#ffedd5',frenchColor:'#7c2d12',meaningColor:'#ea580c',meaningBg:'rgba(234,88,12,.04)',meaningBorder:'#fb923c',badgeNomBg:'#ffedd5',badgeNomColor:'#c2410c',borderRadius:20,cardShadow:'0 6px 24px rgba(124,45,18,.08)'})},
+{id:'ext-20',nm:'زيتون',en:'Emerald',cat:'elegant',cfg:defCfg({cardBg:'#ecfdf5',cardBg2:'#d1fae5',frenchColor:'#064e3b',meaningColor:'#047857',meaningBg:'rgba(4,120,87,.04)',meaningBorder:'#6ee7b7',badgeNomBg:'#d1fae5',badgeNomColor:'#065f46',borderRadius:12,cardShadow:'0 4px 20px rgba(6,95,70,.08)',cardBorderWidth:1,cardBorderColor:'#a7f3d0'})},
+{id:'ext-21',nm:'جليد',en:'Jelly',cat:'creative',cfg:defCfg({cardBg:'#fdf4ff',cardBg2:'#fae8ff',frenchColor:'#86198f',meaningColor:'#c026d3',meaningBg:'rgba(192,38,211,.04)',meaningBorder:'#e879f9',badgeNomBg:'#fae8ff',badgeNomColor:'#a21caf',borderRadius:24,cardShadow:'0 8px 32px rgba(134,25,143,.1)'})},
+{id:'ext-22',nm:'تيجر',en:'Tiger',cat:'bold',cfg:defCfg({cardBg:'#7c2d12',cardBg2:'#9a3412',frenchColor:'#fff7ed',meaningColor:'#fed7aa',meaningBg:'rgba(237,137,54,.06)',meaningBorder:'rgba(237,137,54,.15)',badgeNomBg:'rgba(237,137,54,.1)',badgeNomColor:'#fed7aa',borderRadius:12,cardShadow:'0 8px 32px rgba(124,45,18,.3)'})},
+{id:'ext-23',nm:'ميوزي',en:'Mint',cat:'modern',cfg:defCfg({cardBg:'#ecfdf5',cardBg2:'#ccfbf1',frenchColor:'#134e4a',meaningColor:'#0d9488',meaningBg:'rgba(13,148,136,.04)',meaningBorder:'#5eead4',badgeNomBg:'#ccfbf1',badgeNomColor:'#0f766e',borderRadius:16,cardShadow:'0 4px 20px rgba(13,148,136,.08)'})},
+{id:'ext-24',nm:'بنفسجي',en:'Iris',cat:'creative',cfg:defCfg({cardBg:'#eef2ff',cardBg2:'#e0e7ff',frenchColor:'#312e81',meaningColor:'#4f46e5',meaningBg:'rgba(79,70,229,.04)',meaningBorder:'#a5b4fc',badgeNomBg:'#e0e7ff',badgeNomColor:'#4338ca',borderRadius:20,cardShadow:'0 6px 24px rgba(49,46,129,.08)'})},
+{id:'ext-25',nm:'ذهب مستوعد',en:'Steel',cat:'minimal',cfg:defCfg({cardBg:'#f8fafc',frenchColor:'#0f172a',meaningColor:'#475569',meaningBg:'transparent',meaningBorder:'none',meaningBorderWidth:0,badgeNomBg:'#e2e8f0',badgeNomColor:'#475569',borderRadius:2,cardShadow:'none',cardBorderWidth:2,cardBorderColor:'#94a3b8'})}
 ];
 
 const PRESETS={
@@ -417,6 +452,15 @@ const PRESETS={
     {n:'ذهبي',bg:'#fffbeb',fc:'#92400e',mc:'#b45309',mb:'rgba(245,158,11,.1)',mbd:'#fbbf24'},
     {n:'بنفسجي',bg:'#1e1b4b',fc:'#c4b5fd',mc:'#a78bfa',mb:'rgba(167,139,250,.08)',mbd:'rgba(167,139,250,.2)'},
     {n:'سماوي',bg:'#0f172a',fc:'#38bdf8',mc:'#94a3b8',mb:'rgba(56,189,248,.08)',mbd:'rgba(56,189,248,.2)'},
+    {n:'مرجل',bg:'#fdf2f8',fc:'#e11d48',mc:'#be123c',mb:'rgba(225,29,72,.05)',mbd:'#fda4af'},
+    {n:'بنفسجي فاخر',bg:'#1e1b4b',fc:'#c084fc',mc:'#a855f7',mb:'rgba(168,85,247,.08)',mbd:'rgba(168,85,247,.2)'},
+    {n:'خشبي',bg:'#fff7ed',fc:'#9a3412',mc:'#ea580c',mb:'rgba(234,88,12,.05)',mbd:'#fb923c'},
+    {n:'نقطي',bg:'#f0fdfa',fc:'#134e4a',mc:'#0d9488',mb:'rgba(13,148,136,.05)',mbd:'#5eead4'},
+    {n:'مؤضح',bg:'#1c1917',fc:'#fde68a',mc:'#fbbf24',mb:'rgba(251,191,36,.08)',mbd:'rgba(251,191,36,.2)'},
+    {n:'وردي',bg:'#fef2f2',fc:'#9f1239',mc:'#e11d48',mb:'rgba(225,29,72,.05)',mbd:'#fb7185'},
+    {n:'لاوي',bg:'#eef2ff',fc:'#3730a3',mc:'#6366f1',mb:'rgba(99,102,241,.05)',mbd:'#a5b4fc'},
+    {n:'موضي',bg:'#fffbeb',fc:'#78350f',mc:'#d97706',mb:'rgba(217,119,6,.05)',mbd:'#fcd34d'},
+    {n:'قمري',bg:'#f0f9ff',fc:'#075985',mc:'#0284c7',mb:'rgba(2,132,199,.05)',mbd:'#7dd3fc'},
   ],
   styles:[
     {n:'كلاسيكي',br:16,pd:28,sh:'none',bw:0,dir:'column',al:'center',gap:10},
@@ -425,18 +469,30 @@ const PRESETS={
     {n:'زجاجي',br:20,pd:28,sh:'0 8px 32px rgba(0,0,0,.3)',bw:1,dir:'column',al:'center',gap:10},
     {n:'عملاق',br:24,pd:40,sh:'0 12px 48px rgba(0,0,0,.2)',bw:0,dir:'column',al:'center',gap:16},
     {n:'أفقي',br:16,pd:28,sh:'0 8px 32px rgba(0,0,0,.15)',bw:0,dir:'row',al:'center',gap:12},
+    {n:'محدب',br:0,pd:32,sh:'none',bw:3,dir:'column',al:'center',gap:12},
+    {n:'مستدئر',br:8,pd:20,sh:'0 2px 8px rgba(0,0,0,.06)',bw:0,dir:'column',al:'center',gap:8},
+    {n:'منقط',br:50,pd:40,sh:'0 20px 60px rgba(0,0,0,.15)',bw:0,dir:'column',al:'center',gap:20},
+    {n:'خشن',br:4,pd:16,sh:'4px 4px 0 rgba(0,0,0,.15)',bw:2,dir:'column',al:'center',gap:8},
+    {n:'نهاري',br:24,pd:36,sh:'0 16px 48px rgba(0,0,0,.12)',bw:1,dir:'column',al:'center',gap:16},
   ],
   texts:[
     {n:'كبير جريء',fsFr:3.0,fwFr:900,fsAr:1.8,fwAr:800},
     {n:'متوسط',fsFr:2.4,fwFr:900,fsAr:1.5,fwAr:800},
     {n:'صغير',fsFr:1.8,fwFr:700,fsAr:1.2,fwAr:600},
     {n:'عملاق',fsFr:4.0,fwFr:900,fsAr:2.2,fwAr:800},
+    {n:'هادي',fsFr:1.4,fwFr:400,fsAr:1.0,fwAr:400},
+    {n:'عروض',fsFr:2.8,fwFr:900,fsAr:1.4,fwAr:700},
+    {n:'متوازن',fsFr:2.0,fwFr:600,fsAr:1.6,fwAr:600},
   ],
   fonts:[
     {n:'Inter + Noto',fr:'Inter',ar:'Noto Sans Arabic'},
     {n:'Poppins + Cairo',fr:'Poppins',ar:'Cairo'},
     {n:'Playfair + Amiri',fr:'Playfair Display',ar:'Amiri'},
     {n:'Roboto + Cairo',fr:'Roboto',ar:'Cairo'},
+    {n:'Montserrat + Tajawal',fr:'Montserrat',ar:'Tajawal'},
+    {n:'Lato + Noto',fr:'Lato',ar:'Noto Sans Arabic'},
+    {n:'Playfair + Tajawal',fr:'Playfair Display',ar:'Tajawal'},
+    {n:'Poppins + Amiri',fr:'Poppins',ar:'Amiri'},
   ]
 };
 
@@ -456,6 +512,19 @@ const QUICK_DESIGNS=[
   {n:'💎 زجاجي',desc:'تأثير زجاجي شفاف',apply:function(){S={...defCfg(),cardBg:'rgba(255,255,255,.1)',frenchColor:'#ffffff',meaningColor:'rgba(255,255,255,.8)',meaningBg:'rgba(255,255,255,.05)',meaningBorder:'rgba(255,255,255,.15)',badgeNomBg:'rgba(255,255,255,.1)',badgeNomColor:'#fff',cardBorderWidth:1,cardBorderColor:'rgba(255,255,255,.2)',cardShadow:'0 8px 32px rgba(0,0,0,.2)',cardBgBlur:20,borderRadius:20};}},
   {n:'🌹 وردي',desc:'تصميم أنثوي ناعم',apply:function(){S={...defCfg(),cardBg:'#fdf2f8',cardBg2:'#fce7f3',frenchColor:'#be185d',meaningColor:'#db2777',meaningBg:'rgba(219,39,119,.05)',meaningBorder:'rgba(219,39,119,.15)',badgeNomBg:'#fce7f3',badgeNomColor:'#be185d',borderRadius:24,cardShadow:'0 8px 32px rgba(190,24,93,.1)',effect:'sakura'};}},
   {n:'🏆 احترافي',desc:'تصميم رسمي وأنيق',apply:function(){S={...defCfg(),cardBg:'#ffffff',cardBg2:'#f8fafc',frenchColor:'#1e3a5f',meaningColor:'#2563eb',meaningBg:'#eff6ff',meaningBorder:'#bfdbfe',badgeNomBg:'#dbeafe',badgeNomColor:'#1e40af',borderRadius:12,cardBorderWidth:2,cardBorderColor:'#1e3a5f',cardShadow:'0 4px 16px rgba(0,0,0,.1)'};}},
+  {n:'🌈 قوس قزح',desc:'ألوان متنوعة',apply:function(){S={...defCfg(),cardBg:'#ffffff',frenchColor:'#e11d48',meaningBg:'#fef2f2',meaningColor:'#be123c',meaningBorder:'#fda4af',badgeNomBg:'#fce7f3',badgeNomColor:'#e11d48',borderRadius:20,cardShadow:'0 8px 32px rgba(0,0,0,.08)',effect:'pulse'};}},
+  {n:'🎯 مركزي',desc:'تركيز على الكلمة',apply:function(){S={...defCfg(),cardBg:'#f8fafc',frenchColor:'#0f172a',frenchFontSize:3.5,meaningFontSize:1.2,meaningBg:'transparent',meaningBorder:'none',meaningColor:'#64748b',borderRadius:50,cardShadow:'0 20px 60px rgba(0,0,0,.08)',cardGap:16,showBadge:false,showPage:false};}},
+  {n:'🔥 حار',desc:'ألوان حارة',apply:function(){S={...defCfg(),cardBg:'#fef2f2',cardBg2:'#fee2e2',frenchColor:'#991b1b',meaningColor:'#dc2626',meaningBg:'rgba(220,38,38,.05)',meaningBorder:'#fca5a5',badgeNomBg:'#fee2e2',badgeNomColor:'#991b1b',borderRadius:16,cardShadow:'0 8px 32px rgba(220,38,38,.1)',effect:'pulse'};}},
+  {n:'🌊 بحري',desc:'ألوان المحيط',apply:function(){S={...defCfg(),cardBg:'#ecfeff',cardBg2:'#cffafe',frenchColor:'#155e75',meaningColor:'#0891b2',meaningBg:'rgba(8,145,178,.05)',meaningBorder:'#67e8f9',badgeNomBg:'#cffafe',badgeNomColor:'#0e7490',borderRadius:16,cardShadow:'0 8px 32px rgba(14,116,144,.1)'};}},
+  {n:'🌿 طبيعي',desc:'أخضر طبيعي',apply:function(){S={...defCfg(),cardBg:'#f0fdf4',cardBg2:'#dcfce7',frenchColor:'#14532d',meaningColor:'#16a34a',meaningBg:'rgba(22,163,74,.05)',meaningBorder:'#86efac',badgeNomBg:'#dcfce7',badgeNomColor:'#166534',borderRadius:16,cardShadow:'0 8px 32px rgba(22,163,74,.1)'};}},
+  {n:'🌙 ليلي عميق',desc:'داكن جداً',apply:function(){S={...defCfg(),cardBg:'#030712',cardBg2:'#111827',frenchColor:'#fbbf24',meaningColor:'#f59e0b',meaningBg:'rgba(251,191,36,.05)',meaningBorder:'rgba(251,191,36,.2)',badgeNomBg:'rgba(251,191,36,.1)',badgeNomColor:'#fbbf24',borderRadius:12,cardShadow:'0 8px 48px rgba(0,0,0,.6)',showPage:false};}},
+{n:'🏛️ فاخر',desc:'ذهبي وأنيق',apply:function(){S={...defCfg(),cardBg:'#fefce8',cardBg2:'#fef9c3',frenchColor:'#854d0e',meaningColor:'#a16207',meaningBg:'rgba(161,98,7,.05)',meaningBorder:'#fbbf24',badgeNomBg:'#fef3c7',badgeNomColor:'#92400e',borderRadius:12,cardBorderWidth:2,cardBorderColor:'#ca8a04',cardShadow:'0 4px 24px rgba(202,138,4,.15)'};}},
+  {n:'⭐ نجم',desc:'تأثير نجم',apply:function(){S={...defCfg(),cardBg:'#1e1b4b',cardBg2:'#581c87',frenchColor:'#fde68a',meaningColor:'#fbbf24',meaningBg:'rgba(251,191,36,.08)',meaningBorder:'rgba(251,191,36,.2)',badgeNomBg:'rgba(251,191,36,.15)',badgeNomColor:'#fde68a',borderRadius:16,cardShadow:'0 12px 48px rgba(30,27,75,.5)',effect:'glow',frenchFontSize:3.2};}},
+  {n:'🕶️ غامق',desc:'تاريغ غامق',apply:function(){S={...defCfg(),cardBg:'#1e293b',cardBg2:'#334155',frenchColor:'#e2e8f0',meaningColor:'#94a3b8',meaningBg:'rgba(148,163,184,.05)',meaningBorder:'rgba(148,163,184,.15)',badgeNomBg:'rgba(148,163,184,.1)',badgeNomColor:'#cbd5e1',borderRadius:0,cardShadow:'none',cardBorderWidth:1,cardBorderColor:'#475569'};}},
+  {n:'🌈 أرقي',desc:'أرقي نبض',apply:function(){S={...defCfg(),cardBg:'#0c0c1d',frenchColor:'#ff6b6b',meaningColor:'#ffd93d',meaningBg:'rgba(255,217,61,.05)',meaningBorder:'rgba(255,217,61,.2)',badgeNomBg:'rgba(255,107,107,.1)',badgeNomColor:'#ff6b6b',borderRadius:16,cardShadow:'0 0 40px rgba(255,107,107,.1)',effect:'glow'};}},
+  {n:'🏆 بطل',desc:'تصميم أبطال',apply:function(){S={...defCfg(),cardBg:'#1e1b4b',cardBg2:'#312e81',frenchColor:'#e0e7ff',meaningColor:'#a5b4fc',meaningBg:'rgba(165,180,252,.08)',meaningBorder:'rgba(165,180,252,.2)',badgeNomBg:'rgba(165,180,252,.15)',badgeNomColor:'#c7d2fe',borderRadius:16,cardShadow:'0 12px 48px rgba(30,27,75,.4)',effect:'glow',frenchFontSize:3.0};}},
+  {n:'✨ مرصّع',desc:'بريق والوضء',apply:function(){S={...defCfg(),cardBg:'#0c0c1d',frenchColor:'#f0abfc',meaningColor:'#d946ef',meaningBg:'rgba(217,70,239,.05)',meaningBorder:'rgba(217,70,239,.2)',badgeNomBg:'rgba(217,70,239,.1)',badgeNomColor:'#e879f9',borderRadius:8,cardShadow:'0 0 40px rgba(217,70,239,.15)',effect:'glow'};}},
+  {n:'💤 هادئ',desc:'ألوان هادئة',apply:function(){S={...defCfg(),cardBg:'#faf5ff',cardBg2:'#f3e8ff',frenchColor:'#581c87',meaningColor:'#7c3aed',meaningBg:'rgba(124,58,237,.03)',meaningBorder:'rgba(124,58,237,.12)',badgeNomBg:'#f3e8ff',badgeNomColor:'#7c3aed',borderRadius:20,cardShadow:'0 4px 20px rgba(124,58,237,.08)'};}}
 ];
 
 
@@ -566,7 +635,10 @@ function renderCardHTML(c){
     'zigzag':'linear-gradient(135deg,'+col+' 25%,transparent 25%) -'+sz+'px 0,linear-gradient(225deg,'+col+' 25%,transparent 25%) -'+sz+'px 0',
     'waves':'radial-gradient(circle at 100% 50%,transparent 20%,'+col+' 21%,'+col+' 34%,transparent 35%) 0 '+sz+'px',
     'diamonds':'linear-gradient(45deg,'+col+' 25%,transparent 25%,transparent 75%,'+col+' 75%,'+col+'),linear-gradient(45deg,'+col+' 25%,transparent 25%,transparent 75%,'+col+' 75%,'+col+')',
-    'halftone':'radial-gradient(circle,'+col+' 1px,transparent 1px) '+sz+'px '+sz+'px'
+    'halftone':'radial-gradient(circle,'+col+' 1px,transparent 1px) '+sz+'px '+sz+'px',
+    'circles':'radial-gradient(circle,'+col+' 2px,transparent 2px)',
+    'stripes':'repeating-linear-gradient(45deg,'+col+' 0px,'+col+' 2px,transparent 2px,transparent '+sz+'px'),
+    'squares':'repeating-conic-gradient('+col+' 0% 25%,transparent 0% 50%) 0 0/'+sz+'px '+sz+'px'
   };var r=pat[p];if(!r)return '';return 'background-image:'+r+';background-size:'+(p==='waves'?sz*2+'px '+sz+'px':p==='halftone'?sz*2+'px '+sz*2+'px':sz+'px '+sz+'px')+';';}
 const bgOverlay=c.cardBgImage?'<div style="position:absolute;inset:0;background-image:url('+c.cardBgImage+');background-size:cover;background-position:center;filter:blur('+(c.cardBgBlur||0)+'px);opacity:'+(c.cardBgOpacity!==undefined?c.cardBgOpacity:1)+';z-index:0;pointer-events:none"></div>':'';
   const extras=(c.cardBorderWidth>0?'border:'+c.cardBorderWidth+'px solid '+c.cardBorderColor+';':'')+(c.cardShadow&&c.cardShadow!=='none'?'box-shadow:'+c.cardShadow+';':'');
