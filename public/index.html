@@ -124,8 +124,8 @@ select.sl{appearance:none;cursor:pointer}
 
 <div id="sec-full" class="sec">
 <div class="fsw">
-<button class="fsn p" onclick="prevTpl()">\u25B6</button>
-<button class="fsn n" onclick="nextTpl()">\u25C0</button>
+<button class="fsn p" onclick="prevTpl()">&#9654;</button>
+<button class="fsn n" onclick="nextTpl()">&#9664;</button>
 <div class="fsc" id="fsCard"></div>
 </div>
 <div class="fsi" id="fsInfo"></div>
@@ -387,7 +387,8 @@ function undo(){if(histIdx>0){histIdx--;S=JSON.parse(JSON.stringify(hist[histIdx
 function redo(){if(histIdx<hist.length-1){histIdx++;S=JSON.parse(JSON.stringify(hist[histIdx]));renderAll();}}
 function updateUndoRedo(){const u=document.getElementById('undoBtn');if(u)u.disabled=histIdx<=0;const r=document.getElementById('redoBtn');if(r)r.disabled=histIdx>=hist.length-1;}
 function setVal(k,v){S[k]=v;pushHist();renderAll();}
-function renderAll(){renderGrid();updateCtlPreview();syncToggles();if(document.getElementById('sec-editor').classList.contains('on'))renderVE();if(document.getElementById('sec-full').classList.contains('on'))renderFullscreen();}
+function renderAll(){renderGrid();updateCtlPreview();syncToggles();syncGradAngle();if(document.getElementById('sec-editor').classList.contains('on'))renderVE();if(document.getElementById('sec-full').classList.contains('on'))renderFullscreen();}
+function syncGradAngle(){document.querySelectorAll('[data-grad]').forEach(function(el){var g=el.getAttribute('data-grad');var active=(S.bgGradientDir||'135deg')===g;el.style.borderColor=active?'var(--gn)':'var(--bd)';el.style.boxShadow=active?'0 0 8px rgba(34,197,94,.4)':'none';});}
 
 // NAVIGATION
 document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',function(){
@@ -507,7 +508,7 @@ function renderCtrls(){
   // Gradient Angle
   h+='<div class="cs-t">زاوية التدرج</div><div style="display:flex;gap:3px;flex-wrap:wrap">';
   ['0deg','45deg','90deg','135deg','180deg','225deg','270deg','315deg'].forEach(g=>{
-    h+='<div onclick="setVal(\'bgGradientDir\',\''+g+'\')" style="width:32px;height:32px;border-radius:5px;border:2px solid '+((S.bgGradientDir||'135deg')===g?'var(--gn)':'var(--bd)')+';background:linear-gradient('+g+',#667eea,#764ba2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.4em;color:#fff;font-weight:700">'+g.replace('deg','')+'</div>';
+    h+='<div data-grad="'+g+'" onclick="setVal(\'bgGradientDir\',\''+g+'\')" style="width:32px;height:32px;border-radius:5px;border:2px solid '+(S.bgGradientDir===g?'var(--gn)':'var(--bd)')+';background:linear-gradient('+g+',#667eea,#764ba2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.4em;color:#fff;font-weight:700">'+g.replace('deg','')+'</div>';
   });
   h+='</div>';
   // Background Image Upload
@@ -556,12 +557,16 @@ function renderCtrls(){
   // Show/Hide
   h+='<div class="cs-t">إظهار العناصر</div><div style="display:flex;gap:4px;flex-wrap:wrap">';
   [{k:'showBadge',lb:'الشارات'},{k:'showUnitBadge',lb:'شارة الوحدة'},{k:'showMeaning',lb:'المعنى'},{k:'showPage',lb:'رقم الصفحة'}].forEach(b=>{
-    const sv=S[b.k]!==false;
-    h+='<button class="btn '+(sv?'bg':'br')+' bs" data-tog="'+b.k+'" data-lbl="'+b.lb+'" onclick="setVal(\''+b.k+'\','+(sv?false:true)+')">'+(sv?'✓':'✗')+' '+b.lb+'</button>';
+    h+='<button class="btn bs" data-tog="'+b.k+'" data-lbl="'+b.lb+'" onclick="setVal(\''+b.k+'\',S[\''+b.k+'\']===false)">'+(S[b.k]!==false?'✓':'✗')+' '+b.lb+'</button>';
   });
   h+='</div>';
   // Speaker Button
   h+='<div class="cs-t">زر الصوت</div><div class="cg">';
+  h+='<div class="ct"><div class="cl-b">موقع الزر</div><div class="rw"><select class="sl" onchange="setVal(\'speakerPos\',this.value)">';
+  [{v:'inline',l:'مع الشارات'},{v:'top-right',l:'أعلى يمين'},{v:'top-left',l:'أعلى يسار'},{v:'bottom-right',l:'أسفل يمين'},{v:'bottom-left',l:'أسفل يسار'}].forEach(function(p){
+    h+='<option value="'+p.v+'"'+((S.speakerPos||'top')===p.v?' selected':'')+'>'+p.l+'</option>';
+  });
+  h+='</select></div></div>';
   h+='<div class="ct"><div class="cl-b">أيقونة الصوت</div><div class="rw">';
   ['🔊','🔉','🎵','🎶','🗣️','📢','💬','🔴'].forEach(ic=>{
     h+='<div class="sw" style="font-size:1em;background:'+(S.speakerIcon===ic?'var(--ac)':'var(--s2)')+';border-color:'+(S.speakerIcon===ic?'var(--gn)':'var(--bd)')+'" onclick="setVal(\'speakerIcon\',\''+ic+'\')">'+ic+'</div>';
@@ -730,7 +735,7 @@ function speakWord(text,lang){
   const u=new SpeechSynthesisUtterance(text);
   u.lang=lang==='fr'?'fr-FR':'ar-SA';
   u.rate=parseFloat(document.getElementById('ttsRate')?.value||0.85);
-  u.pitch=parseFloat(document.getElementById('ttsPitch')?.value||0.7);
+  u.pitch=parseFloat(document.getElementById('ttsPitch')?.value||0.6);
   if(lang==='fr'&&ttsFRVoice)u.voice=ttsFRVoice;
   if(lang==='ar'&&ttsARVoice)u.voice=ttsARVoice;
   speechSynthesis.speak(u);
