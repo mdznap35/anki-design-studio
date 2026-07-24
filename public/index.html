@@ -112,6 +112,14 @@ select.sl{appearance:none;cursor:pointer}
 @keyframes sec-fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 @keyframes sec-slideUp{from{opacity:0}to{opacity:1}}
 @keyframes sec-scaleUp{from{opacity:0;transform:scale(0.8)}to{opacity:1;transform:scale(1)}}
+
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes bounce{0%{transform:scale(0.3)}50%{transform:scale(1.05)}70%{transform:scale(0.9)}100%{transform:scale(1)}}
+@keyframes glow{0%,100%{text-shadow:0 0 5px currentColor}50%{text-shadow:0 0 25px currentColor,0 0 50px currentColor}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+
 </style>
 </head>
 <body>
@@ -246,7 +254,7 @@ function defCfg(overrides={}){
     cardBorderWidth:0,cardBorderColor:'#e2e8f0',
     cardShadow:'none',cardDirection:'column',cardAlign:'center',cardGap:10,
     frenchColor:'#1e293b',frenchFontSize:2.4,frenchFontWeight:900,
-    frenchLetterSpacing:0,frenchLineHeight:1.2,
+    frenchLetterSpacing:0,frenchLineHeight:1.2,frenchAnim:'none',frenchAnimDur:0.5,meaningAnim:'none',meaningAnimDur:0.5,badgeAnim:'none',badgeAnimDur:0.5,
     meaningColor:'#1e40af',meaningFontSize:1.5,meaningFontWeight:800,
     meaningBg:'#eff6ff',meaningBorder:'#bfdbfe',meaningBorderRadius:16,meaningBorderWidth:2,
     badgeNomBg:'#dbeafe',badgeNomColor:'#1e40af',
@@ -524,8 +532,8 @@ function renderCardHTML(c){
   if(c.speakerTransition)spkCSS+='transition:'+c.speakerTransition+';';
   const speakerBtn='<span data-ve="speaker" style="display:inline-block;cursor:pointer;background:'+sBg2+';color:#ffffff;margin:2px;'+spkCSS+'" onclick="event.stopPropagation();speakWord(SAMP.f,\'fr\');setTimeout(()=>speakWord(SAMP.a,\'ar\'),1500)">'+sIco2+'</span>';
   const badges=sPos==='inline'?badgeN+unitB+speakerBtn:badgeN+unitB;
-  const french='<div style="opacity:'+fOp+';width:'+fW+';transform:scale('+fSc+');margin-top:'+fMt+'px;margin-bottom:'+fMb+'px;font-family:'+fF+',sans-serif;font-size:'+fsFr+'em;font-weight:'+fwFr+';direction:ltr;unicode-bidi:embed;color:'+fc+';letter-spacing:'+(c.frenchLetterSpacing||0)+'px;line-height:'+(c.frenchLineHeight||1.2)+'">'+SAMP.f+'</div>';
-  const meaning=c.showMeaning!==false?'<div style="opacity:'+mOp+';width:'+mW+';transform:scale('+mSc+');margin-top:'+mMt+'px;margin-bottom:'+mMb+'px;background:'+(c.meaningBg||'#eff6ff')+';border:'+(c.meaningBorderWidth||2)+'px solid '+(c.meaningBorder||'#bfdbfe')+';border-radius:'+(c.meaningBorderRadius||16)+'px;padding:10px 16px"><div style="font-family:'+fA+',sans-serif;font-size:'+fsAr+'em;font-weight:'+fwAr+';color:'+mc+'">'+SAMP.a+'</div></div>':'';
+  const frenchAnimName=c.frenchAnim&&c.frenchAnim!=='none'?c.frenchAnim:'';const frenchAnimDur=c.frenchAnimDur||0.5;const frenchAnimCSS=frenchAnimName?'animation:'+frenchAnimName+' '+frenchAnimDur+'s ease-in-out;':'';const french='<div data-ve="french" style="opacity:'+fOp+';width:'+fW+';transform:scale('+fSc+');margin-top:'+fMt+'px;margin-bottom:'+fMb+'px;font-family:'+fF+',sans-serif;font-size:'+fsFr+'em;font-weight:'+fwFr+';direction:ltr;unicode-bidi:embed;color:'+fc+';letter-spacing:'+(c.frenchLetterSpacing||0)+'px;line-height:'+(c.frenchLineHeight||1.2)+';'+frenchAnimCSS+'">'+SAMP.f+'</div>';
+  const meaningAnimName=c.meaningAnim&&c.meaningAnim!=='none'?c.meaningAnim:'';const meaningAnimDur=c.meaningAnimDur||0.5;const meaningAnimCSS=meaningAnimName?'animation:'+meaningAnimName+' '+meaningAnimDur+'s ease-in-out;':'';const meaning=c.showMeaning!==false?'<div data-ve="meaning" style="opacity:'+mOp+';width:'+mW+';transform:scale('+mSc+');margin-top:'+mMt+'px;margin-bottom:'+mMb+'px;background:'+(c.meaningBg||'#eff6ff')+';border:'+(c.meaningBorderWidth||2)+'px solid '+(c.meaningBorder||'#bfdbfe')+';border-radius:'+(c.meaningBorderRadius||16)+'px;padding:10px 16px;'+meaningAnimCSS+'"><div style="font-family:'+fA+',sans-serif;font-size:'+fsAr+'em;font-weight:'+fwAr+';color:'+mc+'">'+SAMP.a+'</div></div>':'';
   const secValues={Pluriel:SAMP.p,Synonyme:SAMP.s,Contraire:SAMP.c};
   const vis=c.sectionVisibility||{Pluriel:true,Synonyme:true,Contraire:true};
   let secsInner='';
@@ -547,7 +555,7 @@ function renderCardHTML(c){
 function renderCtrls(){
   let h='';
   // Helper functions
-  function acc(title,content,open){return '<div class="acc"><div class="acc-h'+'" onclick="toggleAcc(this)"><span>'+title+'</span><span class="arr">\u25B6</span></div><div class="acc-b'+(open?' open':'')+'">'+content+'</div></div>';}
+  function acc(title,content,open){return '<div class="acc"><div class="acc-h'+'" onclick="toggleAcc(this)"><span>'+title+'</span><span class="arr">\u25B6</span></div><div class="acc-b'+(+'">'+content+'</div></div>';}
   function grp(title,content){return '<div class="acc-grp"><div class="acc-grp-t">'+title+'</div>'+content+'</div>';}
   function rng(id,lb,min,max,step,d,fmt){
     var v=S[id]!==undefined?S[id]:d;var u=fmt||'';
@@ -893,23 +901,27 @@ function selectVoice(lang,name){
   if(lang==='fr')ttsFRManual=v;else ttsARManual=v;
 }
 function speakWord(text,lang){
-  if(!window.speechSynthesis)return;
+  if(!window.speechSynthesis){return;}
   speechSynthesis.cancel();
-  const u=new SpeechSynthesisUtterance(text);
+  var u=new SpeechSynthesisUtterance(text);
   u.lang=lang==='fr'?'fr-FR':'ar-SA';
-  const rate=parseFloat(document.getElementById('ttsRate')?.value||0.85);
-  const pitch=parseFloat(document.getElementById('ttsPitch')?.value||0.5);
+  var rate=parseFloat(document.getElementById('ttsRate')?document.getElementById('ttsRate').value:0.8);
+  var pitch=parseFloat(document.getElementById('ttsPitch')?document.getElementById('ttsPitch').value:0.5);
   u.rate=rate;
   u.pitch=pitch;
-  const voices=speechSynthesis.getVoices();
-  const langPrefix=lang==='fr'?'fr':'ar';
-  const candidates=voices.filter(v=>v.lang.startsWith(langPrefix));
-  const sorted=candidates.sort(function(a,b){return (isMaleVoice(b)?1:0)-(isMaleVoice(a)?1:0);});
-  var chosen=lang==='fr'?(ttsFRManual||ttsFRVoice):null;
-  if(!chosen)chosen=lang==='ar'?(ttsARManual||ttsARVoice):null;
-  if(!chosen)chosen=sorted[0]||null;
-  if(chosen)u.voice=chosen;
-  console.log('Speaking with:',chosen?.name,'lang:',u.lang,'text:',text);
+  // Find a male voice for this language
+  var voices=speechSynthesis.getVoices();
+  var langPrefix=lang==='fr'?'fr':'ar';
+  var candidates=voices.filter(function(v){return v.lang.indexOf(langPrefix)===0;});
+  // Sort: male first
+  candidates.sort(function(a,b){return (isMaleVoice(b)?1:0)-(isMaleVoice(a)?1:0);});
+  // Choose voice: manual override > auto-selected > first male > first available
+  var chosen=null;
+  if(lang==='fr'){chosen=ttsFRManual||ttsFRVoice;}
+  if(lang==='ar'){chosen=ttsARManual||ttsARVoice;}
+  if(!chosen&&candidates.length>0){chosen=candidates[0];}
+  if(chosen){u.voice=chosen;}
+  console.log('TTS:',chosen?chosen.name:'none','lang:',u.lang,'male:',chosen?isMaleVoice(chosen):'?');
   speechSynthesis.speak(u);
 }
 
