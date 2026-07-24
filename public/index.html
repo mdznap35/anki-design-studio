@@ -432,7 +432,7 @@ document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',function
   if(this.dataset.t==='full')renderFullscreen();
 }));
 function syncToggles(){document.querySelectorAll("[data-tog]").forEach(function(el){var k=el.getAttribute("data-tog");if(k.startsWith("sec-"))return;var v=S[k]!==false;el.className="btn bo bs";el.style.borderColor=v?'var(--gn)':'var(--rd)';el.style.color=v?'var(--gn)':'var(--rd)';el.textContent=(v?"\u2713":"\u2717")+" "+el.getAttribute("data-lbl");});}
-function toggleAcc(h){h.classList.toggle('open');h.nextElementSibling.classList.toggle('open');}
+function toggleAcc(h){h.classList.toggle('open');const b=h.nextElementSibling;if(b)b.classList.toggle('open');}
 function syncSectionToggles(){document.querySelectorAll("[data-tog^=\"sec-\"]").forEach(function(el){var k=el.getAttribute("data-tog").replace("sec-","");var vis=(S.sectionVisibility||{Pluriel:true,Synonyme:true,Contraire:true})[k]!==false;el.className="btn "+(vis?"bg":"br")+" bs";el.textContent=(vis?"✓":"✗")+" "+el.getAttribute("data-lbl");});}
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.className='show';setTimeout(()=>t.className='',2000);}
 
@@ -547,7 +547,7 @@ function renderCardHTML(c){
 function renderCtrls(){
   let h='';
   // Helper functions
-  function acc(title,content,open){return '<div class="acc"><div class="acc-h'+(open?' open':'')+'" onclick="toggleAcc(this)"><span>'+title+'</span><span class="arr">\u25B6</span></div><div class="acc-b'+(open?' open':'')+'">'+content+'</div></div>';}
+  function acc(title,content,open){return '<div class="acc"><div class="acc-h'+'" onclick="toggleAcc(this)"><span>'+title+'</span><span class="arr">\u25B6</span></div><div class="acc-b'+(open?' open':'')+'">'+content+'</div></div>';}
   function grp(title,content){return '<div class="acc-grp"><div class="acc-grp-t">'+title+'</div>'+content+'</div>';}
   function rng(id,lb,min,max,step,d,fmt){
     var v=S[id]!==undefined?S[id]:d;var u=fmt||'';
@@ -763,7 +763,7 @@ function renderSavedList(){const s=JSON.parse(localStorage.getItem('anki_custom'
 
 // EXPORT / IMPORT
 function exportConfig(){const b=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='anki-design.json';a.click();toast('تم التصدير');}
-function importConfig(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=function(ev){try{S=JSON.parse(ev.target.result);pushHist();renderAll();toast('تم الاستيراد');}catch(err){toast('ملف غير صحيح');}};r.readAsText(f);}
+function importConfig(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=function(ev){try{const d=JSON.parse(ev.target.result);if(typeof d!=='object'||d===null){toast('ملف غير صحيح');return;}const validKeys=['cardBg','frenchColor','meaningColor','borderRadius','cardPadding','fontFrench','fontArabic','effect','deckName'];if(!validKeys.some(function(k){return k in d;})){toast('ملف غير صالح');return;}S=Object.assign({},defCfg(),d);pushHist();renderCtrls();renderAll();toast('تم الاستيراد');}catch(err){toast('ملف غير صحيح');}};r.readAsText(f);}
 
 // FULLSCREEN PREVIEW
 function renderFullscreen(){const t=getFilteredTemplates()[curTplIdx]||TEMPLATES[0];const c=document.getElementById('fsCard');const i=document.getElementById('fsInfo');const n=document.getElementById('fsCounter');if(c)c.innerHTML=renderCardHTML(t.cfg);if(i)i.textContent=t.nm+' — '+t.en;if(n)n.textContent=(curTplIdx+1)+' / '+getFilteredTemplates().length;}
@@ -774,7 +774,7 @@ function prevTpl(){const t=getFilteredTemplates();curTplIdx=(curTplIdx-1+t.lengt
 function uploadBG(e){
   const file=e.target.files[0];if(!file)return;
   const reader=new FileReader();
-  reader.onload=function(ev){S.cardBgImage=ev.target.result;pushHist();renderCtrls();renderAll();toast('تم تحميل الصورة');};
+  reader.onload=function(ev){if(ev.target.result.length>600000){toast('الصورة كبيرة جداً (الحد 500KB)');return;}S.cardBgImage=ev.target.result;pushHist();renderAll();toast('تم تحميل الصورة');};
   reader.readAsDataURL(file);
 }
 
@@ -853,10 +853,10 @@ function renderVEProps(elId){
 let ttsFRVoice=null,ttsARVoice=null,ttsFRManual=null,ttsARManual=null,ttsAllVoices=[];
 function isMaleVoice(v){
   const n=v.name.toLowerCase();
-  if(n.includes('female')||n.includes('femme')||n.includes('zira')||n.includes('samantha')||n.includes('karen')||n.includes('susan')||n.includes('moira')||n.includes('tessa')||n.includes('fiona'))return false;
-  if(n.includes('male')||n.includes('homme')||n.includes('thomas')||n.includes('nicolas')||n.includes('lucas')||n.includes('hugo')||n.includes('antoine')||n.includes('pierre')||n.includes('jacques')||n.includes('michel')||n.includes('paul')||n.includes('henri')||n.includes('daniel')||n.includes('eric')||n.includes('google')||n.includes('enhanced')||n.includes('maturity'))return true;
+  if(n.includes('female')||n.includes('femme')||n.includes('zira')||n.includes('samantha')||n.includes('karen')||n.includes('susan')||n.includes('moira')||n.includes('tessa')||n.includes('fiona')||n.includes('google uk english female')||n.includes('google us english female')||n.includes('google arabic female')||n.includes('google french female')||n.includes('google arabic')||n.includes('google french')||n.includes('microsoft zira'))return false;
+  if(n.includes('male')||n.includes('homme')||n.includes('thomas')||n.includes('nicolas')||n.includes('lucas')||n.includes('hugo')||n.includes('antoine')||n.includes('pierre')||n.includes('jacques')||n.includes('michel')||n.includes('paul')||n.includes('henri')||n.includes('daniel')||n.includes('eric')||n.includes('enhanced')||n.includes('maturity'))return true;
   // For unknown gender, prefer non-female names
-  return !n.includes('google uk english female')&&!n.includes('google us english female');
+  return false;
 }
 function initTTS(){
   if(!window.speechSynthesis)return;
@@ -889,6 +889,7 @@ function initTTS(){
 function selectVoice(lang,name){
   if(!name){if(lang==='fr')ttsFRManual=null;else ttsARManual=null;return;}
   const v=ttsAllVoices.find(x=>x.name===name);
+  if(!v){console.warn('Voice not found:',name);return;}
   if(lang==='fr')ttsFRManual=v;else ttsARManual=v;
 }
 function speakWord(text,lang){
@@ -900,23 +901,15 @@ function speakWord(text,lang){
   const pitch=parseFloat(document.getElementById('ttsPitch')?.value||0.5);
   u.rate=rate;
   u.pitch=pitch;
-  // Try to find the deepest/most male voice available
   const voices=speechSynthesis.getVoices();
   const langPrefix=lang==='fr'?'fr':'ar';
   const candidates=voices.filter(v=>v.lang.startsWith(langPrefix));
-  // Sort by likelihood of being male: prefer names with male indicators
-  const sorted=candidates.sort(function(a,b){
-    var na=a.name.toLowerCase(),nb=b.name.toLowerCase();
-    var aMale=na.includes('male')||na.includes('homme')||na.includes('deep')||na.includes('enhanced')||na.includes('premium')?1:0;
-    var bMale=nb.includes('male')||nb.includes('homme')||nb.includes('deep')||nb.includes('enhanced')||nb.includes('premium')?1:0;
-    var aFemale=na.includes('female')||na.includes('femme')?1:0;
-    var bFemale=nb.includes('female')||nb.includes('femme')?1:0;
-    return (bMale-aMale)-(bFemale-aFemale);
-  });
-  var chosen=ttsFRManual||ttsARManual;
-  if(!chosen&&lang==='fr')chosen=ttsFRVoice||sorted[0]||null;
-  if(!chosen&&lang==='ar')chosen=ttsARVoice||sorted[0]||null;
+  const sorted=candidates.sort(function(a,b){return (isMaleVoice(b)?1:0)-(isMaleVoice(a)?1:0);});
+  var chosen=lang==='fr'?(ttsFRManual||ttsFRVoice):null;
+  if(!chosen)chosen=lang==='ar'?(ttsARManual||ttsARVoice):null;
+  if(!chosen)chosen=sorted[0]||null;
   if(chosen)u.voice=chosen;
+  console.log('Speaking with:',chosen?.name,'lang:',u.lang,'text:',text);
   speechSynthesis.speak(u);
 }
 
