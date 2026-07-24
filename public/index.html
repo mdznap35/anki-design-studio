@@ -228,7 +228,7 @@ function defCfg(overrides={}){
     separatorStyle:'none',separatorWidth:2,separatorColor:'#e2e8f0',
     frenchTextShadow:'',meaningTextShadow:'',
     fontFrench:'Inter',fontArabic:'Noto Sans Arabic',
-    speakerIcon:'🔊',speakerBg:'rgba(124,58,237,.15)',speakerColor:'#7c3aed',
+    speakerIcon:'🔊',speakerBg:'rgba(124,58,237,.2)',speakerColor:'#ffffff',
     deckName:'📘 Français Bac 2021-2022'
   },overrides);
 }
@@ -387,7 +387,8 @@ function undo(){if(histIdx>0){histIdx--;S=JSON.parse(JSON.stringify(hist[histIdx
 function redo(){if(histIdx<hist.length-1){histIdx++;S=JSON.parse(JSON.stringify(hist[histIdx]));renderAll();}}
 function updateUndoRedo(){const u=document.getElementById('undoBtn');if(u)u.disabled=histIdx<=0;const r=document.getElementById('redoBtn');if(r)r.disabled=histIdx>=hist.length-1;}
 function setVal(k,v){S[k]=v;pushHist();renderAll();}
-function renderAll(){renderGrid();updateCtlPreview();syncToggles();syncGradAngle();if(document.getElementById('sec-editor').classList.contains('on'))renderVE();if(document.getElementById('sec-full').classList.contains('on'))renderFullscreen();}
+function renderAll(){renderGrid();updateCtlPreview();syncToggles();syncGradAngle();syncIcons();if(document.getElementById('sec-editor').classList.contains('on'))renderVE();if(document.getElementById('sec-full').classList.contains('on'))renderFullscreen();}
+function syncIcons(){document.querySelectorAll('[data-icon]').forEach(function(el){var ic=el.getAttribute('data-icon');var active=S.speakerIcon===ic;el.style.background=active?'var(--ac)':'var(--s2)';el.style.borderColor=active?'var(--gn)':'var(--bd)';el.style.boxShadow=active?'0 0 8px rgba(34,197,94,.4)':'none';});}
 function syncGradAngle(){document.querySelectorAll('[data-grad]').forEach(function(el){var g=el.getAttribute('data-grad');var active=(S.bgGradientDir||'135deg')===g;el.style.borderColor=active?'var(--gn)':'var(--bd)';el.style.boxShadow=active?'0 0 8px rgba(34,197,94,.4)':'none';});}
 
 // NAVIGATION
@@ -446,7 +447,7 @@ function renderCardHTML(c){
   const sClr2=c.speakerColor||'#7c3aed';
   const sIco2=c.speakerIcon||'🔊';
   const speakerBtn='<span data-ve="speaker" style="display:inline-block;font-size:.8em;padding:4px 10px;border-radius:20px;cursor:pointer;background:'+sBg2+';color:'+sClr2+';margin:2px;transition:all .2s" onclick="event.stopPropagation();speakWord(SAMP.f,\'fr\');setTimeout(()=>speakWord(SAMP.a,\'ar\'),1500)">'+sIco2+'</span>';
-  const badges=badgeN+unitB+speakerBtn;
+  const badges=sPos==='inline'?badgeN+unitB+speakerBtn:badgeN+unitB;
   const french='<div style="opacity:'+fOp+';width:'+fW+';transform:scale('+fSc+');margin-top:'+fMt+'px;margin-bottom:'+fMb+'px;font-family:'+fF+',sans-serif;font-size:'+fsFr+'em;font-weight:'+fwFr+';direction:ltr;unicode-bidi:embed;color:'+fc+';letter-spacing:'+(c.frenchLetterSpacing||0)+'px;line-height:'+(c.frenchLineHeight||1.2)+'">'+SAMP.f+'</div>';
   const meaning=c.showMeaning!==false?'<div style="opacity:'+mOp+';width:'+mW+';transform:scale('+mSc+');margin-top:'+mMt+'px;margin-bottom:'+mMb+'px;background:'+(c.meaningBg||'#eff6ff')+';border:'+(c.meaningBorderWidth||2)+'px solid '+(c.meaningBorder||'#bfdbfe')+';border-radius:'+(c.meaningBorderRadius||16)+'px;padding:10px 16px"><div style="font-family:'+fA+',sans-serif;font-size:'+fsAr+'em;font-weight:'+fwAr+';color:'+mc+'">'+SAMP.a+'</div></div>':'';
   const secValues={Pluriel:SAMP.p,Synonyme:SAMP.s,Contraire:SAMP.c};
@@ -462,7 +463,7 @@ function renderCardHTML(c){
   const order=c.elementOrder||['badge','french','separator','meaning','sections','page'];
   const parts={badge:'<div data-ve="badge" style="display:flex;flex-wrap:wrap;align-items:center;justify-content:center">'+badges+'</div>',french:'<div data-ve="french">'+french+'</div>',separator:sepHtml,meaning:'<div data-ve="meaning">'+meaning+'</div>',sections:secsHtml,page:pageHtml};
   let ordered='';for(const k of order)ordered+=(parts[k]||'');
-  return '<div class="card" data-ve="card" style="background:'+bg+';'+base+'padding:'+pd+'px;min-height:'+mh+'px;max-width:'+(c.previewWidth||mw)+'px;flex-direction:column;align-items:center;justify-content:center;gap:'+cg+'px;'+extras+';position:relative">'+bgOverlay+'<div style="position:relative;z-index:1;width:100%;display:flex;flex-direction:column;align-items:center;gap:'+cg+'px">'+ordered+'</div></div>';
+  return '<div class="card" data-ve="card" style="background:'+bg+';'+base+'padding:'+pd+'px;min-height:'+mh+'px;max-width:'+(c.previewWidth||mw)+'px;flex-direction:column;align-items:center;justify-content:center;gap:'+cg+'px;'+extras+';position:relative">'+bgOverlay+(sPos!=='inline'?speakerFloating:'')+'<div style="position:relative;z-index:1;width:100%;display:flex;flex-direction:column;align-items:center;gap:'+cg+'px">'+ordered+'</div></div>';
 }
 
 // CONTROLS
@@ -559,7 +560,7 @@ function renderCtrls(){
   h+='</div>';
   // Show/Hide
   h+='<div class="cs-t">إظهار العناصر</div><div style="display:flex;gap:4px;flex-wrap:wrap">';
-  [{k:'showBadge',lb:'الشارات'},{k:'showUnitBadge',lb:'شارة الوحدة'},{k:'showMeaning',lb:'المعنى'},{k:'showPage',lb:'رقم الصفحة'}].forEach(b=>{
+  [{k:'showBadge',lb:'شارة Nom'},{k:'showUnitBadge',lb:'شارة الوحدة'},{k:'showMeaning',lb:'المعنى'},{k:'showPage',lb:'رقم الصفحة'}].forEach(b=>{
     h+='<button class="btn bs" data-tog="'+b.k+'" data-lbl="'+b.lb+'" onclick="setVal(\''+b.k+'\',S[\''+b.k+'\']===false)">'+(S[b.k]!==false?'✓':'✗')+' '+b.lb+'</button>';
   });
   h+='</div>';
@@ -572,10 +573,10 @@ function renderCtrls(){
   h+='</select></div></div>';
   h+='<div class="ct"><div class="cl-b">أيقونة الصوت</div><div class="rw">';
   ['🔊','🔉','🎵','🎶','🗣️','📢','💬','🔴'].forEach(ic=>{
-    h+='<div class="sw" style="font-size:1em;background:'+(S.speakerIcon===ic?'var(--ac)':'var(--s2)')+';border-color:'+(S.speakerIcon===ic?'var(--gn)':'var(--bd)')+'" onclick="setVal(\'speakerIcon\',\''+ic+'\')">'+ic+'</div>';
+    h+='<div class="sw" data-icon="'+ic+'" style="font-size:1em;background:'+(S.speakerIcon===ic?'var(--ac)':'var(--s2)')+';border-color:'+(S.speakerIcon===ic?'var(--gn)':'var(--bd)')+'" onclick="setVal(\'speakerIcon\',\''+ic+'\')">'+ic+'</div>';
   });
   h+='</div></div>';
-  [{id:'speakerBg',lb:'خلفية الزر',d:'rgba(124,58,237,.15)'},{id:'speakerColor',lb:'لون الزر',d:'#7c3aed'}].forEach(c2=>{
+  [{id:'speakerBg',lb:'خلفية الزر',d:'rgba(124,58,237,.2)'},{id:'speakerColor',lb:'لون الأيقونة',d:'#ffffff'}].forEach(c2=>{
     h+='<div class="ct"><div class="cl-b">'+c2.lb+'</div><div class="rw"><input type="color" value="'+(S[c2.id]||c2.d)+'" oninput="setVal(\''+c2.id+'\',this.value);this.nextElementSibling.value=this.value"><input type="text" class="hx" value="'+(S[c2.id]||c2.d)+'" onchange="setVal(\''+c2.id+'\',this.value);this.previousElementSibling.value=this.value"></div></div>';
   });
   h+='</div>';
@@ -752,10 +753,28 @@ function speakWord(text,lang){
   speechSynthesis.cancel();
   const u=new SpeechSynthesisUtterance(text);
   u.lang=lang==='fr'?'fr-FR':'ar-SA';
-  u.rate=parseFloat(document.getElementById('ttsRate')?.value||0.85);
-  u.pitch=parseFloat(document.getElementById('ttsPitch')?.value||0.6);
-  if(lang==='fr')u.voice=ttsFRManual||ttsFRVoice;
-  if(lang==='ar')u.voice=ttsARManual||ttsARVoice;
+  const rate=parseFloat(document.getElementById('ttsRate')?.value||0.85);
+  const pitch=parseFloat(document.getElementById('ttsPitch')?.value||0.6);
+  // Force male sound: low pitch + slightly fast rate
+  u.rate=rate;
+  u.pitch=pitch;
+  // Try to find the deepest/most male voice available
+  const voices=speechSynthesis.getVoices();
+  const langPrefix=lang==='fr'?'fr':'ar';
+  const candidates=voices.filter(v=>v.lang.startsWith(langPrefix));
+  // Sort by likelihood of being male: prefer names with male indicators
+  const sorted=candidates.sort(function(a,b){
+    var na=a.name.toLowerCase(),nb=b.name.toLowerCase();
+    var aMale=na.includes('male')||na.includes('homme')||na.includes('deep')||na.includes('enhanced')||na.includes('premium')?1:0;
+    var bMale=nb.includes('male')||nb.includes('homme')||nb.includes('deep')||nb.includes('enhanced')||nb.includes('premium')?1:0;
+    var aFemale=na.includes('female')||na.includes('femme')?1:0;
+    var bFemale=nb.includes('female')||nb.includes('femme')?1:0;
+    return (bMale-aMale)-(bFemale-aFemale);
+  });
+  var chosen=ttsFRManual||ttsARManual;
+  if(!chosen&&lang==='fr')chosen=ttsFRVoice||sorted[0]||null;
+  if(!chosen&&lang==='ar')chosen=ttsARVoice||sorted[0]||null;
+  if(chosen)u.voice=chosen;
   speechSynthesis.speak(u);
 }
 
