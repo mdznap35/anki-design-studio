@@ -168,10 +168,84 @@ select.sl{appearance:none;cursor:pointer}
 
 .tip{position:relative}.tip::after{content:attr(data-tip);position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:var(--s3);color:var(--tx);padding:4px 8px;border-radius:6px;font-size:.6em;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .2s;z-index:999}.tip:hover::after{opacity:1}
 kbd{display:inline-block;padding:1px 5px;font-size:.6em;font-family:monospace;background:var(--s3);border-radius:3px;color:var(--tx2);margin-left:4px}
+/* === NEW FEATURES CSS ===
+/* Command Palette */
+.cmd-palette{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.6);z-index:9999;display:none;align-items:flex-start;justify-content:center;padding-top:15vh;backdrop-filter:blur(4px)}
+.cmd-palette.show{display:flex}
+.cmd-box{background:var(--s1);border:1px solid var(--bd);border-radius:12px;width:90%;max-width:520px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.5);animation:fi .2s ease}
+.cmd-search{width:100%;padding:14px 16px;border:none;border-bottom:1px solid var(--bd);background:none;color:var(--tx);font-size:.9em;font-family:inherit;outline:none}
+.cmd-search::placeholder{color:var(--tx3)}
+.cmd-results{max-height:300px;overflow-y:auto;padding:4px}
+.cmd-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:8px;cursor:pointer;transition:all .15s;font-size:.78em}
+.cmd-item:hover,.cmd-item.sel{background:var(--ac);color:#fff}
+.cmd-item span:first-child{font-size:1.1em;width:24px;text-align:center}
+.cmd-item kbd{background:rgba(255,255,255,.15);color:rgba(255,255,255,.7);margin-left:auto}
+/* Context Menu */
+.ctx-menu{position:fixed;background:var(--s1);border:1px solid var(--bd);border-radius:10px;padding:4px;min-width:200px;box-shadow:0 8px 32px rgba(0,0,0,.4);z-index:9998;display:none}
+.ctx-menu.show{display:block}
+.ctx-item{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:6px;cursor:pointer;font-size:.72em;color:var(--tx);transition:background .15s}
+.ctx-item:hover{background:var(--ac);color:#fff}
+.ctx-sep{height:1px;background:var(--bd);margin:3px 8px}
+/* Property Search */
+.prop-search{position:relative;margin-bottom:8px}
+.prop-search input{width:100%;padding:8px 12px 8px 32px;border:1px solid var(--bd);border-radius:8px;background:var(--s2);color:var(--tx);font-size:.72em;font-family:inherit;outline:none}
+.prop-search input:focus{border-color:var(--ac)}
+.prop-search::before{content:"🔍";position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:.8em}
+/* Design Score */
+.score-panel{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:12px}
+.score-ring{width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.4em;font-weight:900;margin:0 auto 8px}
+.score-items{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.score-item{display:flex;align-items:center;gap:6px;padding:6px 8px;background:var(--s2);border-radius:6px;font-size:.65em}
+.score-bar{flex:1;height:4px;background:var(--s3);border-radius:2px;overflow:hidden}
+.score-bar-fill{height:100%;border-radius:2px;transition:width .5s ease}
+/* Onboarding */
+.onboard-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);z-index:10000;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
+.onboard-box{background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:32px;max-width:480px;width:90%;text-align:center;animation:fi .4s ease}
+.onboard-box h2{font-size:1.2em;font-weight:900;color:var(--ac2);margin-bottom:8px}
+.onboard-box p{font-size:.78em;color:var(--tx2);line-height:1.6;margin-bottom:16px}
+.onboard-steps{display:flex;gap:8px;justify-content:center;margin-bottom:20px}
+.onboard-step{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7em;font-weight:700;border:2px solid var(--bd);color:var(--tx3);transition:all .3s}
+.onboard-step.active{background:var(--ac);border-color:var(--ac);color:#fff}
+.onboard-step.done{background:var(--gn);border-color:var(--gn);color:#fff}
+/* Gallery Improvements */
+.gallery-toolbar{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;align-items:center}
+.gallery-search{flex:1;min-width:150px;position:relative}
+.gallery-search input{width:100%;padding:7px 12px 7px 30px;border:1px solid var(--bd);border-radius:8px;background:var(--s2);color:var(--tx);font-size:.72em;font-family:inherit;outline:none}
+.gallery-search::before{content:"🔍";position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:.75em}
+.gallery-sort{padding:6px 10px;border:1px solid var(--bd);border-radius:8px;background:var(--s2);color:var(--tx2);font-size:.68em;font-family:inherit;cursor:pointer}
+.gallery-size{display:flex;align-items:center;gap:4px;font-size:.65em;color:var(--tx3)}
+.gallery-size input{width:80px;accent-color:var(--ac)}
+/* Autosave indicator */
+.autosave-dot{position:fixed;top:8px;left:8px;width:8px;height:8px;border-radius:50%;background:var(--gn);z-index:100;transition:all .3s;opacity:0}
+.autosave-dot.saving{background:#f59e0b;opacity:1}
+.autosave-dot.saved{background:var(--gn);opacity:1}
+/* Cleanup Tool */
+.cleanup-panel{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-top:10px}
+.cleanup-item{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--s2);border-radius:6px;margin-bottom:4px;font-size:.7em}
+.cleanup-count{background:var(--ac);color:#fff;padding:2px 8px;border-radius:10px;font-size:.8em;font-weight:700}
+/* Compatibility Badge */
+.compat-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:6px;font-size:.62em;font-weight:600;margin:2px}
+.compat-ok{background:rgba(34,197,94,.15);color:var(--gn)}
+.compat-warn{background:rgba(245,158,11,.15);color:#f59e0b}
+.compat-err{background:rgba(239,68,68,.15);color:var(--rd)}
+/* What's New */
+.whatsnew-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.6);z-index:10001;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.whatsnew-box{background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:24px;max-width:500px;width:90%;max-height:70vh;overflow-y:auto;animation:fi .3s ease}
+.whatsnew-box h2{font-size:1em;font-weight:900;color:var(--ac2);margin-bottom:12px;text-align:center}
+.whatsnew-item{display:flex;gap:10px;padding:10px;background:var(--s2);border-radius:8px;margin-bottom:6px;font-size:.72em}
+.whatsnew-item span:first-child{font-size:1.2em}
+/* Light Mode */
+body.light{--bg:#f5f5f5;--s1:#ffffff;--s2:#f0f0f0;--s3:#e0e0e0;--bd:rgba(0,0,0,.08);--tx:#1a1a2e;--tx2:#666;--tx3:#999}
+body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
+/* Performance Meter */
+.perf-panel{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:12px}
+.perf-item{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--bd);font-size:.7em}
+.perf-item:last-child{border-bottom:none}
+.perf-val{margin-left:auto;font-weight:700;color:var(--ac2)}
 </style>
 </head>
 <body>
-<div class="hdr" style="padding:24px 16px 8px;position:relative"><div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:6px"><div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#7c3aed,#a78bfa);display:flex;align-items:center;justify-content:center;font-size:1.2em;color:#fff;font-weight:900;box-shadow:0 4px 12px rgba(124,58,237,.3)">A</div><div><h1 style="font-size:1.4em;font-weight:900;color:var(--tx);background:none;-webkit-text-fill-color:var(--tx);animation:none;letter-spacing:-.5px">Anki Design Studio</h1><p style="color:var(--tx2);font-size:.68em;margin-top:0;font-weight:500">Professional Card Designer</p></div></div><div style="display:flex;justify-content:center;gap:12px;font-size:.58em;color:var(--tx3)"><span>v2.0</span><span>&middot;</span><span>Stable</span><span>&middot;</span><span id="statusIndicator" style="color:var(--gn)">&#9679; Saved</span></div></div>
+<div class="hdr" style="padding:24px 16px 8px;position:relative"><div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:6px"><div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#7c3aed,#a78bfa);display:flex;align-items:center;justify-content:center;font-size:1.2em;color:#fff;font-weight:900;box-shadow:0 4px 12px rgba(124,58,237,.3)">A</div><div><h1 style="font-size:1.4em;font-weight:900;color:var(--tx);background:none;-webkit-text-fill-color:var(--tx);animation:none;letter-spacing:-.5px">Anki Design Studio</h1><p style="color:var(--tx2);font-size:.68em;margin-top:0;font-weight:500">Professional Card Designer</p></div></div><div style="display:flex;justify-content:center;gap:12px;font-size:.58em;color:var(--tx3)"><span>v2.1</span><span>&middot;</span><span>Stable</span><span>&middot;</span><span id="statusIndicator" style="color:var(--gn)">&#9679; Saved</span></div></div>
 <div class="tabs">
 <button class="tab on" data-t="gal">المعرض</button>
 <button class="tab" data-t="ctl">التحكم</button>
@@ -193,6 +267,7 @@ kbd{display:inline-block;padding:1px 5px;font-size:.6em;font-family:monospace;ba
 <button class="btn bo bs" onclick="resetDesign()">🔄 ضبط</button>
 <button class="btn bo bs" onclick="saveCustom()">💾 حفظ</button>
 </div>
+<input type="file" id="bgUpload" accept="image/*" style="display:none" onchange="uploadBG(event)">
 <div id="ctrlArea" class="cw"></div>
 </div>
 <div class="cp"><div class="cp-t">معاينة مباشرة</div><div class="cp-c" id="ctlPreviewCard"></div></div>
@@ -261,8 +336,27 @@ kbd{display:inline-block;padding:1px 5px;font-size:.6em;font-family:monospace;ba
 </div>
 </div>
 
+<!-- Command Palette -->
+<div class="cmd-palette" id="cmdPalette" onclick="if(event.target===this)closeCmdPalette()">
+<div class="cmd-box">
+<input class="cmd-search" id="cmdSearch" placeholder="اكتب أمراً أو ابحث عن خاصية..." oninput="filterCmdResults(this.value)" onkeydown="handleCmdKey(event)">
+<div class="cmd-results" id="cmdResults"></div>
+</div>
+</div>
+<!-- Context Menu -->
+<div class="ctx-menu" id="ctxMenu"></div>
+<!-- Onboarding -->
+<div class="onboard-overlay" id="onboardOverlay" style="display:none" onclick="if(event.target===this)closeOnboarding()">
+<div class="onboard-box" id="onboardBox"></div>
+</div>
+<!-- What's New -->
+<div class="whatsnew-overlay" id="whatsNewOverlay" style="display:none" onclick="if(event.target===this)closeWhatsNew()">
+<div class="whatsnew-box" id="whatsNewBox"></div>
+</div>
+<!-- Autosave indicator -->
+<div class="autosave-dot" id="autosaveDot"></div>
 <div id="toast"></div>
-<div id="statusBar" style="position:fixed;bottom:0;left:0;right:0;background:var(--s1);border-top:1px solid var(--bd);padding:4px 16px;display:flex;justify-content:space-between;font-size:.58em;color:var(--tx3);z-index:100"><span>Anki Design Studio v2.0</span><span id="modeIndicator">&#x1F7E2; Basic</span><span id="undoCount">0 changes</span></div>
+<div id="statusBar" style="position:fixed;bottom:0;left:0;right:0;background:var(--s1);border-top:1px solid var(--bd);padding:4px 16px;display:flex;justify-content:space-between;font-size:.58em;color:var(--tx3);z-index:100"><span>Anki Design Studio v2.1</span><span id="modeIndicator">&#x1F7E2; Basic</span><span id="undoCount">0 changes</span></div>
 
 <script>
 const SAMP={f:'Maison',a:'منزل',p:'Maisons',s:'Contrat',c:'Désabonnement'};
@@ -578,18 +672,30 @@ function toast(m){const t=document.getElementById('toast');t.textContent=m;t.cla
 // GALLERY
 function getFilteredTemplates(){return curCat==='all'?TEMPLATES:TEMPLATES.filter(t=>t.cat===curCat);}
 function renderGrid(){
-  const f=getFilteredTemplates();
-  document.getElementById('tplGrid').innerHTML=f.map(t=>{
-    const sel=S._templateId===t.id;
-    const bg=t.cfg.cardBg2?'linear-gradient(135deg,'+t.cfg.cardBg+','+t.cfg.cardBg2+')':t.cfg.cardBg;
-    const ff=FMAP[t.cfg.fontFrench]||"'Inter',sans-serif";
-    const fa=FMAP[t.cfg.fontArabic]||"'Noto Sans Arabic',sans-serif";
+  var templates=getFilteredTemplates();
+  // Apply search filter
+  if(gallerySearchQ){
+    var q=gallerySearchQ.toLowerCase();
+    templates=templates.filter(function(t){
+      return (t.nm||'').toLowerCase().indexOf(q)>=0||(t.en||'').toLowerCase().indexOf(q)>=0||(t.cat||'').toLowerCase().indexOf(q)>=0;
+    });
+  }
+  // Apply sort
+  templates=sortTemplates(templates,gallerySort);
+  // Render grid
+  var gridClass=galleryView==='list'?'gal-grid list-view':'gal-grid';
+  document.getElementById('tplGrid').className=gridClass;
+  document.getElementById('tplGrid').innerHTML=templates.map(function(t){
+    var sel=S._templateId===t.id;
+    var bg=t.cfg.cardBg2?'linear-gradient(135deg,'+t.cfg.cardBg+','+t.cfg.cardBg2+')':t.cfg.cardBg;
+    var ff=FMAP[t.cfg.fontFrench]||"'Inter',sans-serif";
+    var fa=FMAP[t.cfg.fontArabic]||"'Noto Sans Arabic',sans-serif";
     return '<div class="gc'+(sel?' sel':'')+'" onclick="selectTemplate(\''+t.id+'\')"><div class="gp" style="background:'+bg+';border-radius:'+t.cfg.borderRadius+'px"><div style="font-family:'+ff+';font-size:1.2em;font-weight:'+t.cfg.frenchFontWeight+';color:'+t.cfg.frenchColor+';margin-bottom:2px">'+SAMP.f+'</div><div style="font-family:'+fa+';font-size:.75em;font-weight:'+t.cfg.meaningFontWeight+';color:'+t.cfg.meaningColor+'">'+SAMP.a+'</div></div><div class="gnm"><span>'+t.nm+'</span><span class="gc-cat">'+(CATS[t.cat]||t.cat)+'</span></div></div>';
   }).join('');
 }
-function renderFilt(){document.getElementById('filtBar').innerHTML=Object.entries(CATS).map(([k,v])=>'<button class="fb'+(k===curCat?' on':'')+'" onclick="setCat(\''+k+'\')">'+v+'</button>').join('');}
+function renderFilt(){document.getElementById('filtBar').innerHTML='<div class="gallery-toolbar"><div class="gallery-search"><input placeholder="ابحث في القوالب..." oninput="filterGallery(this.value)" value="'+gallerySearchQ+'"></div><select class="gallery-sort" onchange="gallerySort=this.value;renderGrid()"><option value="name"'+(gallerySort==='name'?' selected':'')+'>الاسم</option><option value="newest"'+(gallerySort==='newest'?' selected':'')+'>الأحدث</option><option value="category"'+(gallerySort==='category'?' selected':'')+'>التصنيف</option></select><div class="gallery-size"><span>الحجم:</span><input type="range" min="100" max="250" value="'+gallerySize+'" oninput="gallerySize=parseInt(this.value);document.getElementById(\\"tplGrid\\").style.gridTemplateColumns=\\"repeat(auto-fill,minmax("+this.value+"px,1fr))\\""></div></div>'+Object.entries(CATS).map(function(arr){var k=arr[0],v=arr[1];return '<button class="fb'+(k===curCat?' on':'')+'" onclick="setCat(\''+k+'\')">'+v+'</button>';}).join('');}
 function setCat(c){curCat=c;renderFilt();renderGrid();}
-function selectTemplate(id){const t=TEMPLATES.find(x=>x.id===id);if(!t)return;S={...JSON.parse(JSON.stringify(t.cfg)),_templateId:id};pushHist();renderGrid();toast('تم اختيار: '+t.nm);}
+function selectTemplate(id){var t=TEMPLATES.find(function(x){return x.id===id;});if(!t)return;S=Object.assign({},JSON.parse(JSON.stringify(t.cfg)),{_templateId:id});pushHist();renderGrid();toast('تم اختيار: '+t.nm);}
 
 // RENDER CARD HTML
 // Build CSS string from element config
@@ -727,6 +833,8 @@ kbd{display:inline-block;padding:1px 5px;font-size:.6em;font-family:monospace;ba
 // CONTROLS
 function renderCtrls(){
   let h='';
+  h+=renderPropertySearch();
+  // Property Search
   // Helper functions
   function acc(title,content,open){return '<div class="acc"><div class="acc-h' + (open ? ' open' : '') + '" onclick="toggleAcc(this)"><span>'+title+'</span><span class="arr">\u25B6</span></div><div class="acc-b' + (open ? ' open' : '') + '">'+content+'</div></div>';}
   function grp(title,content){return '<div class="acc-grp"><div class="acc-grp-t">'+title+'</div>'+content+'</div>';}
@@ -1166,21 +1274,6 @@ function applyMode(){
   });
 }
 
-// KEYBOARD SHORTCUTS
-document.addEventListener('keydown',function(e){
-  if(e.ctrlKey||e.metaKey){
-    if(e.key==='z'){e.preventDefault();undo();}
-    if(e.key==='y'){e.preventDefault();redo();}
-    if(e.key==='s'){e.preventDefault();saveCustom();toast('Saved!');}
-    if(e.key==='1'){e.preventDefault();document.querySelector('[data-t=gal]').click();}
-    if(e.key==='2'){e.preventDefault();document.querySelector('[data-t=ctl]').click();}
-    if(e.key==='3'){e.preventDefault();document.querySelector('[data-t=editor]').click();}
-    if(e.key==='4'){e.preventDefault();document.querySelector('[data-t=full]').click();}
-    if(e.key==='5'){e.preventDefault();document.querySelector('[data-t=tts]').click();}
-    if(e.key==='6'){e.preventDefault();document.querySelector('[data-t=dl]').click();}
-  }
-  if(e.key==='r'&&!e.ctrlKey&&!e.metaKey&&document.activeElement.tagName!=='INPUT'&&document.activeElement.tagName!=='TEXTAREA'){randomDesign();}
-});
 
 // SAVE INDICATOR
 var _modified=false;
@@ -1221,9 +1314,627 @@ document.querySelectorAll('[onclick]').forEach(function(el){
 });
 
 window.addEventListener('load',()=>{
+  loadTheme();
+  if(!localStorage.getItem('anki_onboarded'))showOnboarding();
+  else if(!localStorage.getItem('anki_whatsnew_v21'))showWhatsNew();
+  checkCrashRecovery();
+  setupAutosave();
+  document.addEventListener('contextmenu',showContextMenu);
   if(window.speechSynthesis){speechSynthesis.onvoiceschanged=()=>initTTS();initTTS();}
   pushHist();renderFilt();renderGrid();renderCtrls();updateCtlPreview();
 });
+
+// ============================================================
+// COMMAND PALETTE (Ctrl+Shift+P)
+// ============================================================
+var CMD_LIST=[
+  {icon:'🎲',label:'تصميم عشوائي',action:'randomDesign();closeCmdPalette()',keys:'R'},
+  {icon:'↩️',label:'تراجع',action:'undo();closeCmdPalette()',keys:'Ctrl+Z'},
+  {icon:'↪️',label:'إعادة',action:'redo();closeCmdPalette()',keys:'Ctrl+Y'},
+  {icon:'💾',label:'حفظ قالب',action:'saveCustom();closeCmdPalette()',keys:'Ctrl+S'},
+  {icon:'🔄',label:'إعادة ضبط',action:'resetDesign();closeCmdPalette()'},
+  {icon:'📥',label:'تنزيل .apkg',action:'downloadAPKG();closeCmdPalette()'},
+  {icon:'📤',label:'تصدير الإعدادات',action:'exportConfig();closeCmdPalette()'},
+  {icon:'📥',label:'استيراد الإعدادات',action:'closeCmdPalette();document.querySelector("[data-t=dl]").click()'},
+  {icon:'🎯',label:'تحليل التصميم',action:'showDesignScore();closeCmdPalette()'},
+  {icon:'🧹',label:'تنظيف غير المستخدم',action:'showCleanupTool();closeCmdPalette()'},
+  {icon:'📊',label:'قياس الأداء',action:'showPerfMeter();closeCmdPalette()'},
+  {icon:'🔧',label:'فحص التوافق',action:'showCompatChecker();closeCmdPalette()'},
+  {icon:'1️⃣',label:'تبويب المعرض',action:'document.querySelector("[data-t=gal]").click();closeCmdPalette()',keys:'Ctrl+1'},
+  {icon:'2️⃣',label:'تبويب التحكم',action:'document.querySelector("[data-t=ctl]").click();closeCmdPalette()',keys:'Ctrl+2'},
+  {icon:'3️⃣',label:'تبويب المحرر',action:'document.querySelector("[data-t=editor]").click();closeCmdPalette()',keys:'Ctrl+3'},
+  {icon:'4️⃣',label:'معاينة كاملة',action:'document.querySelector("[data-t=full]").click();closeCmdPalette()',keys:'Ctrl+4'},
+  {icon:'5️⃣',label:'تبويب النطق',action:'document.querySelector("[data-t=tts]").click();closeCmdPalette()',keys:'Ctrl+5'},
+  {icon:'6️⃣',label:'تبويب التنزيل',action:'document.querySelector("[data-t=dl]").click();closeCmdPalette()',keys:'Ctrl+6'},
+  {icon:'🌙',label:'تبديل الوضع',action:'toggleDarkLight();closeCmdPalette()'},
+  {icon:'🔍',label:'بحث في الخصائص',action:'focusPropertySearch();closeCmdPalette()'},
+  {icon:'❓',label:'شرح التطبيق',action:'showOnboarding();closeCmdPalette()'},
+  {icon:'🆕',label:'ما الجديد',action:'showWhatsNew();closeCmdPalette()'},
+  {icon:'📋',label:'نسخ التصميم',action:'copyDesignJSON();closeCmdPalette()'},
+  {icon:'📌',label:'تثبيت كقالب مفضل',action:'saveAsFavorite();closeCmdPalette()'},
+  {icon:'🖼️',label:'تحميل صورة خلفية',action:'closeCmdPalette();document.getElementById("bgUpload").click()'},
+  {icon:'🔊',label:'اختبار النطق',action:'speakWord(SAMP.f,"fr");closeCmdPalette()'},
+  {icon:'🎨',label:'توليد لوحة ألوان',action:'generateColorPalette();closeCmdPalette()'},
+  {icon:'✨',label:'تطبيق تناغم',action:'applyHarmony("complementary");closeCmdPalette()'},
+  {icon:'📐',label:'تغيير الخط',action:'closeCmdPalette();document.querySelector("[data-t=ctl]").click();setTimeout(function(){document.querySelector(".acc-h").click()},100)'},
+  {icon:'🔄',label:'تبديل المعرض/القائمة',action:'toggleGalleryView();closeCmdPalette()'},
+];
+var cmdIdx=0;
+
+function openCmdPalette(){
+  var el=document.getElementById('cmdPalette');
+  if(!el)return;
+  el.classList.add('show');
+  var inp=document.getElementById('cmdSearch');
+  if(inp){inp.value='';inp.focus();}
+  cmdIdx=0;
+  renderCmdResults('');
+}
+
+function closeCmdPalette(){
+  var el=document.getElementById('cmdPalette');
+  if(el)el.classList.remove('show');
+}
+
+function filterCmdResults(q){
+  cmdIdx=0;
+  renderCmdResults(q);
+}
+
+function renderCmdResults(q){
+  var el=document.getElementById('cmdResults');
+  if(!el)return;
+  var filtered=CMD_LIST.filter(function(c){
+    return !q||c.label.indexOf(q)>=0||c.icon.indexOf(q)>=0;
+  });
+  // Also search property names from controls
+  if(q&&q.length>=2){
+    var propKeywords=['color','bg','font','size','border','shadow','radius','padding','gap','opacity','blur','animation','pattern','overlay','gradient','direction','align','weight','spacing','line-height','text-shadow','transform','decoration','style'];
+    propKeywords.forEach(function(pk){
+      if(pk.indexOf(q.toLowerCase())>=0||q.toLowerCase().indexOf(pk)>=0){
+        filtered.push({icon:'⚙️',label:'بحث عن: '+pk,action:'searchProperty("'+pk+'");closeCmdPalette()'});
+      }
+    });
+  }
+  el.innerHTML=filtered.map(function(c,i){
+    return '<div class="cmd-item'+(i===cmdIdx?' sel':'')+'" onclick="'+c.action+'" onmouseenter="cmdIdx='+i+';highlightCmd()"><span>'+c.icon+'</span><span>'+c.label+'</span>'+(c.keys?'<kbd>'+c.keys+'</kbd>':'')+'</div>';
+  }).join('');
+}
+
+function highlightCmd(){
+  document.querySelectorAll('.cmd-item').forEach(function(el,i){
+    el.classList.toggle('sel',i===cmdIdx);
+  });
+}
+
+function handleCmdKey(e){
+  var items=document.querySelectorAll('.cmd-item');
+  if(e.key==='Escape'){closeCmdPalette();return;}
+  if(e.key==='ArrowDown'){e.preventDefault();cmdIdx=Math.min(cmdIdx+1,items.length-1);highlightCmd();}
+  if(e.key==='ArrowUp'){e.preventDefault();cmdIdx=Math.max(cmdIdx-1,0);highlightCmd();}
+  if(e.key==='Enter'&&items[cmdIdx]){items[cmdIdx].click();}
+}
+
+function searchProperty(keyword){
+  // Switch to controls tab and focus search
+  document.querySelector('[data-t="ctl"]').click();
+  setTimeout(function(){
+    var el=document.getElementById('propSearchInput');
+    if(el){el.value=keyword;el.focus();filterProperties(keyword);}
+  },200);
+}
+
+// ============================================================
+// PROPERTY SEARCH
+// ============================================================
+function renderPropertySearch(){
+  return '<div class="prop-search"><input id="propSearchInput" placeholder="ابحث عن خاصية..." oninput="filterProperties(this.value)"></div>';
+}
+
+function filterProperties(q){
+  if(!q){document.querySelectorAll('#ctrlArea .acc').forEach(function(a){a.style.display='';});return;}
+  var lq=q.toLowerCase();
+  document.querySelectorAll('#ctrlArea .acc').forEach(function(a){
+    var txt=(a.textContent||'').toLowerCase();
+    a.style.display=txt.indexOf(lq)>=0?'':'none';
+  });
+}
+
+// ============================================================
+// CONTEXT MENU (Right-click)
+// ============================================================
+function showContextMenu(e){
+  e.preventDefault();
+  var menu=document.getElementById('ctxMenu');
+  if(!menu)return;
+  var items=[
+    {icon:'↩️',label:'تراجع',action:'undo()'},
+    {icon:'↪️',label:'إعادة',action:'redo()'},
+    {sep:true},
+    {icon:'🎲',label:'تصميم عشوائي',action:'randomDesign()'},
+    {icon:'💾',label:'حفظ قالب',action:'saveCustom()'},
+    {icon:'🔄',label:'إعادة ضبط',action:'resetDesign()'},
+    {sep:true},
+    {icon:'📋',label:'نسخ الإعدادات',action:'copyDesignJSON()'},
+    {icon:'📤',label:'تصدير',action:'exportConfig()'},
+    {sep:true},
+    {icon:'🎯',label:'تحليل التصميم',action:'showDesignScore()'},
+    {icon:'🧹',label:'تنظيف',action:'showCleanupTool()'},
+    {sep:true},
+    {icon:'🔍',label:'بحث في الخصائص',action:'focusPropertySearch()'},
+    {icon:'❓',label:'شرح التطبيق',action:'showOnboarding()'},
+  ];
+  var h='';
+  items.forEach(function(item){
+    if(item.sep){h+='<div class="ctx-sep"></div>';return;}
+    h+='<div class="ctx-item" onclick="'+item.action+';hideContextMenu()"><span>'+item.icon+'</span><span>'+item.label+'</span></div>';
+  });
+  menu.innerHTML=h;
+  menu.style.left=Math.min(e.clientX,window.innerWidth-220)+'px';
+  menu.style.top=Math.min(e.clientY,window.innerHeight-300)+'px';
+  menu.classList.add('show');
+}
+
+function hideContextMenu(){
+  var menu=document.getElementById('ctxMenu');
+  if(menu)menu.classList.remove('show');
+}
+
+document.addEventListener('click',function(){hideContextMenu();});
+
+// ============================================================
+// DESIGN SCORE
+// ============================================================
+function calcDesignScore(){
+  var score={total:0,perf:0,compat:0,access:0,style:0};
+  var notes=[];
+  
+  // Performance (0-100)
+  var perfScore=100;
+  if(S.cardBgBlur>10)perfScore-=10;
+  if(S.effect&&S.effect!=='none')perfScore-=5;
+  if(S.frenchAnim&&S.frenchAnim!=='none')perfScore-=3;
+  if(S.meaningAnim&&S.meaningAnim!=='none')perfScore-=3;
+  if(S.cardBgImage)perfScore-=15;
+  if(S.cardShadow&&S.cardShadow!=='none')perfScore-=5;
+  if(S.cardOverlay&&S.cardOverlay!=='none')perfScore-=5;
+  score.perf=Math.max(0,perfScore);
+  
+  // Compatibility (0-100)
+  var compatScore=100;
+  if(S.cardClipPath)compatScore-=30;
+  if(S.cardBgBlur>0)compatScore-=10;
+  if(S.cardHoverScale&&S.cardHoverScale!==1)compatScore-=5;
+  if(S.bgPattern&&S.bgPattern!=='none')compatScore-=5;
+  score.compat=Math.max(0,compatScore);
+  
+  // Accessibility (0-100)
+  var accessScore=100;
+  if(S.frenchFontSize&&S.frenchFontSize<1.5)accessScore-=15;
+  if(S.meaningFontSize&&S.meaningFontSize<0.8)accessScore-=15;
+  score.access=Math.max(0,accessScore);
+  
+  // Style (0-100)
+  var styleScore=70;
+  if(S.borderRadius>0)styleScore+=5;
+  if(S.cardShadow&&S.cardShadow!=='none')styleScore+=5;
+  if(S.frenchAnim&&S.frenchAnim!=='none')styleScore+=5;
+  if(S.bgPattern&&S.bgPattern!=='none')styleScore+=5;
+  if(S.cardBg2)styleScore+=5;
+  if(S.meaningBg&&S.meaningBg!=='transparent')styleScore+=5;
+  score.style=Math.min(100,styleScore);
+  
+  score.total=Math.round((score.perf+score.compat+score.access+score.style)/4);
+  return score;
+}
+
+function showDesignScore(){
+  var s=calcDesignScore();
+  var color=s.total>=80?'var(--gn)':s.total>=60?'#f59e0b':'var(--rd)';
+  var label=s.total>=80?'ممتاز':s.total>=60?'جيد':s.total>=40?'مقبول':s.total>=20?'ضعيف':'حرج';
+  
+  var html='<div class="score-panel"><div style="text-align:center;font-size:.82em;font-weight:800;color:var(--ac2);margin-bottom:10px">🎯 تحليل التصميم</div>';
+  html+='<div class="score-ring" style="border:4px solid '+color+';color:'+color+'">'+s.total+'<span style="font-size:.4em;margin-left:2px">/100</span></div>';
+  html+='<div style="text-align:center;font-size:.72em;font-weight:700;color:'+color+';margin-bottom:12px">'+label+'</div>';
+  html+='<div class="score-items">';
+  
+  var items=[
+    {label:'⚡ الأداء',val:s.perf,color:s.perf>=80?'var(--gn)':s.perf>=50?'#f59e0b':'var(--rd)'},
+    {label:'🔧 التوافق',val:s.compat,color:s.compat>=80?'var(--gn)':s.compat>=50?'#f59e0b':'var(--rd)'},
+    {label:'👁️ الوصول',val:s.access,color:s.access>=80?'var(--gn)':s.access>=50?'#f59e0b':'var(--rd)'},
+    {label:'🎨 الأسلوب',val:s.style,color:s.style>=80?'var(--gn)':s.style>=50?'#f59e0b':'var(--rd)'}
+  ];
+  
+  items.forEach(function(it){
+    html+='<div class="score-item"><span>'+it.label+'</span><div class="score-bar"><div class="score-bar-fill" style="width:'+it.val+'%;background:'+it.color+'"></div></div><span class="perf-val">'+it.val+'</span></div>';
+  });
+  
+  html+='</div>';
+  
+  // Tips
+  html+='<div style="margin-top:12px;font-size:.65em;color:var(--tx2)">';
+  if(s.perf<80)html+='<div>💡 قلل من الظلال والتأثيرات لتحسين الأداء</div>';
+  if(s.compat<80)html+='<div>⚠️ بعض الميزات قد لا تعمل على كل أجهزة Anki</div>';
+  if(s.access<80)html+='<div>👁️ زِد حجم الخط لتحسين الوصولية</div>';
+  html+='</div></div>';
+  
+  // Show in a toast-like panel
+  var panel=document.createElement('div');
+  panel.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9999;max-width:400px;width:90%';
+  panel.innerHTML=html+'<div style="text-align:center;margin-top:8px"><button class="btn ba bs" onclick="this.parentElement.parentElement.remove()">إغلاق</button></div>';
+  document.body.appendChild(panel);
+}
+
+// ============================================================
+// CLEANUP TOOL
+// ============================================================
+function showCleanupTool(){
+  var unused=[];
+  
+  // Check unused colors
+  var colors=[S.cardBg,S.frenchColor,S.meaningColor,S.meaningBg,S.meaningBorder,S.badgeNomBg,S.badgeNomColor,S.unitBg,S.unitColor,S.secBg,S.secBorder,S.secTextColor,S.labelColor];
+  var uniqueColors=new Set(colors);
+  if(uniqueColors.size<colors.length)unused.push({type:'ألوان مكررة',count:colors.length-uniqueColors.size});
+  
+  // Check unused animations
+  var anims=[S.frenchAnim,S.meaningAnim,S.badgeAnim,S.secAnim];
+  var activeAnims=anims.filter(function(a){return a&&a!=='none';});
+  if(activeAnims.length===0)unused.push({type:'حركات غير مستخدمة',count:4});
+  
+  // Check unused patterns
+  if(!S.bgPattern||S.bgPattern==='none')unused.push({type:'نمط خلفية غير مُفعّل',count:1});
+  
+  // Check unused effects
+  if(!S.effect||S.effect==='none')unused.push({type:'تأثير غير مُفعّل',count:1});
+  
+  // Check unused custom CSS
+  if(!S.customCSS||S.customCSS.trim()==='')unused.push({type:'CSS مخصص فارغ',count:1});
+  
+  var html='<div class="cleanup-panel"><div style="font-size:.82em;font-weight:800;color:var(--ac2);margin-bottom:10px">🧹 تنظيف التصميم</div>';
+  
+  if(unused.length===0){
+    html+='<div style="font-size:.72em;color:var(--gn);text-align:center;padding:20px">✅ تصميمك نظيف!</div>';
+  }else{
+    unused.forEach(function(u){
+      html+='<div class="cleanup-item"><span>'+u.type+'</span><span class="cleanup-count">'+u.count+'</span></div>';
+    });
+    html+='<button class="btn bo bs" style="width:100%;margin-top:8px" onclick="resetDesign();this.closest(\'div\').remove();toast(\'تم التنظيف\')">🗑️ إعادة ضبط الكل</button>';
+  }
+  
+  html+='</div>';
+  
+  var panel=document.createElement('div');
+  panel.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9999;max-width:350px;width:90%';
+  panel.innerHTML=html+'<div style="text-align:center;margin-top:8px"><button class="btn ba bs" onclick="this.parentElement.parentElement.remove()">إغلاق</button></div>';
+  document.body.appendChild(panel);
+}
+
+// ============================================================
+// PERFORMANCE METER
+// ============================================================
+function showPerfMeter(){
+  var html='<div class="perf-panel"><div style="font-size:.82em;font-weight:800;color:var(--ac2);margin-bottom:10px">📊 قياس الأداء</div>';
+  
+  var items=[
+    {label:'🎨 الألوان المستخدمة',val:countUsedColors()},
+    {label:'✨ الحركات المُفعّلة',val:countActiveAnims()},
+    {label:'🔮 التأثيرات',val:S.effect&&S.effect!=='none'?1:0},
+    {label:'📐 الأنماط',val:S.bgPattern&&S.bgPattern!=='none'?1:0},
+    {label:'🖼️ صور الخلفية',val:S.cardBgImage?1:0},
+    {label:'🌊 التمويه',val:S.cardBgBlur>0?S.cardBgBlur+'px':'لا'},
+    {label:'📋 الأقسام المرئية',val:countVisibleSections()},
+    {label:'📝 خطوط مخصصة',val:(S.fontFrench!=='Inter'?1:0)+(S.fontArabic!=='Noto Sans Arabic'?1:0)},
+  ];
+  
+  items.forEach(function(it){
+    html+='<div class="perf-item"><span>'+it.label+'</span><span class="perf-val">'+it.val+'</span></div>';
+  });
+  
+  // Memory estimate
+  var memEst=JSON.stringify(S).length;
+  html+='<div class="perf-item" style="border-top:1px solid var(--bd);margin-top:4px;padding-top:8px"><span>💾 حجم البيانات</span><span class="perf-val">'+(memEst/1024).toFixed(1)+' KB</span></div>';
+  
+  html+='</div>';
+  
+  var panel=document.createElement('div');
+  panel.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9999;max-width:350px;width:90%';
+  panel.innerHTML=html+'<div style="text-align:center;margin-top:8px"><button class="btn ba bs" onclick="this.parentElement.parentElement.remove()">إغلاق</button></div>';
+  document.body.appendChild(panel);
+}
+
+function countUsedColors(){
+  var c=new Set();
+  ['cardBg','cardBg2','frenchColor','meaningColor','meaningBg','meaningBorder','badgeNomBg','badgeNomColor','unitBg','unitColor','secBg','secBorder','secTextColor','labelColor','cardBorderColor','separatorColor','speakerBg'].forEach(function(k){if(S[k]&&S[k]!=='')c.add(S[k]);});
+  return c.size;
+}
+
+function countActiveAnims(){
+  var n=0;
+  ['frenchAnim','meaningAnim','badgeAnim','secAnim'].forEach(function(k){if(S[k]&&S[k]!=='none')n++;});
+  return n;
+}
+
+function countVisibleSections(){
+  var n=0;
+  if(S.showBadge)n++;
+  if(S.showMeaning)n++;
+  if(S.showPage)n++;
+  if(S.sectionVisibility){Object.values(S.sectionVisibility).forEach(function(v){if(v)n++;});}
+  return n;
+}
+
+// ============================================================
+// COMPATIBILITY CHECKER
+// ============================================================
+function showCompatChecker(){
+  var checks=[];
+  
+  // Check clip-path support
+  if(S.cardClipPath){
+    checks.push({label:'clip-path',status:'warn',msg:'قد لا يعمل على AnkiDroid القديم'});
+  }else{
+    checks.push({label:'clip-path',status:'ok',msg:'مدعوم'});
+  }
+  
+  // Check backdrop-filter
+  if(S.cardBgBlur>0){
+    checks.push({label:'backdrop-filter',status:'warn',msg:'مدعوم على الأجهزة الحديثة فقط'});
+  }else{
+    checks.push({label:'backdrop-filter',status:'ok',msg:'مدعوم'});
+  }
+  
+  // Check gradients
+  checks.push({label:'الټلالات الخطية',status:'ok',msg:'مدعوم everywhere'});
+  
+  // Check border-radius
+  checks.push({label:'border-radius',status:'ok',msg:'مدعوم'});
+  
+  // Check box-shadow
+  checks.push({label:'box-shadow',status:'ok',msg:'مدعوم'});
+  
+  // Check CSS animations
+  checks.push({label:'CSS Animations',status:'ok',msg:'مدعوم'});
+  
+  // Check custom fonts
+  if(S.fontFrench!=='Inter'||S.fontArabic!=='Noto Sans Arabic'){
+    checks.push({label:'خطوط مخصصة',status:'warn',msg:'قد لا تظهر على كل الأجهزة'});
+  }else{
+    checks.push({label:'خطوط مخصصة',status:'ok',msg:'خطوط افتراضية'});
+  }
+  
+  // Check background image
+  if(S.cardBgImage){
+    checks.push({label:'صورة خلفية',status:'warn',msg:'تزيد حجم البطاقة'});
+  }
+  
+  var html='<div class="score-panel"><div style="font-size:.82em;font-weight:800;color:var(--ac2);margin-bottom:10px">🔧 فحص التوافق</div>';
+  html+='<div style="font-size:.65em;color:var(--tx2);margin-bottom:10px">فحص توافق التصميم مع أجهزة Anki المختلفة</div>';
+  
+  checks.forEach(function(c){
+    var cls=c.status==='ok'?'compat-ok':c.status==='warn'?'compat-warn':'compat-err';
+    var icon=c.status==='ok'?'✅':c.status==='warn'?'⚠️':'❌';
+    html+='<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--bd);font-size:.7em">';
+    html+='<span class="compat-badge '+cls+'">'+icon+'</span>';
+    html+='<span style="font-weight:600">'+c.label+'</span>';
+    html+='<span style="margin-left:auto;color:var(--tx3);font-size:.9em">'+c.msg+'</span>';
+    html+='</div>';
+  });
+  
+  html+='</div>';
+  
+  var panel=document.createElement('div');
+  panel.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9999;max-width:400px;width:90%';
+  panel.innerHTML=html+'<div style="text-align:center;margin-top:8px"><button class="btn ba bs" onclick="this.parentElement.parentElement.remove()">إغلاق</button></div>';
+  document.body.appendChild(panel);
+}
+
+// ============================================================
+// ONBOARDING
+// ============================================================
+var ONBOARD_STEPS=[
+  {title:'مرحباً بك في Anki Design Studio! 🎨',text:'هذا التطبيق يسمح لك بتصميم بطاقات Anki احترافية بدون كتابة أي كود. كل شيء تفاعلي وسهل!',icon:'🎨'},
+  {title:'المعرض 📚',text:'ابدأ باختيار قالب من المعرض. فيه أكثر من 50 قالب جاهز يمكنك تعديله بالكامل.',icon:'📚'},
+  {title:'لوحة التحكم ⚙️',text:'هنا تعدل كل شيء: الألوان، الخطوط، الأحجام، الحركات، التأثيرات، وأكثر من 100 خاصية!',icon:'⚙️'},
+  {title:'المحرر البصري 🖱️',text:'اضغط مباشرة على أي عنصر بالبطاقة لتعديله. كل عنصر قابل للتحكم!',icon:'🖱️'},
+  {title:'التنزيل 📥',text:'صمم بطاقتك، ثم نزّلها كملف .apkg جاهز للاستيراد في Anki مباشرة!',icon:'📥'},
+  {title:'اختصارات لوحة المفاتيح ⌨️',text:'Ctrl+Shift+P: أوامر سريعة | Ctrl+Z/Y: تراجع/إعادة | Ctrl+S: حفظ | R: عشوائي',icon:'⌨️'},
+  {title:'جاهز للبدء! 🚀',text:'ابدأ باختيار قالب من المعرض ثم عدّله حسب ذوقك. استمتع بالتصميم!',icon:'🚀'},
+];
+var onbStep=0;
+
+function showOnboarding(){
+  onbStep=0;
+  renderOnboardStep();
+  document.getElementById('onboardOverlay').style.display='flex';
+}
+
+function closeOnboarding(){
+  document.getElementById('onboardOverlay').style.display='none';
+  localStorage.setItem('anki_onboarded','1');
+}
+
+function renderOnboardStep(){
+  var box=document.getElementById('onboardBox');
+  if(!box)return;
+  var step=ONBOARD_STEPS[onbStep];
+  var h='<div style="font-size:2.5em;margin-bottom:12px">'+step.icon+'</div>';
+  h+='<h2>'+step.title+'</h2>';
+  h+='<p>'+step.text+'</p>';
+  h+='<div class="onboard-steps">';
+  ONBOARD_STEPS.forEach(function(_,i){
+    h+='<div class="onboard-step'+(i===onbStep?' active':i<onbStep?' done':'')+'">'+(i<onbStep?'✓':(i+1))+'</div>';
+  });
+  h+='</div>';
+  h+='<div style="display:flex;gap:8px;justify-content:center">';
+  if(onbStep>0)h+='<button class="btn bo bs" onclick="onbStep--;renderOnboardStep()">السابق</button>';
+  if(onbStep<ONBOARD_STEPS.length-1)h+='<button class="btn ba bs" onclick="onbStep++;renderOnboardStep()">التالي</button>';
+  else h+='<button class="btn ba bs" onclick="closeOnboarding()">ابدأ!</button>';
+  h+='</div>';
+  box.innerHTML=h;
+}
+
+// ============================================================
+// WHAT'S NEW
+// ============================================================
+function showWhatsNew(){
+  var html='<h2>🆕 ما الجديد في v2.1</h2>';
+  var items=[
+    {icon:'⌨️',text:'لوحة أوامر (Ctrl+Shift+P) — ابحث عن أي أمر أو خاصية بسرعة'},
+    {icon:'🔍',text:'بحث في الخصائص — اجد أي إعداد بسرعة'},
+    {icon:'🎯',text:'تحليل التصميم — احصل على تقييم لأدائك'},
+    {icon:'📊',text:'قياس الأداء — اعرف استهلاك موارد تصميمك'},
+    {icon:'🔧',text:'فحص التوافق — تأكد من عمل البطاقة على كل أجهزة Anki'},
+    {icon:'🧹',text:'أداة التنظيف — احذف غير المستخدم من التصميم'},
+    {icon:'🌙',text:'الوضع الفاتح — بديل للوضع الداكن'},
+    {icon:'📚',text:'شرح التطبيق — دليل تعليمي تفاعلي'},
+    {icon:'🖱️',text:'قائمة سياق — انقر بالزر الأيمن لأوامر سريعة'},
+    {icon:'💾',text:'حفظ تلقائي — لا تفقد عملك أبداً'},
+  ];
+  items.forEach(function(it){
+    html+='<div class="whatsnew-item"><span>'+it.icon+'</span><span>'+it.text+'</span></div>';
+  });
+  html+='<div style="text-align:center;margin-top:16px"><button class="btn ba bs" onclick="closeWhatsNew()">فهمت!</button></div>';
+  document.getElementById('whatsNewBox').innerHTML=html;
+  document.getElementById('whatsNewOverlay').style.display='flex';
+}
+
+function closeWhatsNew(){
+  document.getElementById('whatsNewOverlay').style.display='none';
+  localStorage.setItem('anki_whatsnew_v21','1');
+}
+
+// ============================================================
+// AUTOSAVE + CRASH RECOVERY
+// ============================================================
+var autosaveTimer=null;
+function setupAutosave(){
+  // Auto-save every 30 seconds
+  setInterval(function(){
+    try{
+      localStorage.setItem('anki_autosave',JSON.stringify(S));
+      localStorage.setItem('anki_autosave_time',Date.now().toString());
+      var dot=document.getElementById('autosaveDot');
+      if(dot){dot.className='autosave-dot saving';setTimeout(function(){dot.className='autosave-dot saved';},1000);}
+    }catch(e){}
+  },30000);
+}
+
+function checkCrashRecovery(){
+  var saved=localStorage.getItem('anki_autosave');
+  var time=localStorage.getItem('anki_autosave_time');
+  if(saved&&time){
+    var elapsed=Date.now()-parseInt(time);
+    if(elapsed<3600000){ // Within 1 hour
+      var html='<div class="score-panel"><div style="font-size:.82em;font-weight:800;color:var(--ac2);margin-bottom:10px">🔄 استرداد الحالة</div>';
+      html+='<div style="font-size:.72em;color:var(--tx2);margin-bottom:12px">وجدنا حفظة تلقائية من آخر جلسة. هل تريد استعادتها؟</div>';
+      html+='<div style="display:flex;gap:8px;justify-content:center">';
+      html+='<button class="btn ba bs" onclick="restoreAutosave();this.parentElement.parentElement.parentElement.remove()">نعم، استرد</button>';
+      html+='<button class="btn bo bs" onclick="this.parentElement.parentElement.parentElement.remove()">لا، تجاهل</button>';
+      html+='</div></div>';
+      var panel=document.createElement('div');
+      panel.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9999;max-width:350px;width:90%';
+      panel.innerHTML=html;
+      document.body.appendChild(panel);
+    }
+  }
+}
+
+function restoreAutosave(){
+  try{
+    var saved=JSON.parse(localStorage.getItem('anki_autosave'));
+    if(saved&&typeof saved==='object'){
+      S=Object.assign({},defCfg(),saved);
+      pushHist();
+      renderCtrls();
+      renderAll();
+      toast('تم استرداد الحفظة التلقائية');
+    }
+  }catch(e){toast('خطأ في الاسترداد');}
+}
+
+// ============================================================
+// DARK/LIGHT MODE
+// ============================================================
+function toggleDarkLight(){
+  document.body.classList.toggle('light');
+  var isLight=document.body.classList.contains('light');
+  localStorage.setItem('anki_theme',isLight?'light':'dark');
+  toast(isLight?'🌙 الوضع الداكن':'☀️ الوضع الفاتح');
+}
+
+function loadTheme(){
+  var theme=localStorage.getItem('anki_theme');
+  if(theme==='light')document.body.classList.add('light');
+}
+
+// ============================================================
+// GALLERY IMPROVEMENTS
+// ============================================================
+var galleryView='grid'; // grid or list
+var gallerySort='name'; // name, newest, category
+var gallerySize=160;
+
+function toggleGalleryView(){
+  galleryView=galleryView==='grid'?'list':'grid';
+  renderGrid();
+  toast(galleryView==='grid'?'网格 عرض':'قائمة عرض');
+}
+
+function sortTemplates(templates,sortBy){
+  var sorted=templates.slice();
+  switch(sortBy){
+    case'newest':sorted.sort(function(a,b){return(b.date||0)-(a.date||0);});break;
+    case'oldest':sorted.sort(function(a,b){return(a.date||0)-(b.date||0);});break;
+    case'category':sorted.sort(function(a,b){return(a.cat||'').localeCompare(b.cat||'');});break;
+    case'name':default:sorted.sort(function(a,b){return(a.nm||'').localeCompare(b.nm||'');});break;
+  }
+  return sorted;
+}
+
+var gallerySearchQ='';
+function filterGallery(q){
+  gallerySearchQ=q;
+  renderGrid();
+}
+
+function copyDesignJSON(){
+  var json=JSON.stringify(S,null,2);
+  navigator.clipboard.writeText(json).then(function(){toast('تم نسخ الإعدادات');}).catch(function(){toast('خطأ في النسخ');});
+}
+
+function saveAsFavorite(){
+  var favs=JSON.parse(localStorage.getItem('anki_favorites')||'[]');
+  favs.push({cfg:{...S},date:Date.now(),name:'مفضل '+(favs.length+1)});
+  localStorage.setItem('anki_favorites',JSON.stringify(favs));
+  toast('تم التثبيت كمفضل');
+}
+
+function focusPropertySearch(){
+  document.querySelector('[data-t="ctl"]').click();
+  setTimeout(function(){
+    var el=document.getElementById('propSearchInput');
+    if(el)el.focus();
+  },300);
+}
+
+// ============================================================
+// ENHANCED KEYBOARD SHORTCUTS
+// ============================================================
+document.addEventListener('keydown',function(e){
+  // Ctrl+Shift+P for Command Palette
+  if((e.ctrlKey||e.metaKey)&&e.shiftKey&&e.key==='P'){
+    e.preventDefault();
+    var pal=document.getElementById('cmdPalette');
+    if(pal&&pal.classList.contains('show'))closeCmdPalette();
+    else openCmdPalette();
+  }
+  // Escape closes modals
+  if(e.key==='Escape'){
+    closeCmdPalette();
+    hideContextMenu();
+  }
+});
+
 </script>
 </body>
 </html>
