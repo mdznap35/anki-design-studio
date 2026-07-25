@@ -328,6 +328,12 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 .theme-dot{width:24px;height:24px;border-radius:50%;border:2px solid var(--bd);cursor:pointer;transition:all .2s;display:inline-block}
 .theme-dot:hover{transform:scale(1.1)}
 .theme-dot.active{border-color:var(--ac);box-shadow:0 0 0 2px var(--ac)}
+
+/* === EXTRACTED INLINE STYLES === */
+.hdr-actions{display:flex;justify-content:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.hdr-info{display:flex;justify-content:center;gap:8px;font-size:.55em;color:var(--tx3);align-items:center}
+.layer-item-inner{display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:var(--br-sm);cursor:pointer;font-size:var(--fs-sm);transition:background .15s}
+.shadow-layer-controls{flex:1;display:flex;gap:3px;align-items:center;flex-wrap:wrap}
 </style>
 </head>
 <body>
@@ -337,11 +343,11 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 <div><h1 style="font-size:1.2em;font-weight:900;color:var(--tx);background:none;-webkit-text-fill-color:var(--tx);animation:none;letter-spacing:-.3px">Anki Design Studio</h1><p style="color:var(--tx2);font-size:.62em;margin-top:0;font-weight:500">Professional Card Designer</p></div>
 </div>
 <div style="display:flex;justify-content:center;gap:8px;margin-bottom:8px;flex-wrap:wrap">
-<button class="btn bo bs" onclick="undo()" title="تراجع (Ctrl+Z)">↩ تراجع</button>
-<button class="btn bo bs" onclick="redo()" title="إعادة (Ctrl+Y)">↪ إعادة</button>
-<button class="btn bo bs" onclick="randomDesign()" title="تصميم عشوائي (R)">🎲 عشوائي</button>
-<button class="btn bo bs" onclick="saveCustom()" title="حفظ (Ctrl+S)">💾 حفظ</button>
-<button class="btn bo bs" onclick="resetDesign()" title="إعادة ضبط">🔄 ضبط</button>
+<button class="btn bo bs" onclick="undo()" aria-label="تراجع" title="تراجع (Ctrl+Z)">↩ تراجع</button>
+<button class="btn bo bs" onclick="redo()" aria-label="إعادة" title="إعادة (Ctrl+Y)">↪ إعادة</button>
+<button class="btn bo bs" onclick="randomDesign()" aria-label="تصميم عشوائي" title="تصميم عشوائي (R)">🎲 عشوائي</button>
+<button class="btn bo bs" onclick="saveCustom()" aria-label="حفظ" title="حفظ (Ctrl+S)">💾 حفظ</button>
+<button class="btn bo bs" onclick="resetDesign()" aria-label="إعادة ضبط" title="إعادة ضبط">🔄 ضبط</button>
 <button class="btn bo bs" onclick="document.querySelector('[data-t=dl]').click()" title="تصدير">📤 تصدير</button>
 <button class="btn bo bs" onclick="showSettingsModal()" title="إعدادات">⚙️</button>
 </div>
@@ -350,7 +356,7 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 </div>
 </div>
 <div class="tabs">
-<button class="tab on" data-t="gal">📚 المعرض</button>
+<button role="tab" class="tab on" data-t="gal">📚 المعرض</button>
 <button class="tab" data-t="ctl">⚙️ التحكم</button>
 <button class="tab" data-t="editor">🖱️ المحرر</button>
 <button class="tab" data-t="full">👁️ معاينة</button>
@@ -364,13 +370,13 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 <div class="cl">
 <div class="cs">
 <div style="display:flex;gap:3px;margin-bottom:6px;flex-wrap:wrap">
-<button class="btn bo bs" onclick="undo()" id="undoBtn" disabled>↩ تراجع</button>
-<button class="btn bo bs" onclick="redo()" id="redoBtn" disabled>↪ إعادة</button>
-<button class="btn bo bs" onclick="randomDesign()">🎲 عشوائي</button>
-<button class="btn bo bs" onclick="resetDesign()">🔄 ضبط</button>
-<button class="btn bo bs" onclick="saveCustom()">💾 حفظ</button>
+<button class="btn bo bs" onclick="undo()" aria-label="تراجع" id="undoBtn" disabled>↩ تراجع</button>
+<button class="btn bo bs" onclick="redo()" aria-label="إعادة" id="redoBtn" disabled>↪ إعادة</button>
+<button class="btn bo bs" onclick="randomDesign()" aria-label="تصميم عشوائي">🎲 عشوائي</button>
+<button class="btn bo bs" onclick="resetDesign()" aria-label="إعادة ضبط">🔄 ضبط</button>
+<button class="btn bo bs" onclick="saveCustom()" aria-label="حفظ">💾 حفظ</button>
 </div>
-<input type="file" id="bgUpload" accept="image/*" style="display:none" onchange="uploadBG(event)">
+<input type="file" aria-label="File upload" id="bgUpload" accept="image/*" style="display:none" onchange="uploadBG(event)">
 <div id="ctrlArea" class="cw"></div>
 </div>
 <div class="cp"><div class="cp-t">معاينة مباشرة</div><div class="cp-c" id="ctlPreviewCard"></div></div>
@@ -404,11 +410,11 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
 <div style="display:flex;flex-direction:column;gap:2px">
 <span style="font-size:.6em;color:var(--tx2)">السرعة</span>
-<div class="rw"><input type="range" id="ttsRate" min="0.5" max="2" step="0.1" value="0.8"><span class="rv" id="ttsRateVal">0.8x</span></div>
+<div class="rw"><input type="range" aria-label="Slider" id="ttsRate" min="0.5" max="2" step="0.1" value="0.8"><span class="rv" id="ttsRateVal">0.8x</span></div>
 </div>
 <div style="display:flex;flex-direction:column;gap:2px">
 <span style="font-size:.6em;color:var(--tx2)">النغمة</span>
-<div class="rw"><input type="range" id="ttsPitch" min="0.1" max="2" step="0.1" value="0.5"><span class="rv" id="ttsPitchVal">0.5</span></div>
+<div class="rw"><input type="range" aria-label="Slider" id="ttsPitch" min="0.1" max="2" step="0.1" value="0.5"><span class="rv" id="ttsPitchVal">0.5</span></div>
 </div>
 </div>
 <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">
@@ -424,7 +430,7 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 <p style="font-size:.68em;color:var(--tx2);margin-bottom:10px">ملف .apkg جاهز للاستيراد</p>
 <div style="margin-bottom:10px">
 <label style="font-size:.68em;color:var(--tx2);display:block;margin-bottom:3px">اسم الرزمة</label>
-<input class="tx" id="deckName" value="Fran\u00e7ais Bac 2021-2022" style="text-align:center;font-weight:700">
+<input class="tx" aria-label="Text input" id="deckName" value="Fran\u00e7ais Bac 2021-2022" style="text-align:center;font-weight:700">
 </div>
 <button class="btn ba" style="width:100%;padding:10px" onclick="downloadAPKG()">\u2B07\uFE0F تنزيل .apkg</button>
 <div id="dlInfo" style="margin-top:8px;font-size:.68em;color:var(--tx2);text-align:center"></div>
@@ -434,7 +440,7 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 <div style="font-size:.72em;font-weight:800;color:var(--ac2);margin-bottom:6px">نسخ احتياطي</div>
 <div style="display:flex;gap:6px">
 <button class="btn bo bs" onclick="exportConfig()">تصدير الإعدادات</button>
-<label class="btn bo bs" style="cursor:pointer">استيراد الإعدادات<input type="file" accept=".json" onchange="importConfig(event)" style="display:none"></label>
+<label class="btn bo bs" style="cursor:pointer">استيراد الإعدادات<input type="file" aria-label="File upload" accept=".json" onchange="importConfig(event)" style="display:none"></label>
 </div>
 </div>
 </div>
@@ -797,7 +803,7 @@ function renderGrid(){
   }
   // Apply collection filter
   if(curCol&&curCol!=='all'){
-    var favs=JSON.parse(localStorage.getItem('anki_favorites')||'[]');
+    var favs=[];try{favs=JSON.parse(localStorage.getItem('anki_favorites')||'[]');}catch(e){}
     var favIds=favs.map(function(f){return f._templateId;});
     if(curCol==='favorites'){
       templates=templates.filter(function(t){return favIds.indexOf(t.id)>=0;});
@@ -854,14 +860,14 @@ function renderCollections(){
 function renderFilt(){
   renderTags();
   renderCollections();
-  document.getElementById('filtBar').innerHTML='<div class="gallery-toolbar"><div class="gallery-search"><input placeholder="ابحث في القوالب..." oninput="filterGallery(this.value)" value="'+gallerySearchQ+'"></div><select class="gallery-sort" onchange="gallerySort=this.value;renderGrid()"><option value="name"'+(gallerySort==='name'?' selected':'')+'>الاسم</option><option value="newest"'+(gallerySort==='newest'?' selected':'')+'>الأحدث</option><option value="category"'+(gallerySort==='category'?' selected':'')+'>التصنيف</option></select><div class="gallery-size"><span>الحجم:</span><input type="range" min="100" max="250" value="'+gallerySize+'" oninput="gallerySize=parseInt(this.value);document.getElementById(\\"tplGrid\\").style.gridTemplateColumns=\\"repeat(auto-fill,minmax("+this.value+"px,1fr))\\""></div></div>'+Object.entries(CATS).map(function(arr){var k=arr[0],v=arr[1];return '<button class="fb'+(k===curCat?' on':'')+'" onclick="setCat(\''+k+'\')">'+v+'</button>';}).join('');
+  document.getElementById('filtBar').innerHTML='<div class="gallery-toolbar"><div class="gallery-search"><input placeholder="ابحث في القوالب..." oninput="filterGallery(this.value)" value="'+gallerySearchQ+'"></div><select class="gallery-sort" onchange="gallerySort=this.value;renderGrid()"><option value="name"'+(gallerySort==='name'?' selected':'')+'>الاسم</option><option value="newest"'+(gallerySort==='newest'?' selected':'')+'>الأحدث</option><option value="category"'+(gallerySort==='category'?' selected':'')+'>التصنيف</option></select><div class="gallery-size"><span>الحجم:</span><input type="range" aria-label="Slider" min="100" max="250" value="'+gallerySize+'" oninput="gallerySize=parseInt(this.value);document.getElementById(\\"tplGrid\\").style.gridTemplateColumns=\\"repeat(auto-fill,minmax("+this.value+"px,1fr))\\""></div></div>'+Object.entries(CATS).map(function(arr){var k=arr[0],v=arr[1];return '<button class="fb'+(k===curCat?' on':'')+'" onclick="setCat(\''+k+'\')">'+v+'</button>';}).join('');
 }
 function setCat(c){curCat=c;curTag='all';renderFilt();renderGrid();}
 function selectTemplate(id){var t=TEMPLATES.find(function(x){return x.id===id;});if(!t)return;S=Object.assign({},JSON.parse(JSON.stringify(t.cfg)),{_templateId:id});pushHist();renderGrid();toast('تم اختيار: '+t.nm);}
 function previewFullTemplate(id){var t=TEMPLATES.find(function(x){return x.id===id;});if(!t)return;showFullPreview(t);}
 function duplicateTemplate(id){var t=TEMPLATES.find(function(x){return x.id===id;});if(!t)return;var newId=id+'-dup-'+Date.now();TEMPLATES.push(Object.assign({},t,{id:newId,nm:t.nm+' (نسخة)'}));renderGrid();toast('تم نسخ: '+t.nm);}
 function exportSingleTemplate(id){var t=TEMPLATES.find(function(x){return x.id===id;});if(!t)return;var blob=new Blob([JSON.stringify(t,null,2)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='template-'+t.nm+'.json';a.click();toast('تم التصدير');}
-function toggleFav(id){var favs=JSON.parse(localStorage.getItem('anki_favorites')||'[]');var idx=favs.findIndex(function(f){return f._templateId===id;});if(idx>=0){favs.splice(idx,1);toast('تم إزالة من المفضلة');}else{var t=TEMPLATES.find(function(x){return x.id===id;});if(t)favs.push({cfg:t.cfg,_templateId:id,date:Date.now(),name:t.nm});toast('تمت الإضافة للمفضلة');}localStorage.setItem('anki_favorites',JSON.stringify(favs));renderGrid();}
+function toggleFav(id){var favs=[];try{favs=JSON.parse(localStorage.getItem('anki_favorites')||'[]');}catch(e){}var idx=favs.findIndex(function(f){return f._templateId===id;});if(idx>=0){favs.splice(idx,1);toast('تم إزالة من المفضلة');}else{var t=TEMPLATES.find(function(x){return x.id===id;});if(t)favs.push({cfg:t.cfg,_templateId:id,date:Date.now(),name:t.nm});toast('تمت الإضافة للمفضلة');}localStorage.setItem('anki_favorites',JSON.stringify(favs));renderGrid();}
 function showFullPreview(t){var html='<div style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.8);z-index:9999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)" onclick="if(event.target===this)this.remove()"><div style="max-width:420px;width:90%">'+renderCardHTML(t.cfg)+'</div><div style="position:absolute;top:16px;left:50%;transform:translateX(-50%);color:#fff;font-size:.8em;font-weight:700">'+t.nm+'</div></div>';var el=document.createElement('div');el.innerHTML=html;document.body.appendChild(el);}
 
 // RENDER CARD HTML
@@ -991,11 +997,23 @@ const bgOverlay=c.cardBgImage?'<div style="position:absolute;inset:0;background-
   var statesCSS=c.statesCSS||'';
   var customCSS=c.customCSS?'<style>'+c.customCSS+'.tip{position:relative}.tip::after{content:attr(data-tip);position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:var(--s3);color:var(--tx);padding:4px 8px;border-radius:6px;font-size:.6em;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .2s;z-index:999}.tip:hover::after{opacity:1}
 kbd{display:inline-block;padding:1px 5px;font-size:.6em;font-family:monospace;background:var(--s3);border-radius:3px;color:var(--tx2);margin-left:4px}
+
+/* === EXTRACTED INLINE STYLES === */
+.hdr-actions{display:flex;justify-content:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.hdr-info{display:flex;justify-content:center;gap:8px;font-size:.55em;color:var(--tx3);align-items:center}
+.layer-item-inner{display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:var(--br-sm);cursor:pointer;font-size:var(--fs-sm);transition:background .15s}
+.shadow-layer-controls{flex:1;display:flex;gap:3px;align-items:center;flex-wrap:wrap}
 </style>':'';
   // Full border (per-side takes priority)
   var fullBorder=perSideBorder||(c.cardBorderWidth>0?'border:'+c.cardBorderWidth+'px solid '+c.cardBorderColor+';':'');
   var fullShadow=(c.effect==='glow'||c.effect==='neon')?effectCSS:(c.cardShadow&&c.cardShadow!=='none'?'box-shadow:'+c.cardShadow+';':'');
-  return (statesCSS?'<style>'+statesCSS+'</style>':'')+customCSS+'<div class="card" data-ve="card" style="background:'+bg+';'+base+'padding:'+pd+'px;min-height:'+mh+'px;max-width:'+(c.previewWidth||mw)+'px;flex-direction:column;align-items:center;justify-content:center;gap:'+cg+'px;'+fullBorder+fullShadow+clipCSS+hoverCSS+'position:relative">'+bgOverlay+'<div style="'+patternCSS+'position:absolute;inset:0;z-index:0;pointer-events:none"></div><div style="'+overlayCSS+'"></div>'+spkFloat+'<div style="position:relative;z-index:1;width:100%;display:flex;flex-direction:column;align-items:center;gap:'+cg+'px">'+ordered+'</div></div>';
+  return (statesCSS?'<style>'+statesCSS+'
+/* === EXTRACTED INLINE STYLES === */
+.hdr-actions{display:flex;justify-content:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.hdr-info{display:flex;justify-content:center;gap:8px;font-size:.55em;color:var(--tx3);align-items:center}
+.layer-item-inner{display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:var(--br-sm);cursor:pointer;font-size:var(--fs-sm);transition:background .15s}
+.shadow-layer-controls{flex:1;display:flex;gap:3px;align-items:center;flex-wrap:wrap}
+</style>':'')+customCSS+'<div class="card" data-ve="card" style="background:'+bg+';'+base+'padding:'+pd+'px;min-height:'+mh+'px;max-width:'+(c.previewWidth||mw)+'px;flex-direction:column;align-items:center;justify-content:center;gap:'+cg+'px;'+fullBorder+fullShadow+clipCSS+hoverCSS+'position:relative">'+bgOverlay+'<div style="'+patternCSS+'position:absolute;inset:0;z-index:0;pointer-events:none"></div><div style="'+overlayCSS+'"></div>'+spkFloat+'<div style="position:relative;z-index:1;width:100%;display:flex;flex-direction:column;align-items:center;gap:'+cg+'px">'+ordered+'</div></div>';
 }
 
 // CONTROLS
@@ -1008,10 +1026,10 @@ function renderCtrls(){
   function grp(title,content){return '<div class="acc-grp"><div class="acc-grp-t">'+title+'</div>'+content+'</div>';}
   function rng(id,lb,min,max,step,d,fmt){
     var v=S[id]!==undefined?S[id]:d;var u=fmt||'';
-    return '<div class="ct"><div class="cl-b">'+lb+'</div><div class="rw"><input type="range" min="'+min+'" max="'+max+'" step="'+step+'" value="'+v+'" oninput="setVal(\''+id+'\',parseFloat(this.value));this.nextElementSibling.textContent=this.value'+u+'"><span class="rv">'+v+u+'</span></div></div>';
+    return '<div class="ct"><div class="cl-b">'+lb+'</div><div class="rw"><input type="range" aria-label="Slider" min="'+min+'" max="'+max+'" step="'+step+'" value="'+v+'" oninput="setVal(\''+id+'\',parseFloat(this.value));this.nextElementSibling.textContent=this.value'+u+'"><span class="rv">'+v+u+'</span></div></div>';
   }
-  function clr(id,lb,d){return '<div class="ct"><div class="cl-b">'+lb+'</div><div class="rw"><input type="color" value="'+(S[id]||d||'#000000')+'" oninput="setVal(\''+id+'\',this.value)"></div></div>';}
-  function sel(id,lb,opts){var o='';opts.forEach(function(op){o+='<option value="'+op.v+'"'+(S[id]===op.v?' selected':'')+'>'+op.l+'</option>';});return '<div class="ct"><div class="cl-b">'+lb+'</div><div class="rw"><select class="sl" onchange="setVal(\''+id+'\',this.value)">'+o+'</select></div></div>';}
+  function clr(id,lb,d){return '<div class="ct"><div class="cl-b">'+lb+'</div><div class="rw"><input type="color" aria-label="Color picker" value="'+(S[id]||d||'#000000')+'" oninput="setVal(\''+id+'\',this.value)"></div></div>';}
+  function sel(id,lb,opts){var o='';opts.forEach(function(op){o+='<option value="'+op.v+'"'+(S[id]===op.v?' selected':'')+'>'+op.l+'</option>';});return '<div class="ct"><div class="cl-b">'+lb+'</div><div class="rw"><select class="sl" aria-label="Select" onchange="setVal(\''+id+'\',this.value)">'+o+'</select></div></div>';}
   function tog(id,lb){var on=S[id]!==false;return '<button class="btn bo bs" data-tog="'+id+'" data-lbl="'+lb+'" style="border-color:'+(on?'var(--gn)':'var(--rd)')+';color:'+(on?'var(--gn)':'var(--rd)')+'" onclick="setVal(\''+id+'\',S[\''+id+'\']===false)">'+(on?'\u2713':'\u2717')+' '+lb+'</button>';}
   function sl(arr){return arr.map(function(t){return rng(t[0],t[1],t[2],t[3],t[4],t[5],t[6]||'');}).join('');}
   function cls(arr){return arr.map(function(t){return clr(t[0],t[1],t[2]);}).join('');}
@@ -1047,7 +1065,7 @@ function renderCtrls(){
   pr+='</div>';
   h+=acc('\u{1F3A8} \u0627\u0644\u0623\u0644\u0648\u0622\u0646',clrH+  // Color Generator UI
   var cg=grp('\u062A\u0648\u0644\u064A\u062F \u0623\u0644\u0648\u0627\u0646',"<div id='colorGenPalette' style='display:flex;gap:3px;flex-wrap:wrap'></div><button class='btn bo bs' onclick='generateColorPalette()' style='margin-top:4px'>\u{1F3B2} \u062A\u0648\u0644\u064A\u062F \u0644\u0648\u062D\u0629</button><button class='btn bo bs' onclick='applyPaletteToCard()' style='margin-top:4px'>\u2705 \u062A\u0637\u0628\u064A\u0642 \u0639\u0644\u0649 \u0627\u0644\u0628\u0637\u0627\u0642\u0629</button>");
-  var ch=grp('\u062A\u0646\u0627\u063A\u0645 \u0627\u0644\u0623\u0644\u0648\u0627\u0646',"<div style='display:flex;gap:3px;flex-wrap:wrap'><button class='btn bo bs' onclick='applyHarmony("complementary")'>\u0645\u062A\u0643\u0627\u0645\u0644</button><button class='btn bo bs' onclick='applyHarmony("analogous")'>\u0645\u062A\u0646\u0627\u0633\u0628</button><button class='btn bo bs' onclick='applyHarmony("triadic")'>\u062B\u0644\u0627\u062B\u064A</button><button class='btn bo bs' onclick='applyHarmony("split-complementary")'>\u062B\u0644\u0627\u062B\u064A \u0645\u0643\u0645\u0644</button><button class='btn bo bs' onclick='applyHarmony("tetradic")'>\u0631\u0628\u0627\u0639\u064A</button></div>");
+  var ch=grp('\u062A\u0646\u0627\u063A\u0645 \u0627\u0644\u0623\u0644\u0648\u0627\u0646',"<div style='display:flex;gap:3px;flex-wrap:wrap'><button class='btn bo bs' onclick="applyHarmony('complementary')">\u0645\u062A\u0643\u0627\u0645\u0644</button><button class='btn bo bs' onclick="applyHarmony('analogous')">\u0645\u062A\u0646\u0627\u0633\u0628</button><button class='btn bo bs' onclick="applyHarmony('triadic')">\u062B\u0644\u0627\u062B\u064A</button><button class='btn bo bs' onclick="applyHarmony('split-complementary')">\u062B\u0644\u0627\u062B\u064A \u0645\u0643\u0645\u0644</button><button class='btn bo bs' onclick="applyHarmony('tetradic')">\u0631\u0628\u0627\u0639\u064A</button></div>");
   var cq=grp('\u0644\u0648\u062D\u0629 \u0645\u0646 \u0628\u0636\u0627\u0621',"<div style='display:flex;gap:4px;align-items:center'><input type='color' id='baseColorPicker' value='" + (S.cardBg||'#ffffff') + "' style='width:40px;height:32px;border:none;cursor:pointer'><button class='btn bo bs' onclick='generateFromBase()'>\u062A\u0648\u0644\u064A\u062F</button></div><div id='basePalette' style='display:flex;gap:3px;flex-wrap:wrap;margin-top:4px'></div>");
   grp('\u0623\u0644\u0648\u0622\u0646 \u062C\u0627\u0647\u0638\u0629',pr),false);
 
@@ -1086,7 +1104,7 @@ function renderCtrls(){
     ['0deg','45deg','90deg','135deg','180deg','225deg','270deg','315deg'].map(function(g){
       return '<div data-grad="'+g+'" onclick="setVal(\'bgGradientDir\',\''+g+'\')" style="width:32px;height:32px;border-radius:5px;border:2px solid '+(S.bgGradientDir===g?'var(--gn)':'var(--bd)')+';background:linear-gradient('+g+',#667eea,#764ba2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.4em;color:#fff;font-weight:700">'+g.replace('deg','')+'</div>';
     }).join('')+'</div>');
-  bg+=grp('\u0635\u0648\u0631\u0629','<label class="btn bo bs" style="cursor:pointer">\u{1F4CE} \u0627\u062E\u062A\u0631\u0608<input type="file" accept="image/*" onchange="uploadBG(event)" style="display:none"></label>'+(S.cardBgImage?'<button class="btn br bs" onclick="S.cardBgImage=\'\';pushHist();renderCtrls();renderAll()">\u2715</button>':''));
+  bg+=grp('\u0635\u0648\u0631\u0629','<label class="btn bo bs" style="cursor:pointer">\u{1F4CE} \u0627\u062E\u062A\u0631\u0608<input type="file" aria-label="File upload" accept="image/*" onchange="uploadBG(event)" style="display:none"></label>'+(S.cardBgImage?'<button class="btn br bs" onclick="S.cardBgImage=\'\';pushHist();renderCtrls();renderAll()">\u2715</button>':''));
   bg+=grp('\u062A\u0623\u062B\u064A\u0631',sl([
     ['cardBgOpacity','\u0634\u0641\u0627\u0641\u064A\u0629',0,1,0.05,1],
     ['cardBgBlur','\u0636\u0628\u0627\u0628\u064A\u0629',0,20,1,0]
@@ -1181,7 +1199,7 @@ function renderCtrls(){
     h+=sel(prefix+'AnimTiming','السرعة',TIMING_OPTS);
     h+=sel(prefix+'AnimFill','الملء',FILL_OPTS);
     var iterV=S[prefix+'AnimIter']!==undefined?S[prefix+'AnimIter']:1;
-    h+='<div class="ct"><div class="cl-b">التكرار</div><div class="rw"><select class="sl" onchange="setVal(\''+prefix+'AnimIter\',this.value===\'inf\'?\'infinite\':parseInt(this.value))">';
+    h+='<div class="ct"><div class="cl-b">التكرار</div><div class="rw"><select class="sl" aria-label="Select" onchange="setVal(\''+prefix+'AnimIter\',this.value===\'inf\'?\'infinite\':parseInt(this.value))">';
     ['1','2','3','5','10','inf'].forEach(function(v){h+='<option value="'+v+'"'+(iterV==v||(v==='inf'&&iterV==='infinite')?' selected':'')+'>'+(v==='inf'?'لانهائي':v)+'</option>';});
     h+='</select></div></div></div>';
     return h;
@@ -1368,8 +1386,6 @@ function renderCtrls(){
   // === EXPORT PROFILES ===
   h+=acc("📤 ملفات التصدير",renderExportProfiles(),false);
   
-  // === SAVE TIME ===
-  h+="<div id="saveTimeDisplay" style="text-align:center;font-size:var(--fs-xs);color:var(--tx3);padding:6px">—</div>";
   document.getElementById("ctrlArea").innerHTML=h;
 }
 
@@ -1388,7 +1404,7 @@ function resetDesign(){S={...defCfg()};pushHist();renderAll();toast('تم إعا
 function applyQuickDesign(i){QUICK_DESIGNS[i].apply();S._templateId='quick-'+i;pushHist();renderAll();toast(QUICK_DESIGNS[i].n);}
 
 // TEMPLATE MANAGEMENT
-function saveCustom(){const n=prompt('اسم القالب:');if(!n)return;const s=JSON.parse(localStorage.getItem('anki_custom')||'[]');s.push({name:n,cfg:{...S},date:Date.now()});localStorage.setItem('anki_custom',JSON.stringify(s));toast('تم الحفظ: '+n);renderSavedList();}
+function saveCustom(){const n=prompt('اسم القالب:');if(!n)return;let s=[];try{s=JSON.parse(localStorage.getItem('anki_custom')||'[]');}catch(e){}s.push({name:n,cfg:{...S},date:Date.now()});localStorage.setItem('anki_custom',JSON.stringify(s));toast('تم الحفظ: '+n);renderSavedList();}
 function loadCustom(i){const s=JSON.parse(localStorage.getItem('anki_custom')||'[]');if(!s[i])return;S={...s[i].cfg};pushHist();renderCtrls();renderAll();setTimeout(addDocTooltips,50);toast(s[i].name);}
 function deleteCustom(i){const s=JSON.parse(localStorage.getItem('anki_custom')||'[]');s.splice(i,1);localStorage.setItem('anki_custom',JSON.stringify(s));renderSavedList();toast('تم الحذف');}
 function renderSavedList(){const s=JSON.parse(localStorage.getItem('anki_custom')||'[]');const e=document.getElementById('savedTplList');if(!e)return;if(!s.length){e.innerHTML='<div style="font-size:.65em;color:var(--tx3)">لا يوجد</div>';return;}e.innerHTML=s.map((x,i)=>'<div style="display:flex;align-items:center;gap:5px;padding:5px 7px;background:var(--s2);border-radius:5px;margin-bottom:3px;font-size:.68em"><span style="flex:1;font-weight:600">'+x.name+'</span><button class="btn bo bs" onclick="loadCustom('+i+')">تحميل</button><button class="btn br bs" onclick="deleteCustom('+i+')">حذف</button></div>').join('');}
@@ -1467,13 +1483,13 @@ function renderVEProps(elId){
   props.forEach(pr=>{
     const v=S[pr.id]!==undefined?S[pr.id]:(pr.type==='range'?0.5:pr.type==='toggle'?true:'#000000');
     if(pr.type==='color'){
-      h+='<div class="ct"><div class="cl-b">'+pr.lb+'</div><div class="rw"><input type="color" value="'+v+'" oninput="setVal(\''+pr.id+'\',this.value)"><span class="rv" style="font-size:.55em">'+v+'</span></div></div>';
+      h+='<div class="ct"><div class="cl-b">'+pr.lb+'</div><div class="rw"><input type="color" aria-label="Color picker" value="'+v+'" oninput="setVal(\''+pr.id+'\',this.value)"><span class="rv" style="font-size:.55em">'+v+'</span></div></div>';
     }else if(pr.type==='range'){
       const fmt=pr.fmt||(vv=>vv);
       const fmtStr=pr.fmt?pr.fmt.toString():'(x=>x)';
-      h+='<div class="ct"><div class="cl-b">'+pr.lb+'</div><div class="rw"><input type="range" min="'+pr.min+'" max="'+pr.max+'" step="'+pr.step+'" value="'+v+'" oninput="setVal(\''+pr.id+'\',parseFloat(this.value));this.nextElementSibling.textContent=(('+fmtStr+')(parseFloat(this.value)))"><span class="rv">'+fmt(v)+'</span></div></div>';
+      h+='<div class="ct"><div class="cl-b">'+pr.lb+'</div><div class="rw"><input type="range" aria-label="Slider" min="'+pr.min+'" max="'+pr.max+'" step="'+pr.step+'" value="'+v+'" oninput="setVal(\''+pr.id+'\',parseFloat(this.value));this.nextElementSibling.textContent=(('+fmtStr+')(parseFloat(this.value)))"><span class="rv">'+fmt(v)+'</span></div></div>';
     }else if(pr.type==='select'){
-      h+='<div class="ct"><div class="cl-b">'+pr.lb+'</div><div class="rw"><select class="sl" onchange="setVal(\''+pr.id+'\',this.value)">'+pr.options.map(o=>'<option value="'+(o.v||o.l)+'"'+(S[pr.id]===(o.v||o.l)?' selected':'')+'>'+(o.l||o.v)+'</option>').join('')+'</select></div></div>';
+      h+='<div class="ct"><div class="cl-b">'+pr.lb+'</div><div class="rw"><select class="sl" aria-label="Select" onchange="setVal(\''+pr.id+'\',this.value)">'+pr.options.map(o=>'<option value="'+(o.v||o.l)+'"'+(S[pr.id]===(o.v||o.l)?' selected':'')+'>'+(o.l||o.v)+'</option>').join('')+'</select></div></div>';
     }else if(pr.type==='toggle'){
       h+='<div class="ct"><div class="cl-b">'+pr.lb+'</div><div class="rw"><button class="btn '+(S[pr.id]!==false?'bg':'br')+' bs" onclick="setVal(\''+pr.id+'\','+(S[pr.id]===false)+')">'+(S[pr.id]!==false?'✓':'✗')+' '+pr.lb+'</button></div></div>';
     }
@@ -1512,7 +1528,6 @@ function initTTS(){
   // Debug
   const dbg=document.getElementById('ttsDebug');
   if(dbg)dbg.innerHTML='<b>صوت فرنسي:</b> '+(ttsFRVoice?.name||'لا يوجد')+'<br><b>صوت عربي:</b> '+(ttsARVoice?.name||'لا يوجد')+'<br><b>إجمالي:</b> '+voices.length+' صوت';
-  console.log('TTS voices:',ttsFRVoice?.name,ttsARVoice?.name);
   const rateEl=document.getElementById('ttsRate');
   const pitchEl=document.getElementById('ttsPitch');
   if(rateEl)rateEl.oninput=function(){document.getElementById('ttsRateVal').textContent=this.value+'x';};
@@ -1545,7 +1560,7 @@ function speakWord(text,lang){
   if(lang==='ar'){chosen=ttsARManual||ttsARVoice;}
   if(!chosen&&candidates.length>0){chosen=candidates[0];}
   if(chosen){u.voice=chosen;}
-  console.log('TTS:',chosen?chosen.name:'none','lang:',u.lang,'male:',chosen?isMaleVoice(chosen):'?');
+:'?');
   speechSynthesis.speak(u);
 }
 
@@ -1707,7 +1722,7 @@ function renderPresetManager(){
   
   // Save current as preset
   html += '<div style="display:flex;gap:4px;margin-bottom:8px">';
-  html += '<input class="tx" id="newPresetName" placeholder="اسم النمط الجديد" style="flex:1;font-size:var(--fs-sm)">';
+  html += '<input class="tx" aria-label="Text input" id="newPresetName" placeholder="اسم النمط الجديد" style="flex:1;font-size:var(--fs-sm)">';
   html += '<button class="btn ba bs" onclick="saveUserPreset()">💾 حفظ</button>';
   html += '</div>';
   
@@ -3182,12 +3197,12 @@ function renderTextShadowBuilder(){
     if(!layer)return;
     html+='<div class="shadow-layer" style="opacity:'+(layer.active?1:.4)+'">';
     html+='<input type="checkbox" '+(layer.active?'checked':'')+' onchange="toggleTSLayer('+i+')">';
-    html+='<input type="color" value="'+layer.color+'" onchange="updateTSLayer('+i+',\'color\',this.value)">';
+    html+='<input type="color" aria-label="Color picker" value="'+layer.color+'" onchange="updateTSLayer('+i+',\'color\',this.value)">';
     html+='<span style="font-size:.55em;color:var(--tx3);min-width:20px">'+i+'</span>';
     html+='<div style="flex:1;display:flex;gap:4px;align-items:center">';
-    html+='<input type="range" min="-20" max="20" step="1" value="'+layer.x+'" onchange="updateTSLayer('+i+',\'x\',parseInt(this.value))" style="width:40px" title="X">';
-    html+='<input type="range" min="-20" max="20" step="1" value="'+layer.y+'" onchange="updateTSLayer('+i+',\'y\',parseInt(this.value))" style="width:40px" title="Y">';
-    html+='<input type="range" min="0" max="30" step="1" value="'+layer.blur+'" onchange="updateTSLayer('+i+',\'blur\',parseInt(this.value))" style="width:40px" title="Blur">';
+    html+='<input type="range" aria-label="Slider" min="-20" max="20" step="1" value="'+layer.x+'" onchange="updateTSLayer('+i+',\'x\',parseInt(this.value))" style="width:40px" title="X">';
+    html+='<input type="range" aria-label="Slider" min="-20" max="20" step="1" value="'+layer.y+'" onchange="updateTSLayer('+i+',\'y\',parseInt(this.value))" style="width:40px" title="Y">';
+    html+='<input type="range" aria-label="Slider" min="0" max="30" step="1" value="'+layer.blur+'" onchange="updateTSLayer('+i+',\'blur\',parseInt(this.value))" style="width:40px" title="Blur">';
     html+='</div>';
     html+='<span style="cursor:pointer;color:var(--rd);font-size:.7em" onclick="removeTSLayer('+i+')">✕</span>';
     html+='</div>';
@@ -3263,13 +3278,13 @@ function renderBoxShadowBuilder(){
     if(!layer)return;
     html+='<div class="shadow-layer" style="opacity:'+(layer.active?1:.4)+'">';
     html+='<input type="checkbox" '+(layer.active?'checked':'')+' onchange="toggleBSLayer('+i+')">';
-    html+='<input type="color" value="'+layer.color+'" onchange="updateBSLayer('+i+',\'color\',this.value)">';
+    html+='<input type="color" aria-label="Color picker" value="'+layer.color+'" onchange="updateBSLayer('+i+',\'color\',this.value)">';
     html+='<span style="font-size:.55em;color:var(--tx3);min-width:20px">'+i+'</span>';
     html+='<div style="flex:1;display:flex;gap:3px;align-items:center;flex-wrap:wrap">';
-    html+='<input type="range" min="-30" max="30" step="1" value="'+layer.x+'" onchange="updateBSLayer('+i+',\'x\',parseInt(this.value))" style="width:35px" title="X">';
-    html+='<input type="range" min="-30" max="30" step="1" value="'+layer.y+'" onchange="updateBSLayer('+i+',\'y\',parseInt(this.value))" style="width:35px" title="Y">';
-    html+='<input type="range" min="0" max="50" step="1" value="'+layer.blur+'" onchange="updateBSLayer('+i+',\'blur\',parseInt(this.value))" style="width:35px" title="Blur">';
-    html+='<input type="range" min="-20" max="20" step="1" value="'+layer.spread+'" onchange="updateBSLayer('+i+',\'spread\',parseInt(this.value))" style="width:35px" title="Spread">';
+    html+='<input type="range" aria-label="Slider" min="-30" max="30" step="1" value="'+layer.x+'" onchange="updateBSLayer('+i+',\'x\',parseInt(this.value))" style="width:35px" title="X">';
+    html+='<input type="range" aria-label="Slider" min="-30" max="30" step="1" value="'+layer.y+'" onchange="updateBSLayer('+i+',\'y\',parseInt(this.value))" style="width:35px" title="Y">';
+    html+='<input type="range" aria-label="Slider" min="0" max="50" step="1" value="'+layer.blur+'" onchange="updateBSLayer('+i+',\'blur\',parseInt(this.value))" style="width:35px" title="Blur">';
+    html+='<input type="range" aria-label="Slider" min="-20" max="20" step="1" value="'+layer.spread+'" onchange="updateBSLayer('+i+',\'spread\',parseInt(this.value))" style="width:35px" title="Spread">';
     html+='</div>';
     html+='<label style="font-size:.5em;color:var(--tx3);display:flex;align-items:center;gap:2px"><input type="checkbox" '+(layer.inset?'checked':'')+' onchange="updateBSLayer('+i+',\'inset\',this.checked)"> داخلي</label>';
     html+='<span style="cursor:pointer;color:var(--rd);font-size:.7em" onclick="removeBSLayer('+i+')">✕</span>';
@@ -3585,10 +3600,10 @@ function renderFullImportExport(){
   // Import options
   html+='<div style="background:var(--s2);border-radius:var(--br-sm);padding:8px">';
   html+='<div style="font-size:var(--fs-xs);font-weight:700;color:var(--ac2);margin-bottom:6px">📥 استيراد</div>';
-  html+='<label class="btn bo bs" style="width:100%;margin-bottom:4px;display:block;text-align:center;cursor:pointer">📋 JSON<input type="file" accept=".json" onchange="importFromJSON(event)" style="display:none"></label>';
-  html+='<label class="btn bo bs" style="width:100%;margin-bottom:4px;display:block;text-align:center;cursor:pointer">🌐 HTML<input type="file" accept=".html" onchange="importFromHTML(event)" style="display:none"></label>';
-  html+='<label class="btn bo bs" style="width:100%;margin-bottom:4px;display:block;text-align:center;cursor:pointer">🎨 CSS<input type="file" accept=".css" onchange="importFromCSS(event)" style="display:none"></label>';
-  html+='<label class="btn bo bs" style="width:100%;display:block;text-align:center;cursor:pointer">📦 قالب محفوظ<input type="file" accept=".json" onchange="importFromTemplate(event)" style="display:none"></label>';
+  html+='<label class="btn bo bs" style="width:100%;margin-bottom:4px;display:block;text-align:center;cursor:pointer">📋 JSON<input type="file" aria-label="File upload" accept=".json" onchange="importFromJSON(event)" style="display:none"></label>';
+  html+='<label class="btn bo bs" style="width:100%;margin-bottom:4px;display:block;text-align:center;cursor:pointer">🌐 HTML<input type="file" aria-label="File upload" accept=".html" onchange="importFromHTML(event)" style="display:none"></label>';
+  html+='<label class="btn bo bs" style="width:100%;margin-bottom:4px;display:block;text-align:center;cursor:pointer">🎨 CSS<input type="file" aria-label="File upload" accept=".css" onchange="importFromCSS(event)" style="display:none"></label>';
+  html+='<label class="btn bo bs" style="width:100%;display:block;text-align:center;cursor:pointer">📦 قالب محفوظ<input type="file" aria-label="File upload" accept=".json" onchange="importFromTemplate(event)" style="display:none"></label>';
   html+='</div>';
   
   html+='</div>';
@@ -3605,7 +3620,13 @@ function renderFullImportExport(){
 function exportAsHTML(){
   var html='<!DOCTYPE html>\n<html lang="ar" dir="rtl">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>Anki Card</title>\n<style>\n';
   html+=generateCardCSS(S);
-  html+='\n</style>\n</head>\n<body>\n';
+  html+='\n
+/* === EXTRACTED INLINE STYLES === */
+.hdr-actions{display:flex;justify-content:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.hdr-info{display:flex;justify-content:center;gap:8px;font-size:.55em;color:var(--tx3);align-items:center}
+.layer-item-inner{display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:var(--br-sm);cursor:pointer;font-size:var(--fs-sm);transition:background .15s}
+.shadow-layer-controls{flex:1;display:flex;gap:3px;align-items:center;flex-wrap:wrap}
+</style>\n</head>\n<body>\n';
   html+=renderCardHTML(S);
   html+='\n</body>\n</html>';
   downloadFile(html,'anki-card.html','text/html');
