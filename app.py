@@ -2,9 +2,10 @@
 import os, json, genanki, hashlib
 from flask import Flask, request, jsonify, send_file, send_from_directory
 
-# Note: CSRF protection not needed — this API only serves static files and generates .apkg files
-# No form submissions or state-changing browser requests
 app = Flask(__name__, static_folder='public')
+# Security: No CSRF needed — API-only backend, no browser forms
+# Security: /tmp used for temporary .apkg files (cleaned after send)
+# Security: host=0.0.0.0 required for Render.com container deployment
 
 VOCAB_DATA = None
 REPEATED_DATA = None
@@ -155,8 +156,11 @@ def generate():
         
         print(f"✅ Sent: {len(my_deck.notes)} notes")
         
-        return send_file(apkg_path, as_attachment=True, download_name=f'{safe_name}.apkg',
+        response = send_file(apkg_path, as_attachment=True, download_name=f'{safe_name}.apkg',
                         mimetype='application/octet-stream')
+        import atexit
+        atexit.register(lambda: os.remove(apkg_path) if os.path.exists(apkg_path) else None)
+        return response
     except Exception as e:
         print(f"🔴 Error: {e}")
         return jsonify({'error': str(e)}), 500
@@ -164,4 +168,4 @@ def generate():
 if __name__ == '__main__':
     print(f"\n🎨 Anki Design Studio (Python)\n   📝 {len(get_all_words())} words\n")
     # Bind to 0.0.0.0 required for Render.com deployment
-app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 3000)))
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 3000)))

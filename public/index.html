@@ -466,7 +466,7 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 </div>
 
 <!-- Command Palette -->
-<dialog class="cmd-palette" id="cmdPalette" aria-label="Command palette" tabindex="-1" onclick="if(event.target===this)closeCmdPalette()" onkeydown="if(event.key==='Escape')closeCmdPalette()">
+<dialog class="cmd-palette" id="cmdPalette" aria-label="Command palette">
 <div class="cmd-box">
 <label for="cmdSearch" class="sr-only">Search</label><input class="cmd-search" id="cmdSearch" aria-label="Search commands" placeholder="اكتب أمراً أو ابحث عن خاصية..." oninput="filterCmdResults(this.value)" onkeydown="handleCmdKey(event)">
 <div class="cmd-results" id="cmdResults"></div>
@@ -475,11 +475,11 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 <!-- Context Menu -->
 <div class="ctx-menu" id="ctxMenu"></div>
 <!-- Onboarding -->
-<dialog class="onboard-overlay" id="onboardOverlay" aria-label="Onboarding" tabindex="-1" style="display:none" onclick="if(event.target===this)closeOnboarding()" onkeydown="if(event.key==='Escape')closeOnboarding()">
+<dialog class="onboard-overlay" id="onboardOverlay" style="display:none">
 <div class="onboard-box" id="onboardBox"></div>
 </dialog>
 <!-- What's New -->
-<dialog class="whatsnew-overlay" id="whatsNewOverlay" aria-label="What's new" tabindex="-1" style="display:none" onclick="if(event.target===this)closeWhatsNew()" onkeydown="if(event.key==='Escape')closeWhatsNew()">
+<dialog class="whatsnew-overlay" id="whatsNewOverlay" style="display:none">
 <div class="whatsnew-box" id="whatsnewBox"></div>
 </dialog>
 <!-- Autosave indicator -->
@@ -2507,6 +2507,13 @@ function enhanceSliderKeyboard() {
 }
 
 // ============================================================
+// Dialog close handlers
+document.getElementById('cmdPalette').addEventListener('click',function(e){if(e.target===this)closeCmdPalette()});
+document.getElementById('cmdPalette').addEventListener('keydown',function(e){if(e.key==='Escape')closeCmdPalette()});
+document.getElementById('onboardOverlay').addEventListener('click',function(e){if(e.target===this)closeOnboarding()});
+document.getElementById('onboardOverlay').addEventListener('keydown',function(e){if(e.key==='Escape')closeOnboarding()});
+document.getElementById('whatsNewOverlay').addEventListener('click',function(e){if(e.target===this)closeWhatsNew()});
+document.getElementById('whatsNewOverlay').addEventListener('keydown',function(e){if(e.key==='Escape')closeWhatsNew()});
 // INIT ALL FIXES
 // ============================================================
 function initChatGPTFixes() {
@@ -2535,6 +2542,8 @@ function initChatGPTFixes() {
   
   console.log('ChatGPT fixes initialized');
 }
+// Dialog close handlers
+
 // INIT
 // MODE SYSTEM
 var currentMode='basic';
