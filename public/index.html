@@ -353,6 +353,7 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 .onboard-overlay, .whatsnew-overlay { z-index: var(--z-overlay); }
 .score-panel { z-index: var(--z-modal); }
 .acc-b { transition: max-height var(--transition-normal) ease, opacity var(--transition-normal) ease; }
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
 </style>
 </head>
 <body>
@@ -465,22 +466,22 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 </div>
 
 <!-- Command Palette -->
-<div class="cmd-palette" id="cmdPalette" role="dialog" aria-label="Command palette" tabindex="-1" onclick="if(event.target===this)closeCmdPalette()" onkeydown="if(event.key==='Escape')closeCmdPalette()">
+<dialog class="cmd-palette" id="cmdPalette" aria-label="Command palette" tabindex="-1" onclick="if(event.target===this)closeCmdPalette()" onkeydown="if(event.key==='Escape')closeCmdPalette()">
 <div class="cmd-box">
-<input class="cmd-search" id="cmdSearch" placeholder="اكتب أمراً أو ابحث عن خاصية..." oninput="filterCmdResults(this.value)" onkeydown="handleCmdKey(event)">
+<label for="cmdSearch" class="sr-only">Search</label><input class="cmd-search" id="cmdSearch" aria-label="Search commands" placeholder="اكتب أمراً أو ابحث عن خاصية..." oninput="filterCmdResults(this.value)" onkeydown="handleCmdKey(event)">
 <div class="cmd-results" id="cmdResults"></div>
 </div>
-</div>
+</dialog>
 <!-- Context Menu -->
 <div class="ctx-menu" id="ctxMenu"></div>
 <!-- Onboarding -->
-<div class="onboard-overlay" id="onboardOverlay" role="dialog" aria-label="Onboarding" tabindex="-1" style="display:none" onclick="if(event.target===this)closeOnboarding()" onkeydown="if(event.key==='Escape')closeOnboarding()">
+<dialog class="onboard-overlay" id="onboardOverlay" aria-label="Onboarding" tabindex="-1" style="display:none" onclick="if(event.target===this)closeOnboarding()" onkeydown="if(event.key==='Escape')closeOnboarding()">
 <div class="onboard-box" id="onboardBox"></div>
-</div>
+</dialog>
 <!-- What's New -->
-<div class="whatsnew-overlay" id="whatsNewOverlay" role="dialog" aria-label="What's new" tabindex="-1" style="display:none" onclick="if(event.target===this)closeWhatsNew()" onkeydown="if(event.key==='Escape')closeWhatsNew()">
-<div class="whatsnew-box" id="whatsNewBox"></div>
-</div>
+<dialog class="whatsnew-overlay" id="whatsNewOverlay" aria-label="What's new" tabindex="-1" style="display:none" onclick="if(event.target===this)closeWhatsNew()" onkeydown="if(event.key==='Escape')closeWhatsNew()">
+<div class="whatsnew-box" id="whatsnewBox"></div>
+</dialog>
 <!-- Autosave indicator -->
 <div class="autosave-dot" id="autosaveDot"></div>
 <div id="toast"></div>
@@ -1041,6 +1042,7 @@ kbd{display:inline-block;padding:1px 5px;font-size:.6em;font-family:monospace;ba
 .onboard-overlay, .whatsnew-overlay { z-index: var(--z-overlay); }
 .score-panel { z-index: var(--z-modal); }
 .acc-b { transition: max-height var(--transition-normal) ease, opacity var(--transition-normal) ease; }
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
 </style>':'';
   // Full border (per-side takes priority)
   var fullBorder=perSideBorder||(c.cardBorderWidth>0?'border:'+c.cardBorderWidth+'px solid '+c.cardBorderColor+';':'');
@@ -1070,6 +1072,7 @@ kbd{display:inline-block;padding:1px 5px;font-size:.6em;font-family:monospace;ba
 .onboard-overlay, .whatsnew-overlay { z-index: var(--z-overlay); }
 .score-panel { z-index: var(--z-modal); }
 .acc-b { transition: max-height var(--transition-normal) ease, opacity var(--transition-normal) ease; }
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
 </style>':'')+customCSS+'<div class="card" data-ve="card" style="background:'+bg+';'+base+'padding:'+pd+'px;min-height:'+mh+'px;max-width:'+(c.previewWidth||mw)+'px;flex-direction:column;align-items:center;justify-content:center;gap:'+cg+'px;'+fullBorder+fullShadow+clipCSS+hoverCSS+'position:relative">'+bgOverlay+'<div style="'+patternCSS+'position:absolute;inset:0;z-index:0;pointer-events:none"></div><div style="'+overlayCSS+'"></div>'+spkFloat+'<div style="position:relative;z-index:1;width:100%;display:flex;flex-direction:column;align-items:center;gap:'+cg+'px">'+ordered+'</div></div>';
 }
 
@@ -4133,6 +4136,7 @@ function exportAsHTML(){
 .onboard-overlay, .whatsnew-overlay { z-index: var(--z-overlay); }
 .score-panel { z-index: var(--z-modal); }
 .acc-b { transition: max-height var(--transition-normal) ease, opacity var(--transition-normal) ease; }
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
 </style>\n</head>\n<body>\n';
   html+=renderCardHTML(S);
   html+='\n</body>\n</html>';

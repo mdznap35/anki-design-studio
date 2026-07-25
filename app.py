@@ -2,6 +2,8 @@
 import os, json, genanki, hashlib
 from flask import Flask, request, jsonify, send_file, send_from_directory
 
+# Note: CSRF protection not needed — this API only serves static files and generates .apkg files
+# No form submissions or state-changing browser requests
 app = Flask(__name__, static_folder='public')
 
 VOCAB_DATA = None
@@ -161,4 +163,5 @@ def generate():
 
 if __name__ == '__main__':
     print(f"\n🎨 Anki Design Studio (Python)\n   📝 {len(get_all_words())} words\n")
-    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 3000)))
+    # Bind to 0.0.0.0 required for Render.com deployment
+app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 3000)))

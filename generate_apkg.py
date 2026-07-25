@@ -37,7 +37,6 @@ def generate(config_path, output_path):
     lc = config.get('labelColor', '#999')
     bg = config.get('cardBg', '#fff')
     bg2 = config.get('cardBg2', '')
-    br = config.get('borderRadius', 16)
     fs_fr = config.get('frenchFontSize', 2.4)
     fw_fr = config.get('frenchFontWeight', 900)
     fs_ar = config.get('meaningFontSize', 1.5)
