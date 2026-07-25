@@ -362,12 +362,12 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 <div><h1 style="font-size:1.2em;font-weight:900;color:var(--tx);background:none;-webkit-text-fill-color:var(--tx);animation:none;letter-spacing:-.3px">Anki Design Studio</h1><p style="color:var(--tx2);font-size:.62em;margin-top:0;font-weight:500">Professional Card Designer</p></div>
 </div>
 <div style="display:flex;justify-content:center;gap:8px;margin-bottom:8px;flex-wrap:wrap">
-<button class="btn bo bs" onclick="undo()" aria-label="تراجع" title="تراجع (Ctrl+Z)">↩ تراجع</button>
-<button class="btn bo bs" onclick="redo()" aria-label="إعادة" title="إعادة (Ctrl+Y)">↪ إعادة</button>
-<button class="btn bo bs" onclick="randomDesign()" aria-label="تصميم عشوائي" title="تصميم عشوائي (R)">🎲 عشوائي</button>
-<button class="btn bo bs" onclick="saveCustom()" aria-label="حفظ" title="حفظ (Ctrl+S)">💾 حفظ</button>
-<button class="btn bo bs" onclick="resetDesign()" aria-label="إعادة ضبط" title="إعادة ضبط">🔄 ضبط</button>
-<button class="btn bo bs" onclick="document.querySelector('[data-t=dl]').click()" title="تصدير">📤 تصدير</button>
+<button class="btn bo bs" onclick="undo()" title="تراجع (Ctrl+Z)">↩ تراجع</button>
+<button class="btn bo bs" onclick="redo()" title="إعادة (Ctrl+Y)">↪ إعادة</button>
+<button class="btn bo bs" onclick="randomDesign()" title="تصميم عشوائي (R)">🎲 عشوائي</button>
+<button class="btn bo bs" onclick="saveCustom()" title="حفظ (Ctrl+S)">💾 حفظ</button>
+<button class="btn bo bs" onclick="resetDesign()" title="إعادة ضبط">🔄 ضبط</button>
+<button class="btn bo bs" onclick="document.querySelector('[data-t=dl]').click()" title="تصدير (Export)">📤 تصدير</button>
 <button class="btn bo bs" onclick="showSettingsModal()" title="إعدادات">⚙️</button>
 </div>
 <div style="display:flex;justify-content:center;gap:8px;font-size:.55em;color:var(--tx3);align-items:center">
@@ -389,11 +389,11 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 <div class="cl">
 <div class="cs">
 <div style="display:flex;gap:3px;margin-bottom:6px;flex-wrap:wrap">
-<button class="btn bo bs" onclick="undo()" aria-label="تراجع" id="undoBtn" disabled>↩ تراجع</button>
-<button class="btn bo bs" onclick="redo()" aria-label="إعادة" id="redoBtn" disabled>↪ إعادة</button>
-<button class="btn bo bs" onclick="randomDesign()" aria-label="تصميم عشوائي">🎲 عشوائي</button>
-<button class="btn bo bs" onclick="resetDesign()" aria-label="إعادة ضبط">🔄 ضبط</button>
-<button class="btn bo bs" onclick="saveCustom()" aria-label="حفظ">💾 حفظ</button>
+<button class="btn bo bs" onclick="undo()" id="undoBtn" disabled>↩ تراجع</button>
+<button class="btn bo bs" onclick="redo()" id="redoBtn" disabled>↪ إعادة</button>
+<button class="btn bo bs" onclick="randomDesign()" title="تصميم عشوائي">🎲 عشوائي</button>
+<button class="btn bo bs" onclick="resetDesign()" title="إعادة ضبط">🔄 ضبط</button>
+<button class="btn bo bs" onclick="saveCustom()" title="حفظ">💾 حفظ</button>
 </div>
 <input type="file" aria-label="File upload" id="bgUpload" accept="image/*" style="display:none" onchange="uploadBG(event)">
 <div id="ctrlArea" class="cw"></div>
@@ -448,7 +448,7 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 <h3>تنزيل رزمة Anki</h3>
 <p style="font-size:.68em;color:var(--tx2);margin-bottom:10px">ملف .apkg جاهز للاستيراد</p>
 <div style="margin-bottom:10px">
-<label style="font-size:.68em;color:var(--tx2);display:block;margin-bottom:3px">اسم الرزمة</label>
+<label for="deckNameInput" style="font-size:.68em;color:var(--tx2);display:block;margin-bottom:3px">اسم الرزمة</label>
 <input class="tx" aria-label="Text input" id="deckName" value="Fran\u00e7ais Bac 2021-2022" style="text-align:center;font-weight:700">
 </div>
 <button class="btn ba" style="width:100%;padding:10px" onclick="downloadAPKG()">\u2B07\uFE0F تنزيل .apkg</button>
@@ -465,7 +465,7 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 </div>
 
 <!-- Command Palette -->
-<div class="cmd-palette" id="cmdPalette" onclick="if(event.target===this)closeCmdPalette()">
+<div class="cmd-palette" id="cmdPalette" role="dialog" aria-label="Command palette" tabindex="-1" onclick="if(event.target===this)closeCmdPalette()" onkeydown="if(event.key==='Escape')closeCmdPalette()">
 <div class="cmd-box">
 <input class="cmd-search" id="cmdSearch" placeholder="اكتب أمراً أو ابحث عن خاصية..." oninput="filterCmdResults(this.value)" onkeydown="handleCmdKey(event)">
 <div class="cmd-results" id="cmdResults"></div>
@@ -474,11 +474,11 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 <!-- Context Menu -->
 <div class="ctx-menu" id="ctxMenu"></div>
 <!-- Onboarding -->
-<div class="onboard-overlay" id="onboardOverlay" style="display:none" onclick="if(event.target===this)closeOnboarding()">
+<div class="onboard-overlay" id="onboardOverlay" role="dialog" aria-label="Onboarding" tabindex="-1" style="display:none" onclick="if(event.target===this)closeOnboarding()" onkeydown="if(event.key==='Escape')closeOnboarding()">
 <div class="onboard-box" id="onboardBox"></div>
 </div>
 <!-- What's New -->
-<div class="whatsnew-overlay" id="whatsNewOverlay" style="display:none" onclick="if(event.target===this)closeWhatsNew()">
+<div class="whatsnew-overlay" id="whatsNewOverlay" role="dialog" aria-label="What's new" tabindex="-1" style="display:none" onclick="if(event.target===this)closeWhatsNew()" onkeydown="if(event.key==='Escape')closeWhatsNew()">
 <div class="whatsnew-box" id="whatsNewBox"></div>
 </div>
 <!-- Autosave indicator -->

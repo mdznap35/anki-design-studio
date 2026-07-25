@@ -9,11 +9,11 @@ REPEATED_DATA = None
 try:
     with open('parsed_data_full.json') as f:
         VOCAB_DATA = json.load(f)
-except: pass
+except (FileNotFoundError, json.JSONDecodeError): pass
 try:
     with open('repeated_data.json') as f:
         REPEATED_DATA = json.load(f)
-except: pass
+except (FileNotFoundError, json.JSONDecodeError): pass
 
 def get_all_words():
     if not VOCAB_DATA: return []
@@ -40,11 +40,11 @@ def get_important_words():
 def stable_id(s):
     return int(hashlib.md5(s.encode()).hexdigest()[:15], 16)
 
-@app.route('/api/health')
+@app.route('/api/health', methods=['GET'])
 def health():
     return jsonify({'status': 'ok', 'words': len(get_all_words())})
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def index():
     return send_from_directory('public', 'index.html')
 
