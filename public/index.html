@@ -334,6 +334,25 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 .hdr-info{display:flex;justify-content:center;gap:8px;font-size:.55em;color:var(--tx3);align-items:center}
 .layer-item-inner{display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:var(--br-sm);cursor:pointer;font-size:var(--fs-sm);transition:background .15s}
 .shadow-layer-controls{flex:1;display:flex;gap:3px;align-items:center;flex-wrap:wrap}
+
+/* === CHATGPT FIXES CSS === */
+:root {
+  --z-dropdown: 100;
+  --z-modal: 200;
+  --z-tooltip: 300;
+  --z-toast: 400;
+  --z-overlay: 500;
+  --transition-fast: 0.15s;
+  --transition-normal: 0.25s;
+  --transition-slow: 0.4s;
+}
+.ctx-menu { z-index: var(--z-dropdown); }
+.cmd-palette { z-index: var(--z-modal); }
+.tip::after { z-index: var(--z-tooltip); }
+#toast { z-index: var(--z-toast); }
+.onboard-overlay, .whatsnew-overlay { z-index: var(--z-overlay); }
+.score-panel { z-index: var(--z-modal); }
+.acc-b { transition: max-height var(--transition-normal) ease, opacity var(--transition-normal) ease; }
 </style>
 </head>
 <body>
@@ -352,7 +371,7 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 <button class="btn bo bs" onclick="showSettingsModal()" title="إعدادات">⚙️</button>
 </div>
 <div style="display:flex;justify-content:center;gap:8px;font-size:.55em;color:var(--tx3);align-items:center">
-<span>v4.1</span><span>&middot;</span><span>Stable</span><span>&middot;</span><span id="statusIndicator" style="color:var(--gn)">● Saved</span><span>&middot;</span><span id="saveTimeDisplay">—</span>
+<span>v4.2</span><span>&middot;</span><span>Stable</span><span>&middot;</span><span id="statusIndicator" style="color:var(--gn)">● Saved</span><span>&middot;</span><span id="saveTimeDisplay">—</span>
 </div>
 </div>
 <div class="tabs">
@@ -465,7 +484,7 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 <!-- Autosave indicator -->
 <div class="autosave-dot" id="autosaveDot"></div>
 <div id="toast"></div>
-<div id="statusBar" style="position:fixed;bottom:0;left:0;right:0;background:var(--s1);border-top:1px solid var(--bd);padding:4px 16px;display:flex;justify-content:space-between;font-size:.58em;color:var(--tx3);z-index:100"><span>Anki Design Studio v4.1</span><span id="modeIndicator">&#x1F7E2; Basic</span><span id="undoCount">0 changes</span></div>
+<div id="statusBar" style="position:fixed;bottom:0;left:0;right:0;background:var(--s1);border-top:1px solid var(--bd);padding:4px 16px;display:flex;justify-content:space-between;font-size:.58em;color:var(--tx3);z-index:100"><span>Anki Design Studio v4.2</span><span id="modeIndicator">&#x1F7E2; Basic</span><span id="undoCount">0 changes</span></div>
 
 <script>
 const SAMP={f:'Maison',a:'منزل',p:'Maisons',s:'Contrat',c:'Désabonnement'};
@@ -1003,6 +1022,25 @@ kbd{display:inline-block;padding:1px 5px;font-size:.6em;font-family:monospace;ba
 .hdr-info{display:flex;justify-content:center;gap:8px;font-size:.55em;color:var(--tx3);align-items:center}
 .layer-item-inner{display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:var(--br-sm);cursor:pointer;font-size:var(--fs-sm);transition:background .15s}
 .shadow-layer-controls{flex:1;display:flex;gap:3px;align-items:center;flex-wrap:wrap}
+
+/* === CHATGPT FIXES CSS === */
+:root {
+  --z-dropdown: 100;
+  --z-modal: 200;
+  --z-tooltip: 300;
+  --z-toast: 400;
+  --z-overlay: 500;
+  --transition-fast: 0.15s;
+  --transition-normal: 0.25s;
+  --transition-slow: 0.4s;
+}
+.ctx-menu { z-index: var(--z-dropdown); }
+.cmd-palette { z-index: var(--z-modal); }
+.tip::after { z-index: var(--z-tooltip); }
+#toast { z-index: var(--z-toast); }
+.onboard-overlay, .whatsnew-overlay { z-index: var(--z-overlay); }
+.score-panel { z-index: var(--z-modal); }
+.acc-b { transition: max-height var(--transition-normal) ease, opacity var(--transition-normal) ease; }
 </style>':'';
   // Full border (per-side takes priority)
   var fullBorder=perSideBorder||(c.cardBorderWidth>0?'border:'+c.cardBorderWidth+'px solid '+c.cardBorderColor+';':'');
@@ -1013,6 +1051,25 @@ kbd{display:inline-block;padding:1px 5px;font-size:.6em;font-family:monospace;ba
 .hdr-info{display:flex;justify-content:center;gap:8px;font-size:.55em;color:var(--tx3);align-items:center}
 .layer-item-inner{display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:var(--br-sm);cursor:pointer;font-size:var(--fs-sm);transition:background .15s}
 .shadow-layer-controls{flex:1;display:flex;gap:3px;align-items:center;flex-wrap:wrap}
+
+/* === CHATGPT FIXES CSS === */
+:root {
+  --z-dropdown: 100;
+  --z-modal: 200;
+  --z-tooltip: 300;
+  --z-toast: 400;
+  --z-overlay: 500;
+  --transition-fast: 0.15s;
+  --transition-normal: 0.25s;
+  --transition-slow: 0.4s;
+}
+.ctx-menu { z-index: var(--z-dropdown); }
+.cmd-palette { z-index: var(--z-modal); }
+.tip::after { z-index: var(--z-tooltip); }
+#toast { z-index: var(--z-toast); }
+.onboard-overlay, .whatsnew-overlay { z-index: var(--z-overlay); }
+.score-panel { z-index: var(--z-modal); }
+.acc-b { transition: max-height var(--transition-normal) ease, opacity var(--transition-normal) ease; }
 </style>':'')+customCSS+'<div class="card" data-ve="card" style="background:'+bg+';'+base+'padding:'+pd+'px;min-height:'+mh+'px;max-width:'+(c.previewWidth||mw)+'px;flex-direction:column;align-items:center;justify-content:center;gap:'+cg+'px;'+fullBorder+fullShadow+clipCSS+hoverCSS+'position:relative">'+bgOverlay+'<div style="'+patternCSS+'position:absolute;inset:0;z-index:0;pointer-events:none"></div><div style="'+overlayCSS+'"></div>'+spkFloat+'<div style="position:relative;z-index:1;width:100%;display:flex;flex-direction:column;align-items:center;gap:'+cg+'px">'+ordered+'</div></div>';
 }
 
@@ -1063,7 +1120,7 @@ function renderCtrls(){
   var pr='<div style="display:flex;gap:3px;flex-wrap:wrap">';
   PRESETS.colors.forEach(function(p,i){pr+='<div class="sw" style="background:'+p.bg+'" onclick="applyColorPreset('+i+')"><div style="width:12px;height:12px;border-radius:50%;background:'+p.fc+'"></div></div>';});
   pr+='</div>';
-  h+=acc('\u{1F3A8} \u0627\u0644\u0623\u0644\u0648\u0622\u0646',clrH+  // Color Generator UI
+  h+=acc('\u{1F3A8} \u0627\u0644\u0623\u0644\u0648\u0622\u0646',clrH+renderRecentColors()+  // Color Generator UI
   var cg=grp('\u062A\u0648\u0644\u064A\u062F \u0623\u0644\u0648\u0627\u0646',"<div id='colorGenPalette' style='display:flex;gap:3px;flex-wrap:wrap'></div><button class='btn bo bs' onclick='generateColorPalette()' style='margin-top:4px'>\u{1F3B2} \u062A\u0648\u0644\u064A\u062F \u0644\u0648\u062D\u0629</button><button class='btn bo bs' onclick='applyPaletteToCard()' style='margin-top:4px'>\u2705 \u062A\u0637\u0628\u064A\u0642 \u0639\u0644\u0649 \u0627\u0644\u0628\u0637\u0627\u0642\u0629</button>");
   var ch=grp('\u062A\u0646\u0627\u063A\u0645 \u0627\u0644\u0623\u0644\u0648\u0627\u0646',"<div style='display:flex;gap:3px;flex-wrap:wrap'><button class='btn bo bs' onclick="applyHarmony('complementary')">\u0645\u062A\u0643\u0627\u0645\u0644</button><button class='btn bo bs' onclick="applyHarmony('analogous')">\u0645\u062A\u0646\u0627\u0633\u0628</button><button class='btn bo bs' onclick="applyHarmony('triadic')">\u062B\u0644\u0627\u062B\u064A</button><button class='btn bo bs' onclick="applyHarmony('split-complementary')">\u062B\u0644\u0627\u062B\u064A \u0645\u0643\u0645\u0644</button><button class='btn bo bs' onclick="applyHarmony('tetradic')">\u0631\u0628\u0627\u0639\u064A</button></div>");
   var cq=grp('\u0644\u0648\u062D\u0629 \u0645\u0646 \u0628\u0636\u0627\u0621',"<div style='display:flex;gap:4px;align-items:center'><input type='color' id='baseColorPicker' value='" + (S.cardBg||'#ffffff') + "' style='width:40px;height:32px;border:none;cursor:pointer'><button class='btn bo bs' onclick='generateFromBase()'>\u062A\u0648\u0644\u064A\u062F</button></div><div id='basePalette' style='display:flex;gap:3px;flex-wrap:wrap;margin-top:4px'></div>");
@@ -1319,7 +1376,7 @@ function renderCtrls(){
   fontHtml+=rng("meaningFontWeight","وزن الخط العربي",100,900,100,800);
   fontHtml+=rng("frenchLetterSpacing","تباعد الخط",0,20,1,0);
   fontHtml+=rng("frenchLineHeight","ارتفاع السطر",0.5,3,0.1,1.2);
-  h+=acc("📝 متصفح الخطوط",fontHtml,false);
+  h+=acc("📝 متصفح الخطوط",fontHtml+renderRecentFonts(),false);
 
   // 21. SPACING & LAYOUT
   var spacingHtml="";
@@ -2044,6 +2101,437 @@ function showSettingsModal(){
   panel.innerHTML = '<div style="max-width:400px;width:90%;max-height:70vh;overflow-y:auto">' + html + '<div style="text-align:center;margin-top:8px"><button class="btn ba bs" onclick="this.closest(\'div[style*=fixed]\').remove()">إغلاق</button></div></div>';
   document.body.appendChild(panel);
 }
+
+// ============================================================
+// 1. HISTORY LIMIT (100 steps)
+// ============================================================
+var MAX_HISTORY = 100;
+var origPushHistForLimit = pushHist;
+pushHist = function() {
+  origPushHistForLimit();
+  if(hist.length > MAX_HISTORY) {
+    hist = hist.slice(hist.length - MAX_HISTORY);
+    histIdx = hist.length - 1;
+  }
+};
+
+// ============================================================
+// 2. Z-INDEX LEVELS (CSS Variables)
+// ============================================================
+// Already added via CSS, but let's ensure consistency
+function getZIndex(level) {
+  var levels = {dropdown:100, modal:200, tooltip:300, toast:400, overlay:500};
+  return levels[level] || 100;
+}
+
+// ============================================================
+// 3. TRANSITION SPEEDS (CSS Variables)
+// ============================================================
+// Already using CSS vars, but let's standardize
+var TRANSITION = {
+  fast: '0.15s',
+  normal: '0.25s',
+  slow: '0.4s'
+};
+
+// ============================================================
+// 4. SCALE (Magic Numbers → Scale)
+// ============================================================
+var SCALE = {
+  0: '0px',
+  1: '4px',
+  2: '8px',
+  3: '12px',
+  4: '16px',
+  5: '20px',
+  6: '24px',
+  7: '28px',
+  8: '32px',
+  9: '36px',
+  10: '40px',
+  12: '48px',
+  14: '56px',
+  16: '64px',
+  20: '80px',
+  24: '96px'
+};
+
+// ============================================================
+// 5. FOCUS STYLES
+// ============================================================
+function addFocusStyles() {
+  var style = document.createElement('style');
+  style.textContent = `
+    *:focus-visible {
+      outline: 2px solid var(--ac);
+      outline-offset: 2px;
+      border-radius: var(--br-sm);
+    }
+    button:focus-visible, .btn:focus-visible {
+      outline: 2px solid var(--ac);
+      outline-offset: 2px;
+      box-shadow: 0 0 0 4px rgba(124,58,237,.2);
+    }
+    input:focus-visible, select:focus-visible, textarea:focus-visible {
+      outline: 2px solid var(--ac);
+      outline-offset: 1px;
+    }
+    .tab:focus-visible {
+      outline: 2px solid var(--ac);
+      outline-offset: 2px;
+    }
+  `;
+  document.head.appendChild(style);
+}
+
+// ============================================================
+// 6. CURSOR POINTER
+// ============================================================
+function fixCursors() {
+  // Ensure pointer cursor on all clickable elements
+  document.querySelectorAll('[onclick], button, .btn, .gc, .tab, .fb, .acc-h, .tag, .col-btn').forEach(function(el) {
+    el.style.cursor = 'pointer';
+  });
+}
+
+// ============================================================
+// 7. DISABLED STATE
+// ============================================================
+function renderDisabledStyles() {
+  var style = document.createElement('style');
+  style.textContent = `
+    .btn:disabled, .btn.disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      pointer-events: none;
+      filter: grayscale(0.5);
+    }
+    input:disabled, select:disabled, textarea:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      background: var(--s3) !important;
+    }
+  `;
+  document.head.appendChild(style);
+}
+
+// ============================================================
+// 8. EMPTY STATES
+// ============================================================
+function renderEmptyState(message, icon) {
+  return '<div style="text-align:center;padding:16px 8px;color:var(--tx3);font-size:var(--fs-sm)">' +
+    '<div style="font-size:2em;margin-bottom:8px">' + (icon || '📭') + '</div>' +
+    '<div>' + (message || 'لا يوجد محتوى') + '</div></div>';
+}
+
+// ============================================================
+// 9. SLIDERS: Value + Input + Arrows
+// ============================================================
+function enhanceSliders() {
+  // Sliders already show values, but let's ensure consistency
+  document.querySelectorAll('input[type="range"]').forEach(function(slider) {
+    // Add aria attributes
+    slider.setAttribute('aria-label', slider.closest('.ct')?.querySelector('.cl-b')?.textContent || 'Slider');
+    
+    // Ensure value display updates
+    slider.addEventListener('input', function() {
+      var display = this.nextElementSibling;
+      if(display && display.classList.contains('rv')) {
+        display.textContent = this.value;
+      }
+    });
+  });
+}
+
+// ============================================================
+// 10. RESET CONFIRM
+// ============================================================
+var origResetDesign = resetDesign;
+resetDesign = function() {
+  if(confirm('هل أنت متأكد من إعادة ضبط كل الإعدادات؟\nهذا الإجراء لا يمكن التراجع عنه.')) {
+    origResetDesign();
+  }
+};
+
+// ============================================================
+// 11. IMPORT CONFIRM
+// ============================================================
+function importConfigWithConfirm(e) {
+  if(S && Object.keys(S).length > 10) {
+    if(!confirm('هل تريد استيراد الإعدادات الجديدة؟\nسيتم استبدال التصميم الحالي.')) {
+      return;
+    }
+  }
+  importConfig(e);
+}
+
+// ============================================================
+// 12. EXPORT NAME AUTO-SUGGESTION
+// ============================================================
+function getExportName() {
+  var name = S.deckName || 'Anki Design';
+  var date = new Date().toISOString().slice(0,10);
+  return name.replace(/[^a-zA-Z0-9\u0600-\u06FF]/g, '_') + '_' + date;
+}
+
+// ============================================================
+// 13. RECENT COLORS/FONTS/SHADOWS
+// ============================================================
+var RECENT_KEY = 'anki_recent';
+function getRecent(type) {
+  var data = JSON.parse(localStorage.getItem(RECENT_KEY) || '{}');
+  return data[type] || [];
+}
+function addRecent(type, value) {
+  var data = JSON.parse(localStorage.getItem(RECENT_KEY) || '{}');
+  if(!data[type]) data[type] = [];
+  // Remove duplicate
+  data[type] = data[type].filter(function(v) { return v !== value; });
+  // Add to front
+  data[type].unshift(value);
+  // Keep only 10
+  data[type] = data[type].slice(0, 10);
+  localStorage.setItem(RECENT_KEY, JSON.stringify(data));
+}
+function renderRecentColors() {
+  var colors = getRecent('colors');
+  if(!colors.length) return '';
+  return '<div style="margin-top:8px"><div style="font-size:var(--fs-xs);color:var(--tx3);margin-bottom:4px">آخر الألوان:</div>' +
+    '<div style="display:flex;gap:3px;flex-wrap:wrap">' +
+    colors.map(function(c) {
+      return '<div style="width:20px;height:20px;border-radius:4px;background:'+c+';cursor:pointer;border:1px solid var(--bd)" onclick="setVal(\'cardBg\',\''+c+'\')" title="'+c+'"></div>';
+    }).join('') +
+    '</div></div>';
+}
+function renderRecentFonts() {
+  var fonts = getRecent('fonts');
+  if(!fonts.length) return '';
+  return '<div style="margin-top:8px"><div style="font-size:var(--fs-xs);color:var(--tx3);margin-bottom:4px">آخر الخطوط:</div>' +
+    '<div style="display:flex;gap:3px;flex-wrap:wrap">' +
+    fonts.map(function(f) {
+      return '<button class="btn bo bs" style="font-size:.6em" onclick="setVal(\'fontFrench\',\''+f+'\')">'+f+'</button>';
+    }).join('') +
+    '</div></div>';
+}
+function trackRecentColors() {
+  if(S.cardBg) addRecent('colors', S.cardBg);
+  if(S.frenchColor) addRecent('colors', S.frenchColor);
+  if(S.meaningColor) addRecent('colors', S.meaningColor);
+}
+function trackRecentFonts() {
+  if(S.fontFrench) addRecent('fonts', S.fontFrench);
+  if(S.fontArabic) addRecent('fonts', S.fontArabic);
+}
+
+// ============================================================
+// 14. SEARCH HIGHLIGHT
+// ============================================================
+function highlightSearch(text, query) {
+  if(!query) return text;
+  var regex = new RegExp('(' + query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+  return text.replace(regex, '<mark style="background:var(--ac);color:#fff;padding:0 2px;border-radius:2px">$1</mark>');
+}
+
+// ============================================================
+// 15. STATE PERSISTENCE
+// ============================================================
+function saveState() {
+  var state = {
+    lastTab: document.querySelector('.tab.on')?.getAttribute('data-t'),
+    lastMode: currentMode,
+    accordions: []
+  };
+  document.querySelectorAll('.acc-h').forEach(function(h, i) {
+    state.accordions.push(h.classList.contains('open'));
+  });
+  localStorage.setItem('anki_state', JSON.stringify(state));
+}
+
+function restoreState() {
+  try {
+    var state = JSON.parse(localStorage.getItem('anki_state') || '{}');
+    if(state.lastTab) {
+      var tab = document.querySelector('[data-t="' + state.lastTab + '"]');
+      if(tab) tab.click();
+    }
+    if(state.lastMode) {
+      currentMode = state.lastMode;
+      var el = document.getElementById('modeIndicator');
+      if(el) {
+        var icons = {basic:'🟢 مبتدئ',advanced:'🟡 متقدم',expert:'🔴 خبير'};
+        el.textContent = icons[currentMode] || currentMode;
+      }
+    }
+  } catch(e) {}
+}
+
+// ============================================================
+// 16. TOOLTIP POSITIONING
+// ============================================================
+function positionTooltip(el) {
+  var rect = el.getBoundingClientRect();
+  var tip = el.querySelector('.tip-text') || el;
+  
+  // Check if tooltip goes outside viewport
+  if(rect.right > window.innerWidth - 20) {
+    el.style.transform = 'translateX(0)';
+    el.style.left = 'auto';
+    el.style.right = '0';
+  }
+  if(rect.left < 20) {
+    el.style.transform = 'translateX(0)';
+    el.style.left = '0';
+    el.style.right = 'auto';
+  }
+  if(rect.bottom > window.innerHeight - 20) {
+    el.style.bottom = 'auto';
+    el.style.top = '100%';
+  }
+}
+
+// ============================================================
+// 17. DROPDOWN DIRECTION
+// ============================================================
+function fixDropdownDirection() {
+  document.querySelectorAll('.sl, select').forEach(function(sel) {
+    sel.addEventListener('focus', function() {
+      var rect = this.getBoundingClientRect();
+      if(rect.bottom > window.innerHeight - 200) {
+        this.style.setProperty('--dropdown-dir', 'top');
+      } else {
+        this.style.setProperty('--dropdown-dir', 'bottom');
+      }
+    });
+  });
+}
+
+// ============================================================
+// 18. DIALOG SCROLLABLE
+// ============================================================
+function makeDialogsScrollable() {
+  var style = document.createElement('style');
+  style.textContent = `
+    @media (max-height: 600px) {
+      .score-panel, .whatsnew-box, .onboard-box, .cmd-box {
+        max-height: 80vh;
+        overflow-y: auto;
+      }
+    }
+    @media (max-width: 400px) {
+      .score-panel, .whatsnew-box, .onboard-box, .cmd-box {
+        max-width: 95vw;
+        padding: 12px;
+      }
+    }
+  `;
+  document.head.appendChild(style);
+}
+
+// ============================================================
+// 19. MARGIN CONSISTENCY
+// ============================================================
+function fixMargins() {
+  var style = document.createElement('style');
+  style.textContent = `
+    .sec { padding: 0 var(--sp-md) var(--sp-xl); }
+    .acc { margin-bottom: var(--sp-xs); }
+    .acc-b { padding: var(--sp-sm); }
+    .cw { margin-bottom: var(--sp-sm); }
+    .cp { margin-bottom: var(--sp-md); }
+    .btn { margin: 2px; }
+  `;
+  document.head.appendChild(style);
+}
+
+// ============================================================
+// 20. REMOVE PLACEHOLDERS
+// ============================================================
+function removePlaceholders() {
+  document.querySelectorAll('input[placeholder]').forEach(function(input) {
+    var val = input.placeholder.toLowerCase();
+    if(['example', 'test', 'lorem', 'demo', 'foo', 'bar'].includes(val)) {
+      input.placeholder = '';
+    }
+  });
+}
+
+// ============================================================
+// 21. LAYOUT SHIFT PREVENTION
+// ============================================================
+function preventLayoutShift() {
+  var style = document.createElement('style');
+  style.textContent = `
+    * { box-sizing: border-box; }
+    img, video { max-width: 100%; height: auto; }
+    .sec { min-height: 300px; }
+    .gal-grid { min-height: 200px; }
+  `;
+  document.head.appendChild(style);
+}
+
+// ============================================================
+// 22. MEMORY LEAK PREVENTION
+// ============================================================
+function cleanupDialogs() {
+  // Remove old dialogs on new dialog open
+  document.querySelectorAll('.dialog-overlay').forEach(function(d) {
+    if(d.dataset.old === 'true') d.remove();
+  });
+}
+
+// ============================================================
+// 23. SLIDER KEYBOARD SUPPORT
+// ============================================================
+function enhanceSliderKeyboard() {
+  document.querySelectorAll('input[type="range"]').forEach(function(slider) {
+    slider.addEventListener('keydown', function(e) {
+      var step = parseFloat(this.step) || 1;
+      var min = parseFloat(this.min) || 0;
+      var max = parseFloat(this.max) || 100;
+      var val = parseFloat(this.value);
+      
+      if(e.key === 'ArrowUp' || e.key === 'ArrowRight') {
+        e.preventDefault();
+        this.value = Math.min(max, val + step);
+        this.dispatchEvent(new Event('input'));
+      } else if(e.key === 'ArrowDown' || e.key === 'ArrowLeft') {
+        e.preventDefault();
+        this.value = Math.max(min, val - step);
+        this.dispatchEvent(new Event('input'));
+      }
+    });
+  });
+}
+
+// ============================================================
+// INIT ALL FIXES
+// ============================================================
+function initChatGPTFixes() {
+  addFocusStyles();
+  renderDisabledStyles();
+  enhanceSliders();
+  fixDropdownDirection();
+  makeDialogsScrollable();
+  fixMargins();
+  removePlaceholders();
+  preventLayoutShift();
+  enhanceSliderKeyboard();
+  restoreState();
+  
+  // Track recent colors/fonts
+  var origPushHist2 = pushHist;
+  pushHist = function() {
+    origPushHist2();
+    trackRecentColors();
+    trackRecentFonts();
+    saveState();
+  };
+  
+  // Save state before unload
+  window.addEventListener('beforeunload', saveState);
+  
+  console.log('ChatGPT fixes initialized');
+}
 // INIT
 // MODE SYSTEM
 var currentMode='basic';
@@ -2116,7 +2604,7 @@ window.addEventListener('load',()=>{
   setupAutosave();
   document.addEventListener('contextmenu',showContextMenu);
   if(window.speechSynthesis){speechSynthesis.onvoiceschanged=()=>initTTS();initTTS();}
-  pushHist();renderFilt();renderGrid();renderCtrls();updateCtlPreview();setTimeout(addDocTooltips,100);
+  pushHist();renderFilt();renderGrid();renderCtrls();updateCtlPreview();setTimeout(function(){addDocTooltips();initChatGPTFixes();},100);
 });
 
 // ============================================================
@@ -2583,7 +3071,7 @@ function renderOnboardStep(){
 // WHAT'S NEW
 // ============================================================
 function showWhatsNew(){
-  var html='<h2>🆕 ما الجديد في v4.1</h2>';
+  var html='<h2>🆕 ما الجديد في v4.2</h2>';
   var items=[
     {icon:'⌨️',text:'لوحة أوامر (Ctrl+Shift+P) — ابحث عن أي أمر أو خاصية بسرعة'},
     {icon:'🔍',text:'بحث في الخصائص — اجد أي إعداد بسرعة'},
@@ -3626,6 +4114,25 @@ function exportAsHTML(){
 .hdr-info{display:flex;justify-content:center;gap:8px;font-size:.55em;color:var(--tx3);align-items:center}
 .layer-item-inner{display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:var(--br-sm);cursor:pointer;font-size:var(--fs-sm);transition:background .15s}
 .shadow-layer-controls{flex:1;display:flex;gap:3px;align-items:center;flex-wrap:wrap}
+
+/* === CHATGPT FIXES CSS === */
+:root {
+  --z-dropdown: 100;
+  --z-modal: 200;
+  --z-tooltip: 300;
+  --z-toast: 400;
+  --z-overlay: 500;
+  --transition-fast: 0.15s;
+  --transition-normal: 0.25s;
+  --transition-slow: 0.4s;
+}
+.ctx-menu { z-index: var(--z-dropdown); }
+.cmd-palette { z-index: var(--z-modal); }
+.tip::after { z-index: var(--z-tooltip); }
+#toast { z-index: var(--z-toast); }
+.onboard-overlay, .whatsnew-overlay { z-index: var(--z-overlay); }
+.score-panel { z-index: var(--z-modal); }
+.acc-b { transition: max-height var(--transition-normal) ease, opacity var(--transition-normal) ease; }
 </style>\n</head>\n<body>\n';
   html+=renderCardHTML(S);
   html+='\n</body>\n</html>';
