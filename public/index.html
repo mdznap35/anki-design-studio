@@ -242,6 +242,20 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 .perf-item{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--bd);font-size:.7em}
 .perf-item:last-child{border-bottom:none}
 .perf-val{margin-left:auto;font-weight:700;color:var(--ac2)}
+/* === ESSENTIAL 12 CSS ===
+.doc-icon{cursor:help;color:var(--tx3);font-size:.7em;margin-left:2px}.doc-icon:hover{color:var(--ac)}
+.mode-seg{display:flex;background:var(--s2);border-radius:var(--br-sm);padding:3px;gap:3px;margin-bottom:10px;border:1px solid var(--bd)}
+.mode-seg-btn{flex:1;padding:6px 8px;border:none;border-radius:4px;background:none;color:var(--tx2);font-size:var(--fs-sm);font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit;text-align:center}
+.mode-seg-btn:hover{background:var(--s3)}
+.mode-seg-btn.on{background:var(--ac);color:#fff;box-shadow:0 2px 8px rgba(124,58,237,.25)}
+.border-preview-box{width:120px;height:80px;margin:8px auto;border-radius:var(--br-md);background:var(--s2);position:relative;display:flex;align-items:center;justify-content:center;font-size:.6em;color:var(--tx3)}
+.state-btn{padding:4px 8px;border:1px solid var(--bd);border-radius:var(--br-sm);background:var(--s2);color:var(--tx2);font-size:var(--fs-xs);cursor:pointer;transition:all .15s;font-family:inherit}
+.state-btn.active{background:var(--ac);color:#fff;border-color:var(--ac)}
+.import-export-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.ie-box{background:var(--s2);border-radius:var(--br-sm);padding:8px}
+.ie-box-title{font-size:var(--fs-xs);font-weight:700;color:var(--ac2);margin-bottom:6px}
+.settings-group{background:var(--s2);border-radius:var(--br-sm);padding:8px;margin-bottom:6px}
+.save-time{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);font-size:var(--fs-xs);color:var(--tx3);z-index:50;pointer-events:none}
 /* === TAGS SYSTEM ===
 .tag-bar{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px;justify-content:center}
 .tag{padding:4px 10px;border-radius:20px;font-size:var(--fs-xs);font-weight:600;cursor:pointer;transition:all .2s;border:1px solid var(--bd);background:var(--s2);color:var(--tx2)}
@@ -317,7 +331,7 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 </style>
 </head>
 <body>
-<div class="hdr" style="padding:24px 16px 8px;position:relative"><div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:6px"><div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#7c3aed,#a78bfa);display:flex;align-items:center;justify-content:center;font-size:1.2em;color:#fff;font-weight:900;box-shadow:0 4px 12px rgba(124,58,237,.3)">A</div><div><h1 style="font-size:1.4em;font-weight:900;color:var(--tx);background:none;-webkit-text-fill-color:var(--tx);animation:none;letter-spacing:-.5px">Anki Design Studio</h1><p style="color:var(--tx2);font-size:.68em;margin-top:0;font-weight:500">Professional Card Designer</p></div></div><div style="display:flex;justify-content:center;gap:12px;font-size:.58em;color:var(--tx3)"><span>v3.0</span><span>&middot;</span><span>Stable</span><span>&middot;</span><span id="statusIndicator" style="color:var(--gn)">&#9679; Saved</span></div></div>
+<div class="hdr" style="padding:24px 16px 8px;position:relative"><div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:6px"><div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#7c3aed,#a78bfa);display:flex;align-items:center;justify-content:center;font-size:1.2em;color:#fff;font-weight:900;box-shadow:0 4px 12px rgba(124,58,237,.3)">A</div><div><h1 style="font-size:1.4em;font-weight:900;color:var(--tx);background:none;-webkit-text-fill-color:var(--tx);animation:none;letter-spacing:-.5px">Anki Design Studio</h1><p style="color:var(--tx2);font-size:.68em;margin-top:0;font-weight:500">Professional Card Designer</p></div></div><div style="display:flex;justify-content:center;gap:12px;font-size:.58em;color:var(--tx3)"><span>v3.1</span><span>&middot;</span><span>Stable</span><span>&middot;</span><span id="statusIndicator" style="color:var(--gn)">&#9679; Saved</span></div></div>
 <div class="tabs">
 <button class="tab on" data-t="gal">📚 المعرض</button>
 <button class="tab" data-t="ctl">⚙️ التحكم</button>
@@ -428,7 +442,7 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 <!-- Autosave indicator -->
 <div class="autosave-dot" id="autosaveDot"></div>
 <div id="toast"></div>
-<div id="statusBar" style="position:fixed;bottom:0;left:0;right:0;background:var(--s1);border-top:1px solid var(--bd);padding:4px 16px;display:flex;justify-content:space-between;font-size:.58em;color:var(--tx3);z-index:100"><span>Anki Design Studio v3.0</span><span id="modeIndicator">&#x1F7E2; Basic</span><span id="undoCount">0 changes</span></div>
+<div id="statusBar" style="position:fixed;bottom:0;left:0;right:0;background:var(--s1);border-top:1px solid var(--bd);padding:4px 16px;display:flex;justify-content:space-between;font-size:.58em;color:var(--tx3);z-index:100"><span>Anki Design Studio v3.1</span><span id="modeIndicator">&#x1F7E2; Basic</span><span id="undoCount">0 changes</span></div>
 
 <script>
 const SAMP={f:'Maison',a:'منزل',p:'Maisons',s:'Contrat',c:'Désabonnement'};
@@ -957,13 +971,14 @@ const bgOverlay=c.cardBgImage?'<div style="position:absolute;inset:0;background-
   // Hover scale
   var hoverCSS=c.cardHoverScale&&c.cardHoverScale!==1?'transition:transform .3s;cursor:pointer;':'';
   // Custom CSS
+  var statesCSS=c.statesCSS||'';
   var customCSS=c.customCSS?'<style>'+c.customCSS+'.tip{position:relative}.tip::after{content:attr(data-tip);position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:var(--s3);color:var(--tx);padding:4px 8px;border-radius:6px;font-size:.6em;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .2s;z-index:999}.tip:hover::after{opacity:1}
 kbd{display:inline-block;padding:1px 5px;font-size:.6em;font-family:monospace;background:var(--s3);border-radius:3px;color:var(--tx2);margin-left:4px}
 </style>':'';
   // Full border (per-side takes priority)
   var fullBorder=perSideBorder||(c.cardBorderWidth>0?'border:'+c.cardBorderWidth+'px solid '+c.cardBorderColor+';':'');
   var fullShadow=(c.effect==='glow'||c.effect==='neon')?effectCSS:(c.cardShadow&&c.cardShadow!=='none'?'box-shadow:'+c.cardShadow+';':'');
-  return customCSS+'<div class="card" data-ve="card" style="background:'+bg+';'+base+'padding:'+pd+'px;min-height:'+mh+'px;max-width:'+(c.previewWidth||mw)+'px;flex-direction:column;align-items:center;justify-content:center;gap:'+cg+'px;'+fullBorder+fullShadow+clipCSS+hoverCSS+'position:relative">'+bgOverlay+'<div style="'+patternCSS+'position:absolute;inset:0;z-index:0;pointer-events:none"></div><div style="'+overlayCSS+'"></div>'+spkFloat+'<div style="position:relative;z-index:1;width:100%;display:flex;flex-direction:column;align-items:center;gap:'+cg+'px">'+ordered+'</div></div>';
+  return (statesCSS?'<style>'+statesCSS+'</style>':'')+customCSS+'<div class="card" data-ve="card" style="background:'+bg+';'+base+'padding:'+pd+'px;min-height:'+mh+'px;max-width:'+(c.previewWidth||mw)+'px;flex-direction:column;align-items:center;justify-content:center;gap:'+cg+'px;'+fullBorder+fullShadow+clipCSS+hoverCSS+'position:relative">'+bgOverlay+'<div style="'+patternCSS+'position:absolute;inset:0;z-index:0;pointer-events:none"></div><div style="'+overlayCSS+'"></div>'+spkFloat+'<div style="position:relative;z-index:1;width:100%;display:flex;flex-direction:column;align-items:center;gap:'+cg+'px">'+ordered+'</div></div>';
 }
 
 // CONTROLS
@@ -1285,8 +1300,42 @@ function renderCtrls(){
   ]);
   h+=acc("📐 التباعد والتخطيط",spacingHtml,false);
 
+
+  // === ESSENTIAL 12 SECTIONS ===
+  
+  // 22. ADVANCED CSS PROPERTIES
+  h+=acc("🔬 خصائص CSS المتقدمة",renderAdvancedCSS(),false);
+  
+  // 23. TEXT SHADOW BUILDER
+  h+=acc("✏️ منشئ ظل النص",renderTextShadowBuilder(),false);
+  
+  // 24. BOX SHADOW BUILDER
+  h+=acc("🔲 منشئ ظل الصندوق",renderBoxShadowBuilder(),false);
+  
+  // 25. BORDER BUILDER
+  h+=acc("🖼️ منشئ الحدود",renderBorderBuilder(),false);
+  
+  // 26. STATES EDITOR
+  h+=acc("🔘 حالات البطاقة",renderStatesEditor(),false);
+  
+  // 27. ENHANCED AUTO LAYOUT
+  h+=acc("📐 التخطيط المحسّن",renderEnhancedAutoLayout(),false);
+  
+  // 28. SMART ALIGNMENT
+  h+=acc("🧲 المحاذاة الذكية",renderSmartAlignment(),false);
+  
+  // 29. FULL IMPORT/EXPORT
+  h+=acc("📦 استيراد وتصدير كامل",renderFullImportExport(),false);
+  
+  // 30. SETTINGS PAGE
+  h+=acc("⚙️ إعدادات التطبيق",renderSettingsPage(),false);
+  
+  // 31. PROGRESSIVE DISCLOSURE
+  h+=renderProgressiveDisclosure();
+  
+  // 32. SAVE TIME DISPLAY
+  h+="<div id=\"saveTimeDisplay\" style=\"text-align:center;font-size:var(--fs-xs);color:var(--tx3);padding:6px\">لم يُحفظ بعد</div>";
   document.getElementById("ctrlArea").innerHTML=h;
-  document.getElementById('ctrlArea').innerHTML=h;
 }
 
 function toggleSection(s){if(!S.sectionVisibility)S.sectionVisibility={Pluriel:true,Synonyme:true,Contraire:true};S.sectionVisibility[s]=!S.sectionVisibility[s];pushHist();renderAll();syncSectionToggles();}
@@ -1514,7 +1563,7 @@ function updateStatus(){
 var origPushHist=typeof pushHist==='function'?pushHist:null;
 if(typeof pushHist==='function'){
   var _origPushHist=pushHist;
-  pushHist=function(){_origPushHist();_modified=true;updateStatus();};
+  pushHist=function(){_origPushHist();_modified=true;updateStatus();updateSaveTime();};
 }
 function markSaved(){_modified=false;updateStatus();}
 
@@ -1544,6 +1593,7 @@ document.querySelectorAll('[onclick]').forEach(function(el){
 
 window.addEventListener('load',()=>{
   loadTheme();
+  var savedMode=localStorage.getItem("anki_mode");if(savedMode){currentMode=savedMode;var el=document.getElementById("modeIndicator");if(el){var icons={basic:"🟢 مبتدئ",advanced:"🟡 متقدم",expert:"🔴 خبير"};el.textContent=icons[savedMode]||savedMode;}}
   if(!localStorage.getItem('anki_onboarded'))showOnboarding();
   else if(!localStorage.getItem('anki_whatsnew_v21'))showWhatsNew();
   checkCrashRecovery();
@@ -2017,7 +2067,7 @@ function renderOnboardStep(){
 // WHAT'S NEW
 // ============================================================
 function showWhatsNew(){
-  var html='<h2>🆕 ما الجديد في v3.0</h2>';
+  var html='<h2>🆕 ما الجديد في v3.1</h2>';
   var items=[
     {icon:'⌨️',text:'لوحة أوامر (Ctrl+Shift+P) — ابحث عن أي أمر أو خاصية بسرعة'},
     {icon:'🔍',text:'بحث في الخصائص — اجد أي إعداد بسرعة'},
@@ -2560,6 +2610,760 @@ function generateCardCSS(c){
   if(c.meaningAnim&&c.meaningAnim!=='none')css+='.meaning{animation:'+c.meaningAnim+' '+c.meaningAnimDur+'s '+c.meaningAnimTiming+' '+c.meaningAnimDelay+'s '+c.meaningAnimIter+' '+c.meaningAnimDir+' '+c.meaningAnimFill+';}\n';
   if(c.customCSS)css+='\n/* Custom CSS */\n'+c.customCSS;
   return css;
+}
+
+// ============================================================
+// 1. ADVANCED CSS PROPERTIES
+// ============================================================
+function renderAdvancedCSS(){
+  var h='';
+  h+=sel('mixBlendMode','وضع الدمج',[
+    {v:'normal',l:'عادي'},{v:'multiply',l:'ضرب'},{v:'screen',l:'شاشة'},
+    {v:'overlay',l:'تراكب'},{v:'darken',l:'إظلام'},{v:'lighten',l:'إבהיר'},
+    {v:'color-dodge',l:'تجاوز اللون'},{v:'color-burn',l:'حرق اللون'},
+    {v:'hard-light',l:'ضوء صلب'},{v:'soft-light',l:'ضوء ناعم'},
+    {v:'difference',l:'فرق'},{v:'exclusion',l:'استبعاد'},
+    {v:'hue',l:'درجة لون'},{v:'saturation',l:'تشبع'},{v:'color',l:'لون'},
+    {v:'luminosity',l:'سطوع'}
+  ]);
+  h+=sel('backdropFilter','فلتر الخلفية',[
+    {v:'none',l:'بدون'},{v:'blur(5px)',l:'تمويه خفيف'},
+    {v:'blur(10px)',l:'تمويه متوسط'},{v:'blur(20px)',l:'تمويه قوي'},
+    {v:'brightness(1.2)',l:'سطوع+'},{v:'brightness(0.8)',l:'سطوع-'},
+    {v:'contrast(1.2)',l:'تباين+'},{v:'grayscale(0.5)',l:'رمادي'},
+    {v:'saturate(1.5)',l:'تشبع+'},{v:'invert(0.1)',l:'عكس خفيف'}
+  ]);
+  h+=sel('objectFit','ملء الكائن',[
+    {v:'fill',l:'ملء'},{v:'contain',l:'احتواء'},{v:'cover',l:'تغطية'},
+    {v:'none',l:'بدون'},{v:'scale-down',l:'تصغير'}
+  ]);
+  h+=sel('objectPosition','موضع الكائن',[
+    {v:'center',l:'وسط'},{v:'top',l:'أعلى'},{v:'bottom',l:'أسفل'},
+    {v:'left',l:'يمين'},{v:'right',l:'يسار'}
+  ]);
+  h+=sel('isolation','عزل',[
+    {v:'auto',l:'تلقائي'},{v:'isolate',l:'معزول'}
+  ]);
+  h+=sel('transformOrigin','مصدر التحويل',[
+    {v:'center',l:'وسط'},{v:'top',l:'أعلى'},{v:'bottom',l:'أسفل'},
+    {v:'left top',l:'أعلى يمين'},{v:'right bottom',l:'أسفل يسار'}
+  ]);
+  h+=sel('willChange','تغيير مستقبلي',[
+    {v:'auto',l:'تلقائي'},{v:'transform',l:'تحويل'},{v:'opacity',l:'شفافية'},
+    {v:'scroll-position',l:'موضع التمرير'}
+  ]);
+  h+=sel('overflowWrap','التفاف الفائض',[
+    {v:'break-word',l:'كسر كلمة'},{v:'normal',l:'عادي'},{v:'anywhere',l:'أي مكان'}
+  ]);
+  h+=sel('wordBreak','كسر الكلمة',[
+    {v:'normal',l:'عادي'},{v:'break-all',l:'كسر كل'},{v:'keep-all',l:'حفظ الكل'}
+  ]);
+  h+=sel('pointerEvents','أحداث المؤشر',[
+    {v:'auto',l:'تلقائي'},{v:'none',l:'معطّل'},{v:'all',l:'الكل'}
+  ]);
+  h+=sel('userSelect','تحديد المستخدم',[
+    {v:'auto',l:'تلقائي'},{v:'none',l:'معطّل'},{v:'text',l:'نص'},{v:'all',l:'الكل'}
+  ]);
+  return h;
+}
+
+// ============================================================
+// 2. TEXT SHADOW BUILDER (Multi-layer)
+// ============================================================
+function renderTextShadowBuilder(){
+  var layers=S.textShadowLayers||[
+    {x:0,y:2,blur:4,color:'rgba(0,0,0,.3)',active:true},
+    {x:0,y:0,blur:0,color:'rgba(0,0,0,0)',active:false}
+  ];
+  var html='<div style="font-size:var(--fs-sm);color:var(--tx2);margin-bottom:6px">منشئ ظل النص (عدة طبقات)</div>';
+  html+='<div id="tsLayers">';
+  layers.forEach(function(layer,i){
+    if(!layer)return;
+    html+='<div class="shadow-layer" style="opacity:'+(layer.active?1:.4)+'">';
+    html+='<input type="checkbox" '+(layer.active?'checked':'')+' onchange="toggleTSLayer('+i+')">';
+    html+='<input type="color" value="'+layer.color+'" onchange="updateTSLayer('+i+',\'color\',this.value)">';
+    html+='<span style="font-size:.55em;color:var(--tx3);min-width:20px">'+i+'</span>';
+    html+='<div style="flex:1;display:flex;gap:4px;align-items:center">';
+    html+='<input type="range" min="-20" max="20" step="1" value="'+layer.x+'" onchange="updateTSLayer('+i+',\'x\',parseInt(this.value))" style="width:40px" title="X">';
+    html+='<input type="range" min="-20" max="20" step="1" value="'+layer.y+'" onchange="updateTSLayer('+i+',\'y\',parseInt(this.value))" style="width:40px" title="Y">';
+    html+='<input type="range" min="0" max="30" step="1" value="'+layer.blur+'" onchange="updateTSLayer('+i+',\'blur\',parseInt(this.value))" style="width:40px" title="Blur">';
+    html+='</div>';
+    html+='<span style="cursor:pointer;color:var(--rd);font-size:.7em" onclick="removeTSLayer('+i+')">✕</span>';
+    html+='</div>';
+  });
+  html+='</div>';
+  html+='<button class="btn bo bs" onclick="addTSLayer()" style="margin-top:4px">+ طبقة جديدة</button>';
+  html+='<button class="btn bo bs" onclick="previewTextShadow()" style="margin-top:4px;margin-right:4px">👁️ معاينة</button>';
+  return html;
+}
+
+function toggleTSLayer(i){
+  var layers=S.textShadowLayers||[];
+  if(layers[i])layers[i].active=!layers[i].active;
+  S.textShadowLayers=layers;
+  applyTextShadowToCard();
+  renderCtrls();
+}
+
+function updateTSLayer(i,key,val){
+  var layers=S.textShadowLayers||[];
+  if(layers[i])layers[i][key]=val;
+  S.textShadowLayers=layers;
+  applyTextShadowToCard();
+}
+
+function addTSLayer(){
+  var layers=S.textShadowLayers||[];
+  layers.push({x:0,y:0,blur:0,color:'rgba(0,0,0,.3)',active:true});
+  S.textShadowLayers=layers;
+  renderCtrls();
+  applyTextShadowToCard();
+}
+
+function removeTSLayer(i){
+  var layers=S.textShadowLayers||[];
+  layers.splice(i,1);
+  S.textShadowLayers=layers;
+  renderCtrls();
+  applyTextShadowToCard();
+}
+
+function applyTextShadowToCard(){
+  var layers=S.textShadowLayers||[];
+  var css=layers.filter(function(l){return l&&l.active;}).map(function(l){
+    return l.x+'px '+l.y+'px '+l.blur+'px '+l.color;
+  }).join(', ');
+  S.frenchTextShadow=css||'none';
+  S.meaningTextShadow=css||'none';
+  pushHist();
+}
+
+function previewTextShadow(){
+  var layers=S.textShadowLayers||[];
+  var css=layers.filter(function(l){return l&&l.active;}).map(function(l){
+    return l.x+'px '+l.y+'px '+l.blur+'px '+l.color;
+  }).join(', ');
+  var el=document.createElement('div');
+  el.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9999;background:var(--s1);border:1px solid var(--bd);border-radius:var(--br-md);padding:24px;text-align:center';
+  el.innerHTML='<div style="font-size:2em;font-weight:900;text-shadow:'+(css||'none')+';color:var(--tx)">Maison</div><div style="margin-top:8px;font-size:.7em;color:var(--tx2)">معاينة ظل النص</div><button class="btn ba bs" style="margin-top:12px" onclick="this.parentElement.remove()">إغلاق</button>';
+  document.body.appendChild(el);
+}
+
+// ============================================================
+// 3. BOX SHADOW BUILDER (Multi-layer)
+// ============================================================
+function renderBoxShadowBuilder(){
+  var layers=S.boxShadowLayers||[
+    {x:0,y:4,blur:16,spread:0,color:'rgba(0,0,0,.1)',inset:false,active:true}
+  ];
+  var html='<div style="font-size:var(--fs-sm);color:var(--tx2);margin-bottom:6px">منشئ ظل الصندوق (عدة طبقات)</div>';
+  html+='<div id="bsLayers">';
+  layers.forEach(function(layer,i){
+    if(!layer)return;
+    html+='<div class="shadow-layer" style="opacity:'+(layer.active?1:.4)+'">';
+    html+='<input type="checkbox" '+(layer.active?'checked':'')+' onchange="toggleBSLayer('+i+')">';
+    html+='<input type="color" value="'+layer.color+'" onchange="updateBSLayer('+i+',\'color\',this.value)">';
+    html+='<span style="font-size:.55em;color:var(--tx3);min-width:20px">'+i+'</span>';
+    html+='<div style="flex:1;display:flex;gap:3px;align-items:center;flex-wrap:wrap">';
+    html+='<input type="range" min="-30" max="30" step="1" value="'+layer.x+'" onchange="updateBSLayer('+i+',\'x\',parseInt(this.value))" style="width:35px" title="X">';
+    html+='<input type="range" min="-30" max="30" step="1" value="'+layer.y+'" onchange="updateBSLayer('+i+',\'y\',parseInt(this.value))" style="width:35px" title="Y">';
+    html+='<input type="range" min="0" max="50" step="1" value="'+layer.blur+'" onchange="updateBSLayer('+i+',\'blur\',parseInt(this.value))" style="width:35px" title="Blur">';
+    html+='<input type="range" min="-20" max="20" step="1" value="'+layer.spread+'" onchange="updateBSLayer('+i+',\'spread\',parseInt(this.value))" style="width:35px" title="Spread">';
+    html+='</div>';
+    html+='<label style="font-size:.5em;color:var(--tx3);display:flex;align-items:center;gap:2px"><input type="checkbox" '+(layer.inset?'checked':'')+' onchange="updateBSLayer('+i+',\'inset\',this.checked)"> داخلي</label>';
+    html+='<span style="cursor:pointer;color:var(--rd);font-size:.7em" onclick="removeBSLayer('+i+')">✕</span>';
+    html+='</div>';
+  });
+  html+='</div>';
+  html+='<button class="btn bo bs" onclick="addBSLayer()" style="margin-top:4px">+ طبقة جديدة</button>';
+  html+='<button class="btn bo bs" onclick="previewBoxShadow()" style="margin-top:4px;margin-right:4px">👁️ معاينة</button>';
+  return html;
+}
+
+function toggleBSLayer(i){
+  var layers=S.boxShadowLayers||[];
+  if(layers[i])layers[i].active=!layers[i].active;
+  S.boxShadowLayers=layers;
+  applyBoxShadowToCard();
+  renderCtrls();
+}
+
+function updateBSLayer(i,key,val){
+  var layers=S.boxShadowLayers||[];
+  if(layers[i])layers[i][key]=val;
+  S.boxShadowLayers=layers;
+  applyBoxShadowToCard();
+}
+
+function addBSLayer(){
+  var layers=S.boxShadowLayers||[];
+  layers.push({x:0,y:0,blur:0,spread:0,color:'rgba(0,0,0,.1)',inset:false,active:true});
+  S.boxShadowLayers=layers;
+  renderCtrls();
+  applyBoxShadowToCard();
+}
+
+function removeBSLayer(i){
+  var layers=S.boxShadowLayers||[];
+  layers.splice(i,1);
+  S.boxShadowLayers=layers;
+  renderCtrls();
+  applyBoxShadowToCard();
+}
+
+function applyBoxShadowToCard(){
+  var layers=S.boxShadowLayers||[];
+  var css=layers.filter(function(l){return l&&l.active;}).map(function(l){
+    return (l.inset?'inset ':'')+l.x+'px '+l.y+'px '+l.blur+'px '+l.spread+'px '+l.color;
+  }).join(', ');
+  S.cardShadow=css||'none';
+  pushHist();
+}
+
+function previewBoxShadow(){
+  var layers=S.boxShadowLayers||[];
+  var css=layers.filter(function(l){return l&&l.active;}).map(function(l){
+    return (l.inset?'inset ':'')+l.x+'px '+l.y+'px '+l.blur+'px '+l.spread+'px '+l.color;
+  }).join(', ');
+  var el=document.createElement('div');
+  el.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9999;background:var(--s1);border:1px solid var(--bd);border-radius:var(--br-md);padding:24px;text-align:center';
+  el.innerHTML='<div style="width:200px;height:120px;border-radius:var(--br-md);background:var(--s2);box-shadow:'+(css||'none')+';margin:0 auto"></div><div style="margin-top:8px;font-size:.7em;color:var(--tx2)">معاينة ظل الصندوق</div><button class="btn ba bs" style="margin-top:12px" onclick="this.parentElement.remove()">إغلاق</button>';
+  document.body.appendChild(el);
+}
+
+// ============================================================
+// 4. BORDER BUILDER (Visual, each side independent)
+// ============================================================
+function renderBorderBuilder(){
+  var html='<div style="font-size:var(--fs-sm);color:var(--tx2);margin-bottom:6px">منشئ الحدود (كل ضلع مستقل)</div>';
+  
+  // Preview box
+  html+='<div style="width:120px;height:80px;margin:8px auto;border-radius:'+(S.borderRadius||16)+'px;background:var(--s2);position:relative;display:flex;align-items:center;justify-content:center;font-size:.6em;color:var(--tx3)">';
+  html+='<div style="position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-size:.8em">أعلى</div>';
+  html+='<div style="position:absolute;bottom:-16px;left:50%;transform:translateX(-50%);font-size:.8em">أسفل</div>';
+  html+='<div style="position:absolute;right:-28px;top:50%;transform:translateY(-50%);font-size:.8em">يمين</div>';
+  html+='<div style="position:absolute;left:-28px;top:50%;transform:translateY(-50%);font-size:.8em">يسار</div>';
+  html+='</div>';
+  
+  // Top
+  html+=grp('الحد العلوي',[
+    rng('cardBorderTopWidth','السمك',0,10,1,0),
+    clr('cardBorderTopColor','اللون','#e2e8f0'),
+    rng('cardBorderTopRadius','الاستدارة',0,50,1,16)
+  ].join(''));
+  
+  // Right
+  html+=grp('الحد الأيمن',[
+    rng('cardBorderRightWidth','السمك',0,10,1,0),
+    clr('cardBorderRightColor','اللون','#e2e8f0'),
+    rng('cardBorderRightRadius','الاستدارة',0,50,1,16)
+  ].join(''));
+  
+  // Bottom
+  html+=grp('الحد السفلي',[
+    rng('cardBorderBottomWidth','السمك',0,10,1,0),
+    clr('cardBorderBottomColor','اللون','#e2e8f0'),
+    rng('cardBorderBottomRadius','الاستدارة',0,50,1,16)
+  ].join(''));
+  
+  // Left
+  html+=grp('الحد الأيسر',[
+    rng('cardBorderLeftWidth','السمك',0,10,1,0),
+    clr('cardBorderLeftColor','اللون','#e2e8f0'),
+    rng('cardBorderLeftRadius','الاستدارة',0,50,1,16)
+  ].join(''));
+  
+  // Style
+  html+=sel('cardBorderStyle','نمط الحد',[
+    {v:'solid',l:'خط صلب'},{v:'dashed',l:'خط متقطع'},{v:'dotted',l:'نقطي'},
+    {v:'double',l:'مزدوج'},{v:'groove',l:'مجSSF'},{v:'ridge',l:'نتوء'}
+  ]);
+  
+  // Quick presets
+  html+='<div style="display:flex;gap:3px;flex-wrap:wrap;margin-top:6px">';
+  html+='<button class="btn bo bs" onclick="borderPreset(\'none\')">بدون</button>';
+  html+='<button class="btn bo bs" onclick="borderPreset(\'all\')">الكل</button>';
+  html+='<button class="btn bo bs" onclick="borderPreset(\'top\')">علوي فقط</button>';
+  html+='<button class="btn bo bs" onclick="borderPreset(\'rounded\')">دائري</button>';
+  html+='</div>';
+  
+  return html;
+}
+
+function borderPreset(type){
+  switch(type){
+    case 'none':
+      S.cardBorderTopWidth=0;S.cardBorderRightWidth=0;S.cardBorderBottomWidth=0;S.cardBorderLeftWidth=0;
+      S.cardBorderWidth=0;
+      break;
+    case 'all':
+      S.cardBorderTopWidth=2;S.cardBorderRightWidth=2;S.cardBorderBottomWidth=2;S.cardBorderLeftWidth=2;
+      S.cardBorderWidth=0;
+      break;
+    case 'top':
+      S.cardBorderTopWidth=3;S.cardBorderRightWidth=0;S.cardBorderBottomWidth=0;S.cardBorderLeftWidth=0;
+      S.cardBorderWidth=0;
+      break;
+    case 'rounded':
+      S.cardBorderTopWidth=2;S.cardBorderRightWidth=2;S.cardBorderBottomWidth=2;S.cardBorderLeftWidth=2;
+      S.cardBorderTopRadius=50;S.cardBorderRightRadius=50;S.cardBorderBottomRadius=50;S.cardBorderLeftRadius=50;
+      S.cardBorderWidth=0;
+      break;
+  }
+  pushHist();renderCtrls();renderAll();
+  toast('تم تطبيق الحدود');
+}
+
+// ============================================================
+// 5. STATES (Hover, Active, Focus, Disabled)
+// ============================================================
+function renderStatesEditor(){
+  var states=['default','hover','active','focus','disabled'];
+  var stateLabels={default:'افتراضي',hover:'عند المرور',active:'عند الضغط',focus:'عند التركيز',disabled:'معطّل'};
+  var stateIcons={default:'⬜',hover:'🖱️',active:'👆',focus:'🔵',disabled:'🚫'};
+  
+  var html='<div style="font-size:var(--fs-sm);color:var(--tx2);margin-bottom:6px">حالات البطاقة</div>';
+  html+='<div style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:8px">';
+  states.forEach(function(state){
+    html+='<button class="btn bo bs'+(S._activeState===state?' on':'')+'" onclick="setActiveState(\''+state+'\')" style="'+(S._activeState===state?'background:var(--ac);color:#fff;border-color:var(--ac)':'')+'">'+stateIcons[state]+' '+stateLabels[state]+'</button>';
+  });
+  html+='</div>';
+  
+  var activeState=S._activeState||'default';
+  var stateKey='state_'+activeState;
+  var stateData=S[stateKey]||{};
+  
+  html+='<div style="background:var(--s2);border-radius:var(--br-sm);padding:8px">';
+  html+='<div style="font-size:var(--fs-xs);color:var(--ac2);margin-bottom:6px">'+stateIcons[activeState]+' '+stateLabels[activeState]+'</div>';
+  
+  if(activeState!=='default'){
+    html+=rng(stateKey+'_scale','التكبير',0.8,1.2,0.01,stateData.scale||1);
+    html+=rng(stateKey+'_opacity','الشفافية',0,1,0.05,stateData.opacity||1);
+    html+=rng(stateKey+'_translateY','تحريك عمودي',-10,10,1,stateData.translateY||0);
+    html+=clr(stateKey+'_bg','الخلفية',stateData.bg||'');
+    html+=clr(stateKey+'_color','اللون',stateData.color||'');
+    html+=rng(stateKey+'_borderWidth','سمك الحد',0,5,1,stateData.borderWidth||0);
+    html+=clr(stateKey+'_borderColor','لون الحد',stateData.borderColor||'');
+    html+=rng(stateKey+'_shadowIntensity','كثافة الظل',0,1,0.1,stateData.shadowIntensity||0);
+  }else{
+    html+='<div style="font-size:var(--fs-xs);color:var(--tx3);padding:8px;text-align:center">هذه الحالة الافتراضية — لا يمكن تعديلها</div>';
+  }
+  
+  html+='</div>';
+  html+='<button class="btn bo bs" onclick="applyStates()" style="margin-top:6px;width:100%">✅ تطبيق الحالات</button>';
+  return html;
+}
+
+function setActiveState(state){
+  S._activeState=state;
+  renderCtrls();
+}
+
+function applyStates(){
+  // Build CSS for each state
+  var statesCss='';
+  ['hover','active','focus','disabled'].forEach(function(state){
+    var key='state_'+state;
+    var d=S[key];
+    if(!d)return;
+    var css='.card:'+state+'{';
+    if(d.scale&&d.scale!==1)css+='transform:scale('+d.scale+');';
+    if(d.opacity&&d.opacity!==1)css+='opacity:'+d.opacity+';';
+    if(d.translateY)css+='transform:translateY('+d.translateY+'px);';
+    if(d.bg)css+='background:'+d.bg+';';
+    if(d.color)css+='color:'+d.color+';';
+    if(d.borderWidth)css+='border-width:'+d.borderWidth+'px;border-color:'+d.borderColor+';border-style:solid;';
+    if(d.shadowIntensity){
+      var intensity=d.shadowIntensity;
+      css+='box-shadow:0 '+Math.round(intensity*8)+'px '+Math.round(intensity*24)+'px rgba(0,0,0,'+intensity*0.2+');';
+    }
+    css+='transition:all .2s ease;}';
+    statesCss+=css+'\n';
+  });
+  
+  S.statesCSS=statesCss;
+  pushHist();
+  renderAll();
+  toast('تم تطبيق حالات البطاقة');
+}
+
+// ============================================================
+// 6. ENHANCED AUTO LAYOUT
+// ============================================================
+function renderEnhancedAutoLayout(){
+  var html='<div style="font-size:var(--fs-sm);color:var(--tx2);margin-bottom:6px">التخطيط التلقائي المحسّن</div>';
+  
+  html+=sel('cardDirection','الاتجاه',[
+    {v:'column',l:'⬇️ عمودي'},{v:'row',l:'➡️ أفقي'},
+    {v:'column-reverse',l:'⬆️ عمودي عكسي'},{v:'row-reverse',l:'⬅️ أفقي عكسي'}
+  ]);
+  
+  html+=sel('cardAlign','المحاذاة العرضية',[
+    {v:'center',l:'وسط'},{v:'flex-start',l:'أعلى/يمين'},
+    {v:'flex-end',l:'أسفل/يسار'},{v:'stretch',l:'تمدد'},
+    {v:'space-between',l:'مسافات متساوية'},
+    {v:'space-around',l:'مسافات حول'},
+    {v:'space-evenly',l:'مسافات متساوية تماماً'}
+  ]);
+  
+  html+=sel('cardAlignCross','المحاذاة المحورية',[
+    {v:'center',l:'وسط'},{v:'flex-start',l:'بداية'},{v:'flex-end',l:'نهاية'},{v:'stretch',l:'تمدد'}
+  ]);
+  
+  html+=rng('cardGap','المسافة بين العناصر',0,40,1,10);
+  html+=rng('cardPadding','الحشو الداخلي',0,60,2,28);
+  html+=rng('cardMinHeight','الحد الأدنى للارتفاع',100,600,10,300);
+  html+=rng('previewWidth','عرض البطاقة',200,600,10,380);
+  
+  // Quick layout presets
+  html+='<div style="display:flex;gap:3px;flex-wrap:wrap;margin-top:6px">';
+  html+='<button class="btn bo bs" onclick="layoutPreset(\'centered\')">مركزي</button>';
+  html+='<button class="btn bo bs" onclick="layoutPreset(\'spaced\')">مسافات</button>';
+  html+='<button class="btn bo bs" onclick="layoutPreset(\'compact\')">مضغوط</button>';
+  html+='<button class="btn bo bs" onclick="layoutPreset(\'airy\')">متنفس</button>';
+  html+='<button class="btn bo bs" onclick="layoutPreset(\'horizontal\')">أفقي</button>';
+  html+='</div>';
+  
+  return html;
+}
+
+function layoutPreset(type){
+  switch(type){
+    case 'centered':
+      S.cardDirection='column';S.cardAlign='center';S.cardAlignCross='center';S.cardGap=10;S.cardPadding=28;
+      break;
+    case 'spaced':
+      S.cardDirection='column';S.cardAlign='space-between';S.cardAlignCross='center';S.cardGap=16;S.cardPadding=32;
+      break;
+    case 'compact':
+      S.cardDirection='column';S.cardAlign='center';S.cardAlignCross='center';S.cardGap=4;S.cardPadding=16;
+      break;
+    case 'airy':
+      S.cardDirection='column';S.cardAlign='center';S.cardAlignCross='center';S.cardGap=24;S.cardPadding=40;
+      break;
+    case 'horizontal':
+      S.cardDirection='row';S.cardAlign='center';S.cardAlignCross='center';S.cardGap=16;S.cardPadding=24;
+      break;
+  }
+  pushHist();renderCtrls();renderAll();
+  toast('تم تطبيق: '+type);
+}
+
+// ============================================================
+// 7. SMART ALIGNMENT + SNAP
+// ============================================================
+function renderSmartAlignment(){
+  var html='<div style="font-size:var(--fs-sm);color:var(--tx2);margin-bottom:6px">المحاذاة الذكية + Snap</div>';
+  html+=tog('snapEnabled','تفعيل Snap');
+  html+=tog('snapToGrid','الصق بالشبكة');
+  html+=rng('snapGridSize','حجم الشبكة',4,32,4,8);
+  html+=tog('snapToCenter','الصق بالوسط');
+  html+=tog('showGuides','إظهار الخطوط الإرشادية');
+  html+=tog('showRulers','إظهار المساطر');
+  html+=tog('showSafeArea','إظهار المنطقة الآمنة');
+  return html;
+}
+
+// ============================================================
+// 8. FULL IMPORT/EXPORT (HTML, CSS, ZIP)
+// ============================================================
+function renderFullImportExport(){
+  var html='<div style="font-size:var(--fs-sm);color:var(--tx2);margin-bottom:6px">استيراد وتصدير كامل</div>';
+  
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">';
+  
+  // Export options
+  html+='<div style="background:var(--s2);border-radius:var(--br-sm);padding:8px">';
+  html+='<div style="font-size:var(--fs-xs);font-weight:700;color:var(--ac2);margin-bottom:6px">📤 تصدير</div>';
+  html+='<button class="btn bo bs" style="width:100%;margin-bottom:4px" onclick="exportAsJSON()">📋 JSON</button>';
+  html+='<button class="btn bo bs" style="width:100%;margin-bottom:4px" onclick="exportAsHTML()">🌐 HTML</button>';
+  html+='<button class="btn bo bs" style="width:100%;margin-bottom:4px" onclick="exportAsCSS()">🎨 CSS</button>';
+  html+='<button class="btn bo bs" style="width:100%" onclick="exportAsTemplate()">📦 قالب كامل</button>';
+  html+='</div>';
+  
+  // Import options
+  html+='<div style="background:var(--s2);border-radius:var(--br-sm);padding:8px">';
+  html+='<div style="font-size:var(--fs-xs);font-weight:700;color:var(--ac2);margin-bottom:6px">📥 استيراد</div>';
+  html+='<label class="btn bo bs" style="width:100%;margin-bottom:4px;display:block;text-align:center;cursor:pointer">📋 JSON<input type="file" accept=".json" onchange="importFromJSON(event)" style="display:none"></label>';
+  html+='<label class="btn bo bs" style="width:100%;margin-bottom:4px;display:block;text-align:center;cursor:pointer">🌐 HTML<input type="file" accept=".html" onchange="importFromHTML(event)" style="display:none"></label>';
+  html+='<label class="btn bo bs" style="width:100%;margin-bottom:4px;display:block;text-align:center;cursor:pointer">🎨 CSS<input type="file" accept=".css" onchange="importFromCSS(event)" style="display:none"></label>';
+  html+='<label class="btn bo bs" style="width:100%;display:block;text-align:center;cursor:pointer">📦 قالب محفوظ<input type="file" accept=".json" onchange="importFromTemplate(event)" style="display:none"></label>';
+  html+='</div>';
+  
+  html+='</div>';
+  
+  // Quick export buttons
+  html+='<div style="margin-top:8px;display:flex;gap:4px;flex-wrap:wrap">';
+  html+='<button class="btn ba bs" onclick="exportConfig()">💾 حفظ الإعدادات</button>';
+  html+='<button class="btn bo bs" onclick="showCSSCodeSync()">💻 عرض CSS</button>';
+  html+='</div>';
+  
+  return html;
+}
+
+function exportAsHTML(){
+  var html='<!DOCTYPE html>\n<html lang="ar" dir="rtl">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>Anki Card</title>\n<style>\n';
+  html+=generateCardCSS(S);
+  html+='\n</style>\n</head>\n<body>\n';
+  html+=renderCardHTML(S);
+  html+='\n</body>\n</html>';
+  downloadFile(html,'anki-card.html','text/html');
+  toast('تم تصدير HTML');
+}
+
+function exportAsCSS(){
+  var css=generateCardCSS(S);
+  downloadFile(css,'anki-card.css','text/css');
+  toast('تم تصدير CSS');
+}
+
+function exportAsTemplate(){
+  var data={version:'3.0',config:S,templates:TEMPLATES.slice(0,5),exportDate:new Date().toISOString()};
+  downloadFile(JSON.stringify(data,null,2),'anki-template.json','application/json');
+  toast('تم تصدير القالب الكامل');
+}
+
+function importFromJSON(e){
+  var f=e.target.files[0];if(!f)return;
+  var r=new FileReader();
+  r.onload=function(ev){
+    try{
+      var d=JSON.parse(ev.target.result);
+      if(d.config){S=Object.assign({},defCfg(),d.config);}
+      else{S=Object.assign({},defCfg(),d);}
+      pushHist();renderCtrls();renderAll();
+      toast('تم استيراد JSON');
+    }catch(err){toast('خطأ: ملف غير صحيح');}
+  };
+  r.readAsText(f);
+}
+
+function importFromHTML(e){
+  var f=e.target.files[0];if(!f)return;
+  var r=new FileReader();
+  r.onload=function(ev){
+    try{
+      var html=ev.target.result;
+      // Extract CSS from style tag
+      var match=html.match(/<style[^>]*>([\s\S]*?)<\/style>/i);
+      if(match){
+        var css=match[1];
+        // Parse basic CSS properties
+        var props={};
+        var re=/([a-z-]+)\s*:\s*([^;]+)/gi;
+        var m;
+        while((m=re.exec(css))!==null){
+          props[m[1].trim()]=m[2].trim();
+        }
+        if(props['background'])S.cardBg=props['background'];
+        if(props['border-radius'])S.borderRadius=parseInt(props['border-radius']);
+        if(props['padding'])S.cardPadding=parseInt(props['padding']);
+        if(props['font-family'])S.fontFrench=props['font-family'].split(',')[0].trim().replace(/'/g,'');
+        if(props['color'])S.frenchColor=props['color'];
+        pushHist();renderCtrls();renderAll();
+        toast('تم استيراد HTML');
+      }else{toast('لم يتم العثور على CSS');}
+    }catch(err){toast('خطأ في الاستيراد');}
+  };
+  r.readAsText(f);
+}
+
+function importFromCSS(e){
+  var f=e.target.files[0];if(!f)return;
+  var r=new FileReader();
+  r.onload=function(ev){
+    try{
+      var css=ev.target.result;
+      var props={};
+      var re=/([a-z-]+)\s*:\s*([^;]+)/gi;
+      var m;
+      while((m=re.exec(css))!==null){
+        props[m[1].trim()]=m[2].trim();
+      }
+      if(props['background'])S.cardBg=props['background'];
+      if(props['border-radius'])S.borderRadius=parseInt(props['border-radius']);
+      if(props['padding'])S.cardPadding=parseInt(props['padding']);
+      if(props['color'])S.frenchColor=props['color'];
+      pushHist();renderCtrls();renderAll();
+      toast('تم استيراد CSS');
+    }catch(err){toast('خطأ في الاستيراد');}
+  };
+  r.readAsText(f);
+}
+
+function downloadFile(content,filename,type){
+  var blob=new Blob([content],{type:type});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=filename;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+// ============================================================
+// 9. DOCUMENTATION (ⓘ tooltips)
+// ============================================================
+var DOCS={
+  cardBg:'خلفية البطاقة — اللون الرئيسي للبطاقة. يمكنك استخدام تدرج لوني بتحديد لون ثانوي.',
+  cardBg2:'اللون الثانوي — يُستخدم مع الاتجاه لعمل تدرج لوني.',
+  bgGradientDir:'اتجاه التدرج — من أين إلى أين يمشي التدرج.',
+  borderRadius:'استدارة الزوايا — 0 = مربع، 50 = دائري.',
+  cardPadding:'الحشو الداخلي — المسافة بين محتوى البطاقة وحدودها.',
+  cardGap:'المسافة بين العناصر — المسافة العمودية بين الكلمة والمعنى والأقسام.',
+  cardMinHeight:'الحد الأدنى للارتفاع — ارتفاع البطاقة الأدنى بالبكسل.',
+  frenchColor:'لون الكلمة الفرنسية — اللون الرئيسي للكلمة.',
+  frenchFontSize:'حجم الخط الفرنسي — حجم خط الكلمة الفرنسية.',
+  frenchFontWeight:'وزن الخط الفرنسي — رفيع (100) إلى سميك (900).',
+  meaningColor:'لون المعنى — لون الترجمة العربية.',
+  meaningFontSize:'حجم الخط العربي — حجم خط المعنى.',
+  meaningFontWeight:'وزن الخط العربي.',
+  meaningBg:'خلفية المعنى — خلفية منطقة المعنى.',
+  meaningBorder:'حدود المعنى — لون حدود منطقة المعنى.',
+  effect:'تأثير البطاقة — توهج، نبض، نيون، ساكورا.',
+  cardShadow:'ظل البطاقة — يمكنك اختيار ظل جاهز أو بناء ظل مخصص.',
+  cardClipPath:'شكل البطاقة — مقصوص بشكل معين، دائري، أو غيره.',
+  fontFrench:'الخط الفرنسي — الخط المستخدم للكلمة الفرنسية.',
+  fontArabic:'الخط العربي — الخط المستخدم للترجمة.',
+  previewWidth:'عرض البطاقة — عرض البطاقة بالبكسل.',
+  customCSS:'CSS مخصص — أضف أي CSS يدويًا هنا.',
+  mixBlendMode:'وضع الدمج — كيف يتفاعل اللون مع الخلفية.',
+  backdropFilter:'فلتر الخلفية — تأثيرات على ما وراء البطاقة.',
+};
+
+function renderDocIcon(key){
+  if(!DOCS[key])return '';
+  return '<span class="doc-icon" title="'+DOCS[key]+'" style="cursor:help;color:var(--tx3);font-size:.7em;margin-right:2px">ⓘ</span>';
+}
+
+// ============================================================
+// 10. SETTINGS PAGE
+// ============================================================
+function renderSettingsPage(){
+  var html='<div class="score-panel">';
+  html+='<div style="font-size:var(--fs-lg);font-weight:800;color:var(--ac2);margin-bottom:12px">⚙️ إعدادات التطبيق</div>';
+  
+  // General
+  html+=grp('عام',[
+    tog('autoSave','الحفظ التلقائي'),
+    tog('showTooltips','إظهار التلميحات'),
+    tog('showDocIcons','إظهار أيقونات التوثيق'),
+    tog('animationsEnabled','تأثيرات الحركة'),
+    sel('defaultMode','الوضع الافتراضي',[
+      {v:'basic',l:'مبتدئ'},{v:'advanced',l:'متقدم'},{v:'expert',l:'خبير'}
+    ])
+  ].join(''));
+  
+  // Gallery
+  html+=grp('المعرض',[
+    sel('galleryDefaultView',l:'عرض افتراضي',[
+      {v:'grid',l:'شبكة'},{v:'list',l:'قائمة'}
+    ]),
+    sel('galleryDefaultSort',l:'ترتيب افتراضي',[
+      {v:'name',l:'الاسم'},{v:'newest',l:'الأحدث'}
+    ])
+  ].join(''));
+  
+  // TTS
+  html+=grp('النطق',[
+    tog('ttsAutoPlay','تشغيل تلقائي عند فتح البطاقة'),
+    rng('ttsRate','السرعة',0.5,2,0.1,0.8),
+    rng('ttsPitch','النغمة',0.1,2,0.1,0.5)
+  ].join(''));
+  
+  // Export
+  html+=grp('التصدير',[
+    tog('exportMinified','تصدير مضغوط'),
+    tog('exportWithCSS','تضمين CSS بالتصدير'),
+    sel('exportFormat',l:'الصيغة الافتراضية',[
+      {v:'apkg',l:'Anki Package'},{v:'json',l:'JSON'},{v:'html',l:'HTML'}
+    ])
+  ].join(''));
+  
+  // Danger zone
+  html+='<div style="margin-top:12px;padding:8px;background:rgba(239,68,68,.1);border-radius:var(--br-sm);border:1px solid rgba(239,68,68,.2)">';
+  html+='<div style="font-size:var(--fs-xs);font-weight:700;color:var(--rd);margin-bottom:6px">⚠️ منطقة الخطر</div>';
+  html+='<button class="btn br bs" onclick="if(confirm(\'هل أنت متأكد؟ هذا سيحذف كل شيء!\')){localStorage.clear();location.reload();}">🗑️ مسح كل البيانات</button>';
+  html+='</div>';
+  
+  html+='</div>';
+  return html;
+}
+
+// ============================================================
+// 11. LAST SAVE TIME
+// ============================================================
+var _lastSaveTime=null;
+
+function updateSaveTime(){
+  _lastSaveTime=new Date();
+  var el=document.getElementById('saveTimeDisplay');
+  if(el){
+    var t=_lastSaveTime;
+    var timeStr=t.getHours().toString().padStart(2,'0')+':'+t.getMinutes().toString().padStart(2,'0')+':'+t.getSeconds().toString().padStart(2,'0');
+    el.textContent='آخر حفظ: '+timeStr;
+  }
+}
+
+function renderSaveTimeDisplay(){
+  var el=document.getElementById('saveTimeDisplay');
+  if(!el)return;
+  if(_lastSaveTime){
+    var t=_lastSaveTime;
+    var timeStr=t.getHours().toString().padStart(2,'0')+':'+t.getMinutes().toString().padStart(2,'0')+':'+t.getSeconds().toString().padStart(2,'0');
+    el.textContent='آخر حفظ: '+timeStr;
+  }else{
+    el.textContent='لم يُحفظ بعد';
+  }
+}
+
+// ============================================================
+// 12. ENHANCED PROGRESSIVE DISCLOSURE
+// ============================================================
+function renderProgressiveDisclosure(){
+  var modes=[
+    {id:'basic',icon:'🟢',label:'مبتدئ',desc:'الأساسيات فقط'},
+    {id:'advanced',icon:'🟡',label:'متقدم',desc:'خيارات إضافية'},
+    {id:'expert',icon:'🔴',label:'خبير',desc:'كل شيء'}
+  ];
+  
+  var html='<div class="mode-seg">';
+  modes.forEach(function(mode){
+    html+='<button class="mode-seg-btn'+(currentMode===mode.id?' on':'')+'" onclick="switchMode(\''+mode.id+'\')" title="'+mode.desc+'">'+mode.icon+' '+mode.label+'</button>';
+  });
+  html+='</div>';
+  return html;
+}
+
+function switchMode(mode){
+  currentMode=mode;
+  localStorage.setItem('anki_mode',mode);
+  applyMode();
+  var el=document.getElementById('modeIndicator');
+  if(el){var icons={basic:'🟢 مبتدئ',advanced:'🟡 متقدم',expert:'🔴 خبير'};el.textContent=icons[mode]||mode;}
+  renderCtrls();
+  toast('الوضع: '+mode);
+}
+
+// ============================================================
+// HELPER: Add info icons to all control labels
+// ============================================================
+function addInfoIcons(){
+  document.querySelectorAll('.cl-b').forEach(function(el){
+    var key=el.textContent.trim().replace(/[^\w\u0600-\u06FF]/g,'');
+    // Try to find matching doc key
+    Object.keys(DOCS).forEach(function(docKey){
+      if(key.indexOf(DOCS[docKey])>=0||DOCS[docKey].indexOf(key)>=0){
+        if(!el.querySelector('.doc-icon')){
+          var icon=document.createElement('span');
+          icon.className='doc-icon';
+          icon.title=DOCS[docKey];
+          icon.style.cssText='cursor:help;color:var(--tx3);font-size:.7em;margin-right:4px';
+          icon.textContent='ⓘ';
+          el.appendChild(icon);
+        }
+      }
+    });
+  });
 }
 </script>
 </body>
