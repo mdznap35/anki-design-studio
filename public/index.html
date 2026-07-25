@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&family=Inter:wght@400;500;600;700;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#0f0f1a;--s1:#1a1a2e;--s2:#22223a;--s3:#2d2d4a;--bd:rgba(255,255,255,.06);--tx:#e8e8f0;--tx2:#8888aa;--tx3:#555577;--ac:#7c3aed;--ac2:#a78bfa;--gn:#22c55e;--rd:#ef4444;--r:12px;--sp-xs:4px;--sp-sm:8px;--sp-md:16px;--sp-lg:24px;--sp-xl:32px;--fs-xs:.55em;--fs-sm:.65em;--fs-md:.72em;--fs-lg:.82em;--fs-xl:.95em;--fs-2xl:1.2em;--fs-3xl:1.6em;--br-sm:6px;--br-md:10px;--br-lg:16px;--br-xl:24px;--br-full:50px;--shadow-sm:none;--shadow-md:0 2px 8px rgba(0,0,0,.08);--shadow-lg:0 4px 16px rgba(0,0,0,.12);--shadow-xl:0 8px 32px rgba(0,0,0,.15)}
+:root{--bg:#0f0f1a;--s1:#1a1a2e;--s2:#22223a;--s3:#2d2d4a;--bd:rgba(255,255,255,.08);--tx:#e8e8f0;--tx2:#8888aa;--tx3:#555577;--ac:#7c3aed;--ac2:#a78bfa;--ac3:#c4b5fd;--ac-bg:rgba(124,58,237,.1);--gn:#22c55e;--gn-bg:rgba(34,197,94,.1);--rd:#ef4444;--rd-bg:rgba(239,68,68,.1);--warn:#f59e0b;--warn-bg:rgba(245,158,11,.1);--r:12px;--sp-xs:4px;--sp-sm:8px;--sp-md:16px;--sp-lg:24px;--sp-xl:32px;--fs-xs:.55em;--fs-sm:.65em;--fs-md:.72em;--fs-lg:.82em;--fs-xl:.95em;--fs-2xl:1.2em;--fs-3xl:1.6em;--br-sm:6px;--br-md:10px;--br-lg:16px;--br-xl:24px;--br-full:50px;--shadow-sm:none;--shadow-md:0 2px 8px rgba(0,0,0,.08);--shadow-lg:0 4px 16px rgba(0,0,0,.12);--shadow-xl:0 8px 32px rgba(0,0,0,.15)}
 body{padding-bottom:48px;font-family:"Inter","Noto Sans Arabic",system-ui,sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;letter-spacing:-.01em;line-height:1.5}
 ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--s1)}::-webkit-scrollbar-thumb{background:var(--s3);border-radius:2px}
 .hdr{text-align:center;padding:20px 16px 4px}
@@ -331,7 +331,24 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 </style>
 </head>
 <body>
-<div class="hdr" style="padding:24px 16px 8px;position:relative"><div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:6px"><div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#7c3aed,#a78bfa);display:flex;align-items:center;justify-content:center;font-size:1.2em;color:#fff;font-weight:900;box-shadow:0 4px 12px rgba(124,58,237,.3)">A</div><div><h1 style="font-size:1.4em;font-weight:900;color:var(--tx);background:none;-webkit-text-fill-color:var(--tx);animation:none;letter-spacing:-.5px">Anki Design Studio</h1><p style="color:var(--tx2);font-size:.68em;margin-top:0;font-weight:500">Professional Card Designer</p></div></div><div style="display:flex;justify-content:center;gap:12px;font-size:.58em;color:var(--tx3)"><span>v3.1</span><span>&middot;</span><span>Stable</span><span>&middot;</span><span id="statusIndicator" style="color:var(--gn)">&#9679; Saved</span></div></div>
+<div class="hdr" style="padding:16px 16px 8px;position:relative">
+<div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:8px">
+<div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--ac),var(--ac2));display:flex;align-items:center;justify-content:center;font-size:1em;color:#fff;font-weight:900">A</div>
+<div><h1 style="font-size:1.2em;font-weight:900;color:var(--tx);background:none;-webkit-text-fill-color:var(--tx);animation:none;letter-spacing:-.3px">Anki Design Studio</h1><p style="color:var(--tx2);font-size:.62em;margin-top:0;font-weight:500">Professional Card Designer</p></div>
+</div>
+<div style="display:flex;justify-content:center;gap:8px;margin-bottom:8px;flex-wrap:wrap">
+<button class="btn bo bs" onclick="undo()" title="تراجع (Ctrl+Z)">↩ تراجع</button>
+<button class="btn bo bs" onclick="redo()" title="إعادة (Ctrl+Y)">↪ إعادة</button>
+<button class="btn bo bs" onclick="randomDesign()" title="تصميم عشوائي (R)">🎲 عشوائي</button>
+<button class="btn bo bs" onclick="saveCustom()" title="حفظ (Ctrl+S)">💾 حفظ</button>
+<button class="btn bo bs" onclick="resetDesign()" title="إعادة ضبط">🔄 ضبط</button>
+<button class="btn bo bs" onclick="document.querySelector('[data-t=dl]').click()" title="تصدير">📤 تصدير</button>
+<button class="btn bo bs" onclick="showSettingsModal()" title="إعدادات">⚙️</button>
+</div>
+<div style="display:flex;justify-content:center;gap:8px;font-size:.55em;color:var(--tx3);align-items:center">
+<span>v4.0</span><span>&middot;</span><span>Stable</span><span>&middot;</span><span id="statusIndicator" style="color:var(--gn)">● Saved</span><span>&middot;</span><span id="saveTimeDisplay">—</span>
+</div>
+</div>
 <div class="tabs">
 <button class="tab on" data-t="gal">📚 المعرض</button>
 <button class="tab" data-t="ctl">⚙️ التحكم</button>
@@ -442,7 +459,7 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 <!-- Autosave indicator -->
 <div class="autosave-dot" id="autosaveDot"></div>
 <div id="toast"></div>
-<div id="statusBar" style="position:fixed;bottom:0;left:0;right:0;background:var(--s1);border-top:1px solid var(--bd);padding:4px 16px;display:flex;justify-content:space-between;font-size:.58em;color:var(--tx3);z-index:100"><span>Anki Design Studio v3.1</span><span id="modeIndicator">&#x1F7E2; Basic</span><span id="undoCount">0 changes</span></div>
+<div id="statusBar" style="position:fixed;bottom:0;left:0;right:0;background:var(--s1);border-top:1px solid var(--bd);padding:4px 16px;display:flex;justify-content:space-between;font-size:.58em;color:var(--tx3);z-index:100"><span>Anki Design Studio v4.0</span><span id="modeIndicator">&#x1F7E2; Basic</span><span id="undoCount">0 changes</span></div>
 
 <script>
 const SAMP={f:'Maison',a:'منزل',p:'Maisons',s:'Contrat',c:'Désabonnement'};
@@ -733,9 +750,9 @@ function hexToHSL(hex){var r=parseInt(hex.slice(1,3),16)/255,g=parseInt(hex.slic
 function hslToHex(h,s,l){s/=100;l/=100;var a=s*Math.min(l,1-l);function f(n){var k=(n+h/30)%12;var c=l-a*Math.max(Math.min(k-3,9-k,1),-1);return Math.round(255*c).toString(16).padStart(2,'0');}return '#'+f(0)+f(8)+f(4);}
 var _lastPalette=[];
 function generateColorPalette(){var base=S.cardBg||'#7c3aed';var hsl=hexToHSL(base);var p=[];for(var i=0;i<6;i++){var h=(hsl.h+i*60)%360;p.push(hslToHex(h,Math.max(40,hsl.s),Math.max(25,Math.min(75,hsl.l+(i%2?10:-10)))));}_lastPalette=p;var el=document.getElementById('colorGenPalette');if(el)el.innerHTML=p.map(function(c){return '<div style="width:28px;height:28px;border-radius:6px;background:'+c+';cursor:pointer;border:2px solid var(--bd)" onclick="setVal('+"'"+'cardBg'+"'"+',\''+c+'\')" title="'+c+'"></div>';}).join('');}
-function applyPaletteToCard(){if(_lastPalette.length>=4){S.cardBg=_lastPalette[0];S.frenchColor=_lastPalette[1];S.meaningColor=_lastPalette[2];S.meaningBg=_lastPalette[3]+'22';S.meaningBorder=_lastPalette[3];S.badgeNomBg=_lastPalette[4]+'22';S.badgeNomColor=_lastPalette[4];pushHist();renderCtrls();renderAll();toast('تم تطبيق اللوحة');}}
+function applyPaletteToCard(){if(_lastPalette.length>=4){S.cardBg=_lastPalette[0];S.frenchColor=_lastPalette[1];S.meaningColor=_lastPalette[2];S.meaningBg=_lastPalette[3]+'22';S.meaningBorder=_lastPalette[3];S.badgeNomBg=_lastPalette[4]+'22';S.badgeNomColor=_lastPalette[4];pushHist();renderCtrls();renderAll();setTimeout(addDocTooltips,50);toast('تم تطبيق اللوحة');}}
 function generateFromBase(){var pick=document.getElementById('baseColorPicker');var base=pick?pick.value:'#7c3aed';var hsl=hexToHSL(base);var p=[base];for(var i=1;i<6;i++){var h=(hsl.h+i*30)%360;p.push(hslToHex(h,Math.min(100,hsl.s+10),Math.min(90,hsl.l+i*8)));}var el=document.getElementById('basePalette');if(el)el.innerHTML=p.map(function(c,i){var k=i===0?'cardBg':i===1?'frenchColor':i===2?'meaningColor':i===3?'meaningBg':i===4?'badgeNomBg':'secBg';return '<div style="width:24px;height:24px;border-radius:5px;background:'+c+';cursor:pointer;border:2px solid var(--bd)" onclick="setVal(\''+k+'\',\''+c+'\')" title="'+c+'"></div>';}).join('');}
-function applyHarmony(type){var base=S.cardBg||'#7c3aed';var hsl=hexToHSL(base);var h=hsl.h,s=hsl.s,l=hsl.l;var harmonies={complementary:[(h+180)%360],analogous:[(h+30)%360,(h+60)%360],triadic:[(h+120)%360,(h+240)%360],'split-complementary':[(h+150)%360,(h+210)%360],tetradic:[(h+90)%360,(h+180)%360,(h+270)%360]};var cols=harmonies[type]||[];cols.unshift(h);var map=['cardBg','frenchColor','meaningColor','badgeNomBg','secBg'];cols.forEach(function(hue,i){if(i<map.length)S[map[i]]=hslToHex(hue,s,l);});pushHist();renderCtrls();renderAll();toast('تم تطبيق التناغم');}
+function applyHarmony(type){var base=S.cardBg||'#7c3aed';var hsl=hexToHSL(base);var h=hsl.h,s=hsl.s,l=hsl.l;var harmonies={complementary:[(h+180)%360],analogous:[(h+30)%360,(h+60)%360],triadic:[(h+120)%360,(h+240)%360],'split-complementary':[(h+150)%360,(h+210)%360],tetradic:[(h+90)%360,(h+180)%360,(h+270)%360]};var cols=harmonies[type]||[];cols.unshift(h);var map=['cardBg','frenchColor','meaningColor','badgeNomBg','secBg'];cols.forEach(function(hue,i){if(i<map.length)S[map[i]]=hslToHex(hue,s,l);});pushHist();renderCtrls();renderAll();setTimeout(addDocTooltips,50);toast('تم تطبيق التناغم');}
 
 function moveElement(dir,el){
   var order=S.elementOrder||['badge','french','separator','meaning','sections','page'];
@@ -744,7 +761,7 @@ function moveElement(dir,el){
   var ni=idx+el;
   if(ni<0||ni>=order.length)return;
   var t=order[idx];order[idx]=order[ni];order[ni]=t;
-  S.elementOrder=order;pushHist();renderCtrls();renderAll();
+  S.elementOrder=order;pushHist();renderCtrls();renderAll();setTimeout(addDocTooltips,50);
 }
 
 // NAVIGATION
@@ -1335,6 +1352,24 @@ function renderCtrls(){
   
   // 32. SAVE TIME DISPLAY
   h+="<div id=\"saveTimeDisplay\" style=\"text-align:center;font-size:var(--fs-xs);color:var(--tx3);padding:6px\">لم يُحفظ بعد</div>";
+
+  // === SMART SUGGESTIONS ===
+  h+=acc("💡 اقتراحات ذكية",renderSmartSuggestions(),false);
+  
+  // === PRESET MANAGER ===
+  h+=acc("📦 مكتبة الأنماط",renderPresetManager(),false);
+  
+  // === DIAGNOSTICS ===
+  h+=acc("🔍 تشخيص التصميم","<button class="btn bo bs" style="width:100%" onclick="runDiagnostics()">🔍 فحص التصميم الآن</button>",false);
+  
+  // === BACKUP MANAGER ===
+  h+=acc("💾 النسخ الاحتياطية",renderBackupManager(),false);
+  
+  // === EXPORT PROFILES ===
+  h+=acc("📤 ملفات التصدير",renderExportProfiles(),false);
+  
+  // === SAVE TIME ===
+  h+="<div id="saveTimeDisplay" style="text-align:center;font-size:var(--fs-xs);color:var(--tx3);padding:6px">—</div>";
   document.getElementById("ctrlArea").innerHTML=h;
 }
 
@@ -1344,23 +1379,23 @@ function updateCtlPreview(){const e=document.getElementById('ctlPreviewCard');if
 
 
 // PRESETS
-function applyColorPreset(i){const p=PRESETS.colors[i];if(!p)return;S.cardBg=p.bg;S.frenchColor=p.fc;S.meaningColor=p.mc;S.meaningBg=p.mb;S.meaningBorder=p.mbd;pushHist();renderCtrls();renderAll();}
-function applyStylePreset(i){const p=PRESETS.styles[i];if(!p)return;S.borderRadius=p.br;S.cardPadding=p.pd;S.cardShadow=p.sh;S.cardBorderWidth=p.bw;S.cardDirection=p.dir;S.cardAlign=p.al;S.cardGap=p.gap;pushHist();renderCtrls();renderAll();}
-function applyTextPreset(i){const p=PRESETS.texts[i];if(!p)return;S.frenchFontSize=p.fsFr;S.frenchFontWeight=p.fwFr;S.meaningFontSize=p.fsAr;S.meaningFontWeight=p.fwAr;pushHist();renderCtrls();renderAll();}
-function applyFontPreset(i){const p=PRESETS.fonts[i];if(!p)return;S.fontFrench=p.fr;S.fontArabic=p.ar;pushHist();renderCtrls();renderAll();}
+function applyColorPreset(i){const p=PRESETS.colors[i];if(!p)return;S.cardBg=p.bg;S.frenchColor=p.fc;S.meaningColor=p.mc;S.meaningBg=p.mb;S.meaningBorder=p.mbd;pushHist();renderCtrls();renderAll();setTimeout(addDocTooltips,50);}
+function applyStylePreset(i){const p=PRESETS.styles[i];if(!p)return;S.borderRadius=p.br;S.cardPadding=p.pd;S.cardShadow=p.sh;S.cardBorderWidth=p.bw;S.cardDirection=p.dir;S.cardAlign=p.al;S.cardGap=p.gap;pushHist();renderCtrls();renderAll();setTimeout(addDocTooltips,50);}
+function applyTextPreset(i){const p=PRESETS.texts[i];if(!p)return;S.frenchFontSize=p.fsFr;S.frenchFontWeight=p.fwFr;S.meaningFontSize=p.fsAr;S.meaningFontWeight=p.fwAr;pushHist();renderCtrls();renderAll();setTimeout(addDocTooltips,50);}
+function applyFontPreset(i){const p=PRESETS.fonts[i];if(!p)return;S.fontFrench=p.fr;S.fontArabic=p.ar;pushHist();renderCtrls();renderAll();setTimeout(addDocTooltips,50);}
 function randomDesign(){const t=TEMPLATES[Math.floor(Math.random()*TEMPLATES.length)];S={...JSON.parse(JSON.stringify(t.cfg)),_templateId:t.id};pushHist();renderAll();toast(t.nm);}
 function resetDesign(){S={...defCfg()};pushHist();renderAll();toast('تم إعادة الضبط');}
 function applyQuickDesign(i){QUICK_DESIGNS[i].apply();S._templateId='quick-'+i;pushHist();renderAll();toast(QUICK_DESIGNS[i].n);}
 
 // TEMPLATE MANAGEMENT
 function saveCustom(){const n=prompt('اسم القالب:');if(!n)return;const s=JSON.parse(localStorage.getItem('anki_custom')||'[]');s.push({name:n,cfg:{...S},date:Date.now()});localStorage.setItem('anki_custom',JSON.stringify(s));toast('تم الحفظ: '+n);renderSavedList();}
-function loadCustom(i){const s=JSON.parse(localStorage.getItem('anki_custom')||'[]');if(!s[i])return;S={...s[i].cfg};pushHist();renderCtrls();renderAll();toast(s[i].name);}
+function loadCustom(i){const s=JSON.parse(localStorage.getItem('anki_custom')||'[]');if(!s[i])return;S={...s[i].cfg};pushHist();renderCtrls();renderAll();setTimeout(addDocTooltips,50);toast(s[i].name);}
 function deleteCustom(i){const s=JSON.parse(localStorage.getItem('anki_custom')||'[]');s.splice(i,1);localStorage.setItem('anki_custom',JSON.stringify(s));renderSavedList();toast('تم الحذف');}
 function renderSavedList(){const s=JSON.parse(localStorage.getItem('anki_custom')||'[]');const e=document.getElementById('savedTplList');if(!e)return;if(!s.length){e.innerHTML='<div style="font-size:.65em;color:var(--tx3)">لا يوجد</div>';return;}e.innerHTML=s.map((x,i)=>'<div style="display:flex;align-items:center;gap:5px;padding:5px 7px;background:var(--s2);border-radius:5px;margin-bottom:3px;font-size:.68em"><span style="flex:1;font-weight:600">'+x.name+'</span><button class="btn bo bs" onclick="loadCustom('+i+')">تحميل</button><button class="btn br bs" onclick="deleteCustom('+i+')">حذف</button></div>').join('');}
 
 // EXPORT / IMPORT
 function exportConfig(){const b=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='anki-design.json';a.click();toast('تم التصدير');}
-function importConfig(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=function(ev){try{const d=JSON.parse(ev.target.result);if(typeof d!=='object'||d===null){toast('ملف غير صحيح');return;}const validKeys=['cardBg','frenchColor','meaningColor','borderRadius','cardPadding','fontFrench','fontArabic','effect','deckName'];if(!validKeys.some(function(k){return k in d;})){toast('ملف غير صالح');return;}S=Object.assign({},defCfg(),d);pushHist();renderCtrls();renderAll();toast('تم الاستيراد');}catch(err){toast('ملف غير صحيح');}};r.readAsText(f);}
+function importConfig(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=function(ev){try{const d=JSON.parse(ev.target.result);if(typeof d!=='object'||d===null){toast('ملف غير صحيح');return;}const validKeys=['cardBg','frenchColor','meaningColor','borderRadius','cardPadding','fontFrench','fontArabic','effect','deckName'];if(!validKeys.some(function(k){return k in d;})){toast('ملف غير صالح');return;}S=Object.assign({},defCfg(),d);pushHist();renderCtrls();renderAll();setTimeout(addDocTooltips,50);toast('تم الاستيراد');}catch(err){toast('ملف غير صحيح');}};r.readAsText(f);}
 
 // FULLSCREEN PREVIEW
 function renderFullscreen(){const t=getFilteredTemplates()[curTplIdx]||TEMPLATES[0];const c=document.getElementById('fsCard');const i=document.getElementById('fsInfo');const n=document.getElementById('fsCounter');if(c)c.innerHTML=renderCardHTML(t.cfg);if(i)i.textContent=t.nm+' — '+t.en;if(n)n.textContent=(curTplIdx+1)+' / '+getFilteredTemplates().length;}
@@ -1528,6 +1563,472 @@ async function downloadAPKG(){
   }catch(e){if(di)di.textContent='خطأ: '+e.message;}finally{if(ld)ld.style.display='none';}
 }
 
+
+// ============================================================
+// 1. DOCUMENTATION TOOLTIPS
+// ============================================================
+var PROP_DOCS = {
+  'cardBg': {tip:'خلفية البطاقة — اللون الرئيسي',use:'لتحديد لون البطاقة الأساسي',example:'#ffffff أو #1a1a2e'},
+  'cardBg2': {tip:'اللون الثانوي — للتدرج اللوني',use:'يُستخدم مع الاتجاه لعمل تدرج',example:'اتركه فاضي للون واحد'},
+  'bgGradientDir': {tip:'اتجاه التدرج',use:'من أين إلى أين يمشي التدرج',example:'135deg = من أعلى اليمين لأسفل اليسار'},
+  'borderRadius': {tip:'استدارة الزوايا',use:'0 = مربع،越大 = أكثر استدارة',example:'16 = أنيق، 50 = دائري'},
+  'cardPadding': {tip:'الحشو الداخلي',use:'المسافة بين المحتوى وحدود البطاقة',example:'28 = مريح، 40 = واسع'},
+  'cardGap': {tip:'المسافة بين العناصر',use:'المسافة العمودية بين الكلمة والمعنى',example:'10 = ضيق، 24 = واسع'},
+  'cardMinHeight': {tip:'الحد الأدنى للارتفاع',use:'ارتفاع البطاقة الأدنى بالبكسل',example:'300 = عادي، 400 = طويل'},
+  'previewWidth': {tip:'عرض البطاقة',use:'عرض البطاقة بالبكسل',example:'380 = عادي للجوال، 500 = للكمبيوتر'},
+  'frenchColor': {tip:'لون الكلمة الفرنسية',use:'اللون الرئيسي للكلمة',example:'#1e293b = داكن، #ffffff = فاتح'},
+  'frenchFontSize': {tip:'حجم الخط الفرنسي',use:'حجم خط الكلمة الفرنسية',example:'2.4 = عادي، 3.5 = كبير'},
+  'frenchFontWeight': {tip:'وزن الخط الفرنسي',use:'رفيق (100) إلى سميك (900)',example:'900 = سميك جداً'},
+  'frenchLetterSpacing': {tip:'تباعد الخط',use:'المسافة بين الحروف الفرنسية',example:'0 = عادي، 2 = واسع'},
+  'frenchLineHeight': {tip:'ارتفاع السطر',use:'ارتفاع سطر الكلمة الفرنسية',example:'1.2 = عادي، 1.5 = مريح'},
+  'meaningColor': {tip:'لون المعنى',use:'لون الترجمة العربية',example:'#1e40af = أزرق، #333 = رمادي'},
+  'meaningFontSize': {tip:'حجم الخط العربي',use:'حجم خط المعنى',example:'1.5 = عادي، 2.0 = كبير'},
+  'meaningFontWeight': {tip:'وزن الخط العربي',use:'وزن خط المعنى',example:'800 = سميك'},
+  'meaningBg': {tip:'خلفية المعنى',use:'خلفية منطقة المعنى',example:'#eff6ff = أزرق فاتح، transparent = شفاف'},
+  'meaningBorder': {tip:'حدود المعنى',use:'لون حدود منطقة المعنى',example:'#bfdbfe = أزرق فاتح'},
+  'meaningBorderRadius': {tip:'استدارة حدود المعنى',use:'استدارة زوايا منطقة المعنى',example:'16 = أنيق، 0 = مربع'},
+  'meaningBorderWidth': {tip:'سمك حدود المعنى',use:'سمك حدود منطقة المعنى',example:'0 = بدون، 2 = خفيف'},
+  'effect': {tip:'تأثير البطاقة',use:'تأثيرات حركية على البطاقة',example:'glow = توهج، pulse = نبض، neon = نيون'},
+  'cardShadow': {tip:'ظل البطاقة',use:'ظل خارجي للبطاقة',example:'0 4px 16px rgba(0,0,0,.1) = خفيف'},
+  'cardBorderWidth': {tip:'سمك الحد',use:'سمك حد البطاقة الخارجي',example:'0 = بدون، 2 = خفيف'},
+  'cardBorderColor': {tip:'لون الحد',use:'لون حد البطاقة',example:'#e2e8f0 = رمادي فاتح'},
+  'fontFrench': {tip:'الخط الفرنسي',use:'الخط المستخدم للكلمة الفرنسية',example:'Inter = حديث، Playfair = كلاسيكي'},
+  'fontArabic': {tip:'الخط العربي',use:'الخط المستخدم للترجمة',example:'Noto Sans Arabic = حديث، Amiri = كلاسيكي'},
+  'cardDirection': {tip:'اتجاه التخطيط',use:'عمودي أو أفقي',example:'column = عادي، row = أفقي'},
+  'cardAlign': {tip:'المحاذاة',use:'أين تبدأ العناصر',example:'center = وسط، flex-start = أعلى'},
+  'cardClipPath': {tip:'شكل البطاقة',use:'قص البطاقة بشكل مخصص',example:'circle(50%) = دائري، فاضي = عادي'},
+  'customCSS': {tip:'CSS مخصص',use:'أضف أي CSS يدوي',example:'.card { border: 2px solid red; }'},
+  'speakerIcon': {tip:'أيقونة الصوت',use:'أيقونة زر الصوت',example:'🔊 = صوت، 🔇 = صامت'},
+  'speakerBg': {tip:'خلفية زر الصوت',use:'لون خلفية زر الصوت',example:'rgba(124,58,237,.2) = بنفسجي شفاف'},
+  'speakerColor': {tip:'لون أيقونة الصوت',use:'لون أيقونة الزر',example:'#ffffff = أبيض'},
+  'separatorStyle': {tip:'نمط الفاصل',use:'شكل الخط الفاصل بين الكلمة والمعنى',example:'none = بدون، solid = خط صلب'},
+  'separatorWidth': {tip:'سمك الفاصل',use:'سمك الخط الفاصل',example:'1 = رفيع، 3 = سميك'},
+  'separatorColor': {tip:'لون الفاصل',use:'لون الخط الفاصل',example:'#e2e8f0 = رمادي فاتح'},
+  'showBadge': {tip:'إظهار الشارات',use:'إظهار/إخفاء شارة Nom',example:'true = ظاهر، false = مخفي'},
+  'showMeaning': {tip:'إظهار المعنى',use:'إظهار/إخفاء الترجمة',example:'true = ظاهر، false = مخفي'},
+  'showPage': {tip:'إظهار الصفحة',use:'إظهار/إخفاء رقم الصفحة',example:'true = ظاهر، false = مخفي'},
+  'bgPattern': {tip:'نمط الخلفية',use:'إضافة نمط على الخلفية',example:'dots = نقاط، lines = خطوط، none = بدون'},
+  'bgPatternSize': {tip:'حجم النمط',use:'حجم عناصر النمط',example:'10 = صغير، 30 = كبير'},
+  'bgPatternColor': {tip:'لون النمط',use:'لون عناصر النمط',example:'rgba(0,0,0,.05) = خفيف جداً'},
+  'mixBlendMode': {tip:'وضع الدمج',use:'كيف يتفاعل اللون مع الخلفية',example:'multiply = ضرب، screen = شاشة'},
+  'backdropFilter': {tip:'فلتر الخلفية',use:'تأثيرات على ما وراء البطاقة',example:'blur(10px) = تمويه'},
+  'objectFit': {tip:'ملء الكائن',use:'كيف يملأ الصورة المنطقة',example:'cover = تغطية، contain = احتواء'},
+  'isolation': {tip:'عزل',use:'عزل البطاقة عن العناصر الأخرى',example:'isolate = معزول'},
+  'transformOrigin': {tip:'مصدر التحويل',use:'نقطة بداية التحويلات',example:'center = وسط'},
+  'willChange': {tip:'تغيير مستقبلي',use:'تحسين الأداء للتأثيرات القادمة',example:'transform = للتحويلات، opacity = للشفافية'},
+  'pointerEvents': {tip:'أحداث المؤشر',use:'هل يستجيب البطاقة للنقر',example:'auto = عادي، none = معطّل'},
+  'userSelect': {tip:'تحديد المستخدم',use:'هل يمكن تحديد النص',example:'none = معطّل، auto = عادي'},
+  'previewWidth': {tip:'عرض البطاقة',use:'عرض البطاقة بالبكسل',example:'380 = عادي، 500 = واسع'}
+};
+
+function addDocTooltips(){
+  document.querySelectorAll('.ct .cl-b').forEach(function(el){
+    var txt = el.textContent.trim();
+    // Find matching doc key
+    Object.keys(PROP_DOCS).forEach(function(key){
+      if(txt.indexOf(PROP_DOCS[key].tip.split(' — ')[0]) >= 0 || txt.indexOf(key) >= 0){
+        if(!el.querySelector('.doc-tip')){
+          var icon = document.createElement('span');
+          icon.className = 'doc-tip';
+          icon.style.cssText = 'cursor:help;color:var(--tx3);font-size:.75em;margin-right:4px;vertical-align:middle;opacity:.6;transition:opacity .2s';
+          icon.textContent = 'ⓘ';
+          icon.title = PROP_DOCS[key].tip + '\n\n📌 متى تستخدم:\n' + PROP_DOCS[key].use + '\n\n💡 مثال:\n' + PROP_DOCS[key].example;
+          icon.onmouseenter = function(){ this.style.opacity = '1'; this.style.color = 'var(--ac)'; };
+          icon.onmouseleave = function(){ this.style.opacity = '.6'; this.style.color = 'var(--tx3)'; };
+          el.insertBefore(icon, el.firstChild);
+        }
+      }
+    });
+  });
+}
+
+// ============================================================
+// 2. SMART SUGGESTIONS
+// ============================================================
+function renderSmartSuggestions(){
+  var suggestions = [];
+  
+  // Analyze current design and suggest improvements
+  if(S.frenchFontSize > 3 && S.meaningFontSize < 1){
+    suggestions.push({icon:'📐',text:'الخط الفرنسي كبير جداً مقارنة بالعربي — زِد حجم العربي',fix:function(){S.meaningFontSize=1.8;pushHist();renderCtrls();renderAll();setTimeout(addDocTooltips,50);}});
+  }
+  if(S.cardBg === '#ffffff' && S.frenchColor === '#1e293b'){
+    suggestions.push({icon:'🎨',text:'تصميم أبيض كلاسيكي — جرب "عصري أزرق" للتميز',fix:function(){selectTemplate('modern-1');}});
+  }
+  if(!S.cardShadow || S.cardShadow === 'none'){
+    suggestions.push({icon:'🔲',text:'لا يوجد ظل — أضف ظلاً خفيفاً للعمق',fix:function(){S.cardShadow='0 4px 16px rgba(0,0,0,.1)';pushHist();renderCtrls();renderAll();setTimeout(addDocTooltips,50);}});
+  }
+  if(S.frenchAnim === 'none' && S.meaningAnim === 'none'){
+    suggestions.push({icon:'✨',text:'لا توجد حركات — أضف حركة خفيفة للحيوية',fix:function(){S.frenchAnim='fadeIn';S.meaningAnim='slideUp';pushHist();renderCtrls();renderAll();setTimeout(addDocTooltips,50);}});
+  }
+  if(S.cardPadding < 16){
+    suggestions.push({icon:'📐',text:'الحشو صغير جداً — زِده لتحسين المظهر',fix:function(){S.cardPadding=28;pushHist();renderCtrls();renderAll();setTimeout(addDocTooltips,50);}});
+  }
+  if(!S.meaningBg || S.meaningBg === 'transparent'){
+    suggestions.push({icon:'📖',text:'المعنى بدون خلفية — أضف خلفية فاتحة للتمييز',fix:function(){S.meaningBg='#eff6ff';pushHist();renderCtrls();renderAll();setTimeout(addDocTooltips,50);}});
+  }
+  if(S.fontFrench === 'Inter' && S.fontArabic === 'Noto Sans Arabic'){
+    suggestions.push({icon:'📝',text:'خطوط افتراضية — جرب خطوطاً مختلفة للتميز',fix:function(){S.fontFrench='Playfair Display';S.fontArabic='Amiri';pushHist();renderCtrls();renderAll();setTimeout(addDocTooltips,50);}});
+  }
+  
+  if(suggestions.length === 0){
+    return '<div style="text-align:center;padding:12px;color:var(--gn);font-size:var(--fs-sm)">✅ تصميمك ممتاز!</div>';
+  }
+  
+  var html = '<div style="font-size:var(--fs-sm);color:var(--tx2);margin-bottom:6px">💡 اقتراحات ذكية</div>';
+  suggestions.forEach(function(s){
+    html += '<div style="display:flex;align-items:center;gap:8px;padding:6px 8px;background:var(--s2);border-radius:var(--br-sm);margin-bottom:4px;font-size:var(--fs-sm)">';
+    html += '<span style="font-size:1em">' + s.icon + '</span>';
+    html += '<span style="flex:1">' + s.text + '</span>';
+    html += '<button class="btn bo bs" style="padding:2px 6px;font-size:.6em" onclick="applySuggestion(' + suggestions.indexOf(s) + ')">تطبيق</button>';
+    html += '</div>';
+  });
+  
+  // Store suggestions for apply function
+  window._smartSuggestions = suggestions;
+  
+  return html;
+}
+
+function applySuggestion(idx){
+  if(window._smartSuggestions && window._smartSuggestions[idx]){
+    window._smartSuggestions[idx].fix();
+    toast('تم تطبيق الاقتراح');
+  }
+}
+
+// ============================================================
+// 3. PRESET MANAGER
+// ============================================================
+function renderPresetManager(){
+  var presets = JSON.parse(localStorage.getItem('anki_user_presets') || '[]');
+  
+  var html = '<div style="font-size:var(--fs-sm);color:var(--tx2);margin-bottom:6px">📦 مكتبة الأنماط المخصصة</div>';
+  
+  // Save current as preset
+  html += '<div style="display:flex;gap:4px;margin-bottom:8px">';
+  html += '<input class="tx" id="newPresetName" placeholder="اسم النمط الجديد" style="flex:1;font-size:var(--fs-sm)">';
+  html += '<button class="btn ba bs" onclick="saveUserPreset()">💾 حفظ</button>';
+  html += '</div>';
+  
+  // List saved presets
+  if(presets.length === 0){
+    html += '<div style="text-align:center;padding:8px;color:var(--tx3);font-size:var(--fs-sm)">لا توجد أنماط محفوظة</div>';
+  }else{
+    presets.forEach(function(p, i){
+      html += '<div style="display:flex;align-items:center;gap:6px;padding:6px 8px;background:var(--s2);border-radius:var(--br-sm);margin-bottom:3px">';
+      html += '<span style="flex:1;font-size:var(--fs-sm);font-weight:600">' + p.name + '</span>';
+      html += '<button class="btn bo bs" style="padding:2px 6px;font-size:.6em" onclick="loadUserPreset(' + i + ')">تحميل</button>';
+      html += '<button class="btn br bs" style="padding:2px 6px;font-size:.6em" onclick="deleteUserPreset(' + i + ')">حذف</button>';
+      html += '</div>';
+    });
+  }
+  
+  // Quick presets from built-in
+  html += '<div style="margin-top:8px;font-size:var(--fs-xs);color:var(--tx3);margin-bottom:4px">أنماط سريعة:</div>';
+  html += '<div style="display:flex;gap:3px;flex-wrap:wrap">';
+  html += '<button class="btn bo bs" onclick="quickPreset(\'dark\')">🌙 داكن</button>';
+  html += '<button class="btn bo bs" onclick="quickPreset(\'light\')">☀️ فاتح</button>';
+  html += '<button class="btn bo bs" onclick="quickPreset(\'neon\')">⚡ نيون</button>';
+  html += '<button class="btn bo bs" onclick="quickPreset(\'glass\')">💎 زجاجي</button>';
+  html += '<button class="btn bo bs" onclick="quickPreset(\'minimal\')">◻️ بسيط</button>';
+  html += '</div>';
+  
+  return html;
+}
+
+function saveUserPreset(){
+  var nameEl = document.getElementById('newPresetName');
+  var name = nameEl ? nameEl.value.trim() : '';
+  if(!name){toast('أدخل اسم النمط');return;}
+  
+  var presets = JSON.parse(localStorage.getItem('anki_user_presets') || '[]');
+  presets.push({name: name, config: JSON.parse(JSON.stringify(S)), date: Date.now()});
+  localStorage.setItem('anki_user_presets', JSON.stringify(presets));
+  toast('تم حفظ: ' + name);
+  renderCtrls();
+}
+
+function loadUserPreset(idx){
+  var presets = JSON.parse(localStorage.getItem('anki_user_presets') || '[]');
+  if(!presets[idx])return;
+  S = Object.assign({}, defCfg(), presets[idx].config);
+  pushHist();
+  renderCtrls();
+  renderAll();
+  toast('تم تحميل: ' + presets[idx].name);
+}
+
+function deleteUserPreset(idx){
+  var presets = JSON.parse(localStorage.getItem('anki_user_presets') || '[]');
+  var name = presets[idx] ? presets[idx].name : '';
+  presets.splice(idx, 1);
+  localStorage.setItem('anki_user_presets', JSON.stringify(presets));
+  toast('تم حذف: ' + name);
+  renderCtrls();
+}
+
+function quickPreset(type){
+  var presets = {
+    dark: {cardBg:'#0f172a',cardBg2:'#1e293b',frenchColor:'#e2e8f0',meaningColor:'#818cf8',meaningBg:'rgba(99,102,241,.1)',meaningBorder:'rgba(99,102,241,.3)',labelColor:'#666',secBg:'rgba(255,255,255,.05)',secBorder:'rgba(255,255,255,.1)',secTextColor:'#ccc'},
+    light: {cardBg:'#ffffff',cardBg2:'',frenchColor:'#1e293b',meaningColor:'#1e40af',meaningBg:'#eff6ff',meaningBorder:'#bfdbfe',labelColor:'#999'},
+    neon: {cardBg:'#0a0a0a',frenchColor:'#00ff88',meaningColor:'#00ccff',meaningBg:'rgba(0,255,136,.05)',meaningBorder:'rgba(0,255,136,.2)',effect:'neon'},
+    glass: {cardBg:'rgba(255,255,255,.1)',frenchColor:'#ffffff',meaningColor:'rgba(255,255,255,.8)',meaningBg:'rgba(255,255,255,.05)',meaningBorder:'rgba(255,255,255,.15)',cardBgBlur:20},
+    minimal: {cardBg:'#ffffff',frenchColor:'#0f172a',meaningColor:'#64748b',meaningBg:'transparent',meaningBorder:'none',meaningBorderWidth:0,cardShadow:'none',borderRadius:0,cardBorderWidth:1,cardBorderColor:'#e2e8f0'}
+  };
+  if(!presets[type])return;
+  S = Object.assign({}, defCfg(), presets[type]);
+  pushHist();
+  renderCtrls();
+  renderAll();
+  toast('تم تطبيق: ' + type);
+}
+
+// ============================================================
+// 4. DIAGNOSTICS
+// ============================================================
+function runDiagnostics(){
+  var issues = [];
+  var warnings = [];
+  var tips = [];
+  
+  // Check contrast
+  if(S.frenchColor && S.cardBg){
+    var fg = getContrastRatio(S.frenchColor, S.cardBg);
+    if(fg < 3) issues.push({sev:'error', msg:'تباين منخفض للكلمة الفرنسية (' + fg.toFixed(1) + ':1) — صعب القراءة'});
+    else if(fg < 4.5) warnings.push({sev:'warn', msg:'تباين مقبول للكلمة الفرنسية (' + fg.toFixed(1) + ':1) — يمكن تحسينه'});
+  }
+  
+  // Check font sizes
+  if(S.frenchFontSize < 1) warnings.push({sev:'warn', msg:'حجم الخط الفرنسي صغير جداً — قد لا يُقرأ'});
+  if(S.meaningFontSize < 0.8) warnings.push({sev:'warn', msg:'حجم الخط العربي صغير جداً'});
+  
+  // Check padding
+  if(S.cardPadding < 12) warnings.push({sev:'warn', msg:'الحشو صغير — البطاقة تبدو مزدحمة'});
+  
+  // Check gap
+  if(S.cardGap < 4) warnings.push({sev:'warn', msg:'المسافة بين العناصر صغيرة جداً'});
+  
+  // Check border radius consistency
+  if(S.borderRadius > 0 && S.meaningBorderRadius === 0){
+    tips.push({sev:'info', msg:'استدارة البطاقة ' + S.borderRadius + 'px لكن المعنى بدون استدارة — غير متناسق'});
+  }
+  
+  // Check animation performance
+  if(S.frenchAnim && S.frenchAnim !== 'none' && S.cardBgBlur > 10){
+    tips.push({sev:'info', msg:'حركات + تمويه عالي = قد يؤثر على الأداء'});
+  }
+  
+  // Check unused features
+  if(!S.showBadge && !S.showMeaning && !S.showPage){
+    warnings.push({sev:'warn', msg:'كل العناصر مخفية — البطاقة ستكون فاضية'});
+  }
+  
+  // Check custom CSS
+  if(S.customCSS && S.customCSS.length > 500){
+    tips.push({sev:'info', msg:'CSS مخصص طويل — تأكد من عدم تكرار الخصائص'});
+  }
+  
+  // Build report
+  var html = '<div class="score-panel">';
+  html += '<div style="font-size:var(--fs-lg);font-weight:800;color:var(--ac2);margin-bottom:10px">🔍 تشخيص التصميم</div>';
+  
+  if(issues.length === 0 && warnings.length === 0){
+    html += '<div style="text-align:center;padding:12px;color:var(--gn);font-size:var(--fs-sm)">✅ لا توجد مشاكل!</div>';
+  }
+  
+  if(issues.length > 0){
+    html += '<div style="font-size:var(--fs-xs);font-weight:700;color:var(--rd);margin-bottom:4px">❌ مشاكل (' + issues.length + ')</div>';
+    issues.forEach(function(i){
+      html += '<div style="padding:6px 8px;background:var(--rd-bg);border-radius:var(--br-sm);margin-bottom:3px;font-size:var(--fs-sm);color:var(--rd)">' + i.msg + '</div>';
+    });
+  }
+  
+  if(warnings.length > 0){
+    html += '<div style="font-size:var(--fs-xs);font-weight:700;color:var(--warn);margin:8px 0 4px">⚠️ تحذيرات (' + warnings.length + ')</div>';
+    warnings.forEach(function(w){
+      html += '<div style="padding:6px 8px;background:var(--warn-bg);border-radius:var(--br-sm);margin-bottom:3px;font-size:var(--fs-sm);color:var(--warn)">' + w.msg + '</div>';
+    });
+  }
+  
+  if(tips.length > 0){
+    html += '<div style="font-size:var(--fs-xs);font-weight:700;color:var(--ac2);margin:8px 0 4px">💡 نصائح (' + tips.length + ')</div>';
+    tips.forEach(function(t){
+      html += '<div style="padding:6px 8px;background:var(--ac-bg);border-radius:var(--br-sm);margin-bottom:3px;font-size:var(--fs-sm);color:var(--ac2)">' + t.msg + '</div>';
+    });
+  }
+  
+  html += '</div>';
+  
+  // Show in modal
+  var panel = document.createElement('div');
+  panel.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)';
+  panel.onclick = function(e){ if(e.target === panel) panel.remove(); };
+  panel.innerHTML = '<div style="max-width:400px;width:90%;max-height:70vh;overflow-y:auto">' + html + '<div style="text-align:center;margin-top:8px"><button class="btn ba bs" onclick="this.closest(\'div[style*=fixed]\').remove()">إغلاق</button></div></div>';
+  document.body.appendChild(panel);
+}
+
+function getContrastRatio(hex1, hex2){
+  function hexToRgb(h){
+    h = h.replace('#','');
+    if(h.length === 3) h = h[0]+h[0]+h[1]+h[1]+h[2]+h[2];
+    return [parseInt(h.substr(0,2),16), parseInt(h.substr(2,2),16), parseInt(h.substr(4,2),16)];
+  }
+  function luminance(r,g,b){
+    var a = [r,g,b].map(function(v){v/=255;return v<=0.03928?v/12.92:Math.pow((v+0.055)/1.055,2.4);});
+    return a[0]*0.2126+a[1]*0.7152+a[2]*0.0722;
+  }
+  try{
+    var c1 = hexToRgb(hex1);
+    var c2 = hexToRgb(hex2);
+    var l1 = luminance(c1[0],c1[1],c1[2]);
+    var l2 = luminance(c2[0],c2[1],c2[2]);
+    var ratio = (Math.max(l1,l2)+0.05)/(Math.min(l1,l2)+0.05);
+    return ratio;
+  }catch(e){return 7;}
+}
+
+// ============================================================
+// 5. BACKUP MANAGER
+// ============================================================
+function renderBackupManager(){
+  var backups = JSON.parse(localStorage.getItem('anki_backups') || '[]');
+  
+  var html = '<div style="font-size:var(--fs-sm);color:var(--tx2);margin-bottom:6px">💾 النسخ الاحتياطية</div>';
+  
+  // Create backup button
+  html += '<button class="btn ba bs" style="width:100%;margin-bottom:8px" onclick="createBackup()">📥 إنشاء نسخة احتياطية الآن</button>';
+  
+  // List backups
+  if(backups.length === 0){
+    html += '<div style="text-align:center;padding:8px;color:var(--tx3);font-size:var(--fs-sm)">لا توجد نسخ احتياطية</div>';
+  }else{
+    backups.slice().reverse().forEach(function(b, i){
+      var realIdx = backups.length - 1 - i;
+      var date = new Date(b.date);
+      var dateStr = date.toLocaleDateString('ar') + ' ' + date.toLocaleTimeString('ar', {hour:'2-digit',minute:'2-digit'});
+      var size = Math.round(JSON.stringify(b.config).length / 1024 * 10) / 10;
+      html += '<div style="display:flex;align-items:center;gap:6px;padding:6px 8px;background:var(--s2);border-radius:var(--br-sm);margin-bottom:3px">';
+      html += '<span style="flex:1;font-size:var(--fs-sm)">' + dateStr + '</span>';
+      html += '<span style="font-size:var(--fs-xs);color:var(--tx3)">' + size + 'KB</span>';
+      html += '<button class="btn bo bs" style="padding:2px 6px;font-size:.6em" onclick="restoreBackup(' + realIdx + ')">استعادة</button>';
+      html += '<button class="btn br bs" style="padding:2px 6px;font-size:.6em" onclick="deleteBackup(' + realIdx + ')">حذف</button>';
+      html += '</div>';
+    });
+  }
+  
+  // Max backups info
+  html += '<div style="font-size:var(--fs-xs);color:var(--tx3);margin-top:6px;text-align:center">الحد الأقصى: 10 نسخ احتياطية</div>';
+  
+  return html;
+}
+
+function createBackup(){
+  var backups = JSON.parse(localStorage.getItem('anki_backups') || '[]');
+  backups.push({config: JSON.parse(JSON.stringify(S)), date: Date.now()});
+  if(backups.length > 10) backups = backups.slice(-10);
+  localStorage.setItem('anki_backups', JSON.stringify(backups));
+  toast('تم إنشاء نسخة احتياطية');
+  renderCtrls();
+}
+
+function restoreBackup(idx){
+  var backups = JSON.parse(localStorage.getItem('anki_backups') || '[]');
+  if(!backups[idx])return;
+  S = Object.assign({}, defCfg(), backups[idx].config);
+  pushHist();
+  renderCtrls();
+  renderAll();
+  toast('تمت الاستعادة');
+}
+
+function deleteBackup(idx){
+  var backups = JSON.parse(localStorage.getItem('anki_backups') || '[]');
+  backups.splice(idx, 1);
+  localStorage.setItem('anki_backups', JSON.stringify(backups));
+  toast('تم الحذف');
+  renderCtrls();
+}
+
+// ============================================================
+// 6. EXPORT PROFILES
+// ============================================================
+function renderExportProfiles(){
+  var html = '<div style="font-size:var(--fs-sm);color:var(--tx2);margin-bottom:6px">📤 ملفات التصدير الجاهزة</div>';
+  
+  var profiles = [
+    {name:'📦 الحد الأقصى للتوافق',desc:'يتجنب الميزات غير المدعومة',action:'exportProfile("compat")',icon:'📦'},
+    {name:'🪶 خفيف',desc:'بدون حركات وتأثيرات',action:'exportProfile("light")',icon:'🪶'},
+    {name:'✨ جميل الكود',desc:'كود منسق ومقروء',action:'exportProfile("pretty")',icon:'✨'},
+    {name:'🗜️ مضغوط',desc:'أقل حجم ممكن',action:'exportProfile("minified")',icon:'🗜️'},
+  ];
+  
+  profiles.forEach(function(p){
+    html += '<div style="display:flex;align-items:center;gap:8px;padding:8px;background:var(--s2);border-radius:var(--br-sm);margin-bottom:4px;cursor:pointer" onclick="' + p.action + '">';
+    html += '<span style="font-size:1.1em">' + p.icon + '</span>';
+    html += '<div><div style="font-size:var(--fs-sm);font-weight:600">' + p.name + '</div>';
+    html += '<div style="font-size:var(--fs-xs);color:var(--tx3)">' + p.desc + '</div></div>';
+    html += '</div>';
+  });
+  
+  return html;
+}
+
+function exportProfile(type){
+  var config = JSON.parse(JSON.stringify(S));
+  
+  switch(type){
+    case 'compat':
+      // Remove unsupported features
+      delete config.cardClipPath;
+      delete config.backdropFilter;
+      delete config.mixBlendMode;
+      delete config.cardBgBlur;
+      config.cardShadow = 'none';
+      config.frenchAnim = 'none';
+      config.meaningAnim = 'none';
+      toast('تم التصدير — الحد الأقصى للتوافق');
+      break;
+    case 'light':
+      // Remove animations and effects
+      config.frenchAnim = 'none';
+      config.meaningAnim = 'none';
+      config.badgeAnim = 'none';
+      config.secAnim = 'none';
+      config.effect = 'none';
+      config.cardBgBlur = 0;
+      toast('تم التصدير — خفيف');
+      break;
+    case 'pretty':
+      toast('تم التصدير — جميل الكود');
+      break;
+    case 'minified':
+      toast('تم التصدير — مضغوط');
+      break;
+  }
+  
+  var blob = new Blob([JSON.stringify(config, null, type === 'minified' ? 0 : 2)], {type: 'application/json'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'anki-' + type + '.json';
+  a.click();
+}
+
+// ============================================================
+// 7. SETTINGS MODAL
+// ============================================================
+function showSettingsModal(){
+  var html = '<div class="score-panel">';
+  html += '<div style="font-size:var(--fs-lg);font-weight:800;color:var(--ac2);margin-bottom:12px">⚙️ إعدادات التطبيق</div>';
+  html += renderSettingsPage();
+  html += '</div>';
+  
+  var panel = document.createElement('div');
+  panel.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)';
+  panel.onclick = function(e){ if(e.target === panel) panel.remove(); };
+  panel.innerHTML = '<div style="max-width:400px;width:90%;max-height:70vh;overflow-y:auto">' + html + '<div style="text-align:center;margin-top:8px"><button class="btn ba bs" onclick="this.closest(\'div[style*=fixed]\').remove()">إغلاق</button></div></div>';
+  document.body.appendChild(panel);
+}
 // INIT
 // MODE SYSTEM
 var currentMode='basic';
@@ -1600,7 +2101,7 @@ window.addEventListener('load',()=>{
   setupAutosave();
   document.addEventListener('contextmenu',showContextMenu);
   if(window.speechSynthesis){speechSynthesis.onvoiceschanged=()=>initTTS();initTTS();}
-  pushHist();renderFilt();renderGrid();renderCtrls();updateCtlPreview();
+  pushHist();renderFilt();renderGrid();renderCtrls();updateCtlPreview();setTimeout(addDocTooltips,100);
 });
 
 // ============================================================
@@ -2067,7 +2568,7 @@ function renderOnboardStep(){
 // WHAT'S NEW
 // ============================================================
 function showWhatsNew(){
-  var html='<h2>🆕 ما الجديد في v3.1</h2>';
+  var html='<h2>🆕 ما الجديد في v4.0</h2>';
   var items=[
     {icon:'⌨️',text:'لوحة أوامر (Ctrl+Shift+P) — ابحث عن أي أمر أو خاصية بسرعة'},
     {icon:'🔍',text:'بحث في الخصائص — اجد أي إعداد بسرعة'},
@@ -2253,7 +2754,7 @@ function toggleLayerVisibility(layer){
   var key='show'+layer.charAt(0).toUpperCase()+layer.slice(1);
   if(typeof S[key]==='undefined')S[key]=true;
   S[key]=!S[key];
-  pushHist();renderCtrls();renderAll();
+  pushHist();renderCtrls();renderAll();setTimeout(addDocTooltips,50);
   toast(S[key]?'تم إظهار: '+layer:'تم إخفاء: '+layer);
 }
 
@@ -2514,7 +3015,7 @@ function restoreHistory(idx){
   if(idx>=0&&idx<hist.length){
     histIdx=idx;
     S=Object.assign({},defCfg(),JSON.parse(JSON.stringify(hist[idx])));
-    renderCtrls();renderAll();updateUndoCount();
+    renderCtrls();renderAll();setTimeout(addDocTooltips,50);updateUndoCount();
     toast('تم الرجوع للتغيير #'+(idx+1));
   }
 }
@@ -2910,7 +3411,7 @@ function borderPreset(type){
       S.cardBorderWidth=0;
       break;
   }
-  pushHist();renderCtrls();renderAll();
+  pushHist();renderCtrls();renderAll();setTimeout(addDocTooltips,50);
   toast('تم تطبيق الحدود');
 }
 
@@ -3045,7 +3546,7 @@ function layoutPreset(type){
       S.cardDirection='row';S.cardAlign='center';S.cardAlignCross='center';S.cardGap=16;S.cardPadding=24;
       break;
   }
-  pushHist();renderCtrls();renderAll();
+  pushHist();renderCtrls();renderAll();setTimeout(addDocTooltips,50);
   toast('تم تطبيق: '+type);
 }
 
@@ -3131,7 +3632,7 @@ function importFromJSON(e){
       var d=JSON.parse(ev.target.result);
       if(d.config){S=Object.assign({},defCfg(),d.config);}
       else{S=Object.assign({},defCfg(),d);}
-      pushHist();renderCtrls();renderAll();
+      pushHist();renderCtrls();renderAll();setTimeout(addDocTooltips,50);
       toast('تم استيراد JSON');
     }catch(err){toast('خطأ: ملف غير صحيح');}
   };
@@ -3160,7 +3661,7 @@ function importFromHTML(e){
         if(props['padding'])S.cardPadding=parseInt(props['padding']);
         if(props['font-family'])S.fontFrench=props['font-family'].split(',')[0].trim().replace(/'/g,'');
         if(props['color'])S.frenchColor=props['color'];
-        pushHist();renderCtrls();renderAll();
+        pushHist();renderCtrls();renderAll();setTimeout(addDocTooltips,50);
         toast('تم استيراد HTML');
       }else{toast('لم يتم العثور على CSS');}
     }catch(err){toast('خطأ في الاستيراد');}
@@ -3184,7 +3685,7 @@ function importFromCSS(e){
       if(props['border-radius'])S.borderRadius=parseInt(props['border-radius']);
       if(props['padding'])S.cardPadding=parseInt(props['padding']);
       if(props['color'])S.frenchColor=props['color'];
-      pushHist();renderCtrls();renderAll();
+      pushHist();renderCtrls();renderAll();setTimeout(addDocTooltips,50);
       toast('تم استيراد CSS');
     }catch(err){toast('خطأ في الاستيراد');}
   };
