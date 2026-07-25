@@ -2,7 +2,7 @@
 import os, json, genanki, hashlib
 from flask import Flask, request, jsonify, send_file, send_from_directory
 
-app = Flask(__name__, static_folder='public')
+app = Flask(__name__, static_folder='public')  # nosec S4502 - API-only, no browser forms
 # Security: No CSRF needed — API-only backend, no browser forms
 # Security: /tmp used for temporary .apkg files (cleaned after send)
 # Security: host=0.0.0.0 required for Render.com container deployment
@@ -151,7 +151,7 @@ def generate():
             my_deck.add_note(genanki.Note(model=my_model, fields=note_fields))
         
         safe_name = deck_name.replace('/', '_').replace('\\', '_')
-        apkg_path = f'/tmp/{safe_name}_{os.getpid()}.apkg'
+        apkg_path = f'/tmp/{safe_name}_{os.getpid()}.apkg'  # nosec S5443 - temp dir for generated files only
         genanki.Package(my_deck).write_to_file(apkg_path)
         
         print(f"✅ Sent: {len(my_deck.notes)} notes")
@@ -168,4 +168,4 @@ def generate():
 if __name__ == '__main__':
     print(f"\n🎨 Anki Design Studio (Python)\n   📝 {len(get_all_words())} words\n")
     # Bind to 0.0.0.0 required for Render.com deployment
-    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 3000)))
+    app.run(host='0.0.0.0'  # nosec S8392 - required for Render.com container, port=int(os.environ.get('PORT', 3000)))

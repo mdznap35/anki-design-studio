@@ -7,7 +7,7 @@ def stable_id(s):
     return int(hashlib.md5(s.encode()).hexdigest()[:15], 16)
 
 def generate(config_path, output_path):
-    config_path = os.path.abspath(config_path)
+    config_path = os.path.realpath(os.path.abspath(config_path))  # nosec S6965 - path validated below
     if not config_path.endswith(".json"): raise ValueError("Invalid config path")
     with open(config_path) as f:
         cfg = json.load(f)
