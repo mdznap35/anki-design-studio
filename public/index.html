@@ -199,12 +199,12 @@ kbd{display:inline-block;padding:1px 5px;font-size:.6em;font-family:monospace;ba
 .score-bar{flex:1;height:4px;background:var(--s3);border-radius:2px;overflow:hidden}
 .score-bar-fill{height:100%;border-radius:2px;transition:width .5s ease}
 /* Onboarding */
-.onboard-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);z-index:10000;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
-.onboard-box{background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:32px;max-width:480px;width:90%;text-align:center;animation:fi .4s ease}
-.onboard-box h2{font-size:1.2em;font-weight:900;color:var(--ac2);margin-bottom:8px}
-.onboard-box p{font-size:.78em;color:var(--tx2);line-height:1.6;margin-bottom:16px}
-.onboard-steps{display:flex;gap:8px;justify-content:center;margin-bottom:20px}
-.onboard-step{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7em;font-weight:700;border:2px solid var(--bd);color:var(--tx3);transition:all .3s}
+.onboard-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg,rgba(15,15,26,.95),rgba(26,26,46,.95));z-index:10000;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(12px)}
+.onboard-box{background:transparent;border:none;border-radius:0;padding:40px 24px;max-width:100%;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;animation:fi .5s ease}
+.onboard-box h2{font-size:1.6em;font-weight:900;color:var(--ac2);margin-bottom:12px;line-height:1.4}
+.onboard-box p{font-size:1em;color:var(--tx2);line-height:1.8;margin-bottom:24px;max-width:500px}
+.onboard-steps{display:flex;gap:10px;justify-content:center;margin-bottom:28px}
+.onboard-step{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8em;font-weight:700;border:2px solid var(--bd);color:var(--tx3);transition:all .3s}
 .onboard-step.active{background:var(--ac);border-color:var(--ac);color:#fff}
 .onboard-step.done{background:var(--gn);border-color:var(--gn);color:#fff}
 /* Gallery Improvements */
@@ -3007,18 +3007,18 @@ function renderOnboardStep(){
   var box=document.getElementById('onboardBox');
   if(!box)return;
   var step=ONBOARD_STEPS[onbStep];
-  var h='<div style="font-size:2.5em;margin-bottom:12px">'+step.icon+'</div>';
-  h+='<h2>'+step.title+'</h2>';
-  h+='<p>'+step.text+'</p>';
+  var h='<div style="font-size:4em;margin-bottom:16px;animation:fi .5s ease">'+step.icon+'</div>';
+  h+='<h2 style="font-size:1.6em;font-weight:900;color:var(--ac2);margin-bottom:12px;line-height:1.4">'+step.title+'</h2>';
+  h+='<p style="font-size:1em;color:var(--tx2);line-height:1.8;margin-bottom:24px;max-width:500px">'+step.text+'</p>';
   h+='<div class="onboard-steps">';
   ONBOARD_STEPS.forEach(function(_,i){
     h+='<div class="onboard-step'+(i===onbStep?' active':i<onbStep?' done':'')+'">'+(i<onbStep?'✓':(i+1))+'</div>';
   });
   h+='</div>';
-  h+='<div style="display:flex;gap:8px;justify-content:center">';
-  if(onbStep>0)h+='<button class="btn bo bs" onclick="onbStep--;renderOnboardStep()">السابق</button>';
-  if(onbStep<ONBOARD_STEPS.length-1)h+='<button class="btn ba bs" onclick="onbStep++;renderOnboardStep()">التالي</button>';
-  else h+='<button class="btn ba bs" onclick="closeOnboarding()">ابدأ!</button>';
+  h+='<div style="display:flex;gap:12px;justify-content:center;margin-top:8px">';
+  if(onbStep>0)h+='<button class="btn bo bs" style="padding:10px 24px;font-size:.9em" onclick="onbStep--;renderOnboardStep()">السابق</button>';
+  if(onbStep<ONBOARD_STEPS.length-1)h+='<button class="btn ba bs" style="padding:10px 24px;font-size:.9em" onclick="onbStep++;renderOnboardStep()">التالي</button>';
+  else h+='<button class="btn ba bs" style="padding:12px 32px;font-size:1em" onclick="closeOnboarding()">ابدأ!</button>';
   h+='</div>';
   box.innerHTML=h;
 }
