@@ -419,8 +419,8 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 </div>
 </div>
 <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">
-<button class="btn ba bs" onclick="speakWord(SAMP.f,'fr')">\uD83D\uDD0A فرنسي</button>
-<button class="btn ba bs" onclick="speakWord(SAMP.a,'ar')">\uD83D\uDD0A عربي</button>
+<button class="btn ba bs" onclick="speakWord(SAMP.f,'fr')">🔊 فرنسي</button>
+<button class="btn ba bs" onclick="speakWord(SAMP.a,'ar')">🔊 عربي</button>
 </div>
 </div>
 </div>
@@ -431,9 +431,9 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 <p style="font-size:.68em;color:var(--tx2);margin-bottom:10px">ملف .apkg جاهز للاستيراد</p>
 <div style="margin-bottom:10px">
 <label for="deckNameInput" style="font-size:.68em;color:var(--tx2);display:block;margin-bottom:3px">اسم الرزمة</label>
-<input class="tx" aria-label="Text input" id="deckName" value="Fran\u00e7ais Bac 2021-2022" style="text-align:center;font-weight:700">
+<input class="tx" aria-label="Text input" id="deckName" value="Français Bac 2021-2022" style="text-align:center;font-weight:700">
 </div>
-<button class="btn ba" style="width:100%;padding:10px" onclick="downloadAPKG()">\u2B07\uFE0F تنزيل .apkg</button>
+<button class="btn ba" style="width:100%;padding:10px" onclick="downloadAPKG()">⬇ تنزيل .apkg</button>
 <div id="dlInfo" style="margin-top:8px;font-size:.68em;color:var(--tx2);text-align:center"></div>
 <div id="loading" style="display:none;margin-top:8px;text-align:center"><span style="font-size:.68em;color:var(--tx2)">جاري التوليد...</span></div>
 </div>
@@ -831,7 +831,7 @@ function renderGrid(){
     var isFav=false;
     try{var favs=JSON.parse(localStorage.getItem('anki_favorites')||'[]');isFav=favs.some(function(f){return f._templateId===t.id;});}catch(e){}
     var tags=(t.tags||[]).map(function(tag){return '<span class="gc-tag">'+tag+'</span>';}).join('');
-    return '<div class="gc'+(sel?' sel':'')+'" onclick="toggleGalleryActions(this)" data-tpl-id=\''+t.id+'\')" ondblclick="previewFullTemplate(\''+t.id+'\')">'
+    return '<div class="gc'+(sel?' sel':'')+'" onclick="toggleGalleryActions(this)" data-tpl-id=\''+t.id+'\'" ondblclick="previewFullTemplate(\''+t.id+'\')">'
       +'<div class="gp" style="background:'+bg+';border-radius:'+t.cfg.borderRadius+'px">'
       +'<div style="font-family:'+ff+';font-size:1.2em;font-weight:'+t.cfg.frenchFontWeight+';color:'+t.cfg.frenchColor+';margin-bottom:2px">'+SAMP.f+'</div>'
       +'<div style="font-family:'+fa+';font-size:.75em;font-weight:'+t.cfg.meaningFontWeight+';color:'+t.cfg.meaningColor+'">'+SAMP.a+'</div>'
