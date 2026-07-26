@@ -411,11 +411,11 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
 <div style="display:flex;flex-direction:column;gap:2px">
 <span style="font-size:.6em;color:var(--tx2)">السرعة</span>
-<div class="rw"><input type="range" aria-label="Slider" id="ttsRate" min="0.5" max="2" step="0.1" value="0.8"><span class="rv" id="ttsRateVal">0.8x</span></div>
+<div class="rw"><input type="range" aria-label="Slider" id="ttsRate" min="0.5" max="2" step="0.1" value="1"><span class="rv" id="ttsRateVal">1x</span></div>
 </div>
 <div style="display:flex;flex-direction:column;gap:2px">
 <span style="font-size:.6em;color:var(--tx2)">النغمة</span>
-<div class="rw"><input type="range" aria-label="Slider" id="ttsPitch" min="0.1" max="2" step="0.1" value="0.5"><span class="rv" id="ttsPitchVal">0.5</span></div>
+<div class="rw"><input type="range" aria-label="Slider" id="ttsPitch" min="0.1" max="2" step="0.1" value="1"><span class="rv" id="ttsPitchVal">1</span></div>
 </div>
 </div>
 <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">
@@ -963,7 +963,7 @@ function renderCardHTML(c){
 
 const bgOverlay=c.cardBgImage?'<div style="position:absolute;inset:0;background-image:url('+c.cardBgImage+');background-size:cover;background-position:center;filter:blur('+(c.cardBgBlur||0)+'px);opacity:'+(c.cardBgOpacity!==undefined?c.cardBgOpacity:1)+';z-index:0;pointer-events:none"></div>':'';
   const extras=(c.cardBorderWidth>0?'border:'+c.cardBorderWidth+'px solid '+c.cardBorderColor+';':'')+(c.cardShadow&&c.cardShadow!=='none'?'box-shadow:'+c.cardShadow+';':'');
-  const base='border-radius:'+br+'px;text-align:center;position:relative;overflow:hidden;font-family:'+fA+',sans-serif;direction:rtl;';
+  const base='border-radius:'+br+'px;text-align:center;position:relative;overflow:hidden;font-family:'+fA+',sans-serif;direction:rtl;'+(c.mixBlendMode&&c.mixBlendMode!=='normal'?';mix-blend-mode:'+c.mixBlendMode:'')+(c.backdropFilter&&c.backdropFilter!=='none'?';backdrop-filter:'+c.backdropFilter:'')+(c.isolation&&c.isolation!=='auto'?';isolation:'+c.isolation:'')+(c.overflowWrap?';overflow-wrap:'+c.overflowWrap:'')+(c.willChange&&c.willChange!=='auto'?';will-change:'+c.willChange:'')+(c.pointerEvents&&c.pointerEvents!=='auto'?';pointer-events:'+c.pointerEvents:'')+(c.aspectRatio&&c.aspectRatio!=='auto'?';aspect-ratio:'+c.aspectRatio:'')+(c.objectFit&&c.objectFit!=='fill'?';object-fit:'+c.objectFit:'')+(c.objectPosition&&c.objectPosition!=='center'?';object-position:'+c.objectPosition:'')+(c.transformOrigin&&c.transformOrigin!=='center'?';transform-origin:'+c.transformOrigin:'')+';';
   const fOp=c.frenchOpacity!==undefined?c.frenchOpacity:1;
   const mOp=c.meaningOpacity!==undefined?c.meaningOpacity:1;
   const bOp=c.badgeOpacity!==undefined?c.badgeOpacity:1;
@@ -984,8 +984,8 @@ const bgOverlay=c.cardBgImage?'<div style="position:absolute;inset:0;background-
   if(c.speakerTransition)spkCSS+='transition:'+c.speakerTransition+';';
   const speakerBtn='<span data-ve="speaker" style="display:inline-block;cursor:pointer;background:'+sBg2+';color:#ffffff;margin:2px;'+spkCSS+'" onclick="event.stopPropagation();speakWord(SAMP.f,\'fr\');setTimeout(()=>speakWord(SAMP.a,\'ar\'),1500)">'+sIco2+'</span>';
   const badges=sPos==='inline'?badgeN+unitB+speakerBtn:badgeN+unitB;
-  function _animCSS(prefix,c){var name=c[prefix+'Anim'];if(!name||name==='none')return '';var dur=c[prefix+'AnimDur']||0.5;var delay=c[prefix+'AnimDelay']||0;var iter=c[prefix+'AnimIter']||1;var dir=c[prefix+'AnimDir']||'normal';var fill=c[prefix+'AnimFill']||'both';var timing=c[prefix+'AnimTiming']||'ease-in-out';return 'animation:'+name+' '+dur+'s '+timing+' '+delay+'s '+iter+' '+dir+' '+fill+';';}const frenchAnimCSS=_animCSS('french',c);const french='<div data-ve="french" style="opacity:'+fOp+';width:'+fW+';transform:scale('+fSc+');margin-top:'+fMt+'px;margin-bottom:'+fMb+'px;font-family:'+fF+',sans-serif;font-size:'+fsFr+'em;font-weight:'+fwFr+';direction:ltr;unicode-bidi:embed;color:'+fc+';letter-spacing:'+(c.frenchLetterSpacing||0)+'px;line-height:'+(c.frenchLineHeight||1.2)+';'+frenchAnimCSS+(c.frenchFontStyle&&c.frenchFontStyle!=='normal'?';font-style:'+c.frenchFontStyle:'')+(c.frenchTextTransform&&c.frenchTextTransform!=='none'?';text-transform:'+c.frenchTextTransform:'')+(c.frenchTextDecoration&&c.frenchTextDecoration!=='none'?';text-decoration:'+c.frenchTextDecoration:'')+(c.frenchTextShadowColor?';text-shadow:'+(c.frenchTextShadowX||0)+'px '+(c.frenchTextShadowY||2)+'px '+(c.frenchTextShadowBlur||4)+'px '+c.frenchTextShadowColor:'')+'">'+SAMP.f+'</div>';
-  const meaningAnimCSS=_animCSS('meaning',c);var meaningFontCSS=(c.meaningFontStyle&&c.meaningFontStyle!=='normal'?';font-style:'+c.meaningFontStyle:'')+(c.meaningTextTransform&&c.meaningTextTransform!=='none'?';text-transform:'+c.meaningTextTransform:'');var meaningShadowCSS=c.meaningTextShadowColor?';text-shadow:'+(c.meaningTextShadowX||0)+'px '+(c.meaningTextShadowY||2)+'px '+(c.meaningTextShadowBlur||4)+'px '+c.meaningTextShadowColor:'';const meaning=c.showMeaning!==false?'<div data-ve="meaning" style="opacity:'+mOp+';width:'+mW+';transform:scale('+mSc+');margin-top:'+mMt+'px;margin-bottom:'+mMb+'px;background:'+(c.meaningBg||'#eff6ff')+';border:'+(c.meaningBorderWidth||2)+'px solid '+(c.meaningBorder||'#bfdbfe')+';border-radius:'+(c.meaningBorderRadius||16)+'px;padding:10px 16px;'+meaningAnimCSS+'"><div style="font-family:'+fA+',sans-serif;font-size:'+fsAr+'em;font-weight:'+fwAr+';color:'+mc+';'+meaningFontCSS+meaningShadowCSS+'">'+SAMP.a+'</div></div>':'';
+  function _animCSS(prefix,c){var name=c[prefix+'Anim'];if(!name||name==='none')return '';var dur=c[prefix+'AnimDur']||0.5;var delay=c[prefix+'AnimDelay']||0;var iter=c[prefix+'AnimIter']||1;var dir=c[prefix+'AnimDir']||'normal';var fill=c[prefix+'AnimFill']||'both';var timing=c[prefix+'AnimTiming']||'ease-in-out';return 'animation:'+name+' '+dur+'s '+timing+' '+delay+'s '+iter+' '+dir+' '+fill+';';}const frenchAnimCSS=_animCSS('french',c);const french='<div data-ve="french" style="opacity:'+fOp+';width:'+fW+';transform:scale('+fSc+');margin-top:'+fMt+'px;margin-bottom:'+fMb+'px;font-family:'+fF+',sans-serif;font-size:'+fsFr+'em;font-weight:'+fwFr+';direction:ltr;unicode-bidi:embed;color:'+fc+';letter-spacing:'+(c.frenchLetterSpacing||0)+'px;line-height:'+(c.frenchLineHeight||1.2)+';'+(c.frenchBorderColor?';border:1px solid '+c.frenchBorderColor:'')+frenchAnimCSS+(c.frenchFontStyle&&c.frenchFontStyle!=='normal'?';font-style:'+c.frenchFontStyle:'')+(c.frenchTextTransform&&c.frenchTextTransform!=='none'?';text-transform:'+c.frenchTextTransform:'')+(c.frenchTextDecoration&&c.frenchTextDecoration!=='none'?';text-decoration:'+c.frenchTextDecoration:'')+(c.frenchTextShadowColor?';text-shadow:'+(c.frenchTextShadowX||0)+'px '+(c.frenchTextShadowY||2)+'px '+(c.frenchTextShadowBlur||4)+'px '+c.frenchTextShadowColor:'')+(c.frenchTextAlign&&c.frenchTextAlign!=='center'?';text-align:'+c.frenchTextAlign:'')+'">'+SAMP.f+'</div>';
+  const meaningAnimCSS=_animCSS('meaning',c);var meaningFontCSS=(c.meaningFontStyle&&c.meaningFontStyle!=='normal'?';font-style:'+c.meaningFontStyle:'')+(c.meaningTextTransform&&c.meaningTextTransform!=='none'?';text-transform:'+c.meaningTextTransform:'');var meaningShadowCSS=c.meaningTextShadowColor?';text-shadow:'+(c.meaningTextShadowX||0)+'px '+(c.meaningTextShadowY||2)+'px '+(c.meaningTextShadowBlur||4)+'px '+c.meaningTextShadowColor:'';const meaning=c.showMeaning!==false?'<div data-ve="meaning" style="opacity:'+mOp+';width:'+mW+';transform:scale('+mSc+');margin-top:'+mMt+'px;margin-bottom:'+mMb+'px;background:'+(c.meaningBg||'#eff6ff')+';border:'+(c.meaningBorderWidth||2)+'px solid '+(c.meaningBorder||'#bfdbfe')+';border-radius:'+(c.meaningBorderRadius||16)+'px;padding:10px 16px;'+meaningAnimCSS+'"><div style="font-family:'+fA+',sans-serif;font-size:'+fsAr+'em;font-weight:'+fwAr+';color:'+mc+';'+meaningFontCSS+meaningShadowCSS+(c.meaningTextAlign&&c.meaningTextAlign!=='center'?';text-align:'+c.meaningTextAlign:'')+'">'+SAMP.a+'</div></div>':'';
   const secValues={Pluriel:SAMP.p,Synonyme:SAMP.s,Contraire:SAMP.c};
   const vis=c.sectionVisibility||{Pluriel:true,Synonyme:true,Contraire:true};
   let secsInner='';
@@ -1558,8 +1558,8 @@ function speakWord(text,lang){
   speechSynthesis.cancel();
   var u=new SpeechSynthesisUtterance(text);
   u.lang=lang==='fr'?'fr-FR':'ar-SA';
-  var rate=parseFloat(document.getElementById('ttsRate')?document.getElementById('ttsRate').value:0.8);
-  var pitch=parseFloat(document.getElementById('ttsPitch')?document.getElementById('ttsPitch').value:0.5);
+  var rate=parseFloat(document.getElementById('ttsRate')?document.getElementById('ttsRate').value:1);
+  var pitch=parseFloat(document.getElementById('ttsPitch')?document.getElementById('ttsPitch').value:1);
   u.rate=rate;
   u.pitch=pitch;
   // Find a male voice for this language
@@ -1583,7 +1583,8 @@ async function downloadAPKG(){
   const di=document.getElementById('dlInfo');const ld=document.getElementById('loading');
   if(di)di.textContent='';if(ld)ld.style.display='block';
   try{
-    const config={...S,deckName:document.getElementById('deckName').value};
+    const cardHTML=renderCardHTML(S);
+    const config={...S,deckName:document.getElementById('deckName').value,cardFrontHTML:cardHTML,cardBackHTML:cardHTML};
     const resp=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config)});
     if(!resp.ok)throw new Error('Server error: '+resp.status);
     const blob=await resp.blob();if(blob.size<1000)throw new Error('ملف فارغ');
@@ -4236,8 +4237,8 @@ function renderSettingsPage(){
   // TTS
   html+=grp('النطق',[
     tog('ttsAutoPlay','تشغيل تلقائي عند فتح البطاقة'),
-    rng('ttsRate','السرعة',0.5,2,0.1,0.8),
-    rng('ttsPitch','النغمة',0.1,2,0.1,0.5)
+    rng('ttsRate','السرعة',0.5,2,0.1,1),
+    rng('ttsPitch','النغمة',0.1,2,0.1,1)
   ].join(''));
   
   // Export
