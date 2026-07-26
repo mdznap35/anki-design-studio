@@ -268,6 +268,7 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 .col-btn.on{background:rgba(124,58,237,.1);border-color:var(--ac);color:var(--ac2)}
 /* === GALLERY ENHANCED ===
 .gc{position:relative;transition:all .25s cubic-bezier(.4,0,.2,1)}
+.color-grid-item:hover{border-color:var(--ac)!important;transform:scale(1.02)!important;box-shadow:0 4px 12px rgba(124,58,237,.2)}
 .gc:hover .gc-actions,.gc.show-actions .gc-actions{opacity:1;transform:translateY(0)}.gc.touched .gc-actions{opacity:1;transform:translateY(0)}
 .gc-actions{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.55);backdrop-filter:blur(3px);display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px;padding:10px;opacity:0;transform:translateY(6px);transition:all .3s;border-radius:var(--br-md);z-index:10}
 .gc-action-btn{padding:6px 14px;border:none;border-radius:8px;font-size:.72em;font-weight:700;cursor:pointer;text-align:center;color:#fff;background:var(--ac);backdrop-filter:blur(4px);transition:all .2s;border:1px solid transparent}
@@ -747,7 +748,7 @@ function pushHist(){hist=hist.slice(0,histIdx+1);hist.push(JSON.parse(JSON.strin
 function undo(){if(histIdx>0){histIdx--;S=JSON.parse(JSON.stringify(hist[histIdx]));renderAll();}}
 function redo(){if(histIdx<hist.length-1){histIdx++;S=JSON.parse(JSON.stringify(hist[histIdx]));renderAll();}}
 function updateUndoRedo(){const u=document.getElementById('undoBtn');if(u)u.disabled=histIdx<=0;const r=document.getElementById('redoBtn');if(r)r.disabled=histIdx>=hist.length-1;}
-function setVal(k,v){S[k]=v;pushHist();renderAll();}
+function setVal(k,v){S[k]=v;pushHist();renderAll();if(typeof updateGradientPreview==='function')updateGradientPreview();}
 function renderAll(){renderGrid();updateCtlPreview();syncToggles();syncGradAngle();syncIcons();if(document.getElementById('sec-editor').classList.contains('on'))renderVE();if(document.getElementById('sec-full').classList.contains('on'))renderFullscreen();}
 function syncIcons(){document.querySelectorAll('[data-icon]').forEach(function(el){var ic=el.getAttribute('data-icon');var active=S.speakerIcon===ic;el.style.background=active?'var(--ac)':'var(--s2)';el.style.borderColor=active?'var(--gn)':'var(--bd)';el.style.boxShadow=active?'0 0 8px rgba(34,197,94,.4)':'none';});}
 function syncGradAngle(){document.querySelectorAll('[data-grad]').forEach(function(el){var g=el.getAttribute('data-grad');var active=(S.bgGradientDir||'135deg')===g;el.style.borderColor=active?'var(--gn)':'var(--bd)';el.style.boxShadow=active?'0 0 8px rgba(34,197,94,.4)':'none';});}
@@ -1081,7 +1082,7 @@ function renderCtrls(){
   var cg=grp('\u062A\u0648\u0644\u064A\u062F \u0623\u0644\u0648\u0627\u0646',"<div id='colorGenPalette' style='display:flex;gap:3px;flex-wrap:wrap'></div><button class='btn bo bs' onclick='generateColorPalette()' style='margin-top:4px'>\u{1F3B2} \u062A\u0648\u0644\u064A\u062F \u0644\u0648\u062D\u0629</button><button class='btn bo bs' onclick='applyPaletteToCard()' style='margin-top:4px'>\u2705 \u062A\u0637\u0628\u064A\u0642 \u0639\u0644\u0649 \u0627\u0644\u0628\u0637\u0627\u0642\u0629</button>");
   var ch=grp('\u062A\u0646\u0627\u063A\u0645 \u0627\u0644\u0623\u0644\u0648\u0627\u0646',`<div style='display:flex;gap:3px;flex-wrap:wrap'><button class='btn bo bs' onclick="applyHarmony('complementary')">\u0645\u062A\u0643\u0627\u0645\u0644</button><button class='btn bo bs' onclick="applyHarmony('analogous')">\u0645\u062A\u0646\u0627\u0633\u0628</button><button class='btn bo bs' onclick="applyHarmony('triadic')">\u062B\u0644\u0627\u062B\u064A</button><button class='btn bo bs' onclick="applyHarmony('split-complementary')">\u062B\u0644\u0627\u062B\u064A \u0645\u0643\u0645\u0644</button><button class='btn bo bs' onclick="applyHarmony('tetradic')">\u0631\u0628\u0627\u0639\u064A</button></div>`);
   var cq=grp('\u0644\u0648\u062D\u0629 \u0645\u0646 \u0628\u0636\u0627\u0621',"<div style='display:flex;gap:4px;align-items:center'><input type='color' id='baseColorPicker' value='" + (S.cardBg||'#ffffff') + "' style='width:40px;height:32px;border:none;cursor:pointer'><button class='btn bo bs' onclick='generateFromBase()'>\u062A\u0648\u0644\u064A\u062F</button></div><div id='basePalette' style='display:flex;gap:3px;flex-wrap:wrap;margin-top:4px'></div>");
-  h+=acc('\u{1F3A8} \u0627\u0644\u0623\u0644\u0648\u0622\u0646',clrH+renderRecentColors()+cg+ch+cq+grp('\u0623\u0644\u0648\u0622\u0646 \u062C\u0627\u0647\u0638\u0629',pr),false);
+  h+=acc('\u{1F3A8} \u0627\u0644\u0623\u0644\u0648\u0622\u0646',renderColorGrid()+clrH+renderRecentColors()+cg+ch+cq+grp('\u0623\u0644\u0648\u0622\u0646 \u062C\u0627\u0647\u0638\u0629',pr),false);
 
 
   // 3. TYPOGRAPHY
@@ -2359,6 +2360,90 @@ function renderRecentColors() {
     }).join('') +
     '</div></div>';
 }
+
+// === COMPREHENSIVE COLOR GRID SYSTEM ===
+var COLOR_PALETTES = [
+  {name:'كلاسيكي',colors:['#ffffff','#f8fafc','#e2e8f0','#94a3b8','#1e293b','#0f172a']},
+  {name:'أزرق بحري',colors:['#ecfeff','#cffafe','#22d3ee','#0891b2','#155e75','#0c4a6e']},
+  {name:'أخضر طبيعي',colors:['#f0fdf4','#bbf7d0','#22c55e','#16a34a','#14532d','#052e16']},
+  {name:'بنفسجي فاخر',colors:['#faf5ff','#d8b4fe','#a855f7','#7c3aed','#581c87','#3b0764']},
+  {name:'وردي ناعم',colors:['#fdf2f8','#fbcfe8','#ec4899','#be185d','#831843','#500724']},
+  {name:'برتقالي حار',colors:['#fff7ed','#fdba74','#f97316','#ea580c','#9a3412','#7c2d12']},
+  {name:'ذهبي أنيق',colors:['#fefce8','#fde68a','#eab308','#ca8a04','#854d0e','#713f12']},
+  {name:'أحمر قوي',colors:['#fef2f2','#fca5a5','#ef4444','#dc2626','#991b1b','#7f1d1d']},
+  {name:'نيلي غامق',colors:['#eef2ff','#a5b4fc','#6366f1','#4f46e5','#3730a3','#312e81']},
+  {name:'رمادي أنيق',colors:['#f8fafc','#e2e8f0','#94a3b8','#64748b','#334155','#0f172a']},
+  {name:'ليلي متوهج',colors:['#0a0a0a','#1a1a2e','#16213e','#0f3460','#533483','#e94560']},
+  {name:'محيطي',colors:['#ecfeff','#67e8f9','#06b6d4','#0284c7','#075985','#0c4a6e']},
+];
+
+function renderColorGrid(){
+  var h = '<div style="margin-bottom:8px">';
+  h += '<div style="font-size:.68em;font-weight:700;color:var(--ac2);margin-bottom:6px">شبكة الألوان</div>';
+  h += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:6px">';
+  for(var i=0;i<COLOR_PALETTES.length;i++){
+    var pal=COLOR_PALETTES[i];
+    h += '<div class="color-grid-item" style="background:var(--s2);border:1px solid var(--bd);border-radius:8px;padding:6px;cursor:pointer;transition:all .2s" onclick="applyColorGrid('+i+')">';
+    h += '<div style="font-size:.55em;font-weight:600;color:var(--tx2);margin-bottom:4px;text-align:center">'+pal.name+'</div>';
+    h += '<div style="display:flex;gap:2px;border-radius:4px;overflow:hidden">';
+    for(var j=0;j<pal.colors.length;j++){
+      h += '<div style="flex:1;height:20px;background:'+pal.colors[j]+'"></div>';
+    }
+    h += '</div></div>';
+  }
+  h += '</div></div>';
+  h += '<div style="margin-bottom:8px">';
+  h += '<div style="font-size:.68em;font-weight:700;color:var(--ac2);margin-bottom:6px">معاينة التدرج</div>';
+  h += '<div id="gradientPreview" style="height:32px;border-radius:8px;background:linear-gradient(135deg,'+(S.cardBg||'#fff')+', '+(S.cardBg2||S.cardBg||'#fff')+', '+(S.frenchColor||'#000')+')"></div>';
+  h += '</div>';
+  h += '<div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px">';
+  h += '<button class="btn bo bs" onclick="applyQuickPalette(\x27light\x27)" style="font-size:.6em">☀️ فاتح</button>';
+  h += '<button class="btn bo bs" onclick="applyQuickPalette(\x27dark\x27)" style="font-size:.6em">🌙 داكن</button>';
+  h += '<button class="btn bo bs" onclick="applyQuickPalette(\x27vivid\x27)" style="font-size:.6em">🎨 حيوي</button>';
+  h += '<button class="btn bo bs" onclick="applyQuickPalette(\x27pastel\x27)" style="font-size:.6em">🌸 ناعم</button>';
+  h += '<button class="btn bo bs" onclick="applyQuickPalette(\x27mono\x27)" style="font-size:.6em">⬛ أحادي</button>';
+  h += '</div>';
+  return h;
+}
+
+function applyColorGrid(idx){
+  var palette = COLOR_PALETTES[idx];
+  if(!palette) return;
+  S.cardBg = palette.colors[5];
+  S.cardBg2 = palette.colors[4];
+  S.frenchColor = palette.colors[1];
+  S.meaningColor = palette.colors[3];
+  S.meaningBg = palette.colors[0];
+  S.meaningBorder = palette.colors[2];
+  S.badgeNomBg = palette.colors[0];
+  S.badgeNomColor = palette.colors[3];
+  S.secBg = palette.colors[0];
+  S.secBorder = palette.colors[2];
+  S.labelColor = palette.colors[3];
+  pushHist(); renderCtrls(); renderAll();
+  toast('تم تطبيق: '+palette.name);
+}
+
+function applyQuickPalette(type){
+  var palettes = {
+    light: {cardBg:'#ffffff',cardBg2:'#f8fafc',frenchColor:'#1e293b',meaningColor:'#334155',meaningBg:'#f1f5f9',meaningBorder:'#e2e8f0',badgeNomBg:'#e0f2fe',badgeNomColor:'#0369a1',secBg:'#f8fafc',secBorder:'#e2e8f0',labelColor:'#64748b'},
+    dark: {cardBg:'#0f172a',cardBg2:'#1e293b',frenchColor:'#e2e8f0',meaningColor:'#94a3b8',meaningBg:'rgba(148,163,184,.1)',meaningBorder:'rgba(148,163,184,.2)',badgeNomBg:'rgba(56,189,248,.15)',badgeNomColor:'#38bdf8',secBg:'rgba(255,255,255,.05)',secBorder:'rgba(255,255,255,.1)',labelColor:'#64748b'},
+    vivid: {cardBg:'#7c3aed',cardBg2:'#a855f7',frenchColor:'#ffffff',meaningColor:'#fde68a',meaningBg:'rgba(253,230,138,.1)',meaningBorder:'rgba(253,230,138,.3)',badgeNomBg:'rgba(255,255,255,.2)',badgeNomColor:'#ffffff',secBg:'rgba(255,255,255,.1)',secBorder:'rgba(255,255,255,.2)',labelColor:'rgba(255,255,255,.7)'},
+    pastel: {cardBg:'#fdf2f8',cardBg2:'#fce7f3',frenchColor:'#9d174d',meaningColor:'#be185d',meaningBg:'#fce7f3',meaningBorder:'#fbcfe8',badgeNomBg:'#fce7f3',badgeNomColor:'#be185d',secBg:'#fdf2f8',secBorder:'#fbcfe8',labelColor:'#9d174d'},
+    mono: {cardBg:'#ffffff',cardBg2:'#f8fafc',frenchColor:'#18181b',meaningColor:'#3f3f46',meaningBg:'#f4f4f5',meaningBorder:'#e4e4e7',badgeNomBg:'#f4f4f5',badgeNomColor:'#27272a',secBg:'#f4f4f5',secBorder:'#e4e4e7',labelColor:'#71717a'}
+  };
+  var p = palettes[type];
+  if(!p) return;
+  Object.keys(p).forEach(function(k){ S[k] = p[k]; });
+  pushHist(); renderCtrls(); renderAll();
+  toast('تم تطبيق: '+type);
+}
+
+function updateGradientPreview(){
+  var el = document.getElementById('gradientPreview');
+  if(el) el.style.background = 'linear-gradient(135deg,'+(S.cardBg||'#fff')+', '+(S.cardBg2||S.cardBg||'#fff')+', '+(S.frenchColor||'#000')+')';
+}
+
 function renderRecentFonts() {
   var fonts = getRecent('fonts');
   if(!fonts.length) return '';
