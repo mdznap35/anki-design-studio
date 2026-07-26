@@ -1449,18 +1449,115 @@ function _sel(id,lb,opts){return {id,lb,type:'select',options:opts};}
 function _tog(id,lb){return {id,lb,type:'toggle'};}
 
 const VE_PROPS={
-  card:[_clr('cardBg','خلفية البطاقة'),_clr('cardBg2','خلفية ثانية'),_clr('cardBorderColor','حدود البطاقة'),_rng('cardBorderWidth','سمك الحدود',0,10,1),_rng('borderRadius','استدارة البطاقة',0,50,1),_rng('cardPadding','الحشو',8,60,2),_rng('cardGap','المسافة',0,30,2),_rng('cardMinHeight','الارتفاع',150,600,10)],
-  badgeNom:[_clr('badgeNomBg','خلفية Nom'),_clr('badgeNomColor','لون Nom'),_rng('badgeOpacity','الشفافية',0,1,0.05,v=>Math.round(v*100)+'%'),_tog('showBadge','إظهار Nom')],
-  badgeUnit:[_clr('unitBg','خلفية الوحدة'),_clr('unitColor','لون الوحدة'),_clr('unitBorder','حدود الوحدة'),_tog('showUnitBadge','إظهار الوحدة')],
-  badge:[_clr('badgeNomBg','خلفية Nom'),_clr('badgeNomColor','لون Nom'),_clr('unitBg','خلفية الوحدة'),_clr('unitColor','لون الوحدة'),_clr('unitBorder','حدود الوحدة'),_rng('badgeOpacity','الشفافية',0,1,0.05,v=>Math.round(v*100)+'%'),_tog('showBadge','إظهار Nom'),_tog('showUnitBadge','إظهار الوحدة')],
-  french:[_clr('frenchColor','اللون'),_rng('frenchFontSize','الحجم',0.8,5,0.1),_rng('frenchFontWeight','السمك',100,900,100),_rng('frenchOpacity','الشفافية',0,1,0.05,v=>Math.round(v*100)+'%'),_rng('frenchWidth','العرض',30,100,5,v=>v+'%'),_rng('frenchScale','التكبير',0.5,2,0.05,v=>Math.round(v*100)+'%'),_rng('frenchLetterSpacing','التباعد',-5,20,0.5),_rng('frenchLineHeight','الارتفاع',0.8,3,0.1),_rng('frenchMarginTop','هامش أعلى',0,40,1),_rng('frenchMarginBottom','هامش أسفل',0,40,1),_sel('fontFrench','الخط',FONTS)],
-  separator:[_clr('separatorColor','اللون'),_rng('separatorWidth','السمك',1,8,1),_sel('separatorStyle','النمط',[{v:'none',l:'بدون'},{v:'solid',l:'خط'},{v:'dashed',l:'متقطع'},{v:'dotted',l:'منقط'}])],
-  meaning:[_clr('meaningColor','لون النص'),_clr('meaningBg','الخلفية'),_clr('meaningBorder','الحدود'),_rng('meaningFontSize','الحجم',0.5,3,0.1),_rng('meaningFontWeight','السمك',100,900,100),_rng('meaningBorderRadius','الاستدارة',0,50,1),_rng('meaningBorderWidth','سمك الحدود',0,10,1),_rng('meaningOpacity','الشفافية',0,1,0.05,v=>Math.round(v*100)+'%'),_rng('meaningWidth','العرض',30,100,5,v=>v+'%'),_rng('meaningScale','التكبير',0.5,2,0.05,v=>Math.round(v*100)+'%'),_rng('meaningMarginTop','هامش أعلى',0,40,1),_rng('meaningMarginBottom','هامش أسفل',0,40,1),_sel('fontArabic','الخط',ARFONTS),_tog('showMeaning','إظهار المعنى')],
-  pluriel:[_clr('secBg','الخلفية'),_clr('secBorder','الحدود'),_clr('secTextColor','لون النص'),_clr('labelColor','لون التسميات'),_rng('sectionOpacity','الشفافية',0,1,0.05,v=>Math.round(v*100)+'%')],
-  synonyme:[_clr('secBg','الخلفية'),_clr('secBorder','الحدود'),_clr('secTextColor','لون النص'),_clr('labelColor','لون التسميات'),_rng('sectionOpacity','الشفافية',0,1,0.05,v=>Math.round(v*100)+'%')],
-  contraire:[_clr('secBg','الخلفية'),_clr('secBorder','الحدود'),_clr('secTextColor','لون النص'),_clr('labelColor','لون التسميات'),_rng('sectionOpacity','الشفافية',0,1,0.05,v=>Math.round(v*100)+'%')],
-  page:[_clr('labelColor','لون النص'),_tog('showPage','إظهار الصفحة')],
-  speaker:[_clr('speakerBg','خلفية الزر'),_clr('speakerColor','لون الزر'),_sel('speakerIcon','الأيقونة',[{v:'🔊',l:'🔊'},{v:'🔉',l:'🔉'},{v:'🎵',l:'🎵'},{v:'🎶',l:'🎶'},{v:'🗣️',l:'🗣️'},{v:'📢',l:'📢'},{v:'💬',l:'💬'},{v:'🔴',l:'🔴'}])],
+  card:[
+    _clr('cardBg','خلفية البطاقة'),_clr('cardBg2','خلفية ثانية'),
+    _sel('bgGradientDir','اتجاه التدرج',[{v:'135deg',l:'↘'},{v:'0deg',l:'↓'},{v:'90deg',l:'→'},{v:'180deg',l:'↑'},{v:'270deg',l:'←'},{v:'45deg',l:'↗'}]),
+    _rng('borderRadius','استدارة الزوايا',0,60,1),_rng('cardPadding','الحشو',4,80,2),_rng('cardGap','المسافة بين العناصر',0,40,2),
+    _rng('cardMinHeight','الارتفاع الأدنى',100,800,10),_rng('previewWidth','العرض',200,600,10),
+    _sel('cardDirection','اتجاه التخطيط',[{v:'column',l:'عمودي'},{v:'row',l:'أفقي'}]),
+    _sel('cardAlign','المحاذاة',[{v:'center',l:'وسط'},{v:'flex-start',l:'أعلى'},{v:'flex-end',l:'أسفل'},{v:'space-between',l:'بين'},{v:'space-around',l:'حول'}]),
+    _clr('cardBorderColor','لون الحدود'),_rng('cardBorderWidth','سمك الحدود',0,10,1),
+    _sel('cardBorderStyle','نمط الحدود',[{v:'solid',l:'خط'},{v:'dashed',l:'متقطع'},{v:'dotted',l:'منقط'},{v:'double',l:'مزدوج'}]),
+    _sel('cardShadow','الظل',[{v:'none',l:'بدون'},{v:'0 2px 8px rgba(0,0,0,.08)',l:'خفيف'},{v:'0 4px 16px rgba(0,0,0,.12)',l:'متوسط'},{v:'0 8px 32px rgba(0,0,0,.15)',l:'قوي'},{v:'0 12px 48px rgba(0,0,0,.2)',l:'كبير'},{v:'0 20px 60px rgba(0,0,0,.25)',l:'ضخم'}]),
+    _sel('effect','التأثير',[{v:'none',l:'بدون'},{v:'glow',l:'توهج'},{v:'pulse',l:'نبض'},{v:'float',l:'عوم'},{v:'neon',l:'نيون'},{v:'sakura',l:'ساكورا'}]),
+    _sel('cardClipPath','شكل البطاقة',[{v:'',l:'عادي'},{v:'ellipse(50% 50% at 50% 50%)',l:'بيضاوي'},{v:'polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%)',l:'سداسي'},{v:'polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%)',l:'معين'}]),
+    _sel('cardOverlay','الغشاء',[{v:'none',l:'بدون'},{v:'linear-gradient(rgba(0,0,0,.1),rgba(0,0,0,.3))',l:'داكن'},{v:'linear-gradient(rgba(255,255,255,.1),rgba(255,255,255,.3))',l:'فاتح'}]),
+    _sel('bgPattern','نمط الخلفية',[{v:'none',l:'بدون'},{v:'dots',l:'نقاط'},{v:'lines',l:'خطوط'},{v:'grid',l:'شبكة'},{v:'diagonal',l:'قطري'},{v:'circles',l:'دوائر'}]),
+    _sel('mixBlendMode','وضع الدمج',[{v:'normal',l:'عادي'},{v:'multiply',l:'ضرب'},{v:'screen',l:'شاشة'},{v:'overlay',l:'تراكب'},{v:'darken',l:'إظلام'},{v:'lighten',l:'إבהיר'}]),
+    _sel('backdropFilter','فلتر الخلفية',[{v:'none',l:'بدون'},{v:'blur(5px)',l:'تمويه خفيف'},{v:'blur(10px)',l:'تمويه متوسط'},{v:'blur(20px)',l:'تمويه قوي'},{v:'brightness(1.2)',l:'سطوع+'},{v:'grayscale(0.5)',l:'رمادي'}]),
+    _sel('userSelect','تحديد النص',[{v:'auto',l:'عادي'},{v:'none',l:'معطّل'}])
+  ],
+  french:[
+    _clr('frenchColor','لون النص'),_clr('frenchTextShadowColor','لون الظل'),
+    _rng('frenchTextShadowX','ظل أفقي',-10,10,1),_rng('frenchTextShadowY','ظل عمودي',-10,10,1),_rng('frenchTextShadowBlur','تمويه الظل',0,20,1),
+    _rng('frenchFontSize','حجم الخط',0.5,6,0.1),_rng('frenchFontWeight','سمك الخط',100,900,100),
+    _rng('frenchLetterSpacing','تباعد الحروف',-5,20,0.5),_rng('frenchLineHeight','ارتفاع السطر',0.5,3,0.1),
+    _rng('frenchOpacity','الشفافية',0,1,0.05,v=>Math.round(v*100)+'%'),
+    _rng('frenchWidth','العرض',20,100,5,v=>v+'%'),_rng('frenchScale','التكبير',0.3,3,0.05,v=>Math.round(v*100)+'%'),
+    _rng('frenchMarginTop','هامش أعلى',0,60,2),_rng('frenchMarginBottom','هامش أسفل',0,60,2),
+    _sel('fontFrench','الخط',FONTS),
+    _sel('frenchTextAlign','المحاذاة',[{v:'center',l:'وسط'},{v:'right',l:'يمين'},{v:'left',l:'يسار'}]),
+    _sel('frenchFontStyle','نمط الخط',[{v:'normal',l:'عادي'},{v:'italic',l:'مائل'}]),
+    _sel('frenchTextTransform','التحويل',[{v:'none',l:'بدون'},{v:'uppercase',l:'أحرف كبيرة'},{v:'lowercase',l:'أحرف صغيرة'},{v:'capitalize',l:'أول حرف كبير'}]),
+    _sel('frenchTextDecoration','الزخرفة',[{v:'none',l:'بدون'},{v:'underline',l:'تحته'},{v:'line-through',l:'منتصفه'}]),
+    _sel('frenchAnim','الحركة',[{v:'none',l:'بدون'},{v:'fadeIn',l:'ظهور'},{v:'fadeOut',l:'اختفاء'},{v:'slideUp',l:'صعود'},{v:'slideDown',l:'نزول'},{v:'bounce',l:'ارتداد'},{v:'glow',l:'توهج'},{v:'pulse',l:'نبض'},{v:'shake',l:'اهتزاز'},{v:'rotateIn',l:'دوران'},{v:'zoomIn',l:'تكبير'},{v:'float',l:'عوم'}]),
+    _rng('frenchAnimDur','سرعة الحركة',0.1,3,0.1),_rng('frenchAnimDelay','تأخير الحركة',0,3,0.1),
+    _sel('frenchAnimIter','التكرار',[{v:1,l:'مرة'},{v:2,l:'مرتين'},{v:3,l:'3 مرات'},{v:'infinite',l:'لانهائي'}])
+  ],
+  meaning:[
+    _clr('meaningColor','لون النص'),_clr('meaningBg','الخلفية'),_clr('meaningBorder','الحدود'),
+    _clr('meaningTextShadowColor','لون الظل'),
+    _rng('meaningTextShadowX','ظل أفقي',-10,10,1),_rng('meaningTextShadowY','ظل عمودي',-10,10,1),_rng('meaningTextShadowBlur','تمويه الظل',0,20,1),
+    _rng('meaningFontSize','حجم الخط',0.3,4,0.1),_rng('meaningFontWeight','سمك الخط',100,900,100),
+    _rng('meaningBorderRadius','استدارة الحدود',0,50,1),_rng('meaningBorderWidth','سمك الحدود',0,10,1),
+    _rng('meaningOpacity','الشفافية',0,1,0.05,v=>Math.round(v*100)+'%'),
+    _rng('meaningWidth','العرض',20,100,5,v=>v+'%'),_rng('meaningScale','التكبير',0.3,3,0.05,v=>Math.round(v*100)+'%'),
+    _rng('meaningMarginTop','هامش أعلى',0,60,2),_rng('meaningMarginBottom','هامش أسفل',0,60,2),
+    _sel('fontArabic','الخط',ARFONTS),
+    _sel('meaningTextAlign','المحاذاة',[{v:'center',l:'وسط'},{v:'right',l:'يمين'},{v:'left',l:'يسار'}]),
+    _sel('meaningFontStyle','نمط الخط',[{v:'normal',l:'عادي'},{v:'italic',l:'مائل'}]),
+    _sel('meaningTextTransform','التحويل',[{v:'none',l:'بدون'},{v:'uppercase',l:'أحرف كبيرة'},{v:'capitalize',l:'أول حرف كبير'}]),
+    _sel('meaningAnim','الحركة',[{v:'none',l:'بدون'},{v:'fadeIn',l:'ظهور'},{v:'fadeOut',l:'اختفاء'},{v:'slideUp',l:'صعود'},{v:'slideDown',l:'نزول'},{v:'bounce',l:'ارتداد'},{v:'glow',l:'توهج'},{v:'pulse',l:'نبض'},{v:'shake',l:'اهتزاز'}]),
+    _rng('meaningAnimDur','سرعة الحركة',0.1,3,0.1),_rng('meaningAnimDelay','تأخير الحركة',0,3,0.1),
+    _tog('showMeaning','إظهار المعنى')
+  ],
+  badgeNom:[
+    _clr('badgeNomBg','الخلفية'),_clr('badgeNomColor','اللون'),
+    _rng('badgeOpacity','الشفافية',0,1,0.05,v=>Math.round(v*100)+'%'),
+    _rng('badgeNomBorderWidth','سمك الحدود',0,5,1),
+    _tog('showBadge','إظهار الشارة'),
+    _sel('badgeAnim','الحركة',[{v:'none',l:'بدون'},{v:'fadeIn',l:'ظهور'},{v:'bounce',l:'ارتداد'},{v:'pulse',l:'نبض'}]),
+    _rng('badgeAnimDur','سرعة الحركة',0.1,3,0.1)
+  ],
+  badgeUnit:[
+    _clr('unitBg','الخلفية'),_clr('unitColor','اللون'),_clr('unitBorder','الحدود'),
+    _rng('badgeUnitBorderWidth','سمك الحدود',0,5,1),
+    _tog('showUnitBadge','إظهار الشارة'),
+    _sel('badgeAnim','الحركة',[{v:'none',l:'بدون'},{v:'fadeIn',l:'ظهور'},{v:'bounce',l:'ارتداد'},{v:'pulse',l:'نبض'}]),
+    _rng('badgeAnimDur','سرعة الحركة',0.1,3,0.1)
+  ],
+  badge:[
+    _clr('badgeNomBg','خلفية Nom'),_clr('badgeNomColor','لون Nom'),
+    _clr('unitBg','خلفية الوحدة'),_clr('unitColor','لون الوحدة'),_clr('unitBorder','حدود الوحدة'),
+    _rng('badgeOpacity','الشفافية',0,1,0.05,v=>Math.round(v*100)+'%'),
+    _tog('showBadge','إظهار Nom'),_tog('showUnitBadge','إظهار الوحدة')
+  ],
+  separator:[
+    _clr('separatorColor','اللون'),_rng('separatorWidth','السمك',1,10,1),
+    _sel('separatorStyle','النمط',[{v:'none',l:'بدون'},{v:'solid',l:'خط'},{v:'dashed',l:'متقطع'},{v:'dotted',l:'منقط'}])
+  ],
+  pluriel:[
+    _clr('secBg','الخلفية'),_clr('secBorder','الحدود'),_clr('secTextColor','لون النص'),_clr('labelColor','لون التسميات'),
+    _rng('sectionOpacity','الشفافية',0,1,0.05,v=>Math.round(v*100)+'%'),
+    _rng('secGap','المسافة',0,20,1),
+    _sel('secDirection','اتجاه الأقسام',[{v:'column',l:'عمودي'},{v:'row',l:'أفقي'}]),
+    _sel('secAnim','الحركة',[{v:'none',l:'بدون'},{v:'fadeIn',l:'ظهور'},{v:'slideUp',l:'صعود'},{v:'slideDown',l:'نزول'}]),
+    _rng('secAnimDur','سرعة الحركة',0.1,3,0.1)
+  ],
+  synonyme:[
+    _clr('secBg','الخلفية'),_clr('secBorder','الحدود'),_clr('secTextColor','لون النص'),_clr('labelColor','لون التسميات'),
+    _rng('sectionOpacity','الشفافية',0,1,0.05,v=>Math.round(v*100)+'%'),
+    _rng('secGap','المسافة',0,20,1),
+    _sel('secAnim','الحركة',[{v:'none',l:'بدون'},{v:'fadeIn',l:'ظهور'},{v:'slideUp',l:'صعود'},{v:'slideDown',l:'نزول'}]),
+    _rng('secAnimDur','سرعة الحركة',0.1,3,0.1)
+  ],
+  contraire:[
+    _clr('secBg','الخلفية'),_clr('secBorder','الحدود'),_clr('secTextColor','لون النص'),_clr('labelColor','لون التسميات'),
+    _rng('sectionOpacity','الشفافية',0,1,0.05,v=>Math.round(v*100)+'%'),
+    _rng('secGap','المسافة',0,20,1),
+    _sel('secAnim','الحركة',[{v:'none',l:'بدون'},{v:'fadeIn',l:'ظهور'},{v:'slideUp',l:'صعود'},{v:'slideDown',l:'نزول'}]),
+    _rng('secAnimDur','سرعة الحركة',0.1,3,0.1)
+  ],
+  page:[
+    _clr('labelColor','لون النص'),_tog('showPage','إظهار الصفحة')
+  ],
+  speaker:[
+    _clr('speakerBg','خلفية الزر'),_clr('speakerColor','لون الأيقونة'),
+    _sel('speakerIcon','الأيقونة',[{v:'🔊',l:'🔊 صوت'},{v:'🔉',l:'🔉 صوت خفيض'},{v:'🎵',l:'🎵 موسيقى'},{v:'🗣️',l:'🗣️ كلام'},{v:'📢',l:'📢 مكبر'}]),
+    _sel('speakerPos','الموقع',[{v:'inline',l:'مع الشارات'},{v:'top-right',l:'أعلى يمين'},{v:'top-left',l:'أعلى يسار'},{v:'bottom-right',l:'أسفل يمين'},{v:'bottom-left',l:'أسفل يسار'}]),
+    _rng('speakerFontSize','حجم الأيقونة',0.4,2,0.1),_rng('speakerPaddingY','حشو عمودي',0,20,1),_rng('speakerPaddingX','حشو أفقي',0,20,1),
+    _rng('speakerBorderRadius','استدارة الزوايا',0,50,1),_rng('speakerRotate','دوران',-180,180,5)
+  ]
 };
 
 const VE_LABELS={card:' البطاقة',badge:' الشارات',badgeNom:' شارة Nom',badgeUnit:' شارة الوحدة',french:' الكلمة الفرنسية',separator:' الفاصل',meaning:' المعنى',pluriel:' Pluriel',synonyme:' Synonyme',contraire:' Contraire',page:' الصفحة',speaker:' زر الصوت'};
