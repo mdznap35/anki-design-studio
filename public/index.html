@@ -268,13 +268,12 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 .col-btn.on{background:rgba(124,58,237,.1);border-color:var(--ac);color:var(--ac2)}
 /* === GALLERY ENHANCED ===
 .gc{position:relative;transition:all .25s cubic-bezier(.4,0,.2,1)}
-.gc:hover .gc-actions{opacity:1;transform:translateY(0)}.gc.touched .gc-actions{opacity:1;transform:translateY(0)}
+.gc:hover .gc-actions,.gc.show-actions .gc-actions{opacity:1;transform:translateY(0)}.gc.touched .gc-actions{opacity:1;transform:translateY(0)}
 .gc-actions{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.55);backdrop-filter:blur(3px);display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px;padding:10px;opacity:0;transform:translateY(6px);transition:all .3s;border-radius:var(--br-md);z-index:10}
 .gc-action-btn{padding:6px 14px;border:none;border-radius:8px;font-size:.72em;font-weight:700;cursor:pointer;text-align:center;color:#fff;background:rgba(255,255,255,.18);backdrop-filter:blur(4px);transition:all .2s;border:1px solid rgba(255,255,255,.1)}
 .gc-action-btn:hover{background:var(--ac);transform:scale(1.05);border-color:var(--ac)}
 .gc-tags{display:flex;gap:3px;padding:4px 6px;flex-wrap:wrap;position:absolute;bottom:30px;left:0;right:0;justify-content:center}
 .gc-tag{padding:2px 6px;border-radius:10px;font-size:.45em;font-weight:600;background:rgba(124,58,237,.2);color:var(--ac2)}
-.gc-meta{display:flex;justify-content:space-between;padding:4px 10px;font-size:.52em;color:var(--tx3)}
 .gc-fav{position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,.4);border:none;color:#fff;font-size:.7em;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:5;opacity:0;transition:opacity .25s;backdrop-filter:blur(2px)}
 .gc:hover .gc-fav{opacity:1}
 /* === LAYERS PANEL ===
@@ -362,18 +361,6 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--ac),var(--ac2));display:flex;align-items:center;justify-content:center;font-size:1em;color:#fff;font-weight:900">A</div>
 <div><h1 style="font-size:1.2em;font-weight:900;color:var(--tx);background:none;-webkit-text-fill-color:var(--tx);animation:none;letter-spacing:-.3px">Anki Design Studio</h1><p style="color:var(--tx2);font-size:.62em;margin-top:0;font-weight:500">Professional Card Designer</p></div>
 </div>
-<div style="display:flex;justify-content:center;gap:8px;margin-bottom:8px;flex-wrap:wrap">
-<button class="btn bo bs" onclick="undo()" title="تراجع (Ctrl+Z)">↩ تراجع</button>
-<button class="btn bo bs" onclick="redo()" title="إعادة (Ctrl+Y)">↪ إعادة</button>
-<button class="btn bo bs" onclick="randomDesign()" title="تصميم عشوائي (R)">🎲 عشوائي</button>
-<button class="btn bo bs" onclick="saveCustom()" title="حفظ (Ctrl+S)">💾 حفظ</button>
-<button class="btn bo bs" onclick="resetDesign()" title="إعادة ضبط">🔄 ضبط</button>
-<button class="btn bo bs" onclick="document.querySelector('[data-t=dl]').click()" title="تصدير (Export)">📤 تصدير</button>
-<button class="btn bo bs" onclick="showSettingsModal()" title="إعدادات">⚙️</button>
-</div>
-<div style="display:flex;justify-content:center;gap:8px;font-size:.55em;color:var(--tx3);align-items:center">
-<span>v4.2</span><span>&middot;</span><span>Stable</span><span>&middot;</span><span id="statusIndicator" style="color:var(--gn)">● Saved</span><span>&middot;</span><span id="saveTimeDisplay">—</span>
-</div>
 </div>
 <div class="tabs">
 <button role="tab" class="tab on" data-t="gal">📚 المعرض</button>
@@ -389,17 +376,11 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 <div id="sec-ctl" class="sec">
 <div class="cl">
 <div class="cs">
-<div style="display:flex;gap:3px;margin-bottom:6px;flex-wrap:wrap">
-<button class="btn bo bs" onclick="undo()" id="undoBtn" disabled>↩ تراجع</button>
-<button class="btn bo bs" onclick="redo()" id="redoBtn" disabled>↪ إعادة</button>
-<button class="btn bo bs" onclick="randomDesign()" title="تصميم عشوائي">🎲 عشوائي</button>
-<button class="btn bo bs" onclick="resetDesign()" title="إعادة ضبط">🔄 ضبط</button>
-<button class="btn bo bs" onclick="saveCustom()" title="حفظ">💾 حفظ</button>
-</div>
+<div style="font-size:.72em;font-weight:700;color:var(--ac2);margin-bottom:8px">⚙️ لوحة التحكم</div>
 <input type="file" aria-label="File upload" id="bgUpload" accept="image/*" style="display:none" onchange="uploadBG(event)">
 <div id="ctrlArea" class="cw"></div>
 </div>
-<div class="cp"><div class="cp-t">معاينة مباشرة</div><div class="cp-c" id="ctlPreviewCard"></div></div>
+<div class="cp"><div class="cp-c" id="ctlPreviewCard"></div></div>
 </div>
 </div>
 
@@ -791,6 +772,10 @@ function moveElement(dir,el){
 }
 
 // NAVIGATION
+function switchTab(tabId){
+  var tab=document.querySelector('.tab[data-t="'+tabId+'"]');
+  if(tab) tab.click();
+}
 document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',function(){
   document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));this.classList.add('on');
   document.querySelectorAll('.sec').forEach(x=>x.classList.remove('on'));
@@ -846,11 +831,7 @@ function renderGrid(){
     var isFav=false;
     try{var favs=JSON.parse(localStorage.getItem('anki_favorites')||'[]');isFav=favs.some(function(f){return f._templateId===t.id;});}catch(e){}
     var tags=(t.tags||[]).map(function(tag){return '<span class="gc-tag">'+tag+'</span>';}).join('');
-    var animCount=0;
-    if(t.cfg.frenchAnim&&t.cfg.frenchAnim!=='none')animCount++;
-    if(t.cfg.meaningAnim&&t.cfg.meaningAnim!=='none')animCount++;
-    if(t.cfg.effect&&t.cfg.effect!=='none')animCount++;
-    return '<div class="gc'+(sel?' sel':'')+'" onclick="selectTemplate(\''+t.id+'\')" ondblclick="previewFullTemplate(\''+t.id+'\')">'
+    return '<div class="gc'+(sel?' sel':'')+'" onclick="toggleGalleryActions(this)" data-tpl-id=\''+t.id+'\')" ondblclick="previewFullTemplate(\''+t.id+'\')">'
       +'<div class="gp" style="background:'+bg+';border-radius:'+t.cfg.borderRadius+'px">'
       +'<div style="font-family:'+ff+';font-size:1.2em;font-weight:'+t.cfg.frenchFontWeight+';color:'+t.cfg.frenchColor+';margin-bottom:2px">'+SAMP.f+'</div>'
       +'<div style="font-family:'+fa+';font-size:.75em;font-weight:'+t.cfg.meaningFontWeight+';color:'+t.cfg.meaningColor+'">'+SAMP.a+'</div>'
@@ -862,11 +843,21 @@ function renderGrid(){
       +'<button class="gc-action-btn" onclick="event.stopPropagation();previewFullTemplate(\''+t.id+'\')">👁️ معاينة</button>'
       +'<button class="gc-action-btn" onclick="event.stopPropagation();exportSingleTemplate(\''+t.id+'\')">📤 تصدير</button>'
       +'</div>'
-      +'<div class="gnm"><span>'+t.nm+'</span><span class="gc-cat">'+(CATS[t.cat]||t.cat)+'</span></div>'
-      +'<div class="gc-meta"><span>🎨 '+(t.cfg.frenchColor||'#000').substring(0,7)+'</span><span>✨ '+animCount+'</span></div>'
+      
       +'</div>';
   }).join('');
 }
+// Toggle gallery actions on click
+function toggleGalleryActions(el){
+  var wasOpen=el.classList.contains('show-actions');
+  document.querySelectorAll('.gc.show-actions').forEach(function(x){x.classList.remove('show-actions');});
+  if(!wasOpen) el.classList.add('show-actions');
+}
+document.addEventListener('click',function(e){
+  if(!e.target.closest('.gc')){
+    document.querySelectorAll('.gc.show-actions').forEach(function(x){x.classList.remove('show-actions');});
+  }
+});
 // Mobile tap support for gallery
 document.addEventListener('click',function(e){
   var gc=e.target.closest('.gc');
@@ -899,7 +890,7 @@ function renderFilt(){
   document.getElementById('filtBar').innerHTML='<div class="gallery-toolbar"><div class="gallery-search"><input placeholder="ابحث في القوالب..." oninput="filterGallery(this.value)" value="'+gallerySearchQ+'"></div><select class="gallery-sort" onchange="gallerySort=this.value;renderGrid()"><option value="name"'+(gallerySort==='name'?' selected':'')+'>الاسم</option><option value="newest"'+(gallerySort==='newest'?' selected':'')+'>الأحدث</option><option value="category"'+(gallerySort==='category'?' selected':'')+'>التصنيف</option></select><div class="gallery-size"><span>الحجم:</span><input type="range" aria-label="Slider" min="100" max="250" value="'+gallerySize+'" oninput="gallerySize=parseInt(this.value);document.getElementById(\\"tplGrid\\").style.gridTemplateColumns=\\"repeat(auto-fill,minmax("+this.value+"px,1fr))\\""></div></div>'+Object.entries(CATS).map(function(arr){var k=arr[0],v=arr[1];return '<button class="fb'+(k===curCat?' on':'')+'" onclick="setCat(\''+k+'\')">'+v+'</button>';}).join('');
 }
 function setCat(c){curCat=c;curTag='all';renderFilt();renderGrid();}
-function selectTemplate(id){var t=TEMPLATES.find(function(x){return x.id===id;});if(!t)return;S=Object.assign({},JSON.parse(JSON.stringify(t.cfg)),{_templateId:id});pushHist();renderGrid();toast('تم اختيار: '+t.nm);}
+function selectTemplate(id){var t=TEMPLATES.find(function(x){return x.id===id;});if(!t)return;S=Object.assign({},JSON.parse(JSON.stringify(t.cfg)),{_templateId:id});pushHist();renderGrid();renderCtrls();updateCtlPreview();switchTab('ctl');toast('تم اختيار: '+t.nm);}
 function previewFullTemplate(id){var t=TEMPLATES.find(function(x){return x.id===id;});if(!t)return;showFullPreview(t);}
 function duplicateTemplate(id){var t=TEMPLATES.find(function(x){return x.id===id;});if(!t)return;var newId=id+'-dup-'+Date.now();TEMPLATES.push(Object.assign({},t,{id:newId,nm:t.nm+' (نسخة)'}));renderGrid();toast('تم نسخ: '+t.nm);}
 function exportSingleTemplate(id){var t=TEMPLATES.find(function(x){return x.id===id;});if(!t)return;var blob=new Blob([JSON.stringify(t,null,2)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='template-'+t.nm+'.json';a.click();toast('تم التصدير');}
