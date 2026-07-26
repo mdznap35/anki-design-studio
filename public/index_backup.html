@@ -274,6 +274,7 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 .gc-action-btn:hover{background:var(--ac);transform:scale(1.05);border-color:var(--ac)}
 .gc-tags{display:flex;gap:3px;padding:4px 6px;flex-wrap:wrap;position:absolute;bottom:30px;left:0;right:0;justify-content:center}
 .gc-tag{padding:2px 6px;border-radius:10px;font-size:.45em;font-weight:600;background:rgba(124,58,237,.2);color:var(--ac2)}
+.gc-meta{display:flex;justify-content:space-between;padding:4px 10px;font-size:.52em;color:var(--tx3)}
 .gc-fav{position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,.4);border:none;color:#fff;font-size:.7em;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:5;opacity:0;transition:opacity .25s;backdrop-filter:blur(2px)}
 .gc:hover .gc-fav{opacity:1}
 /* === LAYERS PANEL ===
@@ -361,6 +362,18 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--ac),var(--ac2));display:flex;align-items:center;justify-content:center;font-size:1em;color:#fff;font-weight:900">A</div>
 <div><h1 style="font-size:1.2em;font-weight:900;color:var(--tx);background:none;-webkit-text-fill-color:var(--tx);animation:none;letter-spacing:-.3px">Anki Design Studio</h1><p style="color:var(--tx2);font-size:.62em;margin-top:0;font-weight:500">Professional Card Designer</p></div>
 </div>
+<div style="display:flex;justify-content:center;gap:8px;margin-bottom:8px;flex-wrap:wrap">
+<button class="btn bo bs" onclick="undo()" title="تراجع (Ctrl+Z)">↩ تراجع</button>
+<button class="btn bo bs" onclick="redo()" title="إعادة (Ctrl+Y)">↪ إعادة</button>
+<button class="btn bo bs" onclick="randomDesign()" title="تصميم عشوائي (R)">🎲 عشوائي</button>
+<button class="btn bo bs" onclick="saveCustom()" title="حفظ (Ctrl+S)">💾 حفظ</button>
+<button class="btn bo bs" onclick="resetDesign()" title="إعادة ضبط">🔄 ضبط</button>
+<button class="btn bo bs" onclick="document.querySelector('[data-t=dl]').click()" title="تصدير (Export)">📤 تصدير</button>
+<button class="btn bo bs" onclick="showSettingsModal()" title="إعدادات">⚙️</button>
+</div>
+<div style="display:flex;justify-content:center;gap:8px;font-size:.55em;color:var(--tx3);align-items:center">
+<span>v4.2</span><span>&middot;</span><span>Stable</span><span>&middot;</span><span id="statusIndicator" style="color:var(--gn)">● Saved</span><span>&middot;</span><span id="saveTimeDisplay">—</span>
+</div>
 </div>
 <div class="tabs">
 <button role="tab" class="tab on" data-t="gal">📚 المعرض</button>
@@ -419,8 +432,8 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 </div>
 </div>
 <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">
-<button class="btn ba bs" onclick="speakWord(SAMP.f,'fr')">🔊 فرنسي</button>
-<button class="btn ba bs" onclick="speakWord(SAMP.a,'ar')">🔊 عربي</button>
+<button class="btn ba bs" onclick="speakWord(SAMP.f,'fr')">\uD83D\uDD0A فرنسي</button>
+<button class="btn ba bs" onclick="speakWord(SAMP.a,'ar')">\uD83D\uDD0A عربي</button>
 </div>
 </div>
 </div>
@@ -431,9 +444,9 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 <p style="font-size:.68em;color:var(--tx2);margin-bottom:10px">ملف .apkg جاهز للاستيراد</p>
 <div style="margin-bottom:10px">
 <label for="deckNameInput" style="font-size:.68em;color:var(--tx2);display:block;margin-bottom:3px">اسم الرزمة</label>
-<input class="tx" aria-label="Text input" id="deckName" value="Français Bac 2021-2022" style="text-align:center;font-weight:700">
+<input class="tx" aria-label="Text input" id="deckName" value="Fran\u00e7ais Bac 2021-2022" style="text-align:center;font-weight:700">
 </div>
-<button class="btn ba" style="width:100%;padding:10px" onclick="downloadAPKG()">⬇ تنزيل .apkg</button>
+<button class="btn ba" style="width:100%;padding:10px" onclick="downloadAPKG()">\u2B07\uFE0F تنزيل .apkg</button>
 <div id="dlInfo" style="margin-top:8px;font-size:.68em;color:var(--tx2);text-align:center"></div>
 <div id="loading" style="display:none;margin-top:8px;text-align:center"><span style="font-size:.68em;color:var(--tx2)">جاري التوليد...</span></div>
 </div>
@@ -772,10 +785,6 @@ function moveElement(dir,el){
 }
 
 // NAVIGATION
-function switchTab(tabId){
-  var tab=document.querySelector('.tab[data-t="'+tabId+'"]');
-  if(tab) tab.click();
-}
 document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',function(){
   document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));this.classList.add('on');
   document.querySelectorAll('.sec').forEach(x=>x.classList.remove('on'));
@@ -831,7 +840,11 @@ function renderGrid(){
     var isFav=false;
     try{var favs=JSON.parse(localStorage.getItem('anki_favorites')||'[]');isFav=favs.some(function(f){return f._templateId===t.id;});}catch(e){}
     var tags=(t.tags||[]).map(function(tag){return '<span class="gc-tag">'+tag+'</span>';}).join('');
-    return '<div class="gc'+(sel?' sel':'')+'" onclick="toggleGalleryActions(this)" data-tpl-id=\''+t.id+'\'" ondblclick="previewFullTemplate(\''+t.id+'\')">'
+    var animCount=0;
+    if(t.cfg.frenchAnim&&t.cfg.frenchAnim!=='none')animCount++;
+    if(t.cfg.meaningAnim&&t.cfg.meaningAnim!=='none')animCount++;
+    if(t.cfg.effect&&t.cfg.effect!=='none')animCount++;
+    return '<div class="gc'+(sel?' sel':'')+'" onclick="toggleGalleryActions(this)" data-tpl-id=\''+t.id+'\')" ondblclick="previewFullTemplate(\''+t.id+'\')">'
       +'<div class="gp" style="background:'+bg+';border-radius:'+t.cfg.borderRadius+'px">'
       +'<div style="font-family:'+ff+';font-size:1.2em;font-weight:'+t.cfg.frenchFontWeight+';color:'+t.cfg.frenchColor+';margin-bottom:2px">'+SAMP.f+'</div>'
       +'<div style="font-family:'+fa+';font-size:.75em;font-weight:'+t.cfg.meaningFontWeight+';color:'+t.cfg.meaningColor+'">'+SAMP.a+'</div>'
@@ -844,6 +857,7 @@ function renderGrid(){
       +'<button class="gc-action-btn" onclick="event.stopPropagation();exportSingleTemplate(\''+t.id+'\')">📤 تصدير</button>'
       +'</div>'
       
+      +'<div class="gc-meta"><span>🎨 '+(t.cfg.frenchColor||'#000').substring(0,7)+'</span><span>✨ '+animCount+'</span></div>'
       +'</div>';
   }).join('');
 }
@@ -890,7 +904,7 @@ function renderFilt(){
   document.getElementById('filtBar').innerHTML='<div class="gallery-toolbar"><div class="gallery-search"><input placeholder="ابحث في القوالب..." oninput="filterGallery(this.value)" value="'+gallerySearchQ+'"></div><select class="gallery-sort" onchange="gallerySort=this.value;renderGrid()"><option value="name"'+(gallerySort==='name'?' selected':'')+'>الاسم</option><option value="newest"'+(gallerySort==='newest'?' selected':'')+'>الأحدث</option><option value="category"'+(gallerySort==='category'?' selected':'')+'>التصنيف</option></select><div class="gallery-size"><span>الحجم:</span><input type="range" aria-label="Slider" min="100" max="250" value="'+gallerySize+'" oninput="gallerySize=parseInt(this.value);document.getElementById(\\"tplGrid\\").style.gridTemplateColumns=\\"repeat(auto-fill,minmax("+this.value+"px,1fr))\\""></div></div>'+Object.entries(CATS).map(function(arr){var k=arr[0],v=arr[1];return '<button class="fb'+(k===curCat?' on':'')+'" onclick="setCat(\''+k+'\')">'+v+'</button>';}).join('');
 }
 function setCat(c){curCat=c;curTag='all';renderFilt();renderGrid();}
-function selectTemplate(id){var t=TEMPLATES.find(function(x){return x.id===id;});if(!t)return;S=Object.assign({},JSON.parse(JSON.stringify(t.cfg)),{_templateId:id});pushHist();renderGrid();renderCtrls();updateCtlPreview();switchTab('ctl');toast('تم اختيار: '+t.nm);}
+function selectTemplate(id){var t=TEMPLATES.find(function(x){return x.id===id;});if(!t)return;S=Object.assign({},JSON.parse(JSON.stringify(t.cfg)),{_templateId:id});pushHist();renderGrid();toast('تم اختيار: '+t.nm);}
 function previewFullTemplate(id){var t=TEMPLATES.find(function(x){return x.id===id;});if(!t)return;showFullPreview(t);}
 function duplicateTemplate(id){var t=TEMPLATES.find(function(x){return x.id===id;});if(!t)return;var newId=id+'-dup-'+Date.now();TEMPLATES.push(Object.assign({},t,{id:newId,nm:t.nm+' (نسخة)'}));renderGrid();toast('تم نسخ: '+t.nm);}
 function exportSingleTemplate(id){var t=TEMPLATES.find(function(x){return x.id===id;});if(!t)return;var blob=new Blob([JSON.stringify(t,null,2)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='template-'+t.nm+'.json';a.click();toast('تم التصدير');}
@@ -1028,25 +1042,22 @@ const bgOverlay=c.cardBgImage?'<div style="position:absolute;inset:0;background-
 }
 
 // CONTROLS
-// Global UI helper functions (used by renderCtrls and renderAdvancedCSS)
-function acc(title,content,open){return '<div class="acc"><div class="acc-h' + (open ? ' open' : '') + '" onclick="toggleAcc(this)"><span>'+title+'</span><span class="arr">\u25B6</span></div><div class="acc-b' + (open ? ' open' : '') + '">'+content+'</div></div>';}
-function grp(title,content){return '<div class="acc-grp"><div class="acc-grp-t">'+title+'</div>'+content+'</div>';}
-function rng(id,lb,min,max,step,d,fmt){
-  var v=S[id]!==undefined?S[id]:d;var u=fmt||'';
-  return '<div class="ct"><div class="cl-b">'+lb+'</div><div class="rw"><input type="range" aria-label="Slider" min="'+min+'" max="'+max+'" step="'+step+'" value="'+v+'" oninput="setVal(\''+id+'\',parseFloat(this.value));this.nextElementSibling.textContent=this.value'+u+'"><span class="rv">'+v+u+'</span></div></div>';
-}
-function clr(id,lb,d){return '<div class="ct"><div class="cl-b">'+lb+'</div><div class="rw"><input type="color" aria-label="Color picker" value="'+(S[id]||d||'#000000')+'" oninput="setVal(\''+id+'\',this.value)"></div></div>';}
-function sel(id,lb,opts){var o='';opts.forEach(function(op){o+='<option value="'+op.v+'"'+(S[id]===op.v?' selected':'')+'>'+op.l+'</option>';});return '<div class="ct"><div class="cl-b">'+lb+'</div><div class="rw"><select class="sl" aria-label="Select" onchange="setVal(\''+id+'\',this.value)">'+o+'</select></div></div>';}
-function tog(id,lb){var on=S[id]!==false;return '<button class="btn bo bs" data-tog="'+id+'" data-lbl="'+lb+'" style="border-color:'+(on?'var(--gn)':'var(--rd)')+';color:'+(on?'var(--gn)':'var(--rd)')+'" onclick="setVal(\''+id+'\',S[\''+id+'\']===false)">'+(on?'\u2713':'\u2717')+' '+lb+'</button>';}
-function sl(arr){return arr.map(function(t){return rng(t[0],t[1],t[2],t[3],t[4],t[5],t[6]||'');}).join('');}
-function cls(arr){return arr.map(function(t){return clr(t[0],t[1],t[2]);}).join('');}
-
 function renderCtrls(){
   let h='';
   h+=renderPropertySearch();
   // Property Search
   // Helper functions
-  // Helper functions moved to global scope
+  function acc(title,content,open){return '<div class="acc"><div class="acc-h' + (open ? ' open' : '') + '" onclick="toggleAcc(this)"><span>'+title+'</span><span class="arr">\u25B6</span></div><div class="acc-b' + (open ? ' open' : '') + '">'+content+'</div></div>';}
+  function grp(title,content){return '<div class="acc-grp"><div class="acc-grp-t">'+title+'</div>'+content+'</div>';}
+  function rng(id,lb,min,max,step,d,fmt){
+    var v=S[id]!==undefined?S[id]:d;var u=fmt||'';
+    return '<div class="ct"><div class="cl-b">'+lb+'</div><div class="rw"><input type="range" aria-label="Slider" min="'+min+'" max="'+max+'" step="'+step+'" value="'+v+'" oninput="setVal(\''+id+'\',parseFloat(this.value));this.nextElementSibling.textContent=this.value'+u+'"><span class="rv">'+v+u+'</span></div></div>';
+  }
+  function clr(id,lb,d){return '<div class="ct"><div class="cl-b">'+lb+'</div><div class="rw"><input type="color" aria-label="Color picker" value="'+(S[id]||d||'#000000')+'" oninput="setVal(\''+id+'\',this.value)"></div></div>';}
+  function sel(id,lb,opts){var o='';opts.forEach(function(op){o+='<option value="'+op.v+'"'+(S[id]===op.v?' selected':'')+'>'+op.l+'</option>';});return '<div class="ct"><div class="cl-b">'+lb+'</div><div class="rw"><select class="sl" aria-label="Select" onchange="setVal(\''+id+'\',this.value)">'+o+'</select></div></div>';}
+  function tog(id,lb){var on=S[id]!==false;return '<button class="btn bo bs" data-tog="'+id+'" data-lbl="'+lb+'" style="border-color:'+(on?'var(--gn)':'var(--rd)')+';color:'+(on?'var(--gn)':'var(--rd)')+'" onclick="setVal(\''+id+'\',S[\''+id+'\']===false)">'+(on?'\u2713':'\u2717')+' '+lb+'</button>';}
+  function sl(arr){return arr.map(function(t){return rng(t[0],t[1],t[2],t[3],t[4],t[5],t[6]||'');}).join('');}
+  function cls(arr){return arr.map(function(t){return clr(t[0],t[1],t[2]);}).join('');}
 
   // 1. QUICK DESIGN
   var qd='<div style="display:flex;gap:3px;flex-wrap:wrap">';
