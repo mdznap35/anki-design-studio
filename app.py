@@ -168,4 +168,5 @@ def generate():
 if __name__ == '__main__':
     print(f"\n🎨 Anki Design Studio (Python)\n   📝 {len(get_all_words())} words\n")
     # Bind to 0.0.0.0 required for Render.com deployment
-    app.run(host='0.0.0.0'  # nosec S8392 - required for Render.com container, port=int(os.environ.get('PORT', 3000)))
+    # nosec S8392 - required for Render.com container
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 3000)))
