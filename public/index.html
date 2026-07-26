@@ -245,7 +245,7 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 /* === ESSENTIAL 12 CSS ===
 .doc-icon{cursor:help;color:var(--tx3);font-size:.7em;margin-left:2px}.doc-icon:hover{color:var(--ac)}
 .mode-seg{display:flex;background:var(--s2);border-radius:var(--br-sm);padding:3px;gap:3px;margin-bottom:10px;border:1px solid var(--bd)}
-.mode-seg-btn{flex:1;padding:6px 8px;border:none;border-radius:4px;background:none;color:var(--tx2);font-size:var(--fs-sm);font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit;text-align:center}
+.mode-seg-btn{flex:1;padding:6px 8px;border:1px solid var(--bd);border-radius:6px;background:var(--s2);color:var(--tx);font-size:var(--fs-sm);font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit;text-align:center}
 .mode-seg-btn:hover{background:var(--s3)}
 .mode-seg-btn.on{background:var(--ac);color:#fff;box-shadow:0 2px 8px rgba(124,58,237,.25)}
 .border-preview-box{width:120px;height:80px;margin:8px auto;border-radius:var(--br-md);background:var(--s2);position:relative;display:flex;align-items:center;justify-content:center;font-size:.6em;color:var(--tx3)}
@@ -270,11 +270,11 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 .gc{position:relative;transition:all .25s cubic-bezier(.4,0,.2,1)}
 .gc:hover .gc-actions,.gc.show-actions .gc-actions{opacity:1;transform:translateY(0)}.gc.touched .gc-actions{opacity:1;transform:translateY(0)}
 .gc-actions{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.55);backdrop-filter:blur(3px);display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px;padding:10px;opacity:0;transform:translateY(6px);transition:all .3s;border-radius:var(--br-md);z-index:10}
-.gc-action-btn{padding:6px 14px;border:none;border-radius:8px;font-size:.72em;font-weight:700;cursor:pointer;text-align:center;color:#fff;background:rgba(255,255,255,.18);backdrop-filter:blur(4px);transition:all .2s;border:1px solid rgba(255,255,255,.1)}
-.gc-action-btn:hover{background:var(--ac);transform:scale(1.05);border-color:var(--ac)}
+.gc-action-btn{padding:6px 14px;border:none;border-radius:8px;font-size:.72em;font-weight:700;cursor:pointer;text-align:center;color:#fff;background:var(--ac);backdrop-filter:blur(4px);transition:all .2s;border:1px solid transparent}
+.gc-action-btn:hover{background:var(--ac2);transform:scale(1.05);border-color:var(--ac2);box-shadow:0 4px 12px rgba(124,58,237,.3)}
 .gc-tags{display:flex;gap:3px;padding:4px 6px;flex-wrap:wrap;position:absolute;bottom:30px;left:0;right:0;justify-content:center}
 .gc-tag{padding:2px 6px;border-radius:10px;font-size:.45em;font-weight:600;background:rgba(124,58,237,.2);color:var(--ac2)}
-.gc-fav{position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,.4);border:none;color:#fff;font-size:.7em;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:5;opacity:0;transition:opacity .25s;backdrop-filter:blur(2px)}
+.gc-fav{position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,.4);border:none;color:#fff;font-size:.7em;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:5;opacity:.6;transition:opacity .25s;backdrop-filter:blur(2px)}
 .gc:hover .gc-fav{opacity:1}
 /* === LAYERS PANEL ===
 .layers-panel{background:var(--s1);border:1px solid var(--bd);border-radius:var(--br-md);padding:8px;margin-top:8px}
@@ -780,6 +780,7 @@ document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',function
   document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));this.classList.add('on');
   document.querySelectorAll('.sec').forEach(x=>x.classList.remove('on'));
   document.getElementById('sec-'+this.dataset.t).classList.add('on');
+  if(this.dataset.t==='gal'){renderGrid();}
   if(this.dataset.t==='ctl')renderCtrls();
   if(this.dataset.t==='editor')renderVE();
   if(this.dataset.t==='full')renderFullscreen();
@@ -2668,7 +2669,7 @@ window.addEventListener('load',()=>{
   setupAutosave();
   document.addEventListener('contextmenu',showContextMenu);
   if(window.speechSynthesis){speechSynthesis.onvoiceschanged=()=>initTTS();initTTS();}
-  pushHist();renderFilt();renderGrid();renderCtrls();updateCtlPreview();setTimeout(function(){addDocTooltips();initChatGPTFixes();},100);
+  pushHist();renderFilt();renderGrid();setTimeout(function(){renderCtrls();updateCtlPreview();setTimeout(function(){addDocTooltips();initChatGPTFixes();},50);},50);
 });
 
 // ============================================================
