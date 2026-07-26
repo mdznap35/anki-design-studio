@@ -364,15 +364,15 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 </div>
 </div>
 <div class="tabs">
-<button role="tab" class="tab on" data-t="gal">📚 المعرض</button>
+<button role="tab" class="tab on" data-t="editor">🖱️ المحرر</button>
+<button class="tab" data-t="gal">📚 المعرض</button>
 <button class="tab" data-t="ctl">⚙️ التحكم</button>
-<button class="tab" data-t="editor">🖱️ المحرر</button>
 <button class="tab" data-t="full">👁️ معاينة</button>
 <button class="tab" data-t="tts">🔊 النطق</button>
 <button class="tab" data-t="dl">📥 التنزيل</button>
 </div>
 
-<div id="sec-gal" class="sec on"><div class="col-bar" id="colBar"></div><div class="tag-bar" id="tagBar"></div><div class="gallery-toolbar" id="galToolbar"></div><div class="filt" id="filtBar"></div><div class="gal-grid" id="tplGrid"></div></div>
+<div id="sec-gal" class="sec"><div class="col-bar" id="colBar"></div><div class="tag-bar" id="tagBar"></div><div class="gallery-toolbar" id="galToolbar"></div><div class="filt" id="filtBar"></div><div class="gal-grid" id="tplGrid"></div></div>
 
 <div id="sec-ctl" class="sec">
 <div class="cl">
@@ -385,12 +385,18 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 </div>
 </div>
 
-<div id="sec-editor" class="sec">
+<div id="sec-editor" class="sec on">
 <div class="ve-l">
 <div class="ve-c" id="veCanvas"></div>
 <div class="ve-p" id="veProps">
 <div style="font-size:.72em;font-weight:800;color:var(--ac2);margin-bottom:6px">خصائص العنصر</div>
 <div id="vePropPanel" style="font-size:.65em;color:var(--tx2)">اضغط على عنصر بالبطاقة</div>
+<div style="margin-top:10px;border-top:1px solid var(--bd);padding-top:10px">
+<div style="font-size:.68em;font-weight:700;color:var(--ac2);margin-bottom:6px">📥 تنزيل</div>
+<input class="tx" aria-label="Text input" id="veDeckName" value="Français Bac 2021-2022" style="width:100%;text-align:center;font-size:.65em;margin-bottom:6px;padding:6px;border-radius:6px;border:1px solid var(--bd);background:var(--s2);color:var(--tx)" placeholder="اسم الرزمة">
+<button class="btn ba" style="width:100%;padding:8px;font-size:.68em" onclick="var dn=document.getElementById('veDeckName');if(dn&&dn.value)document.getElementById('deckName').value=dn.value;downloadAPKG()">⬇ تنزيل .apkg</button>
+<div id="veDlInfo" style="margin-top:4px;font-size:.6em;color:var(--tx2);text-align:center"></div>
+</div>
 </div>
 </div>
 </div>
@@ -781,7 +787,7 @@ document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',function
   document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));this.classList.add('on');
   document.querySelectorAll('.sec').forEach(x=>x.classList.remove('on'));
   document.getElementById('sec-'+this.dataset.t).classList.add('on');
-  if(this.dataset.t==='gal'){renderGrid();}
+  if(this.dataset.t==='gal'){var self=this;setTimeout(function(){renderFilt();renderTags();renderCollections();renderGrid();},10);}
   if(this.dataset.t==='ctl')renderCtrls();
   if(this.dataset.t==='editor')renderVE();
   if(this.dataset.t==='full')renderFullscreen();
@@ -964,7 +970,7 @@ function renderCardHTML(c){
   // Background image overlay (separate from card content)
 
 const bgOverlay=c.cardBgImage?'<div style="position:absolute;inset:0;background-image:url('+c.cardBgImage+');background-size:cover;background-position:center;filter:blur('+(c.cardBgBlur||0)+'px);opacity:'+(c.cardBgOpacity!==undefined?c.cardBgOpacity:1)+';z-index:0;pointer-events:none"></div>':'';
-  const extras=(c.cardBorderWidth>0?'border:'+c.cardBorderWidth+'px solid '+c.cardBorderColor+';':'')+(c.cardShadow&&c.cardShadow!=='none'?'box-shadow:'+c.cardShadow+';':'');
+  const extras=(c.cardBorderWidth>0?'border:'+c.cardBorderWidth+'px solid '+c.cardBorderColor+';':'')+((c.cardShadowColor?'box-shadow:'+(c.cardShadowX||0)+'px '+(c.cardShadowY||4)+'px '+(c.cardShadowBlur||16)+'px '+c.cardShadowColor+';':c.cardShadow&&c.cardShadow!=='none'?'box-shadow:'+c.cardShadow+';':'');
   const base='border-radius:'+br+'px;text-align:center;position:relative;overflow:hidden;font-family:'+fA+',sans-serif;direction:rtl;'+(c.mixBlendMode&&c.mixBlendMode!=='normal'?';mix-blend-mode:'+c.mixBlendMode:'')+(c.backdropFilter&&c.backdropFilter!=='none'?';backdrop-filter:'+c.backdropFilter:'')+(c.isolation&&c.isolation!=='auto'?';isolation:'+c.isolation:'')+(c.overflowWrap?';overflow-wrap:'+c.overflowWrap:'')+(c.willChange&&c.willChange!=='auto'?';will-change:'+c.willChange:'')+(c.pointerEvents&&c.pointerEvents!=='auto'?';pointer-events:'+c.pointerEvents:'')+(c.aspectRatio&&c.aspectRatio!=='auto'?';aspect-ratio:'+c.aspectRatio:'')+(c.objectFit&&c.objectFit!=='fill'?';object-fit:'+c.objectFit:'')+(c.objectPosition&&c.objectPosition!=='center'?';object-position:'+c.objectPosition:'')+(c.transformOrigin&&c.transformOrigin!=='center'?';transform-origin:'+c.transformOrigin:'')+(c.userSelect&&c.userSelect!=='auto'?';user-select:'+c.userSelect:'')+(c.wordBreak&&c.wordBreak!=='normal'?';word-break:'+c.wordBreak:'')+';';
   const fOp=c.frenchOpacity!==undefined?c.frenchOpacity:1;
   const mOp=c.meaningOpacity!==undefined?c.meaningOpacity:1;
@@ -974,32 +980,32 @@ const bgOverlay=c.cardBgImage?'<div style="position:absolute;inset:0;background-
   const fSc=c.frenchScale||1;const mSc=c.meaningScale||1;
   const fMt=c.frenchMarginTop||0;const fMb=c.frenchMarginBottom||4;
   const mMt=c.meaningMarginTop||6;const mMb=c.meaningMarginBottom||0;
-  const badgeN=c.showBadge!==false?'<span data-ve="badgeNom" style="display:inline-block;font-size:.72em;font-weight:700;padding:4px 14px;border-radius:20px;direction:ltr;margin:2px;background:'+(c.badgeNomBg||'#dbeafe')+';color:'+(c.badgeNomColor||'#1e40af')+';opacity:'+bOp+'">Nom</span>':"";
-  const unitB=c.showUnitBadge!==false?'<span data-ve="badgeUnit" style="display:inline-block;font-size:.68em;font-weight:700;padding:3px 12px;border-radius:20px;direction:ltr;margin:2px;background:'+(c.unitBg||'#f0fdf4')+';color:'+(c.unitColor||'#166534')+';border:1px solid '+(c.unitBorder||'#bbf7d0')+';opacity:'+bOp+'">Unit 1</span>':'';
+  const badgeN=c.showBadge!==false?'<span data-ve="badgeNom" style="display:inline-block;font-size:.72em;font-weight:700;padding:4px 14px;border-width:'+(c.badgeNomBorderWidth||0)+'px;border-style:solid;border-color:transparent;border-radius:'+(c.badgeNomBorderRadius||20)+'px;direction:ltr;margin:'+(c.badgeMarginTop||2)+'px 2px '+(c.badgeMarginBottom||2)+'px;background:'+(c.badgeNomBg||'#dbeafe')+';color:'+(c.badgeNomColor||'#1e40af')+';opacity:'+bOp+'">Nom</span>':"";
+  const unitB=c.showUnitBadge!==false?'<span data-ve="badgeUnit" style="display:inline-block;font-size:.68em;font-weight:700;padding:3px 12px;border-radius:20px;border-width:'+(c.badgeUnitBorderWidth||0)+'px;border-style:solid;border-color:transparent;direction:ltr;margin:'+(c.badgeMarginTop||2)+'px 2px '+(c.badgeMarginBottom||2)+'px;background:'+(c.unitBg||'#f0fdf4')+';color:'+(c.unitColor||'#166534')+';border:1px solid '+(c.unitBorder||'#bbf7d0')+';opacity:'+bOp+'">Unit 1</span>':'';
   const sBg2=c.speakerBg||'rgba(124,58,237,.2)';
   
-  const sIco2=c.speakerIcon||'\ud83d\udd0a';
+  const sSz=c.speakerSize||1;const sIco2=c.speakerIcon||'\ud83d\udd0a';
   const sPos=c.speakerPos||'inline';
   var spkCSS='font-size:'+(c.speakerFontSize||0.8)+'em;padding:'+(c.speakerPaddingY||4)+'px '+(c.speakerPaddingX||10)+'px;border-radius:'+(c.speakerBorderRadius||20)+'px;';
   if(c.speakerRotate)spkCSS+='transform:rotate('+c.speakerRotate+'deg);';
   if(c.speakerShadowBlur)spkCSS+='box-shadow:'+c.speakerShadowX+'px '+c.speakerShadowY+'px '+c.speakerShadowBlur+'px '+c.speakerShadowColor+';';
-  if(c.speakerTransition)spkCSS+='transition:'+c.speakerTransition+';';
+  if(c.speakerTransition)spkCSS+='transition:'+c.speakerTransition+';';if(c.speakerBorderColor)spkCSS+='border:'+(c.speakerBorderWidth||1)+'px solid '+c.speakerBorderColor+';';spkCSS+='font-size:'+sSz+'em;';
   const speakerBtn='<span data-ve="speaker" style="display:inline-block;cursor:pointer;background:'+sBg2+';color:'+(c.speakerColor||'#ffffff')+';margin:2px;'+spkCSS+'" onclick="event.stopPropagation();speakWord(SAMP.f,\'fr\');setTimeout(()=>speakWord(SAMP.a,\'ar\'),1500)">'+sIco2+'</span>';
   const badges=sPos==='inline'?badgeN+unitB+speakerBtn:badgeN+unitB;
-  function _animCSS(prefix,c){var name=c[prefix+'Anim'];if(!name||name==='none')return '';var dur=c[prefix+'AnimDur']||0.5;var delay=c[prefix+'AnimDelay']||0;var iter=c[prefix+'AnimIter']||1;var dir=c[prefix+'AnimDir']||'normal';var fill=c[prefix+'AnimFill']||'both';var timing=c[prefix+'AnimTiming']||'ease-in-out';return 'animation:'+name+' '+dur+'s '+timing+' '+delay+'s '+iter+' '+dir+' '+fill+';';}const frenchAnimCSS=_animCSS('french',c);const french='<div data-ve="french" style="opacity:'+fOp+';width:'+fW+';transform:scale('+fSc+');margin-top:'+fMt+'px;margin-bottom:'+fMb+'px;font-family:'+fF+',sans-serif;font-size:'+fsFr+'em;font-weight:'+fwFr+';direction:ltr;unicode-bidi:embed;color:'+fc+';letter-spacing:'+(c.frenchLetterSpacing||0)+'px;line-height:'+(c.frenchLineHeight||1.2)+';'+(c.frenchBorderColor?';border:1px solid '+c.frenchBorderColor:'')+frenchAnimCSS+(c.frenchFontStyle&&c.frenchFontStyle!=='normal'?';font-style:'+c.frenchFontStyle:'')+(c.frenchTextTransform&&c.frenchTextTransform!=='none'?';text-transform:'+c.frenchTextTransform:'')+(c.frenchTextDecoration&&c.frenchTextDecoration!=='none'?';text-decoration:'+c.frenchTextDecoration:'')+(c.frenchTextShadowColor?';text-shadow:'+(c.frenchTextShadowX||0)+'px '+(c.frenchTextShadowY||2)+'px '+(c.frenchTextShadowBlur||4)+'px '+c.frenchTextShadowColor:'')+(c.frenchTextAlign&&c.frenchTextAlign!=='center'?';text-align:'+c.frenchTextAlign:'')+'">'+SAMP.f+'</div>';
-  const meaningAnimCSS=_animCSS('meaning',c);var meaningFontCSS=(c.meaningFontStyle&&c.meaningFontStyle!=='normal'?';font-style:'+c.meaningFontStyle:'')+(c.meaningTextTransform&&c.meaningTextTransform!=='none'?';text-transform:'+c.meaningTextTransform:'');var meaningShadowCSS=c.meaningTextShadowColor?';text-shadow:'+(c.meaningTextShadowX||0)+'px '+(c.meaningTextShadowY||2)+'px '+(c.meaningTextShadowBlur||4)+'px '+c.meaningTextShadowColor:'';const meaning=c.showMeaning!==false?'<div data-ve="meaning" style="opacity:'+mOp+';width:'+mW+';transform:scale('+mSc+');margin-top:'+mMt+'px;margin-bottom:'+mMb+'px;background:'+(c.meaningBg||'#eff6ff')+';border:'+(c.meaningBorderWidth||2)+'px solid '+(c.meaningBorder||'#bfdbfe')+';border-radius:'+(c.meaningBorderRadius||16)+'px;padding:10px 16px;'+meaningAnimCSS+'"><div style="font-family:'+fA+',sans-serif;font-size:'+fsAr+'em;font-weight:'+fwAr+';color:'+mc+';'+meaningFontCSS+meaningShadowCSS+(c.meaningTextAlign&&c.meaningTextAlign!=='center'?';text-align:'+c.meaningTextAlign:'')+'">'+SAMP.a+'</div></div>':'';
+  function _animCSS(prefix,c){var name=c[prefix+'Anim'];if(!name||name==='none')return '';var dur=c[prefix+'AnimDur']||0.5;var delay=c[prefix+'AnimDelay']||0;var iter=c[prefix+'AnimIter']||1;var dir=c[prefix+'AnimDir']||'normal';var fill=c[prefix+'AnimFill']||'both';var timing=c[prefix+'AnimTiming']||'ease-in-out';return 'animation:'+name+' '+dur+'s '+timing+' '+delay+'s '+iter+' '+dir+' '+fill+';';}const frenchAnimCSS=_animCSS('french',c);const french='<div data-ve="french" style="opacity:'+fOp+';width:'+fW+';transform:scale('+fSc+');margin-top:'+fMt+'px;margin-bottom:'+fMb+'px;font-family:'+fF+',sans-serif;font-size:'+fsFr+'em;font-weight:'+fwFr+';direction:ltr;unicode-bidi:embed;color:'+fc+';letter-spacing:'+(c.frenchLetterSpacing||0)+'px;line-height:'+(c.frenchLineHeight||1.2)+';'+(c.frenchBorderColor?';border:1px solid '+c.frenchBorderColor:'')+frenchAnimCSS+(c.frenchFontStyle&&c.frenchFontStyle!=='normal'?';font-style:'+c.frenchFontStyle:'')+(c.frenchTextTransform&&c.frenchTextTransform!=='none'?';text-transform:'+c.frenchTextTransform:'')+(c.frenchTextDecoration&&c.frenchTextDecoration!=='none'?';text-decoration:'+c.frenchTextDecoration:'')+(c.frenchTextShadowColor?';text-shadow:'+(c.frenchTextShadowX||0)+'px '+(c.frenchTextShadowY||2)+'px '+(c.frenchTextShadowBlur||4)+'px '+c.frenchTextShadowColor:'')+(c.frenchTextAlign&&c.frenchTextAlign!=='center'?';text-align:'+c.frenchTextAlign:'')+(c.frenchBg?';background:'+c.frenchBg+';padding:8px 16px':'')+(c.frenchBorderRadius?';border-radius:'+c.frenchBorderRadius+'px':'')+(c.frenchBorderWidth?';border:'+c.frenchBorderWidth+'px solid '+(c.frenchBorderColor||'rgba(0,0,0,.1)'):'')+(c.frenchBoxShadowColor?';box-shadow:0 2px '+(c.frenchBoxShadowBlur||8)+'px '+c.frenchBoxShadowColor:'')+(c.frenchRotate?';transform:scale('+fSc+') rotate('+c.frenchRotate+'deg)':'')+(c.frenchSkewX?';transform:scale('+fSc+') skewX('+c.frenchSkewX+'deg)':'')+(c.frenchPaddingTop?';padding-top:'+c.frenchPaddingTop+'px':'')+(c.frenchPaddingBottom?';padding-bottom:'+c.frenchPaddingBottom+'px':'')+'">'+SAMP.f+'</div>';
+  const meaningAnimCSS=_animCSS('meaning',c);var meaningFontCSS=(c.meaningFontStyle&&c.meaningFontStyle!=='normal'?';font-style:'+c.meaningFontStyle:'')+(c.meaningTextTransform&&c.meaningTextTransform!=='none'?';text-transform:'+c.meaningTextTransform:'');var meaningShadowCSS=c.meaningTextShadowColor?';text-shadow:'+(c.meaningTextShadowX||0)+'px '+(c.meaningTextShadowY||2)+'px '+(c.meaningTextShadowBlur||4)+'px '+c.meaningTextShadowColor:'';const meaning=c.showMeaning!==false?'<div data-ve="meaning" style="opacity:'+mOp+';width:'+mW+';transform:scale('+mSc+');margin-top:'+mMt+'px;margin-bottom:'+mMb+'px;background:'+(c.meaningBg||'#eff6ff')+';border:'+(c.meaningBorderWidth||2)+'px solid '+(c.meaningBorder||'#bfdbfe')+';border-radius:'+(c.meaningBorderRadius||16)+'px;padding:10px 16px;'+meaningAnimCSS+'"><div style="font-family:'+fA+',sans-serif;font-size:'+fsAr+'em;font-weight:'+fwAr+';color:'+mc+';'+meaningFontCSS+meaningShadowCSS+(c.meaningTextAlign&&c.meaningTextAlign!=='center'?';text-align:'+c.meaningTextAlign:'')+(c.meaningPaddingTop?';padding-top:'+c.meaningPaddingTop+'px':'')+(c.meaningPaddingBottom?';padding-bottom:'+c.meaningPaddingBottom+'px':'')+'">'+SAMP.a+'</div></div>':'';
   const secValues={Pluriel:SAMP.p,Synonyme:SAMP.s,Contraire:SAMP.c};
   const vis=c.sectionVisibility||{Pluriel:true,Synonyme:true,Contraire:true};
   let secsInner='';
   (c.sectionOrder||['Pluriel','Synonyme','Contraire']).forEach(s=>{
     if(!vis[s])return;
-    var secAnimCSS=_animCSS('sec',c);secsInner+='<div data-ve="'+s.toLowerCase()+'" style="opacity:'+sOp+';background:'+(c.secBg||'#f8f9fa')+';border:1px solid '+(c.secBorder||'#e2e8f0')+';border-radius:6px;padding:4px 8px;width:80%;margin:'+(c.secGap||2)+'px 0;'+secAnimCSS+'"><div style="font-size:.5em;text-transform:uppercase;letter-spacing:.8px;color:'+(c.labelColor||'#999')+';font-weight:700">'+s+'</div><div style="font-size:.7em;color:'+(c.secTextColor||'#333')+';direction:ltr;unicode-bidi:embed">'+secValues[s]+'</div></div>';
+    var secAnimCSS=_animCSS('sec',c);secsInner+='<div data-ve="'+s.toLowerCase()+'" style="opacity:'+sOp+';background:'+(c.secBg||'#f8f9fa')+';border:1px solid '+(c.secBorder||'#e2e8f0')+';border-radius:'+(c.secBorderRadius||6)+'px;padding:4px 8px;width:80%;margin:'+(c.secGap||2)+'px 0;'+secAnimCSS+'"><div style="font-size:.5em;text-transform:uppercase;letter-spacing:.8px;color:'+(c.labelColor||'#999')+';font-weight:700">'+s+'</div><div style="font-size:.7em;color:'+(c.secTextColor||'#333')+';direction:ltr;unicode-bidi:embed">'+secValues[s]+'</div></div>';
   });
   const secsHtml=secsInner?'<div data-ve="sections" style="display:flex;flex-direction:'+(c.secDirection||'column')+';gap:'+(c.secGap||4)+'px;flex-wrap:wrap">'+secsInner+'</div>':'';
-  const sepHtml=c.separatorStyle&&c.separatorStyle!=='none'?'<div data-ve="separator" style="border-top:'+(c.separatorWidth||2)+'px '+(c.separatorStyle||'solid')+' '+(c.separatorColor||'#e2e8f0')+';width:80%;margin:4px auto"></div>':'<div data-ve="separator" style="height:1px"></div>';
-  const pageHtml=c.showPage!==false?'<div data-ve="page" style="font-size:.55em;color:'+(c.labelColor||'#999')+';margin-top:4px">Page 12</div>':'<div data-ve="page" style="height:1px"></div>';
+  const sepHtml=c.separatorStyle&&c.separatorStyle!=='none'?'<div data-ve="separator" style="border-top:'+(c.separatorWidth||2)+'px '+(c.separatorStyle||'solid')+' '+(c.separatorColor||'#e2e8f0')+';width:'+(c.separatorWidthPct||80)+'%;margin:'+(c.separatorMarginTop||4)+'px auto '+(c.separatorMarginBottom||4)+'px auto"></div>':'<div data-ve="separator" style="height:1px"></div>';
+  const pageHtml=c.showPage!==false?'<div data-ve="page" style="font-size:'+(c.pageFontSize||0.55)+'em;color:'+(c.labelColor||'#999')+';font-weight:'+(c.pageFontWeight||400)+';margin-top:4px">Page 12</div>':'<div data-ve="page" style="height:1px"></div>';
   const order=c.elementOrder||['badge','french','separator','meaning','sections','page'];
-  const parts={badge:'<div data-ve="badge" style="display:flex;flex-wrap:wrap;align-items:center;justify-content:center">'+badges+'</div>',french:'<div data-ve="french">'+french+'</div>',separator:sepHtml,meaning:'<div data-ve="meaning">'+meaning+'</div>',sections:secsHtml,page:pageHtml};
+  var badgeAnimCSS=_animCSS('badge',c);const parts={badge:'<div data-ve="badge" style="display:flex;flex-wrap:wrap;align-items:center;justify-content:center;'+badgeAnimCSS+'">'+badges+'</div>',french:'<div data-ve="french">'+french+'</div>',separator:sepHtml,meaning:'<div data-ve="meaning">'+meaning+'</div>',sections:secsHtml,page:pageHtml};
   let ordered='';for(const k of order)ordered+=(parts[k]||'');
     const spkFloat=sPos!=='inline'?'<div data-ve="speaker" style="position:absolute;'+(sPos.indexOf('top')>=0?'top:10px':'bottom:10px')+';'+(sPos.indexOf('right')>=0?'right:10px':'left:10px')+';z-index:5;font-size:.8em;padding:6px 12px;border-radius:20px;cursor:pointer;background:'+sBg2+';color:#ffffff;transition:all .2s;box-shadow:0 2px 8px rgba(0,0,0,.2)" onclick="event.stopPropagation();speakWord(SAMP.f,\'fr\');setTimeout(()=>speakWord(SAMP.a,\'ar\'),1500)">'+sIco2+'</div>':'';
   // Pattern CSS
@@ -1009,7 +1015,7 @@ const bgOverlay=c.cardBgImage?'<div style="position:absolute;inset:0;background-
   // Per-side borders
   var perSideBorder='';
   if(c.cardBorderTopWidth||c.cardBorderRightWidth||c.cardBorderBottomWidth||c.cardBorderLeftWidth){
-    perSideBorder='border-width:'+(c.cardBorderTopWidth||0)+'px '+(c.cardBorderRightWidth||0)+'px '+(c.cardBorderBottomWidth||0)+'px '+(c.cardBorderLeftWidth||0)+'px;border-style:'+(c.cardBorderStyle||'solid')+';border-color:'+(c.cardBorderTopColor||c.cardBorderColor||'#e2e8f0')+' '+(c.cardBorderRightColor||c.cardBorderColor||'#e2e8f0')+' '+(c.cardBorderBottomColor||c.cardBorderColor||'#e2e8f0')+' '+(c.cardBorderLeftColor||c.cardBorderColor||'#e2e8f0')+';';
+    perSideBorder='border-width:'+(c.cardBorderTopWidth||0)+'px '+(c.cardBorderRightWidth||0)+'px '+(c.cardBorderBottomWidth||0)+'px '+(c.cardBorderLeftWidth||0)+'px;border-style:'+(c.cardBorderTopStyle||c.cardBorderStyle||'solid')+';border-color:'+(c.cardBorderTopColor||c.cardBorderColor||'#e2e8f0')+' '+(c.cardBorderRightColor||c.cardBorderColor||'#e2e8f0')+' '+(c.cardBorderBottomColor||c.cardBorderColor||'#e2e8f0')+' '+(c.cardBorderLeftColor||c.cardBorderColor||'#e2e8f0')+';';
   }
   // Clip path
   var clipCSS=c.cardClipPath?'clip-path:'+c.cardClipPath+';':'';
@@ -1025,8 +1031,8 @@ const bgOverlay=c.cardBgImage?'<div style="position:absolute;inset:0;background-
   var statesCSS=c.statesCSS||'';
   var customCSS=c.customCSS?'<style>'+c.customCSS+'.tip{position:relative}.tip::after{content:attr(data-tip);position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:var(--s3);color:var(--tx);padding:4px 8px;border-radius:6px;font-size:.6em;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .2s;z-index:999}.tip:hover::after{opacity:1}kbd{display:inline-block;padding:1px 5px;font-size:.6em;font-family:monospace;background:var(--s3);border-radius:3px;color:var(--tx2);margin-left:4px}/* === EXTRACTED INLINE STYLES === */.hdr-actions{display:flex;justify-content:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}.hdr-info{display:flex;justify-content:center;gap:8px;font-size:.55em;color:var(--tx3);align-items:center}.layer-item-inner{display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:var(--br-sm);cursor:pointer;font-size:var(--fs-sm);transition:background .15s}.shadow-layer-controls{flex:1;display:flex;gap:3px;align-items:center;flex-wrap:wrap}/* === CHATGPT FIXES CSS === */:root {  --z-dropdown: 100;  --z-modal: 200;  --z-tooltip: 300;  --z-toast: 400;  --z-overlay: 500;  --transition-fast: 0.15s;  --transition-normal: 0.25s;  --transition-slow: 0.4s;}.ctx-menu { z-index: var(--z-dropdown); }.cmd-palette { z-index: var(--z-modal); }.tip::after { z-index: var(--z-tooltip); }#toast { z-index: var(--z-toast); }.onboard-overlay, .whatsnew-overlay { z-index: var(--z-overlay); }.score-panel { z-index: var(--z-modal); }.acc-b { transition: max-height var(--transition-normal) ease, opacity var(--transition-normal) ease; }.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}</style>':'';  // Full border (per-side takes priority)
   var fullBorder=perSideBorder||(c.cardBorderWidth>0?'border:'+c.cardBorderWidth+'px solid '+c.cardBorderColor+';':'');
-  var fullShadow=(c.effect==='glow'||c.effect==='neon')?effectCSS:(c.cardShadow&&c.cardShadow!=='none'?'box-shadow:'+c.cardShadow+';':'');
-  return (statesCSS?'<style>'+statesCSS+'/* === EXTRACTED INLINE STYLES === */.hdr-actions{display:flex;justify-content:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}.hdr-info{display:flex;justify-content:center;gap:8px;font-size:.55em;color:var(--tx3);align-items:center}.layer-item-inner{display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:var(--br-sm);cursor:pointer;font-size:var(--fs-sm);transition:background .15s}.shadow-layer-controls{flex:1;display:flex;gap:3px;align-items:center;flex-wrap:wrap}/* === CHATGPT FIXES CSS === */:root {  --z-dropdown: 100;  --z-modal: 200;  --z-tooltip: 300;  --z-toast: 400;  --z-overlay: 500;  --transition-fast: 0.15s;  --transition-normal: 0.25s;  --transition-slow: 0.4s;}.ctx-menu { z-index: var(--z-dropdown); }.cmd-palette { z-index: var(--z-modal); }.tip::after { z-index: var(--z-tooltip); }#toast { z-index: var(--z-toast); }.onboard-overlay, .whatsnew-overlay { z-index: var(--z-overlay); }.score-panel { z-index: var(--z-modal); }.acc-b { transition: max-height var(--transition-normal) ease, opacity var(--transition-normal) ease; }.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}</style>':'')+customCSS+'<div class="card" data-ve="card" style="background:'+bg+';'+base+'padding:'+pd+'px;min-height:'+mh+'px;max-width:'+(c.previewWidth||mw)+'px;flex-direction:'+(c.cardDirection||'column')+';align-items:'+(c.cardAlign||'center')+';justify-content:center;gap:'+cg+'px;'+fullBorder+fullShadow+clipCSS+hoverCSS+'position:relative">'+bgOverlay+'<div style="'+patternCSS+'position:absolute;inset:0;z-index:0;pointer-events:none"></div><div style="'+overlayCSS+'"></div>'+spkFloat+'<div style="position:relative;z-index:1;width:100%;display:flex;flex-direction:column;align-items:center;gap:'+cg+'px">'+ordered+'</div></div>';
+  var fullShadow=(c.effect==='glow'||c.effect==='neon')?effectCSS:((c.cardShadowColor?'box-shadow:'+(c.cardShadowX||0)+'px '+(c.cardShadowY||4)+'px '+(c.cardShadowBlur||16)+'px '+c.cardShadowColor+';':c.cardShadow&&c.cardShadow!=='none'?'box-shadow:'+c.cardShadow+';':'');
+  return (statesCSS?'<style>'+statesCSS+'/* === EXTRACTED INLINE STYLES === */.hdr-actions{display:flex;justify-content:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}.hdr-info{display:flex;justify-content:center;gap:8px;font-size:.55em;color:var(--tx3);align-items:center}.layer-item-inner{display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:var(--br-sm);cursor:pointer;font-size:var(--fs-sm);transition:background .15s}.shadow-layer-controls{flex:1;display:flex;gap:3px;align-items:center;flex-wrap:wrap}/* === CHATGPT FIXES CSS === */:root {  --z-dropdown: 100;  --z-modal: 200;  --z-tooltip: 300;  --z-toast: 400;  --z-overlay: 500;  --transition-fast: 0.15s;  --transition-normal: 0.25s;  --transition-slow: 0.4s;}.ctx-menu { z-index: var(--z-dropdown); }.cmd-palette { z-index: var(--z-modal); }.tip::after { z-index: var(--z-tooltip); }#toast { z-index: var(--z-toast); }.onboard-overlay, .whatsnew-overlay { z-index: var(--z-overlay); }.score-panel { z-index: var(--z-modal); }.acc-b { transition: max-height var(--transition-normal) ease, opacity var(--transition-normal) ease; }.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}</style>':'')+customCSS+'<div class="card" data-ve="card" style="background:'+bg+';'+base+'padding:'+pd+'px;min-height:'+mh+'px;max-width:'+(c.previewWidth||mw)+'px;margin-top:'+(c.cardMarginTop||0)+'px;margin-bottom:'+(c.cardMarginBottom||0)+'px;margin-left:'+(c.cardMarginLeft||0)+'px;margin-right:'+(c.cardMarginRight||0)+'px;'+((c.cardRotateX||c.cardRotateY)?'transform:perspective(800px) rotateX('+(c.cardRotateX||0)+'deg) rotateY('+(c.cardRotateY||0)+'deg);':'')+'flex-direction:'+(c.cardDirection||'column')+';align-items:'+(c.cardAlign||'center')+';justify-content:center;gap:'+cg+'px;'+fullBorder+fullShadow+clipCSS+hoverCSS+'position:relative">'+bgOverlay+'<div style="'+patternCSS+'position:absolute;inset:0;z-index:0;pointer-events:none"></div><div style="'+overlayCSS+'"></div>'+spkFloat+'<div style="position:relative;z-index:1;width:100%;display:flex;flex-direction:column;align-items:center;gap:'+cg+'px">'+ordered+'</div></div>';
 }
 
 // CONTROLS
@@ -1131,7 +1137,7 @@ function renderCtrls(){
   var vis='<div style="display:flex;gap:4px;flex-wrap:wrap">';
   [{k:'showBadge',lb:'Nom'},{k:'showUnitBadge',lb:'\u0627\u0644\u0648\u062D\u062F\u0629'},{k:'showMeaning',lb:'\u0627\u0644\u0645\u0639\u0646\u0649'},{k:'showPage',lb:'\u0627\u0644\u0635\u0641\u062D\u0629'}].forEach(function(b){vis+=tog(b.k,b.lb);});
   vis+='</div>';
-  h+=acc('\u{1F441}\uFE0F \u0627\u0644\u0639\u0646\u0627\u0635\u0631',vis,true);
+  h+=acc('\u{1F441} \u0627\u0644\u0639\u0646\u0627\u0635\u0631',vis,true);
 
   // 7. FRENCH
   var fr=grp('\u0623\u0633\u0627\u0633\u064A',sl([
@@ -1188,7 +1194,7 @@ function renderCtrls(){
     ['badgeUnitFontSize','\u062D\u062C\u0645',0.4,1.5,0.05,0.68],
     ['badgeUnitRotate','\u062F\u0648\u0631\u0627\u0646',-180,180,1,0]
   ])+clr('unitBg','\u062E\u0644\u0641\u064A\u0629','#f0fdf4')+clr('unitColor','\u0644\u0648\u0646','#166534'));
-  h+=acc('\u{1F3F7}\uFE0F \u0627\u0644\u0634\u0627\u0631\u0627\u062A',bd,false);
+  h+=acc('\u{1F3F7} \u0627\u0644\u0634\u0627\u0631\u0627\u062A',bd,false);
 
   // 10. SECTIONS
   h+=acc('\u{1F4CB} \u0627\u0644\u0623\u0642\u0633\u0627\u0645',sl([
@@ -1265,7 +1271,7 @@ function renderCtrls(){
   var layerElements=[{k:"badge",l:"🏷️ الشارات"},{k:"french",l:"🇫🇷 الكلمة الفرنسية"},{k:"separator",l:"➖ الفاصل"},{k:"meaning",l:"📖 المعنى"},{k:"sections",l:"📋 الأقسام"},{k:"page",l:"📄 الصفحة"},{k:"speaker",l:"🔊 الصوت"}];
   layerElements.forEach(function(el){
     var vis=S["show"+el.k.charAt(0).toUpperCase()+el.k.slice(1)]!==false;
-    layersHtml+=`<div class="layer-item" onclick="toggleLayerVisibility(+el.k+)"><span class="layer-vis" style=""+(vis?"background:var(--ac);color:#fff":"")+"">"+(vis?"✓":"✗")+"</span><span style="flex:1">"+el.l+"</span><span class="layer-lock" onclick="event.stopPropagation();lockLayer(+el.k+)">🔒</span></div>`;
+    layersHtml+=`<div class="layer-item" onclick="toggleLayerVisibility('${el.k}')"><span class="layer-vis" style="${vis?'background:var(--ac);color:#fff':''}">${vis?'✓':'✗'}</span><span style="flex:1">${el.l}</span><span class="layer-lock" onclick="event.stopPropagation();lockLayer('${el.k}')">🔒</span></div>`;
   });
   h+=acc("📑 الطبقات",layersHtml,false);
 
@@ -1297,7 +1303,7 @@ function renderCtrls(){
   // 18. ANIMATION TIMELINE
   var timelineHtml=`<div class="timeline">`;
   timelineHtml+=`<div class="timeline-markers">`;
-  for(var i=0;i<=10;i++){timelineHtml+=`<span class="timeline-marker">"+i*10+"%</span>`;}
+  for(var i=0;i<=10;i++){timelineHtml+=`<span class="timeline-marker">${i*10}%</span>`;}
   timelineHtml+="</div>";
   var anims=[{k:"french",l:"🇫🇷 فرنسي",c:"var(--ac)"},{k:"meaning",l:"📖 معنى",c:"var(--gn)"},{k:"badge",l:"🏷️ شارة",c:"#f59e0b"}];
   anims.forEach(function(a){
@@ -1305,8 +1311,8 @@ function renderCtrls(){
     var delay=S[a.k+"AnimDelay"]||0;
     var start=delay*100;
     var width=Math.min(dur*200,100-start);
-    timelineHtml+=`<div style="font-size:var(--fs-xs);color:var(--tx2);margin:4px 0 2px">"+a.l+"</div>`;
-    timelineHtml+=`<div class="timeline-track"><div class="timeline-bar" style="left:"+start+"%;width:"+width+"%;background:"+a.c+""></div></div>`;
+    timelineHtml+=`<div style="font-size:var(--fs-xs);color:var(--tx2);margin:4px 0 2px">${a.l}</div>`;
+    timelineHtml+=`<div class="timeline-track"><div class="timeline-bar" style="left:${start}%;width:${width}%;background:${a.c}"></div></div>`;
   });
   timelineHtml+="</div>";
   h+=acc("⏱️ الخط الزمني للحركات",timelineHtml,false);
@@ -1465,9 +1471,28 @@ const VE_PROPS={
     _sel('cardClipPath','شكل البطاقة',[{v:'',l:'عادي'},{v:'ellipse(50% 50% at 50% 50%)',l:'بيضاوي'},{v:'polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%)',l:'سداسي'},{v:'polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%)',l:'معين'}]),
     _sel('cardOverlay','الغشاء',[{v:'none',l:'بدون'},{v:'linear-gradient(rgba(0,0,0,.1),rgba(0,0,0,.3))',l:'داكن'},{v:'linear-gradient(rgba(255,255,255,.1),rgba(255,255,255,.3))',l:'فاتح'}]),
     _sel('bgPattern','نمط الخلفية',[{v:'none',l:'بدون'},{v:'dots',l:'نقاط'},{v:'lines',l:'خطوط'},{v:'grid',l:'شبكة'},{v:'diagonal',l:'قطري'},{v:'circles',l:'دوائر'}]),
+    _rng('bgPatternSize','حجم النمط',5,40,1),_clr('bgPatternColor','لون النمط'),
     _sel('mixBlendMode','وضع الدمج',[{v:'normal',l:'عادي'},{v:'multiply',l:'ضرب'},{v:'screen',l:'شاشة'},{v:'overlay',l:'تراكب'},{v:'darken',l:'إظلام'},{v:'lighten',l:'إבהיר'}]),
     _sel('backdropFilter','فلتر الخلفية',[{v:'none',l:'بدون'},{v:'blur(5px)',l:'تمويه خفيف'},{v:'blur(10px)',l:'تمويه متوسط'},{v:'blur(20px)',l:'تمويه قوي'},{v:'brightness(1.2)',l:'سطوع+'},{v:'grayscale(0.5)',l:'رمادي'}]),
-    _sel('userSelect','تحديد النص',[{v:'auto',l:'عادي'},{v:'none',l:'معطّل'}])
+    _sel('userSelect','تحديد النص',[{v:'auto',l:'عادي'},{v:'none',l:'معطّل'}]),
+    _rng('cardRotateX','ميلان أفقي',-30,30,1),_rng('cardRotateY','ميلان عمودي',-30,30,1),
+    _rng('cardHoverScale','تكبير عند المرور',1,1.5,0.05),
+    _clr('cardShadowColor','لون الظل'),_rng('cardShadowBlur','تمويه الظل',0,60,2),_rng('cardShadowY','إزاحة الظل',0,40,2),
+    _rng('cardBorderTopWidth','سمك العلوية',0,10,1),_rng('cardBorderBottomWidth','سمك السفلية',0,10,1),
+    _rng('cardBorderLeftWidth','سمك اليسرى',0,10,1),_rng('cardBorderRightWidth','سمك اليمنى',0,10,1),
+    _clr('cardBorderTopColor','لون العلوية'),_clr('cardBorderBottomColor','لون السفلية'),
+    _clr('cardBorderLeftColor','لون اليسرى'),_clr('cardBorderRightColor','لون اليمنى'),
+    _sel('cardBorderTopStyle','نمط العلوية',[{v:'solid',l:'خط'},{v:'dashed',l:'متقطع'},{v:'dotted',l:'منقط'},{v:'double',l:'مزدوج'}]),
+    _sel('cardBorderStyle','نمط الحدود',[{v:'solid',l:'خط'},{v:'dashed',l:'متقطع'},{v:'dotted',l:'منقط'}]),
+    _rng('cardMarginTop','هامش أعلى',0,40,2),_rng('cardMarginBottom','هامش أسفل',0,40,2),
+    _rng('cardMarginLeft','هامش يسار',0,40,2),_rng('cardMarginRight','هامش يمين',0,40,2),
+    _sel('overflowWrap','التفاف النص',[{v:'normal',l:'عادي'},{v:'break-word',l:'كسر الكلمة'}]),
+    _sel('wordBreak','كسر الكلمة',[{v:'normal',l:'عادي'},{v:'break-all',l:'كسر'}]),
+    _sel('objectFit','ملء الصورة',[{v:'cover',l:'تغطية'},{v:'contain',l:'احتواء'},{v:'fill',l:'ملء'},{v:'none',l:'بدون'}]),
+    _sel('transformOrigin','نقطة التحويل',[{v:'center',l:'وسط'},{v:'top',l:'أعلى'},{v:'bottom',l:'أسفل'},{v:'left',l:'يسار'},{v:'right',l:'يمين'}]),
+    _sel('pointerEvents','أحداث المؤشر',[{v:'auto',l:'عادي'},{v:'none',l:'معطّل'}]),
+    _sel('isolation','العزل',[{v:'auto',l:'عادي'},{v:'isolate',l:'معزول'}]),
+    _sel('willChange','تغيير مستقبلي',[{v:'auto',l:'عادي'},{v:'transform',l:'تحويل'},{v:'opacity',l:'شفافية'}])
   ],
   french:[
     _clr('frenchColor','لون النص'),_clr('frenchTextShadowColor','لون الظل'),
@@ -1477,46 +1502,65 @@ const VE_PROPS={
     _rng('frenchOpacity','الشفافية',0,1,0.05,v=>Math.round(v*100)+'%'),
     _rng('frenchWidth','العرض',20,100,5,v=>v+'%'),_rng('frenchScale','التكبير',0.3,3,0.05,v=>Math.round(v*100)+'%'),
     _rng('frenchMarginTop','هامش أعلى',0,60,2),_rng('frenchMarginBottom','هامش أسفل',0,60,2),
+    _rng('frenchPaddingTop','حشو أعلى',0,40,2),_rng('frenchPaddingBottom','حشو أسفل',0,40,2),
     _sel('fontFrench','الخط',FONTS),
     _sel('frenchTextAlign','المحاذاة',[{v:'center',l:'وسط'},{v:'right',l:'يمين'},{v:'left',l:'يسار'}]),
     _sel('frenchFontStyle','نمط الخط',[{v:'normal',l:'عادي'},{v:'italic',l:'مائل'}]),
     _sel('frenchTextTransform','التحويل',[{v:'none',l:'بدون'},{v:'uppercase',l:'أحرف كبيرة'},{v:'lowercase',l:'أحرف صغيرة'},{v:'capitalize',l:'أول حرف كبير'}]),
     _sel('frenchTextDecoration','الزخرفة',[{v:'none',l:'بدون'},{v:'underline',l:'تحته'},{v:'line-through',l:'منتصفه'}]),
-    _sel('frenchAnim','الحركة',[{v:'none',l:'بدون'},{v:'fadeIn',l:'ظهور'},{v:'fadeOut',l:'اختفاء'},{v:'slideUp',l:'صعود'},{v:'slideDown',l:'نزول'},{v:'bounce',l:'ارتداد'},{v:'glow',l:'توهج'},{v:'pulse',l:'نبض'},{v:'shake',l:'اهتزاز'},{v:'rotateIn',l:'دوران'},{v:'zoomIn',l:'تكبير'},{v:'float',l:'عوم'}]),
-    _rng('frenchAnimDur','سرعة الحركة',0.1,3,0.1),_rng('frenchAnimDelay','تأخير الحركة',0,3,0.1),
-    _sel('frenchAnimIter','التكرار',[{v:1,l:'مرة'},{v:2,l:'مرتين'},{v:3,l:'3 مرات'},{v:'infinite',l:'لانهائي'}])
+    _sel('frenchAnim','الحركة',[{v:'none',l:'بدون'},{v:'fadeIn',l:'ظهور'},{v:'fadeOut',l:'اختفاء'},{v:'slideUp',l:'صعود'},{v:'slideDown',l:'نزول'},{v:'bounce',l:'ارتداد'},{v:'glow',l:'توهج'},{v:'pulse',l:'نبض'},{v:'shake',l:'اهتزاز'},{v:'rotateIn',l:'دوران'},{v:'zoomIn',l:'تكبير'},{v:'float',l:'عوم'},{v:'neonFlicker',l:'نيون'}]),
+    _rng('frenchAnimDur','سرعة الحركة',0.1,5,0.1),_rng('frenchAnimDelay','تأخير الحركة',0,5,0.1),
+    _sel('frenchAnimDir','اتجاه الحركة',[{v:'normal',l:'عادي'},{v:'reverse',l:'عكس'},{v:'alternate',l:'بديل'}]),
+    _sel('frenchAnimTiming','توقيت الحركة',[{v:'ease-in-out',l:'سلس'},{v:'linear',l:'ثابت'},{v:'ease-in',l:'بداية'},{v:'ease-out',l:'نهاية'}]),
+    _sel('frenchAnimIter','التكرار',[{v:1,l:'مرة'},{v:2,l:'مرتين'},{v:3,l:'3 مرات'},{v:'infinite',l:'لانهائي'}]),
+    _rng('frenchRotate','دوران',-180,180,5),_rng('frenchSkewX','ميل أفقي',-30,30,1),
+    _clr('frenchBg','الخلفية'),_rng('frenchBorderRadius','استدارة الزوايا',0,30,1),
+    _rng('frenchBorderWidth','سمك الحدود',0,5,1),_clr('frenchBorderColor','لون الحدود'),
+    _clr('frenchBoxShadowColor','لون الظل'),_rng('frenchBoxShadowBlur','تمويه الظل',0,20,1)
+  ],
+  separator:[
+    _clr('separatorColor','اللون'),_rng('separatorWidth','السمك',0,10,1),
+    _sel('separatorStyle','النمط',[{v:'none',l:'بدون'},{v:'solid',l:'خط'},{v:'dashed',l:'متقطع'},{v:'dotted',l:'منقط'}]),
+    _rng('separatorMarginTop','هامش أعلى',0,20,1),_rng('separatorMarginBottom','هامش أسفل',0,20,1),
+    _rng('separatorWidthPct','العرض',20,100,5,v=>v+'%')
   ],
   meaning:[
     _clr('meaningColor','لون النص'),_clr('meaningBg','الخلفية'),_clr('meaningBorder','الحدود'),
     _clr('meaningTextShadowColor','لون الظل'),
     _rng('meaningTextShadowX','ظل أفقي',-10,10,1),_rng('meaningTextShadowY','ظل عمودي',-10,10,1),_rng('meaningTextShadowBlur','تمويه الظل',0,20,1),
-    _rng('meaningFontSize','حجم الخط',0.3,4,0.1),_rng('meaningFontWeight','سمك الخط',100,900,100),
-    _rng('meaningBorderRadius','استدارة الحدود',0,50,1),_rng('meaningBorderWidth','سمك الحدود',0,10,1),
+    _rng('meaningFontSize','حجم الخط',0.5,4,0.1),_rng('meaningFontWeight','سمك الخط',100,900,100),
     _rng('meaningOpacity','الشفافية',0,1,0.05,v=>Math.round(v*100)+'%'),
     _rng('meaningWidth','العرض',20,100,5,v=>v+'%'),_rng('meaningScale','التكبير',0.3,3,0.05,v=>Math.round(v*100)+'%'),
-    _rng('meaningMarginTop','هامش أعلى',0,60,2),_rng('meaningMarginBottom','هامش أسفل',0,60,2),
+    _rng('meaningMarginTop','هامش أعلى',0,40,2),_rng('meaningMarginBottom','هامش أسفل',0,40,2),
+    _rng('meaningPaddingTop','حشو أعلى',0,30,2),_rng('meaningPaddingBottom','حشو أسفل',0,30,2),
     _sel('fontArabic','الخط',ARFONTS),
     _sel('meaningTextAlign','المحاذاة',[{v:'center',l:'وسط'},{v:'right',l:'يمين'},{v:'left',l:'يسار'}]),
     _sel('meaningFontStyle','نمط الخط',[{v:'normal',l:'عادي'},{v:'italic',l:'مائل'}]),
     _sel('meaningTextTransform','التحويل',[{v:'none',l:'بدون'},{v:'uppercase',l:'أحرف كبيرة'},{v:'capitalize',l:'أول حرف كبير'}]),
+    _sel('meaningBorderRadius','استدارة الحدود',[{v:'0',l:'مربع'},{v:'8px',l:'خفيف'},{v:'16px',l:'متوسط'},{v:'50px',l:'دائري'}]),
+    _rng('meaningBorderWidth','سمك الحدود',0,5,1),
     _sel('meaningAnim','الحركة',[{v:'none',l:'بدون'},{v:'fadeIn',l:'ظهور'},{v:'fadeOut',l:'اختفاء'},{v:'slideUp',l:'صعود'},{v:'slideDown',l:'نزول'},{v:'bounce',l:'ارتداد'},{v:'glow',l:'توهج'},{v:'pulse',l:'نبض'},{v:'shake',l:'اهتزاز'}]),
-    _rng('meaningAnimDur','سرعة الحركة',0.1,3,0.1),_rng('meaningAnimDelay','تأخير الحركة',0,3,0.1),
+    _rng('meaningAnimDur','سرعة الحركة',0.1,5,0.1),_rng('meaningAnimDelay','تأخير الحركة',0,5,0.1),
+    _sel('meaningAnimDir','اتجاه الحركة',[{v:'normal',l:'عادي'},{v:'reverse',l:'عكس'},{v:'alternate',l:'بديل'}]),
+    _sel('meaningAnimTiming','توقيت الحركة',[{v:'ease-in-out',l:'سلس'},{v:'linear',l:'ثابت'},{v:'ease-in',l:'بداية'},{v:'ease-out',l:'نهاية'}]),
     _tog('showMeaning','إظهار المعنى')
   ],
   badgeNom:[
     _clr('badgeNomBg','الخلفية'),_clr('badgeNomColor','اللون'),
+    _clr('badgeNomBorder','الحدود'),_rng('badgeNomBorderWidth','سمك الحدود',0,5,1),
     _rng('badgeOpacity','الشفافية',0,1,0.05,v=>Math.round(v*100)+'%'),
-    _rng('badgeNomBorderWidth','سمك الحدود',0,5,1),
+    _rng('badgeMarginTop','هامش أعلى',0,20,1),_rng('badgeMarginBottom','هامش أسفل',0,20,1),
+    _sel('badgeNomBorderRadius','استدارة',[{v:'4px',l:'قليل'},{v:'8px',l:'متوسط'},{v:'16px',l:'كثير'},{v:'50px',l:'دائري'}]),
     _tog('showBadge','إظهار الشارة'),
     _sel('badgeAnim','الحركة',[{v:'none',l:'بدون'},{v:'fadeIn',l:'ظهور'},{v:'bounce',l:'ارتداد'},{v:'pulse',l:'نبض'}]),
-    _rng('badgeAnimDur','سرعة الحركة',0.1,3,0.1)
+    _rng('badgeAnimDur','سرعة الحركة',0.1,5,0.1),_rng('badgeAnimDelay','تأخير',0,3,0.1)
   ],
   badgeUnit:[
     _clr('unitBg','الخلفية'),_clr('unitColor','اللون'),_clr('unitBorder','الحدود'),
     _rng('badgeUnitBorderWidth','سمك الحدود',0,5,1),
     _tog('showUnitBadge','إظهار الشارة'),
     _sel('badgeAnim','الحركة',[{v:'none',l:'بدون'},{v:'fadeIn',l:'ظهور'},{v:'bounce',l:'ارتداد'},{v:'pulse',l:'نبض'}]),
-    _rng('badgeAnimDur','سرعة الحركة',0.1,3,0.1)
+    _rng('badgeAnimDur','سرعة الحركة',0.1,5,0.1)
   ],
   badge:[
     _clr('badgeNomBg','خلفية Nom'),_clr('badgeNomColor','لون Nom'),
@@ -1524,41 +1568,44 @@ const VE_PROPS={
     _rng('badgeOpacity','الشفافية',0,1,0.05,v=>Math.round(v*100)+'%'),
     _tog('showBadge','إظهار Nom'),_tog('showUnitBadge','إظهار الوحدة')
   ],
-  separator:[
-    _clr('separatorColor','اللون'),_rng('separatorWidth','السمك',1,10,1),
-    _sel('separatorStyle','النمط',[{v:'none',l:'بدون'},{v:'solid',l:'خط'},{v:'dashed',l:'متقطع'},{v:'dotted',l:'منقط'}])
-  ],
   pluriel:[
     _clr('secBg','الخلفية'),_clr('secBorder','الحدود'),_clr('secTextColor','لون النص'),_clr('labelColor','لون التسميات'),
     _rng('sectionOpacity','الشفافية',0,1,0.05,v=>Math.round(v*100)+'%'),
     _rng('secGap','المسافة',0,20,1),
-    _sel('secDirection','اتجاه الأقسام',[{v:'column',l:'عمودي'},{v:'row',l:'أفقي'}]),
+    _sel('secDirection','اتجاه',[{v:'column',l:'عمودي'},{v:'row',l:'أفقي'}]),
     _sel('secAnim','الحركة',[{v:'none',l:'بدون'},{v:'fadeIn',l:'ظهور'},{v:'slideUp',l:'صعود'},{v:'slideDown',l:'نزول'}]),
-    _rng('secAnimDur','سرعة الحركة',0.1,3,0.1)
+    _rng('secAnimDur','سرعة الحركة',0.1,5,0.1),
+    _rng('secBorderRadius','استدارة الحدود',0,20,1)
   ],
   synonyme:[
     _clr('secBg','الخلفية'),_clr('secBorder','الحدود'),_clr('secTextColor','لون النص'),_clr('labelColor','لون التسميات'),
     _rng('sectionOpacity','الشفافية',0,1,0.05,v=>Math.round(v*100)+'%'),
     _rng('secGap','المسافة',0,20,1),
+    _sel('secDirection','اتجاه',[{v:'column',l:'عمودي'},{v:'row',l:'أفقي'}]),
     _sel('secAnim','الحركة',[{v:'none',l:'بدون'},{v:'fadeIn',l:'ظهور'},{v:'slideUp',l:'صعود'},{v:'slideDown',l:'نزول'}]),
-    _rng('secAnimDur','سرعة الحركة',0.1,3,0.1)
+    _rng('secAnimDur','سرعة الحركة',0.1,5,0.1),
+    _rng('secBorderRadius','استدارة الحدود',0,20,1)
   ],
   contraire:[
     _clr('secBg','الخلفية'),_clr('secBorder','الحدود'),_clr('secTextColor','لون النص'),_clr('labelColor','لون التسميات'),
     _rng('sectionOpacity','الشفافية',0,1,0.05,v=>Math.round(v*100)+'%'),
     _rng('secGap','المسافة',0,20,1),
+    _sel('secDirection','اتجاه',[{v:'column',l:'عمودي'},{v:'row',l:'أفقي'}]),
     _sel('secAnim','الحركة',[{v:'none',l:'بدون'},{v:'fadeIn',l:'ظهور'},{v:'slideUp',l:'صعود'},{v:'slideDown',l:'نزول'}]),
-    _rng('secAnimDur','سرعة الحركة',0.1,3,0.1)
+    _rng('secAnimDur','سرعة الحركة',0.1,5,0.1),
+    _rng('secBorderRadius','استدارة الحدود',0,20,1)
   ],
   page:[
-    _clr('labelColor','لون النص'),_tog('showPage','إظهار الصفحة')
+    _clr('labelColor','لون النص'),_tog('showPage','إظهار الصفحة'),
+    _rng('pageFontSize','حجم الخط',0.4,1.5,0.05),_sel('pageFontWeight','سمك الخط',[{v:'400',l:'عادي'},{v:'600',l:'متوسط'},{v:'700',l:'سميك'}])
   ],
   speaker:[
     _clr('speakerBg','خلفية الزر'),_clr('speakerColor','لون الأيقونة'),
-    _sel('speakerIcon','الأيقونة',[{v:'🔊',l:'🔊 صوت'},{v:'🔉',l:'🔉 صوت خفيض'},{v:'🎵',l:'🎵 موسيقى'},{v:'🗣️',l:'🗣️ كلام'},{v:'📢',l:'📢 مكبر'}]),
+    _sel('speakerIcon','الأيقونة',[{v:'🔊',l:'🔊 صوت'},{v:'🔉',l:'🔉 خفيض'},{v:'🎵',l:'🎵 موسيقى'},{v:'🗣️',l:'🗣️ كلام'},{v:'📢',l:'📢 مكبر'}]),
     _sel('speakerPos','الموقع',[{v:'inline',l:'مع الشارات'},{v:'top-right',l:'أعلى يمين'},{v:'top-left',l:'أعلى يسار'},{v:'bottom-right',l:'أسفل يمين'},{v:'bottom-left',l:'أسفل يسار'}]),
-    _rng('speakerFontSize','حجم الأيقونة',0.4,2,0.1),_rng('speakerPaddingY','حشو عمودي',0,20,1),_rng('speakerPaddingX','حشو أفقي',0,20,1),
-    _rng('speakerBorderRadius','استدارة الزوايا',0,50,1),_rng('speakerRotate','دوران',-180,180,5)
+    _rng('speakerFontSize','حجم الأيقونة',0.3,2.5,0.05),_rng('speakerPaddingY','حشو عمودي',0,20,1),_rng('speakerPaddingX','حشو أفقي',0,20,1),
+    _rng('speakerBorderRadius','استدارة الزوايا',0,50,1),_rng('speakerRotate','دوران',-180,180,5),
+    _rng('speakerSize','الحجم',0.3,2,0.05),_clr('speakerBorderColor','لون الحدود'),_rng('speakerBorderWidth','سمك الحدود',0,5,1)
   ]
 };
 
@@ -1683,7 +1730,7 @@ async function downloadAPKG(){
   if(di)di.textContent='';if(ld)ld.style.display='block';
   try{
     const cardHTML=renderCardHTML(S);
-    const config={...S,deckName:document.getElementById('deckName').value,cardFrontHTML:cardHTML,cardBackHTML:cardHTML};
+    const config={...S,deckName:(document.getElementById('veDeckName')?.value||document.getElementById('deckName')?.value||'Anki Design'),cardFrontHTML:cardHTML,cardBackHTML:cardHTML};
     const resp=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config)});
     if(!resp.ok)throw new Error('Server error: '+resp.status);
     const blob=await resp.blob();if(blob.size<1000)throw new Error('ملف فارغ');
@@ -1700,7 +1747,7 @@ var PROP_DOCS = {
   'cardBg': {tip:'خلفية البطاقة — اللون الرئيسي',use:'لتحديد لون البطاقة الأساسي',example:'#ffffff أو #1a1a2e'},
   'cardBg2': {tip:'اللون الثانوي — للتدرج اللوني',use:'يُستخدم مع الاتجاه لعمل تدرج',example:'اتركه فاضي للون واحد'},
   'bgGradientDir': {tip:'اتجاه التدرج',use:'من أين إلى أين يمشي التدرج',example:'135deg = من أعلى اليمين لأسفل اليسار'},
-  'borderRadius': {tip:'استدارة الزوايا',use:'0 = مربع،越大 = أكثر استدارة',example:'16 = أنيق، 50 = دائري'},
+  'borderRadius': {tip:'استدارة الزوايا',use:'0 = مربع، كلما زاد = أكثر استدارة',example:'16 = أنيق، 50 = دائري'},
   'cardPadding': {tip:'الحشو الداخلي',use:'المسافة بين المحتوى وحدود البطاقة',example:'28 = مريح، 40 = واسع'},
   'cardGap': {tip:'المسافة بين العناصر',use:'المسافة العمودية بين الكلمة والمعنى',example:'10 = ضيق، 24 = واسع'},
   'cardMinHeight': {tip:'الحد الأدنى للارتفاع',use:'ارتفاع البطاقة الأدنى بالبكسل',example:'300 = عادي، 400 = طويل'},
@@ -2754,7 +2801,7 @@ window.addEventListener('load',()=>{
   setupAutosave();
   document.addEventListener('contextmenu',showContextMenu);
   if(window.speechSynthesis){speechSynthesis.onvoiceschanged=()=>initTTS();initTTS();}
-  pushHist();renderFilt();renderGrid();setTimeout(function(){renderCtrls();updateCtlPreview();setTimeout(function(){addDocTooltips();initChatGPTFixes();},50);},50);
+  pushHist();renderFilt();renderGrid();setTimeout(function(){renderVE();renderCtrls();updateCtlPreview();setTimeout(function(){addDocTooltips();initChatGPTFixes();},50);},50);
 });
 
 // ============================================================
@@ -3341,7 +3388,7 @@ var gallerySize=160;
 function toggleGalleryView(){
   galleryView=galleryView==='grid'?'list':'grid';
   renderGrid();
-  toast(galleryView==='grid'?'网格 عرض':'قائمة عرض');
+  toast(galleryView==='grid'?'شبكة عرض':'قائمة عرض');
 }
 
 function sortTemplates(templates,sortBy){
@@ -4255,6 +4302,8 @@ function renderFullImportExport(){
   return html;
 }
 
+function exportAsJSON(){exportConfig();}
+
 function exportAsHTML(){
   var html='<!DOCTYPE html>\n<html lang="ar" dir="rtl">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>Anki Card</title>\n<style>\n';
   html+=generateCardCSS(S);
@@ -4344,6 +4393,8 @@ function importFromCSS(e){
   };
   r.readAsText(f);
 }
+
+function importFromTemplate(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(ev){try{var d=JSON.parse(ev.target.result);if(d.config){S=Object.assign({},defCfg(),d.config);}else{S=Object.assign({},defCfg(),d);}pushHist();renderCtrls();renderAll();setTimeout(addDocTooltips,50);toast('تم استيراد القالب');}catch(err){toast('خطأ: ملف غير صحيح');}};r.readAsText(f);}
 
 function downloadFile(content,filename,type){
   var blob=new Blob([content],{type:type});
