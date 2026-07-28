@@ -244,10 +244,7 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 .perf-val{margin-left:auto;font-weight:700;color:var(--ac2)}
 /* === ESSENTIAL 12 CSS ===
 .doc-icon{cursor:help;color:var(--tx3);font-size:.7em;margin-left:2px}.doc-icon:hover{color:var(--ac)}
-.mode-seg{display:flex;background:var(--s2);border-radius:var(--br-sm);padding:3px;gap:3px;margin-bottom:10px;border:1px solid var(--bd)}
-.mode-seg-btn{flex:1;padding:6px 8px;border:1px solid var(--bd);border-radius:6px;background:var(--s2);color:var(--tx);font-size:var(--fs-sm);font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit;text-align:center}
-.mode-seg-btn:hover{background:var(--s3)}
-.mode-seg-btn.on{background:var(--ac);color:#fff;box-shadow:0 2px 8px rgba(124,58,237,.25)}
+
 .border-preview-box{width:120px;height:80px;margin:8px auto;border-radius:var(--br-md);background:var(--s2);position:relative;display:flex;align-items:center;justify-content:center;font-size:.6em;color:var(--tx3)}
 .state-btn{padding:4px 8px;border:1px solid var(--bd);border-radius:var(--br-sm);background:var(--s2);color:var(--tx2);font-size:var(--fs-xs);cursor:pointer;transition:all .15s;font-family:inherit}
 .state-btn.active{background:var(--ac);color:#fff;border-color:var(--ac)}
@@ -321,9 +318,7 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 .snap-guide-h{height:1px;left:0;right:0}
 .snap-guide-w{width:1px;top:0;bottom:0}
 /* === PROGRESSIVE DISCLOSURE ===
-.mode-seg{display:flex;background:var(--s2);border-radius:var(--br-sm);padding:2px;gap:2px;margin-bottom:10px}
-.mode-seg-btn{flex:1;padding:5px;border:none;border-radius:4px;background:none;color:var(--tx2);font-size:var(--fs-sm);font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit}
-.mode-seg-btn.on{background:var(--ac);color:#fff}
+
 /* === THEME ENGINE ===
 .theme-dot{width:24px;height:24px;border-radius:50%;border:2px solid var(--bd);cursor:pointer;transition:all .2s;display:inline-block}
 .theme-dot:hover{transform:scale(1.1)}
@@ -448,7 +443,7 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 <!-- Autosave indicator -->
 <div class="autosave-dot" id="autosaveDot"></div>
 <div id="toast"></div>
-<div id="statusBar" style="position:fixed;bottom:0;left:0;right:0;background:var(--s1);border-top:1px solid var(--bd);padding:4px 16px;display:flex;justify-content:space-between;font-size:.58em;color:var(--tx3);z-index:100"><span>Anki Design Studio v4.2</span><span id="modeIndicator">&#x1F7E2; Basic</span><span id="undoCount">0 changes</span></div>
+<div id="statusBar" style="position:fixed;bottom:0;left:0;right:0;background:var(--s1);border-top:1px solid var(--bd);padding:4px 16px;display:flex;justify-content:space-between;font-size:.58em;color:var(--tx3);z-index:100"><span>Anki Design Studio v4.2</span><span style="color:var(--gn)">✓</span><span id="undoCount">0 / 0</span></div>
 
 <script>
 const SAMP={f:'Maison',a:'منزل',p:'Maisons',s:'Contrat',c:'Désabonnement'};
@@ -730,17 +725,17 @@ function undo(){if(histIdx>0){histIdx--;S=JSON.parse(JSON.stringify(hist[histIdx
 function redo(){if(histIdx<hist.length-1){histIdx++;S=JSON.parse(JSON.stringify(hist[histIdx]));renderAll();}}
 function updateUndoRedo(){const u=document.getElementById('undoBtn');if(u)u.disabled=histIdx<=0;const r=document.getElementById('redoBtn');if(r)r.disabled=histIdx>=hist.length-1;}
 function setVal(k,v){S[k]=v;pushHist();
-  var cssOnlyProps=['cardBg','cardBg2','bgGradientDir','borderRadius','cardPadding','cardGap','cardMinHeight','previewWidth','cardDirection','cardAlign','cardBorderWidth','cardBorderColor','cardShadow','effect','cardClipPath','frenchColor','frenchFontSize','frenchFontWeight','frenchLetterSpacing','frenchLineHeight','frenchOpacity','frenchWidth','frenchScale','frenchMarginTop','frenchMarginBottom','frenchFontStyle','frenchTextTransform','frenchTextDecoration','frenchTextShadowColor','frenchTextShadowX','frenchTextShadowY','frenchTextShadowBlur','frenchTextAlign','meaningColor','meaningBg','meaningBorder','meaningBorderRadius','meaningFontSize','meaningFontWeight','meaningOpacity','meaningWidth','meaningScale','meaningMarginTop','meaningMarginBottom','meaningFontStyle','meaningTextTransform','meaningTextAlign','meaningBorderWidth','showBadge','showMeaning','showPage','separatorColor','separatorWidth','separatorStyle','secBg','secBorder','secTextColor','labelColor','sectionOpacity','secGap','cardBgImage','cardBgBlur','cardBgOpacity','speakerBg','speakerColor','speakerIcon','speakerPos','speakerFontSize','speakerBorderRadius','speakerBtnSize','speakerPulse','speakerRotate','badgeNomBg','badgeNomColor','unitBg','unitColor','unitBorder','secDirection','frenchAnim','frenchAnimDur','frenchAnimDelay','frenchAnimDir','frenchAnimTiming','frenchAnimIter','frenchAnimFill','meaningAnim','meaningAnimDur','meaningAnimDelay','meaningAnimDir','meaningAnimTiming','meaningAnimIter','meaningAnimFill','badgeAnim','badgeAnimDur','badgeAnimDelay','secAnim','secAnimDur','secAnimDelay','frenchBg','frenchBorderRadius','frenchBorderWidth','frenchBorderColor','frenchRotate','frenchSkewX','meaningBorderRadius','meaningBg','meaningBorderColor','meaningRotate','meaningSkewX','meaningPaddingTop','meaningPaddingBottom','frenchPaddingTop','frenchPaddingBottom','fontFrench','fontArabic','plurielBg','plurielBorder','plurielTextColor','plurielFontSize','plurielAnim','plurielAnimDur','synonymeBg','synonymeBorder','synonymeTextColor','synonymeFontSize','synonymeAnim','synonymeAnimDur','contraireBg','contraireBorder','contraireTextColor','contraireFontSize','contraireAnim','contraireAnimDur','cardMarginTop','cardMarginBottom','cardMarginLeft','cardMarginRight','cardRotateX','cardRotateY','mixBlendMode','backdropFilter','customCSS'];
-  var isCSS=cssOnlyProps.indexOf(k)>=0;
-  if(isCSS&&document.getElementById('sec-editor').classList.contains('on')){
+  var cssOnlyProps=['cardBg','cardBg2','bgGradientDir','borderRadius','cardPadding','cardGap','cardMinHeight','previewWidth','cardDirection','cardAlign','cardBorderWidth','cardBorderColor','cardShadow','effect','cardClipPath','frenchColor','frenchFontSize','frenchFontWeight','frenchLetterSpacing','frenchLineHeight','frenchOpacity','frenchWidth','frenchScale','frenchMarginTop','frenchMarginBottom','frenchFontStyle','frenchTextTransform','frenchTextDecoration','frenchTextShadowColor','frenchTextShadowX','frenchTextShadowY','frenchTextShadowBlur','frenchTextAlign','meaningColor','meaningBg','meaningBorder','meaningBorderRadius','meaningFontSize','meaningFontWeight','meaningOpacity','meaningWidth','meaningScale','meaningMarginTop','meaningMarginBottom','meaningFontStyle','meaningTextTransform','meaningTextAlign','meaningBorderWidth','showBadge','showMeaning','showPage','separatorColor','separatorWidth','separatorStyle','secBg','secBorder','secTextColor','labelColor','sectionOpacity','secGap','cardBgImage','cardBgBlur','cardBgOpacity','speakerBg','speakerColor','speakerIcon','speakerPos','speakerFontSize','speakerBorderRadius','speakerBtnSize','speakerPulse','speakerRotate','badgeNomBg','badgeNomColor','unitBg','unitColor','unitBorder','secDirection','frenchAnim','frenchAnimDur','frenchAnimDelay','frenchAnimDir','frenchAnimTiming','frenchAnimIter','frenchAnimFill','meaningAnim','meaningAnimDur','meaningAnimDelay','meaningAnimDir','meaningAnimTiming','meaningAnimIter','meaningAnimFill','badgeAnim','badgeAnimDur','badgeAnimDelay','secAnim','secAnimDur','secAnimDelay','frenchBg','frenchBorderRadius','frenchBorderWidth','frenchBorderColor','frenchRotate','frenchSkewX','meaningBorderRadius','meaningBg','meaningBorderColor','meaningRotate','meaningSkewX','meaningPaddingTop','meaningPaddingBottom','frenchPaddingTop','frenchPaddingBottom','fontFrench','fontArabic','plurielBg','plurielBorder','plurielTextColor','plurielFontSize','plurielAnim','plurielAnimDur','synonymeBg','synonymeBorder','synonymeTextColor','synonymeFontSize','synonymeAnim','synonymeAnimDur','contraireBg','contraireBorder','contraireTextColor','contraireFontSize','contraireAnim','contraireAnimDur','cardMarginTop','cardMarginBottom','cardMarginLeft','cardMarginRight','cardRotateX','cardRotateY','mixBlendMode','backdropFilter','customCSS','cardShadowColor','cardShadowX','cardShadowY','cardShadowBlur','bgPattern','bgPatternSize','bgPatternColor','cardOverlay','cardHoverScale','pageColor','pageFontSize','pageFontWeight','frenchBoxShadowColor','frenchBoxShadowBlur','badgeNomBorder','badgeNomBorderWidth','badgeUnitBorderWidth','badgeMarginTop','badgeMarginBottom','badgeNomPaddingX','badgeNomFontSize','badgeNomRotate','badgeUnitPaddingX','badgeUnitBorderRadius','badgeUnitFontSize','badgeUnitRotate','secBorderRadius','secBorderWidth','secFontSize','secWidth','secAnimDelay','meaningTextShadowX','meaningTextShadowY','meaningTextShadowBlur','frenchTextShadowColor','frenchTextShadowX','frenchTextShadowY','frenchTextShadowBlur','frenchMaxWidth','meaningMaxWidth','separatorMarginTop','separatorMarginBottom','separatorWidthPct','aspectRatio','overflowWrap','objectFit','objectPosition','transformOrigin','willChange','pointerEvents','wordBreak','userSelect','customCSS','statesCSS','isolation'];
+  var isEditor=document.getElementById('sec-editor')?.classList.contains('on');
+  if(isCSS&&isEditor){
     var cv=document.getElementById('veCanvas');var card=cv?cv.querySelector('.card'):null;
     if(card){applyCSSToCard(card,k,v);}
-  }else{
-    // Non-CSS or non-editor: full rebuild
-    renderAll();
   }
+  // Always update controls & preview
   renderGrid();updateCtlPreview();syncToggles();syncGradAngle();syncIcons();
   if(typeof updateGradientPreview==='function')updateGradientPreview();
+  // Only rebuild HTML for non-editor tabs or non-CSS props
+  if(!isEditor||!isCSS)renderAll();
 }
 function applyCSSToCard(card,k,v){
   // Helper to get element
@@ -1548,7 +1543,7 @@ function renderCtrls(){
   h+=acc("⚙️ إعدادات التطبيق",renderSettingsPage(),false);
   
   // 31. PROGRESSIVE DISCLOSURE
-  h+=renderProgressiveDisclosure();
+  // Mode disclosure removed
   
   // 32. SAVE TIME DISPLAY
   h+="<div id=\"saveTimeDisplay\" style=\"text-align:center;font-size:var(--fs-xs);color:var(--tx3);padding:6px\">لم يُحفظ بعد</div>";
@@ -2686,7 +2681,7 @@ function highlightSearch(text, query) {
 function saveState() {
   var state = {
     lastTab: document.querySelector('.tab.on')?.getAttribute('data-t'),
-    lastMode: currentMode,
+    
     accordions: []
   };
   document.querySelectorAll('.acc-h').forEach(function(h, i) {
@@ -2702,14 +2697,7 @@ function restoreState() {
       var tab = document.querySelector('[data-t="' + state.lastTab + '"]');
       if(tab) tab.click();
     }
-    if(state.lastMode) {
-      currentMode = state.lastMode;
-      var el = document.getElementById('modeIndicator');
-      if(el) {
-        var icons = {basic:'🟢 مبتدئ',advanced:'🟡 متقدم',expert:'🔴 خبير'};
-        el.textContent = icons[currentMode] || currentMode;
-      }
-    }
+
   } catch(e) {}
 }
 
@@ -2890,28 +2878,7 @@ function initChatGPTFixes() {
 // Dialog close handlers
 
 // INIT
-// MODE SYSTEM
-var currentMode='basic';
-function toggleMode(){
-  var modes=['basic','advanced','expert'];
-  var idx=modes.indexOf(currentMode);
-  currentMode=modes[(idx+1)%modes.length];
-  var el=document.getElementById('modeIndicator');
-  if(el){var icons={'basic':'\u{1F7E2} Basic','advanced':'\u{1F7E1} Advanced','expert':'\u{1F534} Expert'};el.textContent=icons[currentMode]||currentMode;}
-  applyMode();toast('Mode: '+currentMode);
-}
-function applyMode(){
-  document.querySelectorAll('.acc').forEach(function(a){
-    var body=a.querySelector('.acc-b');if(!body)return;
-    var txt=(a.querySelector('.acc-h')||{}).textContent||'';
-    if(currentMode==='expert'){body.style.display='';return;}
-    if(currentMode==='basic'){
-      var complex=['\u0627\u0644\u062d\u0631\u0643\u0627\u062a','\u0627\u0644\u0623\u0642\u0633\u0627\u0645','CSS','\u0627\u0644\u062a\u0631\u062a\u064a\u0628'];
-      if(complex.some(function(k){return txt.indexOf(k)>=0;}))body.style.display='none';
-      else body.style.display='';
-    }else{body.style.display='';}
-  });
-}
+// MODE SYSTEM (removed)
 
 
 // SAVE INDICATOR
@@ -2921,23 +2888,16 @@ function updateStatus(){
   var el=document.getElementById('statusIndicator');
   if(el){el.textContent=_modified?'\u25CF Modified':'\u25CF Saved';el.style.color=_modified?'var(--rd)':'var(--gn)';}
 }
-var origPushHist=typeof pushHist==='function'?pushHist:null;
-if(typeof pushHist==='function'){
-  var _origPushHist=pushHist;
-  pushHist=function(){_origPushHist();_modified=true;updateStatus();updateSaveTime();};
-}
-function markSaved(){_modified=false;updateStatus();}
-
-// UNDO COUNTER
+// Undo counter
 function updateUndoCount(){
   var el=document.getElementById('undoCount');
-  if(el&&typeof hist!=='undefined'&&typeof histIdx!=='undefined'){el.textContent=histIdx+' changes';}
+  if(el&&typeof hist!=='undefined'&&typeof histIdx!=='undefined'){
+    var count = hist.length - 1 - histIdx;
+    el.textContent = histIdx + ' / ' + (hist.length - 1);
+  }
 }
-var origPushHist2=pushHist;
-if(typeof pushHist==='function'){
-  var _ph=pushHist;
-  pushHist=function(){_ph();updateUndoCount();};
-}
+var _origPH = pushHist;
+pushHist = function(){_origPH();updateUndoCount();};
 
 // TOOLTIP AUTO-ADD
 document.querySelectorAll('[onclick]').forEach(function(el){
@@ -2954,7 +2914,7 @@ document.querySelectorAll('[onclick]').forEach(function(el){
 
 window.addEventListener('load',()=>{
   loadTheme();
-  var savedMode=localStorage.getItem("anki_mode");if(savedMode){currentMode=savedMode;var el=document.getElementById("modeIndicator");if(el){var icons={basic:"🟢 مبتدئ",advanced:"🟡 متقدم",expert:"🔴 خبير"};el.textContent=icons[savedMode]||savedMode;}}
+
   if(!localStorage.getItem('anki_onboarded'))showOnboarding();
   else if(!localStorage.getItem('anki_whatsnew_v21'))showWhatsNew();
   checkCrashRecovery();
@@ -4613,9 +4573,6 @@ function renderSettingsPage(){
     tog('showTooltips','إظهار التلميحات'),
     tog('showDocIcons','إظهار أيقونات التوثيق'),
     tog('animationsEnabled','تأثيرات الحركة'),
-    sel('defaultMode','الوضع الافتراضي',[
-      {v:'basic',l:'مبتدئ'},{v:'advanced',l:'متقدم'},{v:'expert',l:'خبير'}
-    ])
   ].join(''));
   
   // Gallery
@@ -4683,34 +4640,6 @@ function renderSaveTimeDisplay(){
 
 // ============================================================
 // 12. ENHANCED PROGRESSIVE DISCLOSURE
-// ============================================================
-function renderProgressiveDisclosure(){
-  var modes=[
-    {id:'basic',icon:'🟢',label:'مبتدئ',desc:'الأساسيات فقط'},
-    {id:'advanced',icon:'🟡',label:'متقدم',desc:'خيارات إضافية'},
-    {id:'expert',icon:'🔴',label:'خبير',desc:'كل شيء'}
-  ];
-  
-  var html='<div class="mode-seg">';
-  modes.forEach(function(mode){
-    html+='<button class="mode-seg-btn'+(currentMode===mode.id?' on':'')+'" onclick="switchMode(\''+mode.id+'\')" title="'+mode.desc+'">'+mode.icon+' '+mode.label+'</button>';
-  });
-  html+='</div>';
-  return html;
-}
-
-function switchMode(mode){
-  currentMode=mode;
-  localStorage.setItem('anki_mode',mode);
-  applyMode();
-  var el=document.getElementById('modeIndicator');
-  if(el){var icons={basic:'🟢 مبتدئ',advanced:'🟡 متقدم',expert:'🔴 خبير'};el.textContent=icons[mode]||mode;}
-  renderCtrls();
-  toast('الوضع: '+mode);
-}
-
-// ============================================================
-// HELPER: Add info icons to all control labels
 // ============================================================
 function addInfoIcons(){
   document.querySelectorAll('.cl-b').forEach(function(el){
