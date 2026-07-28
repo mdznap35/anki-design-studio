@@ -1771,17 +1771,17 @@ function renderVE(){
   cv.innerHTML=renderCardHTML(S);
   const card=cv.querySelector('.card');if(!card)return;
   // Click on card = select card
-  card.addEventListener('click',(e)=>{
+  card.addEventListener('click',function(e){
     if(e.target.closest('[data-ve]')&&e.target.closest('[data-ve]')!==card)return;
-    card.querySelectorAll('.ve-sel').forEach(el=>el.classList.remove('ve-sel'));
+    card.querySelectorAll('.ve-sel').forEach(function(el){el.classList.remove('ve-sel');});
     card.classList.add('ve-sel');
     selectedVEEl='card';renderVEProps('card');
   });
   // Click on any [data-ve] element
-  card.querySelectorAll('[data-ve]').forEach(el=>{
-    el.addEventListener('click',(e)=>{
+  card.querySelectorAll('[data-ve]').forEach(function(el){
+    el.addEventListener('click',function(e){
       e.stopPropagation();
-      card.querySelectorAll('.ve-sel').forEach(x=>x.classList.remove('ve-sel'));
+      card.querySelectorAll('.ve-sel').forEach(function(x){x.classList.remove('ve-sel');});
       el.classList.add('ve-sel');
       const veId=el.dataset.ve;
       selectedVEEl=veId;renderVEProps(veId);
