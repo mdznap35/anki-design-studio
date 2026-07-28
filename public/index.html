@@ -270,7 +270,7 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 .gc{position:relative;transition:all .25s cubic-bezier(.4,0,.2,1)}
 .color-grid-item:hover{border-color:var(--ac)!important;transform:scale(1.02)!important;box-shadow:0 4px 12px rgba(124,58,237,.2)}
 .gc.show-actions .gc-actions{opacity:1;transform:translateY(0)}.gc.touched .gc-actions{opacity:1;transform:translateY(0)}
-.gc-actions{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px;padding:10px;opacity:0;transform:translateY(6px);transition:all .3s;border-radius:var(--br-md);z-index:10}
+.gc-actions{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px;padding:10px;opacity:0;transform:translateY(6px);transition:all .3s;border-radius:var(--br-md);z-index:10;background:rgba(15,15,26,.85);backdrop-filter:blur(8px)}
 .gc-action-btn{padding:6px 14px;border:none;border-radius:8px;font-size:.72em;font-weight:700;cursor:pointer;text-align:center;color:#fff;backdrop-filter:blur(8px);transition:all .2s;border:1px solid rgba(255,255,255,.15)}
 .gc-action-btn:hover{background:var(--ac2);transform:scale(1.05);border-color:var(--ac2);box-shadow:0 4px 12px rgba(124,58,237,.3)}
 .gc-tags{display:none}
@@ -902,7 +902,7 @@ function renderGrid(){
       +'<div style="font-family:'+fa+';font-size:.75em;font-weight:'+t.cfg.meaningFontWeight+';color:'+t.cfg.meaningColor+'">'+SAMP.a+'</div>'
       +'</div>'
       +'<button class="gc-fav" onclick="event.stopPropagation();toggleFav(\''+t.id+'\')" title="مفضل">'+(isFav?'⭐':'☆')+'</button>'
-      +'<div class="gc-actions" style="background:'+bg+';opacity:.88'>'
+      +'<div class="gc-actions">'
       +'<button class="gc-action-btn" onclick="event.stopPropagation();selectTemplate(\''+t.id+'\')">📝 تعديل</button>'
       +'<button class="gc-action-btn" onclick="event.stopPropagation();duplicateTemplate(\''+t.id+'\')">📋 نسخ</button>'
       +'<button class="gc-action-btn" onclick="event.stopPropagation();previewFullTemplate(\''+t.id+'\')">👁️ معاينة</button>'
