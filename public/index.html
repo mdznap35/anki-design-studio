@@ -730,7 +730,89 @@ function pushHist(){hist=hist.slice(0,histIdx+1);hist.push(JSON.parse(JSON.strin
 function undo(){if(histIdx>0){histIdx--;S=JSON.parse(JSON.stringify(hist[histIdx]));renderAll();}}
 function redo(){if(histIdx<hist.length-1){histIdx++;S=JSON.parse(JSON.stringify(hist[histIdx]));renderAll();}}
 function updateUndoRedo(){const u=document.getElementById('undoBtn');if(u)u.disabled=histIdx<=0;const r=document.getElementById('redoBtn');if(r)r.disabled=histIdx>=hist.length-1;}
-function setVal(k,v){S[k]=v;pushHist();renderAll();if(typeof updateGradientPreview==='function')updateGradientPreview();}
+function setVal(k,v){S[k]=v;pushHist();
+  // Smart update: CSS-only changes don't rebuild HTML
+  var cssOnlyProps=['cardBg','cardBg2','bgGradientDir','borderRadius','cardPadding','cardGap','cardMinHeight','previewWidth','cardDirection','cardAlign','cardBorderWidth','cardBorderColor','cardShadow','effect','cardClipPath','frenchColor','frenchFontSize','frenchFontWeight','frenchLetterSpacing','frenchLineHeight','frenchOpacity','frenchWidth','frenchScale','frenchMarginTop','frenchMarginBottom','frenchFontStyle','frenchTextTransform','frenchTextDecoration','frenchTextShadowColor','frenchTextShadowX','frenchTextShadowY','frenchTextShadowBlur','frenchTextAlign','meaningColor','meaningBg','meaningBorder','meaningBorderRadius','meaningFontSize','meaningFontWeight','meaningOpacity','meaningWidth','meaningScale','meaningMarginTop','meaningMarginBottom','meaningFontStyle','meaningTextTransform','meaningTextAlign','meaningBorderWidth','showBadge','showMeaning','showPage','separatorColor','separatorWidth','separatorStyle','secBg','secBorder','secTextColor','labelColor','sectionOpacity','secGap','cardBgImage','cardBgBlur','cardBgOpacity','speakerBg','speakerColor','speakerIcon','speakerPos','speakerFontSize','speakerBorderRadius','badgeNomBg','badgeNomColor','unitBg','unitColor','unitBorder','secDirection','cardBorderTopWidth','cardBorderRightWidth','cardBorderBottomWidth','cardBorderLeftWidth','cardBorderTopColor','cardBorderRightColor','cardBorderBottomColor','cardBorderLeftColor'];
+  var isCSS=cssOnlyProps.indexOf(k)>=0;
+  if(isCSS&&document.getElementById('sec-editor').classList.contains('on')){
+    // Apply CSS directly to card without rebuilding HTML
+    var cv=document.getElementById('veCanvas');var card=cv?cv.querySelector('.card'):null;
+    if(card){applyCSSToCard(card,k,v);}
+  }
+  renderAll();
+  if(typeof updateGradientPreview==='function')updateGradientPreview();
+}
+function applyCSSToCard(card,k,v){
+  // Update card background
+  if(k==='cardBg'||k==='cardBg2'||k==='bgGradientDir'){
+    var bg=S.cardBg;if(S.cardBg2&&S.cardBg!==S.cardBg2)bg='linear-gradient('+(S.bgGradientDir||'135deg')+','+S.cardBg+','+S.cardBg2+')';
+    card.style.background=bg;
+  }
+  if(k==='borderRadius')card.style.borderRadius=v+'px';
+  if(k==='cardPadding')card.style.padding=v+'px';
+  if(k==='cardGap'){var children=card.querySelectorAll('[data-ve]');children.forEach(function(c){c.style.gap=v+'px';});}
+  if(k==='cardMinHeight')card.style.minHeight=v+'px';
+  if(k==='previewWidth')card.style.maxWidth=v+'px';
+  if(k==='cardDirection')card.style.flexDirection=v;
+  if(k==='cardAlign')card.style.alignItems=v;
+  if(k==='cardBorderWidth')card.style.borderWidth=v+'px';
+  if(k==='cardBorderColor')card.style.borderColor=v;
+  if(k==='cardShadow'&&v!=='none')card.style.boxShadow=v;
+  if(k==='cardShadow'&&v==='none')card.style.boxShadow='none';
+  if(k==='effect'){
+    card.style.animation='none';card.offsetHeight;
+    if(v==='glow')card.style.boxShadow='0 0 20px currentColor';
+    else if(v==='pulse')card.style.animation='pulse 2s ease-in-out infinite';
+    else if(v==='float')card.style.animation='float 3s ease-in-out infinite';
+    else if(v==='neon')card.style.boxShadow='0 0 10px currentColor,0 0 20px currentColor,0 0 40px currentColor';
+    else{card.style.boxShadow=S.cardShadow||'none';}
+  }
+  if(k==='cardClipPath')card.style.clipPath=v;
+  if(k==='frenchColor'){var f=card.querySelector('[data-ve="french"]');if(f)f.style.color=v;}
+  if(k==='frenchFontSize'){var f2=card.querySelector('[data-ve="french"]');if(f2)f2.style.fontSize=v+'em';}
+  if(k==='frenchFontWeight'){var f3=card.querySelector('[data-ve="french"]');if(f3)f3.style.fontWeight=v;}
+  if(k==='frenchOpacity'){var f4=card.querySelector('[data-ve="french"]');if(f4)f4.style.opacity=v;}
+  if(k==='frenchWidth'){var f5=card.querySelector('[data-ve="french"]');if(f5)f5.style.width=v+'%';}
+  if(k==='frenchScale'){var f6=card.querySelector('[data-ve="french"]');if(f6)f6.style.transform='scale('+v+')';}
+  if(k==='meaningColor'){var m=card.querySelector('[data-ve="meaning"] div');if(m)m.style.color=v;}
+  if(k==='meaningBg'){var mb=card.querySelector('[data-ve="meaning"]');if(mb)mb.style.background=v;}
+  if(k==='meaningFontSize'){var m2=card.querySelector('[data-ve="meaning"] div');if(m2)m2.style.fontSize=v+'em';}
+  if(k==='meaningOpacity'){var m3=card.querySelector('[data-ve="meaning"]');if(m3)m3.style.opacity=v;}
+  if(k==='showBadge'){var bn=card.querySelector('[data-ve="badge"]');if(bn)bn.style.display=v===false?'none':'';}
+  if(k==='showMeaning'){var mn=card.querySelector('[data-ve="meaning"]');if(mn)mn.style.display=v===false?'none':'';}
+  if(k==='showPage'){var pg=card.querySelector('[data-ve="page"]');if(pg)pg.style.display=v===false?'none':'';}
+  if(k==='separatorColor'){var sp=card.querySelector('[data-ve="separator"]');if(sp)sp.style.borderColor=v;}
+  if(k==='separatorWidth'){var sp2=card.querySelector('[data-ve="separator"]');if(sp2)sp2.style.borderWidth=v+'px';}
+  if(k==='secBg'||k==='secBorder'||k==='secTextColor'||k==='labelColor'||k==='sectionOpacity'){
+    card.querySelectorAll('[data-ve="pluriel"],[data-ve="synonyme"],[data-ve="contraire"]').forEach(function(s){
+      if(k==='secBg')s.style.background=v;
+      if(k==='secBorder')s.style.borderColor=v;
+      if(k==='secTextColor'){var sd=s.querySelector('div:last-child');if(sd)sd.style.color=v;}
+      if(k==='labelColor'){var sl=s.querySelector('div:first-child');if(sl)sl.style.color=v;}
+      if(k==='sectionOpacity')s.style.opacity=v;
+    });
+  }
+  if(k==='speakerBg'){var sk=card.querySelector('[data-ve="speaker"]');if(sk)sk.style.background=v;}
+  if(k==='speakerColor'){var sk2=card.querySelector('[data-ve="speaker"]');if(sk2)sk2.style.color=v;}
+  if(k==='speakerIcon'){var sk3=card.querySelector('[data-ve="speaker"] span:first-child');if(sk3)sk3.textContent=v;}
+  if(k==='speakerFontSize'){var sk4=card.querySelector('[data-ve="speaker"]');if(sk4)sk4.style.fontSize=v+'em';}
+  if(k==='speakerBorderRadius'){var sk5=card.querySelector('[data-ve="speaker"]');if(sk5)sk5.style.borderRadius=v+'px';}
+  if(k==='badgeNomBg'){var bn2=card.querySelector('[data-ve="badgeNom"]');if(bn2)bn2.style.background=v;}
+  if(k==='badgeNomColor'){var bn3=card.querySelector('[data-ve="badgeNom"]');if(bn3)bn3.style.color=v;}
+  // Animation properties - restart animation
+  if(k.indexOf('Anim')>=0&&k.indexOf('Dur')<0&&k.indexOf('Delay')<0&&k.indexOf('Dir')<0&&k.indexOf('Iter')<0&&k.indexOf('Fill')<0&&k.indexOf('Timing')<0){
+    var prefix=k.replace('Anim','');
+    var el=card.querySelector('[data-ve="'+prefix+'"]');
+    if(el&&v!=='none'){
+      var dur=S[prefix+'AnimDur']||0.5;
+      var delay=S[prefix+'AnimDelay']||0;
+      el.style.animation='none';el.offsetHeight;
+      el.style.animation=v+' '+dur+'s ease-in-out '+delay+'s';
+    }else if(el){
+      el.style.animation='none';
+    }
+  }
+}
 function renderAll(){renderGrid();updateCtlPreview();syncToggles();syncGradAngle();syncIcons();if(document.getElementById('sec-editor').classList.contains('on'))renderVE();}
 function syncIcons(){document.querySelectorAll('[data-icon]').forEach(function(el){var ic=el.getAttribute('data-icon');var active=S.speakerIcon===ic;el.style.background=active?'var(--ac)':'var(--s2)';el.style.borderColor=active?'var(--gn)':'var(--bd)';el.style.boxShadow=active?'0 0 8px rgba(34,197,94,.4)':'none';});}
 function syncGradAngle(){document.querySelectorAll('[data-grad]').forEach(function(el){var g=el.getAttribute('data-grad');var active=(S.bgGradientDir||'135deg')===g;el.style.borderColor=active?'var(--gn)':'var(--bd)';el.style.boxShadow=active?'0 0 8px rgba(34,197,94,.4)':'none';});}
