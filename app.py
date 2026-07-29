@@ -61,44 +61,30 @@ def generate():
         card_front_html = config.get('cardFrontHTML', '')
         card_back_html = config.get('cardBackHTML', '')
 
-        # Sample text used in the frontend (from SAMP)
-        sample_fr = 'Maison'
-        sample_ar = 'منزل'
-
-        # Replace sample text with Anki field placeholders
+        # Anki field placeholders are already in the HTML from renderAnkiTemplate() (frontend)
         # Front: show French word, back: show everything
         def make_front(html):
-            h = html.replace(sample_fr, '{{French}}')
-            h = h.replace(sample_ar, '{{Arabic}}')
-            # Remove sections, meaning, page from front (show only word + badges)
-            h = re.sub(r'<div class="meaning"[^>]*>.*?</div>', '', h, flags=re.DOTALL)
-            h = re.sub(r'<div class="section"[^>]*>.*?</div>', '', h, flags=re.DOTALL)
-            h = re.sub(r'<div class="page-ref"[^>]*>.*?</div>', '', h, flags=re.DOTALL)
-            h = re.sub(r'<hr[^>]*class="sep"[^>]*>', '', h)
+            # HTML already has field templates from frontend renderAnkiTemplate()
+            # Remove sections, meaning, page from front (only word + badges on front)
+            import re
+            h = re.sub(r'<div data-ve="meaning"[^>]*>.*?</div>', '', html, flags=re.DOTALL)
+            h = re.sub(r'<div data-ve="sections"[^>]*>.*?</div>', '', h, flags=re.DOTALL)
+            h = re.sub(r'<div data-ve="page"[^>]*>.*?</div>', '', h, flags=re.DOTALL)
+            h = re.sub(r'<div data-ve="separator"[^>]*>.*?</div>', '', h, flags=re.DOTALL)
             return h
 
         def make_back(html):
-            h = html.replace(sample_fr, '{{French}}')
-            h = h.replace(sample_ar, '{{Arabic}}')
-            # Replace sections with Anki fields
-            h = re.sub(r'<div class="section"><div class="section-label">Pluriel</div><div class="section-value">[^<]*</div></div>',
-                       '<div class="section"><div class="section-label">Pluriel</div><div class="section-value">{{Pluriel}}</div></div>', h)
-            h = re.sub(r'<div class="section"><div class="section-label">Synonyme</div><div class="section-value">[^<]*</div></div>',
-                       '<div class="section"><div class="section-label">Synonyme</div><div class="section-value">{{Synonyme}}</div></div>', h)
-            h = re.sub(r'<div class="section"><div class="section-label">Contraire</div><div class="section-value">[^<]*</div></div>',
-                       '<div class="section"><div class="section-label">Contraire</div><div class="section-value">{{Contraire}}</div></div>', h)
-            h = h.replace('Unit 1', 'Unit {{Unit}}')
-            h = re.sub(r'Page \d+', 'Page {{Page}}', h)
-            return h
+            # HTML already has all field templates from frontend
+            return html
 
         front = make_front(card_front_html) if card_front_html else '<div class="french">{{French}}</div>\n<span class="unit-badge">Unit {{Unit}}</span>'
         back = make_back(card_back_html) if card_back_html else front
 
-        # CSS: use inline styles from the frontend HTML (already embedded)
-        # We just need a minimal CSS shell + the animations
+        # CSS: inline styles are in the frontend HTML, we add minimal base CSS
         font_fr = config.get('fontFrench', 'Inter')
         font_ar = config.get('fontArabic', 'Noto Sans Arabic')
         fx = config.get('effect', 'none')
+        custom_css = config.get('customCSS', '')
 
         effects = {
             'neon': '@keyframes np{0%,100%{text-shadow:0 0 20px currentColor}50%{text-shadow:0 0 40px currentColor,0 0 80px currentColor}}.french{animation:np 2s ease-in-out infinite}',
@@ -122,6 +108,7 @@ def generate():
 .badge-adj{{background:#fef3c7;color:#92400e}}
 .badge-verb{{background:#d1fae5;color:#065f46}}
 .page-ref{{font-size:.6em;margin-top:4px}}
+{custom_css}
 {effects.get(fx, '')}
 @keyframes fadeIn{{from{{opacity:0}}to{{opacity:1}}}}
 @keyframes slideUp{{from{{opacity:0;transform:translateY(20px)}}to{{opacity:1;transform:translateY(0)}}}}
