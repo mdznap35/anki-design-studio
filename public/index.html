@@ -939,7 +939,13 @@ function syncSectionToggles(){document.querySelectorAll("[data-tog^=\"sec-\"]").
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.className='show';setTimeout(()=>t.className='',2000);}
 
 // GALLERY
-function getFilteredTemplates(){return TEMPLATES;}
+function getFilteredTemplates(){
+  var all = TEMPLATES.slice();
+  if (CUSTOM_TEMPLATES_LOADED && CUSTOM_TEMPLATES.length > 0) {
+    for (var i = 0; i < CUSTOM_TEMPLATES.length; i++) all.push(CUSTOM_TEMPLATES[i]);
+  }
+  return all;
+}
 function renderGrid(){
   var templates=getFilteredTemplates();
   // Apply search filter
@@ -974,7 +980,12 @@ function renderGrid(){
   document.getElementById('tplGrid').className=gridClass;
   document.getElementById('tplGrid').innerHTML=templates.map(function(t){
     var sel=S._templateId===t.id;
-    var bg=t.cfg.cardBg2?'linear-gradient(135deg,'+t.cfg.cardBg+','+t.cfg.cardBg2+')':t.cfg.cardBg;
+    var isCustom = isCustomTemplate ? isCustomTemplate(t.id) : false;
+    var cfg = isCustom ? {} : t.cfg;
+    var bg = isCustom ? '#1a1a2e' : (cfg.cardBg2 ? 'linear-gradient(135deg,'+cfg.cardBg+','+cfg.cardBg2+')' : cfg.cardBg);
+    var ff = isCustom ? "'Segoe UI',sans-serif" : (FMAP[cfg.fontFrench]||"'Inter',sans-serif");
+    var fa = isCustom ? "'Segoe UI',sans-serif" : (FMAP[cfg.fontArabic]||"'Noto Sans Arabic',sans-serif");
+    var br = isCustom ? 16 : (cfg.borderRadius||16);
     var ff=FMAP[t.cfg.fontFrench]||"'Inter',sans-serif";
     var fa=FMAP[t.cfg.fontArabic]||"'Noto Sans Arabic',sans-serif";
     var isFav=false;
@@ -1037,7 +1048,17 @@ function renderFilt(){return;
   document.getElementById('filtBar').innerHTML='<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 0"><input style="flex:1;min-width:120px;padding:8px 12px;border-radius:8px;border:1px solid var(--bd);background:var(--s2);color:var(--tx);font-size:.75em" placeholder="\u{1F50D} \u0627\u0628\u062D\u062B \u0639\u0646 \u0642\u0627\u0644\u0628..." oninput="filterGallery(this.value)" value="'+gallerySearchQ+'"><select style="padding:8px 12px;border-radius:8px;border:1px solid var(--bd);background:var(--s2);color:var(--tx);font-size:.7em" onchange="gallerySort=this.value;renderGrid()"><option value="name"'+(gallerySort==='name'?' selected':'')+'>\u0627\u0644\u0627\u0633\u0645</option><option value="newest"'+(gallerySort==='newest'?' selected':'')+'>\u0627\u0644\u0623\u062D\u062F\u062B</option></select></div>';
 }
 
-function selectTemplate(id){var t=TEMPLATES.find(function(x){return x.id===id;});if(!t)return;S=Object.assign({},JSON.parse(JSON.stringify(t.cfg)),{_templateId:id});pushHist();renderGrid();renderCtrls();updateCtlPreview();switchTab('ctl');toast('تم اختيار: '+t.nm);}
+function selectTemplate(id){
+  if (isCustomTemplate(id)) { selectCustomTemplate(id); return; }
+  var t = TEMPLATES.find(function(x){return x.id===id;});
+  if (!t) return;
+  S._templateType = 'config';
+  S._customId = undefined; S._customFront = undefined; S._customCSS = undefined; S._customFields = undefined;
+  S._hasReverse = false;
+  S = Object.assign({}, JSON.parse(JSON.stringify(t.cfg)), {_templateId:id, _templateType:'config'});
+  pushHist(); renderGrid(); renderCtrls(); updateCtlPreview(); switchTab('ctl');
+  toast('تم اختيار: ' + t.nm);
+}
 function previewFullTemplate(id){var t=TEMPLATES.find(function(x){return x.id===id;});if(!t)return;showFullPreview(t);}
 function duplicateTemplate(id){var t=TEMPLATES.find(function(x){return x.id===id;});if(!t)return;var newId=id+'-dup-'+Date.now();TEMPLATES.push(Object.assign({},t,{id:newId,nm:t.nm+' (نسخة)'}));renderGrid();toast('تم نسخ: '+t.nm);}
 function exportSingleTemplate(id){var t=TEMPLATES.find(function(x){return x.id===id;});if(!t)return;var blob=new Blob([JSON.stringify(t,null,2)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='template-'+t.nm+'.json';a.click();toast('تم التصدير');}
@@ -2949,7 +2970,7 @@ window.addEventListener('load',()=>{
   setupAutosave();
   document.addEventListener('contextmenu',showContextMenu);
   if(window.speechSynthesis){speechSynthesis.onvoiceschanged=()=>initTTS();initTTS();}
-  pushHist();renderGrid();setTimeout(function(){renderVE();renderCtrls();updateCtlPreview();setTimeout(function(){addDocTooltips();initChatGPTFixes();},50);},50);
+  loadCustomDesigns();pushHist();renderGrid();setTimeout(function(){renderVE();renderCtrls();updateCtlPreview();setTimeout(function(){addDocTooltips();initChatGPTFixes();},50);},50);
 });
 
 // ============================================================
@@ -4687,6 +4708,152 @@ function addInfoIcons(){
     });
   });
 }
+
+// ============================================================
+// CUSTOM TEMPLATE SYSTEM - Professional 20 Designs
+// ============================================================
+var CUSTOM_TEMPLATES = [];
+var CUSTOM_TEMPLATES_LOADED = false;
+
+function loadCustomDesigns() {
+  if (CUSTOM_TEMPLATES_LOADED) return;
+  try {
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function() {
+      try {
+        var designs = JSON.parse(xhr.responseText);
+        for (var i = 0; i < designs.length; i++) {
+          var d = designs[i];
+          CUSTOM_TEMPLATES.push({
+            id: 'custom-' + i,
+            nm: d.name,
+            cat: 'professional',
+            fields: d.fields,
+            front: d.front,
+            back: d.back,
+            frontRev: d.frontRev || '',
+            backRev: d.backRev || '',
+            css: d.css,
+            hasReverse: d.hasReverse
+          });
+        }
+        CUSTOM_TEMPLATES_LOADED = true;
+        if (typeof renderGrid === 'function') renderGrid();
+      } catch(e) { console.warn('Parse error', e); }
+    };
+    xhr.onerror = function() { console.warn('Designs JSON not found'); };
+    xhr.open('GET', 'designs_20.json', true);
+    xhr.send();
+  } catch(e) {}
+}
+
+function isCustomTemplate(id) {
+  return id && id.indexOf('custom-') === 0;
+}
+
+function getCustomTemplate(id) {
+  for (var i = 0; i < CUSTOM_TEMPLATES.length; i++) {
+    if (CUSTOM_TEMPLATES[i].id === id) return CUSTOM_TEMPLATES[i];
+  }
+  return null;
+}
+
+function selectCustomTemplate(id) {
+  var t = getCustomTemplate(id);
+  if (!t) return;
+  S = Object.assign({}, {
+    _templateType: 'custom',
+    _customId: t.id,
+    _customFront: t.front,
+    _customBack: t.back,
+    _customFrontRev: t.frontRev || '',
+    _customBackRev: t.backRev || '',
+    _customCSS: t.css,
+    _customFields: t.fields,
+    _hasReverse: t.hasReverse,
+    _templateName: t.nm
+  });
+  pushHist();
+  renderGrid();
+  renderCustomPreview();
+  switchTab('ctl');
+  toast('\u062A\u0645 \u0627\u062E\u062A\u064A\u0627\u0631: ' + t.nm);
+}
+
+function renderCustomPreview() {
+  if (!S._customFront) return;
+  var html = buildCustomCardHTML(S._customFront, S._customCSS);
+  var el = document.getElementById('ctlPreviewCard');
+  if (el) el.innerHTML = html;
+  el = document.getElementById('veCanvas');
+  if (el) el.innerHTML = html;
+  el = document.getElementById('fsCard');
+  if (el) {
+    el.innerHTML = html;
+    var info = document.getElementById('fsInfo');
+    if (info && S._templateName) info.textContent = S._templateName;
+  }
+}
+
+function buildCustomCardHTML(tmpl, css) {
+  var h = tmpl;
+  // Replace field placeholders with sample text for preview
+  h = h.split('{{French}}').join('Maison');
+  h = h.split('{{Arabic}}').join('\u0645\u0646\u0632\u0644');
+  h = h.split('{{Badge}}').join('Nom');
+  h = h.split('{{Unit}}').join('1');
+  h = h.split('{{Page}}').join('12');
+  h = h.split('{{Pluriel}}').join('Maisons');
+  h = h.split('{{Synonyme}}').join('Contrat');
+  h = h.split('{{Contraire}}').join('D\u00E9sabonnement');
+  h = h.split('{{Feminin}}').join('belle');
+  h = h.split('{{Preposition}}').join('\u00E0');
+  h = h.split('{{Auxiliaire}}').join('avoir');
+  h = h.split('{{Participe}}').join('mang\u00E9');
+  // Handle conditionals: {{#Field}}content{{/Field}} -> show content
+  for (var iter = 0; iter < 20; iter++) {
+    var s = h.indexOf('{{#');
+    if (s < 0) break;
+    var e = h.indexOf('}}', s);
+    if (e < 0) break;
+    var fn = h.substring(s + 3, e);
+    var ct = '{{/' + fn + '}}';
+    var c = h.indexOf(ct, e);
+    if (c < 0) break;
+    var inner = h.substring(e + 2, c);
+    h = h.substring(0, s) + inner + h.substring(c + ct.length);
+  }
+  // Remove remaining {{...}}
+  h = h.replace(/\{\{[^}]+\}\}/g, '');
+  return '<style>' + css + '</style><div class="card" style="text-align:center">' + h + '</div>';
+}
+
+function buildCustomAnkiTemplate(tmpl, css) {
+  return '<style>' + css + '</style><div class="card" style="text-align:center">' + tmpl + '</div>';
+}
+
+// Patch renderCardHTML
+(function() {
+  var orig = renderCardHTML;
+  renderCardHTML = function(c) {
+    if (c && c._templateType === 'custom' && c._customFront) {
+      return buildCustomCardHTML(c._customFront, c._customCSS);
+    }
+    return orig(c);
+  };
+})();
+
+// Patch renderAnkiTemplate
+(function() {
+  var orig = renderAnkiTemplate;
+  renderAnkiTemplate = function(c) {
+    if (c && c._templateType === 'custom' && c._customFront) {
+      var h = buildCustomAnkiTemplate(c._customFront, c._customCSS);
+      if (h) return h;
+    }
+    return orig(c);
+  };
+})();
 </script>
 </body>
 </html>

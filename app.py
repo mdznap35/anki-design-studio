@@ -85,6 +85,13 @@ def generate():
         font_ar = config.get('fontArabic', 'Noto Sans Arabic')
         fx = config.get('effect', 'none')
         custom_css = config.get('customCSS', '')
+        # Support custom templates
+        template_type = config.get('_templateType', 'config')
+        custom_front = config.get('_customFront', '')
+        custom_back = config.get('_customBack', '')
+        custom_css_extra = config.get('_customCSS', '')
+        if template_type == 'custom' and custom_front:
+            custom_css = custom_css_extra
 
         effects = {
             'neon': '@keyframes np{0%,100%{text-shadow:0 0 20px currentColor}50%{text-shadow:0 0 40px currentColor,0 0 80px currentColor}}.french{animation:np 2s ease-in-out infinite}',
@@ -92,7 +99,9 @@ def generate():
             'pulse': '@keyframes pl{0%,100%{transform:scale(1)}50%{transform:scale(1.02)}}.card{animation:pl 2s ease-in-out infinite}',
             'float': '@keyframes fl{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}.card{animation:fl 3s ease-in-out infinite}',
             'sakura': '@keyframes sk{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-2px) rotate(1deg)}}.french{animation:sk 4s ease-in-out infinite}',
+            # Professional designs animations are in custom_css_extra
         }
+        # No need for custom CSS handling - it's now in the template HTML via renderAnkiTemplate()
 
         css = f"""@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 .card{{font-family:{font_ar};text-align:center;direction:rtl;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;position:relative}}
