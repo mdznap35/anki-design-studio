@@ -48,6 +48,18 @@ def health():
 def index():
     return send_from_directory('public', 'index.html')
 
+@app.route('/designs_20.json', methods=['GET'])
+def serve_designs():
+    return send_from_directory('public', 'designs_20.json')
+
+@app.route('/designs_102.json', methods=['GET'])
+def serve_designs_102():
+    return send_from_directory('public', 'designs_102.json')
+
+@app.route('/designs_config_102.json', methods=['GET'])
+def serve_designs_config():
+    return send_from_directory('public', 'designs_config_102.json')
+
 @app.route('/api/generate', methods=['POST'])
 def generate():
     try:

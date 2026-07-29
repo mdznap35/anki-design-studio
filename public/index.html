@@ -1253,7 +1253,13 @@ function cls(arr){return arr.map(function(t){return clr(t[0],t[1],t[2]);}).join(
 
 function renderCtrls(){
   let h='';
-  h+=renderPropertySearch();
+    if(S._isCustomConfig){
+    h+='<div style="background:linear-gradient(135deg,var(--ac-bg),rgba(124,58,237,.15));border:1px solid var(--ac);border-radius:var(--br-md);padding:10px;margin-bottom:12px;text-align:center">'
+      +'<span style="font-size:.72em;font-weight:800;color:var(--ac2)">🎨 '+(S._templateName||'قالب فاخر')+'</span>'
+      +'<div style="font-size:.6em;color:var(--tx2);margin-top:2px">قابل للتعديل الكامل — '+(S.customCSS?.length||0)+' حرف تأثيرات مخصصة</div>'
+      +'</div>';
+  }
+h+=renderPropertySearch();
   // Property Search
   // Helper functions
   // Helper functions moved to global scope
@@ -1423,7 +1429,8 @@ function renderCtrls(){
     h+=sel(prefix+'AnimTiming','السرعة',TIMING_OPTS);
     h+=sel(prefix+'AnimFill','الملء',FILL_OPTS);
     var iterV=S[prefix+'AnimIter']!==undefined?S[prefix+'AnimIter']:1;
-    h+='<div class="ct"><div class="cl-b">التكرار</div><div class="rw"><select class="sl" aria-label="Select" onchange="setVal(\''+prefix+'AnimIter\',this.value===\'inf\'?\'infinite\':parseInt(this.value))">';
+    
+   h+='<div class="ct"><div class="cl-b">التكرار</div><div class="rw"><select class="sl" aria-label="Select" onchange="setVal(\''+prefix+'AnimIter\',this.value===\'inf\'?\'infinite\':parseInt(this.value))">';
     ['1','2','3','5','10','inf'].forEach(function(v){h+='<option value="'+v+'"'+(iterV==v||(v==='inf'&&iterV==='infinite')?' selected':'')+'>'+(v==='inf'?'لانهائي':v)+'</option>';});
     h+='</select></div></div></div>';
     return h;
@@ -1614,7 +1621,7 @@ function renderCtrls(){
 }
 
 function toggleSection(s){if(!S.sectionVisibility)S.sectionVisibility={Pluriel:true,Synonyme:true,Contraire:true};S.sectionVisibility[s]=!S.sectionVisibility[s];pushHist();renderAll();syncSectionToggles();}
-function updateCtlPreview(){const e=document.getElementById('ctlPreviewCard');if(e)e.innerHTML=renderCardHTML(S);}
+function updateCtlPreview(){const e=document.getElementById('ctlPreviewCard');if(!e)return;if(S._templateType==='custom'&&S._customFront){e.innerHTML=buildCustomCardHTML(S._customFront,S._customCSS||'');}else{e.innerHTML=renderCardHTML(S);}}
 
 
 
@@ -1865,8 +1872,8 @@ function isMaleVoice(v){
   const n=v.name.toLowerCase();
   if(n.includes('female')||n.includes('femme')||n.includes('zira')||n.includes('samantha')||n.includes('karen')||n.includes('susan')||n.includes('moira')||n.includes('tessa')||n.includes('fiona')||n.includes('google uk english female')||n.includes('google us english female')||n.includes('google arabic female')||n.includes('google french female')||n.includes('google arabic')||n.includes('google french')||n.includes('microsoft zira'))return false;
   if(n.includes('male')||n.includes('homme')||n.includes('thomas')||n.includes('nicolas')||n.includes('lucas')||n.includes('hugo')||n.includes('antoine')||n.includes('pierre')||n.includes('jacques')||n.includes('michel')||n.includes('paul')||n.includes('henri')||n.includes('daniel')||n.includes('eric')||n.includes('enhanced')||n.includes('maturity'))return true;
-  // For unknown gender, prefer non-female names
-  return false;
+  // For unknown gender, prefer male voices
+  return true;  // User wants male voice by default
 }
 function initTTS(){
   if(!window.speechSynthesis)return;
@@ -4717,34 +4724,42 @@ var CUSTOM_TEMPLATES_LOADED = false;
 
 function loadCustomDesigns() {
   if (CUSTOM_TEMPLATES_LOADED) return;
-  try {
-    var xhr = new XMLHttpRequest();
-    xhr.onload = function() {
-      try {
-        var designs = JSON.parse(xhr.responseText);
-        for (var i = 0; i < designs.length; i++) {
-          var d = designs[i];
-          CUSTOM_TEMPLATES.push({
-            id: 'custom-' + i,
-            nm: d.name,
-            cat: 'professional',
-            fields: d.fields,
-            front: d.front,
-            back: d.back,
-            frontRev: d.frontRev || '',
-            backRev: d.backRev || '',
-            css: d.css,
-            hasReverse: d.hasReverse
-          });
-        }
-        CUSTOM_TEMPLATES_LOADED = true;
-        if (typeof renderGrid === 'function') renderGrid();
-      } catch(e) { console.warn('Parse error', e); }
-    };
-    xhr.onerror = function() { console.warn('Designs JSON not found'); };
-    xhr.open('GET', 'designs_20.json', true);
-    xhr.send();
-  } catch(e) {}
+  CUSTOM_TEMPLATES_LOADED = true;
+  var files = ['designs_20.json', 'designs_102.json', 'designs_config_102.json'];
+  var loaded = 0;
+  function loadFile(url) {
+    try {
+      var xhr = new XMLHttpRequest();
+      xhr.onload = function() {
+        try {
+          var designs = JSON.parse(xhr.responseText);
+          var startId = CUSTOM_TEMPLATES.length;
+          for (var i = 0; i < designs.length; i++) {
+            var d = designs[i];
+            CUSTOM_TEMPLATES.push({
+              id: 'custom-' + (startId + i),
+              nm: d.name,
+              cat: 'professional',
+              fields: d.fields,
+              front: d.front,
+              back: d.back,
+              frontRev: d.frontRev || '',
+              backRev: d.backRev || '',
+              css: d.css,
+              hasReverse: d.hasReverse,
+              config: d.config || null
+            });
+          }
+          loaded++;
+          if (loaded >= files.length && typeof renderGrid === 'function') renderGrid();
+        } catch(e) { console.warn('Parse error', e); loaded++; if (loaded >= files.length && typeof renderGrid === 'function') renderGrid(); }
+      };
+      xhr.onerror = function() { console.warn('File not found:', url); loaded++; if (loaded >= files.length && typeof renderGrid === 'function') renderGrid(); };
+      xhr.open('GET', url, true);
+      xhr.send();
+    } catch(e) { loaded++; }
+  }
+  for (var f = 0; f < files.length; f++) loadFile(files[f]);
 }
 
 function isCustomTemplate(id) {
@@ -4761,6 +4776,60 @@ function getCustomTemplate(id) {
 function selectCustomTemplate(id) {
   var t = getCustomTemplate(id);
   if (!t) return;
+  // ===== NEW: Config-based custom templates =====
+  // These have an extracted config that maps to our control panel
+  if (t.config) {
+    var cfg = JSON.parse(JSON.stringify(t.config));
+    // Remove internal fields
+    delete cfg._templateType;
+    delete cfg._customFront;
+    delete cfg._customBack;
+    delete cfg._customCSS;
+    
+    // Extract just animations and pseudo-elements from original CSS
+    var animCSS = '';
+    var origCSS = t.css || '';
+    // Extract @keyframes
+    var kfRegex = /@keyframes[^{]+\{[^}]*\}(?:\s*\{[^}]*\})*/gi;
+    var kfMatch;
+    while ((kfMatch = kfRegex.exec(origCSS)) !== null) {
+      animCSS += kfMatch[0] + '\n';
+    }
+    // Extract ::before, ::after pseudo-elements
+    var pseudoRegex = /\.[a-zA-Z-]+::(?:before|after)\s*\{[^}]*\}/gi;
+    var pMatch;
+    while ((pMatch = pseudoRegex.exec(origCSS)) !== null) {
+      animCSS += pMatch[0] + '\n';
+    }
+    // Extract any radial-gradient (particle effects)
+    var radRegex = /radial-gradient\([^)]+\)[^}]*}/gi;
+    var rMatch;
+    while ((rMatch = radRegex.exec(origCSS)) !== null) {
+      animCSS += rMatch[0] + '\n';
+    }
+    // Extract clip-path, unique transforms
+    var extraRegex = /(clip-path|transform|filter|backdrop-filter)\s*:[^;]+;/gi;
+    // Only add these if they're not in standard config
+    
+    // Set S with the config + animation CSS
+    S = Object.assign({}, defCfg(), cfg, {
+      _templateId: t.id,
+      _templateType: 'config',  // NORMAL config mode!
+      _templateName: t.nm,
+      customCSS: animCSS,       // Animation CSS appended to normal rendering
+      _isCustomConfig: true
+    });
+    pushHist();
+    renderGrid();
+    renderCtrls();
+    updateCtlPreview();
+    if (document.getElementById('sec-editor').classList.contains('on')) renderVE();
+    switchTab('ctl');
+    toast('🎨 تم اختيار: ' + t.nm + ' — تحكم كامل');
+    return;
+  }
+  
+  // ===== LEGACY: Raw HTML/CSS custom templates =====
   S = Object.assign({}, {
     _templateType: 'custom',
     _customId: t.id,
@@ -4777,11 +4846,15 @@ function selectCustomTemplate(id) {
   renderGrid();
   renderCustomPreview();
   switchTab('ctl');
-  toast('\u062A\u0645 \u0627\u062E\u062A\u064A\u0627\u0631: ' + t.nm);
+  toast('تم اختيار: ' + t.nm);
 }
 
 function renderCustomPreview() {
   if (!S._customFront) return;
+  // Sync config changes to CSS before rendering
+  if (S._templateType === 'garbage') {
+    syncCustomConfigToCSS();
+  }
   var html = buildCustomCardHTML(S._customFront, S._customCSS);
   var el = document.getElementById('ctlPreviewCard');
   if (el) el.innerHTML = html;
@@ -4831,6 +4904,193 @@ function buildCustomCardHTML(tmpl, css) {
 function buildCustomAnkiTemplate(tmpl, css) {
   return '<style>' + css + '</style><div class="card" style="text-align:center">' + tmpl + '</div>';
 }
+
+// ============================================================
+// CSS MANIPULATION ENGINE — for custom template control
+// ============================================================
+// These functions enable editing custom CSS templates in real-time
+// by finding CSS selectors/rules and modifying their properties.
+
+function cssSetColor(css, selector, property, newColor) {
+  "Find a CSS rule for {selector} and update {property} color"
+  var escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  var regex = new RegExp('(' + escaped + '\\s*\\{[^}]*' + property + '\\s*:\\s*)[^;}]+', 'i');
+  var m = css.match(regex);
+  if (m) return css.replace(regex, m[1] + newColor);
+  // Try finding the block and adding the property
+  var blockRegex = new RegExp('(' + escaped + '\\s*\\{)([^}]*)', 'i');
+  var bm = css.match(blockRegex);
+  if (bm) return css.replace(blockRegex, bm[1] + bm[2] + '\\n  ' + property + ': ' + newColor + ';');
+  return css;
+}
+
+function cssSetProperty(css, selector, property, newValue) {
+  var escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  var regex = new RegExp('(' + escaped + '\\s*\\{[^}]*' + property + '\\s*:\\s*)[^;}]+', 'i');
+  var m = css.match(regex);
+  if (m) return css.replace(regex, m[1] + newValue);
+  var blockRegex = new RegExp('(' + escaped + '\\s*\\{)([^}]*)', 'i');
+  var bm = css.match(blockRegex);
+  if (bm) return css.replace(blockRegex, bm[1] + bm[2] + '\\n  ' + property + ': ' + newValue + ';');
+  return css;
+}
+
+function cssGetValue(css, selector, property) {
+  var escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  var regex = new RegExp(escaped + '\\s*\\{[^}]*' + property + '\\s*:\\s*([^;}]+)', 'i');
+  var m = css.match(regex);
+  return m ? m[1].trim() : null;
+}
+
+function cssSetGradientColors(css, color1, color2, direction) {
+  if (!direction) direction = '135deg';
+  // Find linear-gradient in background/border-image etc.
+  var regex = /linear-gradient\([^)]+\)/g;
+  var m = css.match(regex);
+  if (m) {
+    var newGrad = 'linear-gradient(' + direction + ',' + color1 + ',' + color2 + ')';
+    return css.replace(regex, newGrad);
+  }
+  // If no gradient, add one to .card-container
+  var containerRegex = /(\.card-container\s*\{[^}]*background:\s*)[^;}]+/i;
+  var cm = css.match(containerRegex);
+  if (cm) return css.replace(containerRegex, cm[1] + 'linear-gradient(' + direction + ',' + color1 + ',' + color2 + ')');
+  return css;
+}
+
+function cssSetCardBgColor(css, color) {
+  // Find .card-front or .card-back background
+  var bgRegex = /(\.card-front\s*\{[^}]*background:\s*)[^;}]+/i;
+  var m = css.match(bgRegex);
+  if (m) return css.replace(bgRegex, m[1] + color);
+  bgRegex = /(\.card-back\s*\{[^}]*background:\s*)[^;}]+/i;
+  m = css.match(bgRegex);
+  if (m) return css.replace(bgRegex, m[1] + color);
+  return css;
+}
+
+function cssSetBorderRadius(css, radius) {
+  var brRegex = /(\.card-(?:front|back)\s*\{[^}]*border-radius:\s*)[^;}]+/gi;
+  var m = css.match(brRegex);
+  if (m) {
+    var replaced = 0;
+    css = css.replace(/(\.card-(?:front|back)\s*\{[^}]*border-radius:\s*)[^;}]+/gi, function(match, p1) {
+      return p1 + radius + 'px';
+    });
+  }
+  return css;
+}
+
+function cssSetPadding(css, padding) {
+  var pRegex = /(\.card-(?:front|back)\s*\{[^}]*padding:\s*)[^;}]+/gi;
+  var m = css.match(pRegex);
+  if (m) {
+    css = css.replace(/(\.card-(?:front|back)\s*\{[^}]*padding:\s*)[^;}]+/gi, function(match, p1) {
+      return p1 + padding + 'px ' + Math.round(padding * 0.8) + 'px';
+    });
+  }
+  return css;
+}
+
+function cssSetShadow(css, shadow) {
+  var sRegex = /(\.card-(?:front|back)\s*\{[^}]*box-shadow:\s*)[^;}]+/gi;
+  return css.replace(sRegex, '$1' + shadow);
+}
+
+function cssSetIcon(css, icon) {
+  // Find the .icon::before or .icon content or just add it
+  // For the designs, icons are in the HTML, not CSS. So we handle in buildCustomCardHTML.
+  return css;
+}
+
+function syncCustomConfigToCSS() {
+  "When user changes a config property in custom mode,
+  update the underlying _customCSS string to match."
+  if (S._templateType !== 'custom' || !S._customCSS) return;
+  var css = S._customCSS;
+  
+  // Sync gradient colors
+  if (S.cardBg && S.cardBg2 && S.bgGradientDir) {
+    css = cssSetGradientColors(css, S.cardBg, S.cardBg2, S.bgGradientDir);
+  }
+  
+  // Sync french color to .word { color }
+  css = cssSetColor(css, '.word', 'color', S.frenchColor || '#fff');
+  
+  // Sync meaning color to .arabic { color }
+  css = cssSetColor(css, '.arabic', 'color', S.meaningColor || '#fff');
+  
+  // Sync border radius
+  if (S.borderRadius) {
+    css = cssSetBorderRadius(css, S.borderRadius);
+  }
+  
+  // Sync padding
+  if (S.cardPadding) {
+    css = cssSetPadding(css, S.cardPadding);
+  }
+  
+  // Sync shadow
+  if (S.cardShadow && S.cardShadow !== 'none') {
+    css = cssSetShadow(css, S.cardShadow);
+  }
+  
+  // Sync label color to .suffix
+  css = cssSetColor(css, '.suffix', 'color', S.labelColor || 'rgba(255,255,255,0.65)');
+  
+  // Sync deck-label (tagline) color
+  css = cssSetColor(css, '.deck-label', 'color', S.labelColor || 'rgba(255,255,255,0.35)');
+  
+  // Sync divider color
+  if (S.cardBorderColor) {
+    css = cssSetProperty(css, '.divider', 'background', S.cardBorderColor);
+  }
+  
+  S._customCSS = css;
+}
+function changeCustomIcon(icon) {
+  "Change the icon in the custom template"
+  if (S._customFront) {
+    S._customFront = S._customFront.replace(/<div class="icon">[^<]*<\/div>/, '<div class="icon">' + icon + '</div>');
+    S._customBack = S._customBack.replace(/<div class="icon">[^<]*<\/div>/, '<div class="icon">' + icon + '</div>');
+  }
+  pushHist();
+  renderCustomPreview();
+  renderCtrls();
+}
+
+function restoreOriginalCSS() {
+  "Restore the original CSS for the current custom template"
+  var t = getCustomTemplate(S._customId);
+  if (t && t.css) {
+    S._customCSS = t.css;
+    // Also reset the config properties from the extracted config
+    if (t.config) {
+      var cfg = JSON.parse(JSON.stringify(t.config));
+      S.cardBg = cfg.cardBg || '#ffffff';
+      S.cardBg2 = cfg.cardBg2 || '';
+      S.bgGradientDir = cfg.bgGradientDir || '135deg';
+      S.frenchColor = cfg.frenchColor || '#1e293b';
+      S.meaningColor = cfg.meaningColor || '#1e40af';
+      S.borderRadius = cfg.borderRadius || 16;
+      S.cardPadding = cfg.cardPadding || 28;
+      S.cardShadow = cfg.cardShadow || 'none';
+      S.labelColor = cfg.labelColor || '#999';
+      S.effect = cfg.effect || 'none';
+    }
+    pushHist();
+    renderCustomPreview();
+    renderCtrls();
+    toast('✅ تمت استعادة CSS الأصلي');
+  } else {
+    toast('❌ لا يوجد CSS أصلي');
+  }
+}
+
+// Override downloadAPKG for custom templates to properly embed CSS
+
+
+
 
 // Patch renderCardHTML
 (function() {
