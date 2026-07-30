@@ -1052,6 +1052,16 @@ function renderFilt(){return;
   document.getElementById('filtBar').innerHTML='<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 0"><input style="flex:1;min-width:120px;padding:8px 12px;border-radius:8px;border:1px solid var(--bd);background:var(--s2);color:var(--tx);font-size:.75em" placeholder="\u{1F50D} \u0627\u0628\u062D\u062B \u0639\u0646 \u0642\u0627\u0644\u0628..." oninput="filterGallery(this.value)" value="'+gallerySearchQ+'"><select style="padding:8px 12px;border-radius:8px;border:1px solid var(--bd);background:var(--s2);color:var(--tx);font-size:.7em" onchange="gallerySort=this.value;renderGrid()"><option value="name"'+(gallerySort==='name'?' selected':'')+'>\u0627\u0644\u0627\u0633\u0645</option><option value="newest"'+(gallerySort==='newest'?' selected':'')+'>\u0627\u0644\u0623\u062D\u062F\u062B</option></select></div>';
 }
 
+
+function findTemplate(id){
+  var t = TEMPLATES.find(function(x){return x.id===id;});
+  if(t)return t;
+  if(typeof CUSTOM_TEMPLATES!=='undefined'&&CUSTOM_TEMPLATES.length>0){
+    return CUSTOM_TEMPLATES.find(function(x){return x.id===id;});
+  }
+  return null;
+}
+
 function selectTemplate(id){
   if (isCustomTemplate(id)) { selectCustomTemplate(id); return; }
   var t = TEMPLATES.find(function(x){return x.id===id;});
@@ -1063,11 +1073,40 @@ function selectTemplate(id){
   pushHist(); renderGrid(); renderCtrls(); updateCtlPreview(); switchTab('ctl');
   toast('تم اختيار: ' + t.nm);
 }
-function previewFullTemplate(id){var t=TEMPLATES.find(function(x){return x.id===id;});if(!t)return;showFullPreview(t);}
-function duplicateTemplate(id){var t=TEMPLATES.find(function(x){return x.id===id;});if(!t)return;var newId=id+'-dup-'+Date.now();TEMPLATES.push(Object.assign({},t,{id:newId,nm:t.nm+' (نسخة)'}));renderGrid();toast('تم نسخ: '+t.nm);}
-function exportSingleTemplate(id){var t=TEMPLATES.find(function(x){return x.id===id;});if(!t)return;var blob=new Blob([JSON.stringify(t,null,2)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='template-'+t.nm+'.json';a.click();toast('تم التصدير');}
-function toggleFav(id){var favs=[];try{favs=JSON.parse(localStorage.getItem('anki_favorites')||'[]');}catch(e){}var idx=favs.findIndex(function(f){return f._templateId===id;});if(idx>=0){favs.splice(idx,1);toast('تم إزالة من المفضلة');}else{var t=TEMPLATES.find(function(x){return x.id===id;});if(t)favs.push({cfg:t.cfg,_templateId:id,date:Date.now(),name:t.nm});toast('تمت الإضافة للمفضلة');}localStorage.setItem('anki_favorites',JSON.stringify(favs));renderGrid();}
-function showFullPreview(t){var html='<div style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.8);z-index:9999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)" onclick="if(event.target===this)this.remove()"><div style="max-width:420px;width:90%">'+renderCardHTML(t.cfg)+'</div><div style="position:absolute;top:16px;left:50%;transform:translateX(-50%);color:#fff;font-size:.8em;font-weight:700">'+t.nm+'</div></div>';var el=document.createElement('div');el.innerHTML=html;document.body.appendChild(el);}
+function previewFullTemplate(id){
+  var t=findTemplate(id);
+  if(!t)return;
+  // Check if custom template (has config instead of cfg)
+  var cfg = t.config || t.cfg || {};
+  showFullPreviewWithCfg(t, cfg);
+}
+function showFullPreviewWithCfg(t, cfg){
+  var html='<div style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.8);z-index:9999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)" onclick="if(event.target===this)this.remove()"><div style="max-width:420px;width:90%">'+renderCardHTML(cfg)+'</div><div style="position:absolute;top:16px;left:50%;transform:translateX(-50%);color:#fff;font-size:.8em;font-weight:700">'+t.nm+'</div></div>';
+  var el=document.createElement('div');el.innerHTML=html;document.body.appendChild(el);
+}
+function duplicateTemplate(id){
+  var t=findTemplate(id);
+  if(!t)return;
+  var newId=id+'-dup-'+Date.now();
+  var copy=JSON.parse(JSON.stringify(t));
+  copy.id=newId;copy.nm=t.nm+' (نسخة)';
+  TEMPLATES.push(copy);
+  renderGrid();toast('تم نسخ: '+t.nm);
+}
+function exportSingleTemplate(id){
+  var t=findTemplate(id);
+  if(!t)return;
+  var blob=new Blob([JSON.stringify(t,null,2)],{type:'application/json'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='template-'+t.nm+'.json';a.click();toast('تم التصدير');
+}
+function toggleFav(id){
+  var favs=[];try{favs=JSON.parse(localStorage.getItem('anki_favorites')||'[]');}catch(e){}
+  var idx=favs.findIndex(function(f){return f._templateId===id;});
+  if(idx>=0){favs.splice(idx,1);toast('تم إزالة من المفضلة');}
+  else{var t=findTemplate(id);if(t){favs.push({cfg:t.config||t.cfg||{},_templateId:id,date:Date.now(),name:t.nm});toast('تمت الإضافة للمفضلة');}}
+  localStorage.setItem('anki_favorites',JSON.stringify(favs));renderGrid();
+}
+
 
 // RENDER CARD HTML
 // Build CSS string from element config
