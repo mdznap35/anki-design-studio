@@ -949,6 +949,9 @@ function getFilteredTemplates(){
   return all;
 }
 function renderGrid(){
+  // Hide loading message when grid renders
+  var lm=document.getElementById('loadingMsg');if(lm)lm.remove();
+  
   var templates=getFilteredTemplates();
   // Apply search filter
   if(gallerySearchQ){
@@ -983,20 +986,19 @@ function renderGrid(){
   document.getElementById('tplGrid').innerHTML=templates.map(function(t){
     var sel=S._templateId===t.id;
     var isCustom = isCustomTemplate ? isCustomTemplate(t.id) : false;
-    var cfg = isCustom ? {} : t.cfg;
-    var bg = isCustom ? '#1a1a2e' : (cfg.cardBg2 ? 'linear-gradient(135deg,'+cfg.cardBg+','+cfg.cardBg2+')' : cfg.cardBg);
-    var ff = isCustom ? "'Segoe UI',sans-serif" : (FMAP[cfg.fontFrench]||"'Inter',sans-serif");
-    var fa = isCustom ? "'Segoe UI',sans-serif" : (FMAP[cfg.fontArabic]||"'Noto Sans Arabic',sans-serif");
-    var br = isCustom ? 16 : (cfg.borderRadius||16);
-    var ff=FMAP[t.cfg.fontFrench]||"'Inter',sans-serif";
-    var fa=FMAP[t.cfg.fontArabic]||"'Noto Sans Arabic',sans-serif";
+    // For custom templates, use config if available, otherwise use defaults
+    var cfg = isCustom ? (t.config || {}) : (t.cfg || {});
+    var bg = isCustom ? (cfg.cardBg || '#1a1a2e') : (cfg.cardBg2 ? 'linear-gradient(135deg,'+cfg.cardBg+','+cfg.cardBg2+')' : (cfg.cardBg || '#ffffff'));
+    var ff = isCustom ? (FMAP[cfg.fontFrench]||"'Segoe UI',sans-serif") : (FMAP[cfg.fontFrench]||"'Inter',sans-serif");
+    var fa = isCustom ? (FMAP[cfg.fontArabic]||"'Segoe UI',sans-serif") : (FMAP[cfg.fontArabic]||"'Noto Sans Arabic',sans-serif");
+    var br = (cfg.borderRadius||16);
     var isFav=false;
     try{var favs=JSON.parse(localStorage.getItem('anki_favorites')||'[]');isFav=favs.some(function(f){return f._templateId===t.id;});}catch(e){}
     var tags='';
     return '<div class="gc'+(sel?' sel':'')+'" onclick="toggleGalleryActions(this)" data-tpl-id=\''+t.id+'\'" ondblclick="previewFullTemplate(\''+t.id+'\')">'
-      +'<div class="gp" style="background:'+bg+';border-radius:'+t.cfg.borderRadius+'px">'
-      +'<div style="font-family:'+ff+';font-size:1.2em;font-weight:'+t.cfg.frenchFontWeight+';color:'+t.cfg.frenchColor+';margin-bottom:2px">'+SAMP.f+'</div>'
-      +'<div style="font-family:'+fa+';font-size:.75em;font-weight:'+t.cfg.meaningFontWeight+';color:'+t.cfg.meaningColor+'">'+SAMP.a+'</div>'
+      +'<div class="gp" style="background:'+bg+';border-radius:'+cfg.borderRadius+'px">'
+      +'<div style="font-family:'+ff+';font-size:1.2em;font-weight:'+cfg.frenchFontWeight+';color:'+cfg.frenchColor+';margin-bottom:2px">'+SAMP.f+'</div>'
+      +'<div style="font-family:'+fa+';font-size:.75em;font-weight:'+cfg.meaningFontWeight+';color:'+cfg.meaningColor+'">'+SAMP.a+'</div>'
       +'</div>'
       +'<button class="gc-fav" onclick="event.stopPropagation();toggleFav(\''+t.id+'\')" title="مفضل">'+(isFav?'⭐':'☆')+'</button>'
       +'<div class="gc-actions">'
@@ -1872,7 +1874,7 @@ function renderVEProps(elId){
 let ttsFRVoice=null,ttsARVoice=null,ttsFRManual=null,ttsARManual=null,ttsAllVoices=[];
 function isMaleVoice(v){
   const n=v.name.toLowerCase();
-  if(n.includes('female')||n.includes('femme')||n.includes('zira')||n.includes('samantha')||n.includes('karen')||n.includes('susan')||n.includes('moira')||n.includes('tessa')||n.includes('fiona')||n.includes('google uk english female')||n.includes('google us english female')||n.includes('google arabic female')||n.includes('google french female')||n.includes('google arabic')||n.includes('google french')||n.includes('microsoft zira'))return false;
+  if(n.includes('female')||n.includes('femme')||n.includes('zira')||n.includes('samantha')||n.includes('karen')||n.includes('susan')||n.includes('moira')||n.includes('tessa')||n.includes('fiona')||n.includes('google uk english female')||n.includes('google us english female')||n.includes('google arabic female')||n.includes('google french female')||n.includes('microsoft zira'))return false;
   if(n.includes('male')||n.includes('homme')||n.includes('thomas')||n.includes('nicolas')||n.includes('lucas')||n.includes('hugo')||n.includes('antoine')||n.includes('pierre')||n.includes('jacques')||n.includes('michel')||n.includes('paul')||n.includes('henri')||n.includes('daniel')||n.includes('eric')||n.includes('enhanced')||n.includes('maturity'))return true;
   // For unknown gender, prefer male voices
   return true;  // User wants male voice by default
@@ -4728,7 +4730,7 @@ var CUSTOM_TEMPLATES_LOADED = false;
 function loadCustomDesigns() {
   if (CUSTOM_TEMPLATES_LOADED) return;
   CUSTOM_TEMPLATES_LOADED = true;
-  var files = ['designs_20.json', 'designs_102.json', 'designs_config_102.json'];
+  var files = ['designs_20.json', 'designs_config_102.json'];
   var loaded = 0;
   function loadFile(url) {
     try {
@@ -4754,8 +4756,9 @@ function loadCustomDesigns() {
             });
           }
           loaded++;
-          if (loaded >= files.length && typeof renderGrid === 'function') renderGrid();
-        } catch(e) { console.warn('Parse error', e); loaded++; if (loaded >= files.length && typeof renderGrid === 'function') renderGrid(); }
+          // Update grid immediately when each file loads (incremental)
+          if (typeof renderGrid === 'function') renderGrid();
+        } catch(e) { console.warn('Parse error', e); loaded++; }
       };
       xhr.onerror = function() { console.warn('File not found:', url); loaded++; if (loaded >= files.length && typeof renderGrid === 'function') renderGrid(); };
       xhr.open('GET', url, true);
@@ -5007,8 +5010,7 @@ function cssSetIcon(css, icon) {
 }
 
 function syncCustomConfigToCSS() {
-  "When user changes a config property in custom mode,
-  update the underlying _customCSS string to match."
+  // When user changes a config property in custom mode, update the underlying _customCSS string to match.
   if (S._templateType !== 'custom' || !S._customCSS) return;
   var css = S._customCSS;
   
@@ -5052,7 +5054,7 @@ function syncCustomConfigToCSS() {
   S._customCSS = css;
 }
 function changeCustomIcon(icon) {
-  "Change the icon in the custom template"
+  // Change the icon in the custom template
   if (S._customFront) {
     S._customFront = S._customFront.replace(/<div class="icon">[^<]*<\/div>/, '<div class="icon">' + icon + '</div>');
     S._customBack = S._customBack.replace(/<div class="icon">[^<]*<\/div>/, '<div class="icon">' + icon + '</div>');
@@ -5063,7 +5065,7 @@ function changeCustomIcon(icon) {
 }
 
 function restoreOriginalCSS() {
-  "Restore the original CSS for the current custom template"
+  // Restore the original CSS for the current custom template
   var t = getCustomTemplate(S._customId);
   if (t && t.css) {
     S._customCSS = t.css;
