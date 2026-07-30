@@ -4802,7 +4802,7 @@ function selectCustomTemplate(id) {
       animCSS += pMatch[0] + '\n';
     }
     // Extract any radial-gradient (particle effects)
-    var radRegex = /radial-gradient\([^)]+\)[^}]*}/gi;
+    var radRegex = /radial-gradient[^;]+;/gi;  // simpler pattern without {}
     var rMatch;
     while ((rMatch = radRegex.exec(origCSS)) !== null) {
       animCSS += rMatch[0] + '\n';
