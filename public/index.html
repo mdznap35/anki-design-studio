@@ -362,6 +362,8 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:8px">
 <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--ac),var(--ac2));display:flex;align-items:center;justify-content:center;font-size:1em;color:#fff;font-weight:900">A</div>
 <div><h1 style="font-size:1.2em;font-weight:900;color:var(--tx);background:none;-webkit-text-fill-color:var(--tx);animation:none;letter-spacing:-.3px">Anki Design Studio</h1><p style="color:var(--tx2);font-size:.62em;margin-top:0;font-weight:500">Professional Card Designer</p></div>
+<div id="loadingMsg" style="text-align:center;padding:40px;color:var(--tx2);font-size:.9em">⏳ جاري التحميل...</div>
+
 </div>
 </div>
 <div class="tabs">
@@ -2977,6 +2979,7 @@ window.addEventListener('load',()=>{
   setupAutosave();
   document.addEventListener('contextmenu',showContextMenu);
   if(window.speechSynthesis){speechSynthesis.onvoiceschanged=()=>initTTS();initTTS();}
+  var lm=document.getElementById('loadingMsg');if(lm)lm.style.display='none';
   loadCustomDesigns();pushHist();renderGrid();setTimeout(function(){renderVE();renderCtrls();updateCtlPreview();setTimeout(function(){addDocTooltips();initChatGPTFixes();},50);},50);
 });
 
