@@ -984,9 +984,9 @@ function renderRealTemplatePreview(t){
   front = front.split('{{Participe}}').join('');
   // Remove conditional sections {{#...}}...{{/...}}
   front = front.replace(/{{#\w+}}[\s\S]*?{{\/\w+}}/g, '');
-  // Escape quotes for use inside style attr
-  var previewHtml = '<style>'+css+'</style>' + front;
-  return previewHtml;
+  // Wrap in .card so .card CSS rules apply (Anki wraps cards in .card)
+  var previewHtml = '<div class="card" style="max-width:100%;min-height:80px">' + front + '</div>';
+  return '<style>'+css+'</style>' + previewHtml;
 }
 
 function renderGrid(){
