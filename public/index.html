@@ -29,7 +29,10 @@ body{padding-bottom:48px;font-family:"Inter","Noto Sans Arabic",system-ui,sans-s
 .gc.sel::after{content:'\2713';position:absolute;top:5px;left:5px;background:var(--gn);color:#fff;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;z-index:5}
 .gp{height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px;overflow:hidden}
 .gnm{padding:5px 8px;border-top:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center}
-.gnm span{font-weight:700;font-size:.72em}.gc-cat{font-size:.52em;padding:2px 6px;border-radius:4px;background:var(--s1);color:var(--tx3)}
+.gnm span{font-weight:700;font-size:.72em}.gp-real{overflow:hidden;position:relative}
+.gp-real style{display:none}
+.gp-real .card{transform:scale(.55);transform-origin:top center;width:180%;margin:0 auto}
+.gc-cat{font-size:.52em;padding:2px 6px;border-radius:4px;background:var(--s1);color:var(--tx3)}
 .filt{display:flex;justify-content:center;gap:3px;margin-bottom:10px;flex-wrap:wrap}
 .fb{padding:4px 10px;border:none;border-radius:8px;background:var(--s2);color:var(--tx2);font-size:.62em;font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit}
 .fb:hover{border-color:var(--ac);color:var(--ac2)}.fb.on{background:var(--ac);color:#fff}
@@ -959,6 +962,33 @@ function getFilteredTemplates(){
   }
   return all;
 }
+
+// Render a REAL preview of a custom template (uses actual HTML/CSS from the design)
+function renderRealTemplatePreview(t){
+  // Build the full preview: style + front HTML with sample values
+  var css = t.css || '';
+  var front = t.front || '';
+  // Replace Anki field placeholders with sample text
+  front = front.split('{{French}}').join(SAMP.f);
+  front = front.split('{{Arabic}}').join(SAMP.a);
+  front = front.split('{{Pluriel}}').join(SAMP.p);
+  front = front.split('{{Synonyme}}').join(SAMP.s);
+  front = front.split('{{Contraire}}').join(SAMP.c);
+  front = front.split('{{Badge}}').join('Nom');
+  front = front.split('{{Unit}}').join('1');
+  front = front.split('{{Page}}').join('12');
+  front = front.split('{{WordType}}').join('Nom');
+  front = front.split('{{Feminin}}').join('');
+  front = front.split('{{Preposition}}').join('');
+  front = front.split('{{Auxiliaire}}').join('');
+  front = front.split('{{Participe}}').join('');
+  // Remove conditional sections {{#...}}...{{/...}}
+  front = front.replace(/{{#\w+}}[\s\S]*?{{\/\w+}}/g, '');
+  // Escape quotes for use inside style attr
+  var previewHtml = '<style>'+css+'</style>' + front;
+  return previewHtml;
+}
+
 function renderGrid(){
   // Hide loading message when grid renders
   var lm=document.getElementById('loadingMsg');if(lm)lm.remove();
@@ -995,7 +1025,7 @@ function renderGrid(){
   var gridClass=galleryView==='list'?'gal-grid list-view':'gal-grid';
   document.getElementById('tplGrid').className=gridClass;
   var tc=document.getElementById('tplCount');if(tc)tc.textContent=templates.length+' تصميم احترافي جاهز';
-  document.getElementById('tplGrid').innerHTML=templates.map(function(t){
+    document.getElementById('tplGrid').innerHTML=templates.map(function(t){
     var sel=S._templateId===t.id;
     var isCustom = isCustomTemplate ? isCustomTemplate(t.id) : false;
     // For custom templates, use config if available, otherwise use defaults
@@ -1007,8 +1037,22 @@ function renderGrid(){
     var isFav=false;
     try{var favs=JSON.parse(localStorage.getItem('anki_favorites')||'[]');isFav=favs.some(function(f){return f._templateId===t.id;});}catch(e){}
     var tags='';
+    // For custom templates: render the REAL design (actual HTML/CSS from the design)
+    if(isCustom && (t.front || t.css)){
+      var previewHTML=renderRealTemplatePreview(t);
+      return '<div class="gc'+(sel?' sel':'')+'" onclick="toggleGalleryActions(this)" data-tpl-id=\''+t.id+'\'" ondblclick="previewFullTemplate(\''+t.id+'\')">'
+        +'<div class="gp gp-real">'+previewHTML+'</div>'
+        +'<button class="gc-fav" onclick="event.stopPropagation();toggleFav(\''+t.id+'\')" title="مفضل">'+(isFav?'⭐':'☆')+'</button>'
+        +'<div class="gc-actions">'
+        +'<button class="gc-action-btn" onclick="event.stopPropagation();selectTemplate(\''+t.id+'\')">📝 تعديل</button>'
+        +'<button class="gc-action-btn" onclick="event.stopPropagation();duplicateTemplate(\''+t.id+'\')">📋 نسخ</button>'
+        +'<button class="gc-action-btn" onclick="event.stopPropagation();previewFullTemplate(\''+t.id+'\')">👁️ معاينة</button>'
+        +'<button class="gc-action-btn" onclick="event.stopPropagation();exportSingleTemplate(\''+t.id+'\')">📤 تصدير</button>'
+        +'</div>'
+        +'</div>';
+    }
     return '<div class="gc'+(sel?' sel':'')+'" onclick="toggleGalleryActions(this)" data-tpl-id=\''+t.id+'\'" ondblclick="previewFullTemplate(\''+t.id+'\')">'
-      +'<div class="gp" style="background:'+bg+';border-radius:'+cfg.borderRadius+'px">'
+      +'<div class="gp" style="background:'+bg+';border-radius:'+br+'px">'
       +'<div style="font-family:'+ff+';font-size:1.2em;font-weight:'+cfg.frenchFontWeight+';color:'+cfg.frenchColor+';margin-bottom:2px">'+SAMP.f+'</div>'
       +'<div style="font-family:'+fa+';font-size:.75em;font-weight:'+cfg.meaningFontWeight+';color:'+cfg.meaningColor+'">'+SAMP.a+'</div>'
       +'</div>'
@@ -1019,7 +1063,6 @@ function renderGrid(){
       +'<button class="gc-action-btn" onclick="event.stopPropagation();previewFullTemplate(\''+t.id+'\')">👁️ معاينة</button>'
       +'<button class="gc-action-btn" onclick="event.stopPropagation();exportSingleTemplate(\''+t.id+'\')">📤 تصدير</button>'
       +'</div>'
-      
       +'</div>';
   }).join('');
 }
