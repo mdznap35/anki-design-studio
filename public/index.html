@@ -367,13 +367,19 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 </div>
 </div>
 <div class="tabs">
-<button role="tab" class="tab on" data-t="editor">🖱️ المحرر</button>
-<button class="tab" data-t="gal">📚 القوالب</button>
+<button role="tab" class="tab" data-t="editor">🖱️ المحرر</button>
+<button role="tab" class="tab on" data-t="gal">🎨 التصاميم</button>
 <button class="tab" data-t="ctl">⚙️ التحكم</button>
 <button class="tab" data-t="dl">📥 التنزيل</button>
 </div>
 
-<div id="sec-gal" class="sec"><div class="gal-grid" id="tplGrid"></div></div>
+<div id="sec-gal" class="sec on">
+<div style="text-align:center;margin-bottom:10px">
+<div style="font-size:.9em;font-weight:900;background:linear-gradient(135deg,#a78bfa,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent">🎨 معرض التصاميم الاحترافية</div>
+<div id="tplCount" style="font-size:.65em;color:var(--tx2);margin-top:2px">جاري تحميل التصاميم...</div>
+</div>
+<div class="gal-grid" id="tplGrid"></div>
+</div>
 
 <div id="sec-ctl" class="sec">
 <div class="cl">
@@ -386,7 +392,7 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 </div>
 </div>
 
-<div id="sec-editor" class="sec on">
+<div id="sec-editor" class="sec">
 <div class="ve-l">
 <div class="ve-c" id="veCanvas"></div>
 <div class="ve-p" id="veProps">
@@ -983,6 +989,7 @@ function renderGrid(){
   // Render grid
   var gridClass=galleryView==='list'?'gal-grid list-view':'gal-grid';
   document.getElementById('tplGrid').className=gridClass;
+  var tc=document.getElementById('tplCount');if(tc)tc.textContent=templates.length+' تصميم احترافي جاهز';
   document.getElementById('tplGrid').innerHTML=templates.map(function(t){
     var sel=S._templateId===t.id;
     var isCustom = isCustomTemplate ? isCustomTemplate(t.id) : false;
