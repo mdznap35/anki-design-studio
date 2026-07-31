@@ -60,6 +60,10 @@ def serve_designs_102():
 def serve_designs_config():
     return send_from_directory('public', 'designs_config_102.json')
 
+@app.route('/designs_data.js', methods=['GET'])
+def serve_designs_data():
+    return send_from_directory('public', 'designs_data.js')
+
 @app.route('/api/generate', methods=['POST'])
 def generate():
     try:
