@@ -7,7 +7,7 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <title>Anki Design Studio</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&family=Inter:wght@400;500;600;700;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&family=Inter:wght@400;500;600;700;900&family=Amiri:wght@400;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&family=Inter:wght@400;500;600;700;900&family=Amiri:wght@400;700&display=swap"></noscript>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#0f0f1a;--s1:#1a1a2e;--s2:#22223a;--s3:#2d2d4a;--bd:rgba(255,255,255,.08);--tx:#e8e8f0;--tx2:#8888aa;--tx3:#555577;--ac:#7c3aed;--ac2:#a78bfa;--ac3:#c4b5fd;--ac-bg:rgba(124,58,237,.1);--gn:#22c55e;--gn-bg:rgba(34,197,94,.1);--rd:#ef4444;--rd-bg:rgba(239,68,68,.1);--warn:#f59e0b;--warn-bg:rgba(245,158,11,.1);--r:12px;--sp-xs:4px;--sp-sm:8px;--sp-md:16px;--sp-lg:24px;--sp-xl:32px;--fs-xs:.55em;--fs-sm:.65em;--fs-md:.72em;--fs-lg:.82em;--fs-xl:.95em;--fs-2xl:1.2em;--fs-3xl:1.6em;--br-sm:6px;--br-md:10px;--br-lg:16px;--br-xl:24px;--br-full:50px;--shadow-sm:none;--shadow-md:0 2px 8px rgba(0,0,0,.08);--shadow-lg:0 4px 16px rgba(0,0,0,.12);--shadow-xl:0 8px 32px rgba(0,0,0,.15)}
@@ -3023,18 +3023,37 @@ document.querySelectorAll('[onclick]').forEach(function(el){
   if(el.getAttribute('data-tip'))el.classList.add('tip');
 });
 
-window.addEventListener('load',()=>{
+function initApp(){
   loadTheme();
-
-  if(!localStorage.getItem('anki_onboarded'))showOnboarding();
-  else if(!localStorage.getItem('anki_whatsnew_v21'))showWhatsNew();
-  checkCrashRecovery();
-  setupAutosave();
+  try{
+    if(!localStorage.getItem('anki_onboarded'))showOnboarding();
+    else if(!localStorage.getItem('anki_whatsnew_v21'))showWhatsNew();
+  }catch(e){}
+  try{checkCrashRecovery();}catch(e){}
+  try{setupAutosave();}catch(e){}
   document.addEventListener('contextmenu',showContextMenu);
   if(window.speechSynthesis){speechSynthesis.onvoiceschanged=()=>initTTS();initTTS();}
   var lm=document.getElementById('loadingMsg');if(lm)lm.style.display='none';
-  loadCustomDesigns();pushHist();renderGrid();setTimeout(function(){renderVE();renderCtrls();updateCtlPreview();setTimeout(function(){addDocTooltips();initChatGPTFixes();},50);},50);
-});
+  // Initialize immediately - don't wait for load event (fonts can block it for 10+ seconds)
+  loadCustomDesigns();pushHist();renderGrid();
+  setTimeout(function(){
+    try{renderVE();}catch(e){}
+    try{renderCtrls();}catch(e){}
+    try{updateCtlPreview();}catch(e){}
+    setTimeout(function(){
+      try{addDocTooltips();}catch(e){}
+      try{initChatGPTFixes();}catch(e){}
+    },50);
+  },50);
+}
+// Run immediately when script executes (it's at end of body, DOM is ready)
+try{initApp();}catch(e){console.error('Init error:',e);}
+// Also run on DOMContentLoaded as fallback
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded',function(){try{initApp();}catch(e){}});
+}
+// Also run on window load as final fallback (in case some resource was blocking)
+window.addEventListener('load',function(){try{initApp();}catch(e){}});
 
 // ============================================================
 // COMMAND PALETTE (Ctrl+Shift+P)
