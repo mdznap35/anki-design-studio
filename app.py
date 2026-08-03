@@ -90,7 +90,8 @@ def generate_multi_design(deck_name, designs):
         name = d.get('name', 'Design ' + str(i + 1))
         front = d.get('frontHTML', '') or '<div class="french">{{French}}</div>'
         back = d.get('backHTML', '') or front
-        css = (d.get('css') or '') + base_css
+        # base CSS first so the exact design CSS (from the APKG) takes precedence
+        css = base_css + (d.get('css') or '')
         mid = stable_id('MultiDesign_' + deck_name + '_' + str(i) + '_' + name)
         model = genanki.Model(
             mid, name,

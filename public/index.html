@@ -104,8 +104,13 @@ select.sl{appearance:none;cursor:pointer}
 .fs-apply:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(124,58,237,.35)}
 .fs-close{width:28px;height:28px;border-radius:50%;border:none;background:var(--s2);color:var(--tx);font-size:.7em;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
 .fs-close:hover{background:var(--rd);color:#fff}
-#fsModal .fsw{min-height:0;height:62vh;background:var(--s2)}
-#fsModal .fsc{max-width:440px;width:92%;height:100%;border:none;border-radius:14px;background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.35)}
+#fsModal .fsw{min-height:0;height:78vh;background:var(--s2)}
+#fsModal .fsc{max-width:480px;width:92%;height:100%;border:none;border-radius:14px;background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.35)}
+
+/* In-template TTS speaker button (preview) */
+.tts-preview{display:inline-flex;align-items:center;justify-content:center;width:100%;height:100%;cursor:pointer;font-size:1.15em;line-height:1;color:inherit}
+.card-container>.tts-preview,.card>.tts-preview{width:52px;height:52px;border-radius:50%;background:rgba(124,58,237,.12);border:2px solid rgba(124,58,237,.45);margin:10px auto;font-size:22px;color:#7c3aed}
+.tts-preview:hover{transform:scale(1.08)}
 
 /* VE element selection */
 [data-ve]{cursor:pointer;border:2px dashed transparent;border-radius:5px;transition:all .15s}
@@ -991,6 +996,11 @@ function getFilteredTemplates(){
 
 // Render a REAL preview of a custom template (uses actual HTML/CSS from the design)
 function fillSampleFields(front){
+  // TTS tags -> in-template speaker button (keeps the design's own styling/container)
+  front = front.replace(/\{\{tts\s+([A-Za-z_]+):([A-Za-z_]+)\}\}/g, function(m, lang, fld){
+    var l = lang.indexOf('fr')===0 ? 'fr' : 'ar';
+    return '<span class="tts-preview" data-lang="'+l+'" data-field="'+fld+'" title="استمع">▶</span>';
+  });
   front = front.split('{{French}}').join(SAMP.f);
   front = front.split('{{Arabic}}').join(SAMP.a);
   front = front.split('{{Pluriel}}').join(SAMP.p);
@@ -999,6 +1009,8 @@ function fillSampleFields(front){
   front = front.split('{{Badge}}').join('Nom');
   front = front.split('{{Unit}}').join('1');
   front = front.split('{{Page}}').join('12');
+  front = front.split('{{Card}}').join('1');
+  front = front.split('{{Sentence}}').join(SAMP.a);
   front = front.split('{{WordType}}').join('Nom');
   front = front.split('{{Feminin}}').join('');
   front = front.split('{{Preposition}}').join('');
@@ -1015,7 +1027,7 @@ function buildPreviewDoc(t){
   var css='', body='';
   if(t && (t.front || t.css)){
     css=t.css||'';
-    body='<div class="card">'+fillSampleFields(t.front||'')+'</div>';
+    body=fillSampleFields(t.front||'');
   }else if(t && (t.config || t.cfg)){
     var cfg=Object.assign({}, JSON.parse(JSON.stringify(t.config||t.cfg)), {_templateType:'config'});
     body=renderCardHTML(cfg);
@@ -1023,9 +1035,14 @@ function buildPreviewDoc(t){
     body='<div style="padding:30px;text-align:center;font-family:sans-serif">تصميم فارغ</div>';
   }
   return '<!DOCTYPE html><html><head><meta charset="utf-8"><style>'
-    +'html,body{margin:0;padding:0;min-height:100%;background:#fff}'
+    +'html,body{margin:0;padding:0;min-height:100vh;background:#fff;display:flex;align-items:center;justify-content:center}'
+    +'.tts-preview{display:inline-flex;align-items:center;justify-content:center;width:100%;height:100%;cursor:pointer;font-size:1.15em;line-height:1}'
+    +'.card-container>.tts-preview,.card>.tts-preview{width:52px;height:52px;border-radius:50%;background:rgba(124,58,237,.12);border:2px solid rgba(124,58,237,.45);margin:10px auto;font-size:22px;color:#7c3aed}'
     +'</style><style>'+css+'</style></head><body>'+body
-    +'<script>var SAMP=parent.SAMP;var speakWord=function(w,l){try{parent.speakWord(w,l)}catch(e){}};<\/script>'
+    +'<script>var SAMP=parent.SAMP;var speakWord=function(w,l){try{parent.speakWord(w,l)}catch(e){}};'
+    +'document.querySelectorAll(".tts-preview").forEach(function(el){el.addEventListener("click",function(){'
+    +'var l=el.getAttribute("data-lang")||"fr";var fld=el.getAttribute("data-field")||"French";'
+    +'var txt=(l==="ar"?SAMP.a:SAMP.f);speakWord(txt,l);});});<\/script>'
     +'</body></html>';
 }
 
@@ -3805,7 +3822,7 @@ function loadTheme(){
 // GALLERY IMPROVEMENTS
 // ============================================================
 var galleryView='grid'; // grid or list
-var gallerySort='name'; // name, newest, category
+var gallerySort='default'; // default(insertion order), name, newest
 var gallerySize=160;
 
 function toggleGalleryView(){
@@ -3820,6 +3837,7 @@ function sortTemplates(templates,sortBy){
     case'newest':sorted.sort(function(a,b){return(b.date||0)-(a.date||0);});break;
     case'oldest':sorted.sort(function(a,b){return(a.date||0)-(b.date||0);});break;
     case'category':sorted.sort(function(a,b){return(a.cat||'').localeCompare(b.cat||'');});break;
+    case'default':break; // keep insertion order (premium first, then فاخرة, then showcase)
     case'name':default:sorted.sort(function(a,b){return(a.nm||'').localeCompare(b.nm||'');});break;
   }
   return sorted;
@@ -4931,22 +4949,28 @@ function premiumDesignsLoaded(){
   if (CUSTOM_TEMPLATES_LOADED) {
     PREMIUM_ADDED = true;
     addDesigns(EMBEDDED_DESIGNS_PREMIUM);
+    // Ensure premium designs come first (designs_premium.js may load after initApp)
+    var n = EMBEDDED_DESIGNS_PREMIUM.length;
+    var prem = CUSTOM_TEMPLATES.slice(-n);
+    var rest = CUSTOM_TEMPLATES.slice(0, CUSTOM_TEMPLATES.length - n);
+    CUSTOM_TEMPLATES = prem.concat(rest);
+    for (var i = 0; i < CUSTOM_TEMPLATES.length; i++) CUSTOM_TEMPLATES[i].id = 'custom-' + i;
     if (typeof renderGrid === 'function') renderGrid();
   }
 }
 function loadCustomDesigns() {
   if (CUSTOM_TEMPLATES_LOADED) return;
   CUSTOM_TEMPLATES_LOADED = true;
-  // Designs loaded from designs_data.js (separate file)
-  if (typeof EMBEDDED_DESIGNS_20 !== 'undefined' && EMBEDDED_DESIGNS_20.length > 0) {
-    addDesigns(EMBEDDED_DESIGNS_20);
+  // Premium professional designs first, then فاخرة 102, then the English showcase 20
+  if (!PREMIUM_ADDED && typeof EMBEDDED_DESIGNS_PREMIUM !== 'undefined' && EMBEDDED_DESIGNS_PREMIUM && EMBEDDED_DESIGNS_PREMIUM.length > 0) {
+    PREMIUM_ADDED = true;
+    addDesigns(EMBEDDED_DESIGNS_PREMIUM);
   }
   if (typeof EMBEDDED_DESIGNS_102 !== 'undefined' && EMBEDDED_DESIGNS_102.length > 0) {
     addDesigns(EMBEDDED_DESIGNS_102);
   }
-  if (!PREMIUM_ADDED && typeof EMBEDDED_DESIGNS_PREMIUM !== 'undefined' && EMBEDDED_DESIGNS_PREMIUM && EMBEDDED_DESIGNS_PREMIUM.length > 0) {
-    PREMIUM_ADDED = true;
-    addDesigns(EMBEDDED_DESIGNS_PREMIUM);
+  if (typeof EMBEDDED_DESIGNS_20 !== 'undefined' && EMBEDDED_DESIGNS_20.length > 0) {
+    addDesigns(EMBEDDED_DESIGNS_20);
   }
   if (typeof renderGrid === 'function') renderGrid();
 }
@@ -5073,6 +5097,11 @@ function renderCustomPreview() {
 
 function buildCustomCardHTML(tmpl, css) {
   var h = tmpl;
+  // TTS tags -> in-template speaker button
+  h = h.replace(/\{\{tts\s+([A-Za-z_]+):([A-Za-z_]+)\}\}/g, function(m, lang, fld){
+    var l = lang.indexOf('fr')===0 ? 'fr' : 'ar';
+    return '<span class="tts-preview" data-lang="'+l+'" data-field="'+fld+'" onclick="speakWord((this.getAttribute(\'data-lang\')===\'ar\'?SAMP.a:SAMP.f),this.getAttribute(\'data-lang\')||\'fr\')" title="استمع">▶</span>';
+  });
   // Replace field placeholders with sample text for preview
   h = h.split('{{French}}').join('Maison');
   h = h.split('{{Arabic}}').join('\u0645\u0646\u0632\u0644');
@@ -5334,9 +5363,9 @@ try{initApp();}catch(e){console.error('Init error:',e);}
       <button class="fs-close" onclick="closeFullscreen()" aria-label="إغلاق">✕</button>
     </div>
     <div class="fsw">
-      <button class="fsn n" onclick="prevTpl()" aria-label="السابق">❯</button>
+      <button class="fsn n" onclick="nextTpl()" aria-label="التالي">❮</button>
       <iframe class="fsc" id="fsFrame" title="معاينة القالب"></iframe>
-      <button class="fsn p" onclick="nextTpl()" aria-label="التالي">❮</button>
+      <button class="fsn p" onclick="prevTpl()" aria-label="السابق">❯</button>
     </div>
     <div class="fsi">استخدم الأسهم أو مفاتيح ← → للتنقل بين القوالب</div>
   </div>
