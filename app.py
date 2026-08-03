@@ -64,6 +64,63 @@ def serve_designs_config():
 def serve_designs_data():
     return send_from_directory('public', 'designs_data.js')
 
+@app.route('/designs_premium.js', methods=['GET'])
+def serve_designs_premium():
+    return send_from_directory('public', 'designs_premium.js')
+
+def generate_multi_design(deck_name, designs):
+    """Create a deck where words are distributed round-robin across the selected designs."""
+    fields_order = ['word', 'arabe', 'type', 'unit', 'page', 'pluriel', 'feminin_s', 'feminin_p',
+                    'preposition', 'auxiliaire', 'participe', 'synonyme', 'contraire']
+    all_words = get_all_words() + get_important_words()
+    if not all_words:
+        return jsonify({'error': 'No word data found'}), 500
+
+    base_css = """@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+.card{font-family:'Noto Sans Arabic',sans-serif;text-align:center;direction:rtl;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;position:relative}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+"""
+
+    models = []
+    deck_id = stable_id('MultiDeck_' + deck_name)
+    deck = genanki.Deck(deck_id, deck_name)
+
+    for i, d in enumerate(designs):
+        name = d.get('name', 'Design ' + str(i + 1))
+        front = d.get('frontHTML', '') or '<div class="french">{{French}}</div>'
+        back = d.get('backHTML', '') or front
+        css = (d.get('css') or '') + base_css
+        mid = stable_id('MultiDesign_' + deck_name + '_' + str(i) + '_' + name)
+        model = genanki.Model(
+            mid, name,
+            fields=[{'name': 'French'}, {'name': 'Arabic'}, {'name': 'WordType'}, {'name': 'Unit'},
+                    {'name': 'Page'}, {'name': 'Pluriel'}, {'name': 'FemininS'}, {'name': 'FemininP'},
+                    {'name': 'Preposition'}, {'name': 'Auxiliaire'}, {'name': 'Participe'},
+                    {'name': 'Synonyme'}, {'name': 'Contraire'}],
+            templates=[{'name': 'FR→AR', 'qfmt': front, 'afmt': back}],
+            css=css,
+            sort_field_index=0)
+        models.append(model)
+
+    n = len(models)
+    for idx, w in enumerate(all_words):
+        note_fields = [str(w.get(f, '')) for f in fields_order]
+        model = models[idx % n]
+        deck.add_note(genanki.Note(model=model, fields=note_fields))
+
+    safe_name = deck_name.replace('/', '_').replace('\\', '_')
+    apkg_path = f'/tmp/{safe_name}_{os.getpid()}.apkg'  # nosec S5443
+    genanki.Package(deck).write_to_file(apkg_path)
+    print(f"Multi-design deck sent: {len(all_words)} notes across {n} designs")
+
+    response = send_file(apkg_path, as_attachment=True, download_name=f'{safe_name}.apkg',
+                    mimetype='application/octet-stream')
+    import atexit
+    atexit.register(lambda: os.remove(apkg_path) if os.path.exists(apkg_path) else None)
+    return response
+
+
 @app.route('/api/generate', methods=['POST'])
 def generate():
     try:
@@ -72,6 +129,11 @@ def generate():
         print(f"Generating: {config.get('deckName','?')}")
 
         deck_name = config.get('deckName', 'Français Bac')
+
+        # MULTI-DESIGN: generate a deck where each word gets a different design (round-robin)
+        designs = config.get('designs')
+        if designs and len(designs) > 0:
+            return generate_multi_design(deck_name, designs)
 
         # Get full card HTML from frontend
         card_front_html = config.get('cardFrontHTML', '')

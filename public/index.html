@@ -27,11 +27,19 @@ body{padding-bottom:48px;font-family:"Inter","Noto Sans Arabic",system-ui,sans-s
 .gc:hover{border-color:var(--ac);transform:translateY(-3px);box-shadow:0 8px 24px rgba(124,58,237,.12)}
 .gc.sel{border-color:var(--gn);box-shadow:0 0 0 1px var(--gn)}
 .gc.sel::after{content:'\2713';position:absolute;top:5px;left:5px;background:var(--gn);color:#fff;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;z-index:5}
+.gc.multi{border-color:var(--ac);box-shadow:0 0 0 1px var(--ac)}
+.gc-pick{position:absolute;top:6px;right:34px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.45);border:1.5px solid rgba(255,255,255,.5);color:#fff;font-size:.6em;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:5;transition:all .2s;backdrop-filter:blur(2px)}
+.gc-pick:hover{border-color:var(--ac);background:var(--ac)}
+.gc-pick.on{background:var(--ac);border-color:var(--ac)}
+#multiBar{display:none;position:sticky;top:0;z-index:20;background:var(--s2);border:1px solid var(--ac);border-radius:var(--br-md);padding:8px 12px;margin-bottom:10px;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;box-shadow:0 4px 16px rgba(124,58,237,.2)}
+#multiBar .mb-count{font-size:.72em;font-weight:800;color:var(--ac2)}
 .gp{height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px;overflow:hidden}
-.gnm{padding:5px 8px;border-top:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center}
-.gnm span{font-weight:700;font-size:.72em}.gp-real{overflow:hidden;position:relative;height:120px;display:flex;align-items:center;justify-content:center;padding:0;background:var(--s1)}
+.gp-real{overflow:hidden;position:relative;height:150px;display:flex;align-items:center;justify-content:center;padding:0;background:var(--s1)}
 .gp-real style{display:none}
-.gp-real .card{transform:scale(.4);transform-origin:center center;width:250%;margin:0 auto;pointer-events:none;flex:0 0 auto}
+.gp-real .card{zoom:.6;min-height:0!important;height:auto!important;max-width:100%;pointer-events:none;flex:0 0 auto;margin:0 auto;background:transparent}
+.gp-real .card-container{min-height:0!important;height:auto!important}
+.gp-real.lazy{display:flex;align-items:center;justify-content:center}
+.lazy-ph{font-size:1.4em;opacity:.4;color:var(--tx3)}
 .gal-sep{display:flex;align-items:center;justify-content:space-between;grid-column:1/-1;background:var(--s2);border:1px solid var(--bd);border-radius:var(--br-md);padding:8px 14px;margin:6px 0 2px}
 .gal-sep span{font-size:.72em;font-weight:800;color:var(--ac2)}
 .gal-sep em{font-style:normal;font-size:.6em;font-weight:700;color:var(--tx2);background:var(--s3);padding:2px 10px;border-radius:12px}
@@ -390,6 +398,13 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 <div style="font-size:.9em;font-weight:900;background:linear-gradient(135deg,#a78bfa,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent">🎨 معرض التصاميم الاحترافية</div>
 <div id="tplCount" style="font-size:.65em;color:var(--tx2);margin-top:2px">جاري تحميل التصاميم...</div>
 </div>
+<div id="multiBar">
+  <span class="mb-count">🎯 <b id="mbCountNum">0</b> تصميم محدد</span>
+  <div style="display:flex;gap:6px;align-items:center">
+    <button class="btn ba bs" onclick="downloadMultiAPKG()" style="padding:5px 12px;font-size:.68em">⬇ تنزيل الرزمة المتعددة</button>
+    <button class="btn bo bs" onclick="clearMultiSelect()" style="padding:5px 10px;font-size:.68em">✖ مسح</button>
+  </div>
+</div>
 <div class="gal-grid" id="tplGrid"></div>
 </div>
 
@@ -466,7 +481,12 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 <div id="statusBar" style="position:fixed;bottom:0;left:0;right:0;background:var(--s1);border-top:1px solid var(--bd);padding:4px 16px;display:flex;justify-content:space-between;font-size:.58em;color:var(--tx3);z-index:100"><span>Anki Design Studio v4.2</span><span style="color:var(--gn)">✓</span><span id="undoCount">0 / 0</span></div>
 
 <script src="designs_data.js"></script>
+<script src="designs_premium.js" defer onload="try{premiumDesignsLoaded()}catch(e){}"></script>
 <script>
+// Global state - MUST be declared before initApp() runs (see end of script)
+var CUSTOM_TEMPLATES = [];
+var CUSTOM_TEMPLATES_LOADED = false;
+var PREMIUM_ADDED = false;
 const SAMP={f:'Maison',a:'منزل',p:'Maisons',s:'Contrat',c:'Désabonnement'};
 const FMAP={"Inter":"'Inter',sans-serif","Noto Sans Arabic":"'Noto Sans Arabic',sans-serif","Poppins":"'Poppins',sans-serif","Playfair Display":"'Playfair Display',serif","Cairo":"'Cairo',sans-serif","Tajawal":"'Tajawal',sans-serif","Amiri":"'Amiri',serif","System":"system-ui,sans-serif"};
 
@@ -1046,17 +1066,25 @@ function renderGrid(){
       var br = (cfg.borderRadius||16);
       var isFav=false;
       try{var favs=JSON.parse(localStorage.getItem('anki_favorites')||'[]');isFav=favs.some(function(f){return f._templateId===t.id;});}catch(e){}
+      var inMulti=(MULTI_SELECT.indexOf(t.id)>=0);
       var preview;
       if(isCustom && (t.front || t.css)){
-        preview='<div class="gp gp-real">'+renderRealTemplatePreview(t)+'</div>';
+        // Lazy real preview: render immediately for the first batch, defer the rest
+        var li=(window._lazyCount||0); window._lazyCount=li+1;
+        if(li < (window._lazyBatch||16)){
+          preview='<div class="gp gp-real">'+renderRealTemplatePreview(t)+'</div>';
+        }else{
+          preview='<div class="gp gp-real lazy" data-lazy="1"><div class="lazy-ph">🖼️</div></div>';
+        }
       }else{
         preview='<div class="gp" style="background:'+bg+';border-radius:'+br+'px">'
           +'<div style="font-family:'+ff+';font-size:1.2em;font-weight:'+cfg.frenchFontWeight+';color:'+cfg.frenchColor+';margin-bottom:2px">'+SAMP.f+'</div>'
           +'<div style="font-family:'+fa+';font-size:.75em;font-weight:'+cfg.meaningFontWeight+';color:'+cfg.meaningColor+'">'+SAMP.a+'</div>'
           +'</div>';
       }
-      return '<div class="gc'+(sel?' sel':'')+'" onclick="toggleGalleryActions(this)" data-tpl-id=\''+t.id+'\'" ondblclick="previewFullTemplate(\''+t.id+'\')">'
+      return '<div class="gc'+(sel?' sel':'')+(inMulti?' multi':'')+'" onclick="toggleGalleryActions(this)" data-tpl-id=\''+t.id+'\'" ondblclick="previewFullTemplate(\''+t.id+'\')">'
         +preview
+        +'<button class="gc-pick'+(inMulti?' on':'')+'" onclick="event.stopPropagation();toggleMultiSelect(\''+t.id+'\')" title="تحديد للرزمة المتعددة">'+(inMulti?'✓':'+')+'</button>'
         +'<button class="gc-fav" onclick="event.stopPropagation();toggleFav(\''+t.id+'\')" title="مفضل">'+(isFav?'⭐':'☆')+'</button>'
         +'<div class="gc-actions">'
         +'<button class="gc-action-btn" onclick="event.stopPropagation();selectTemplate(\''+t.id+'\')">📝 تعديل</button>'
@@ -1068,15 +1096,116 @@ function renderGrid(){
         +'</div>';
     }
     var html = '';
-    if(builtIn.length>0){
-      html += '<div class="gal-sep"><span>📚 الأنماط الأساسية</span><em>'+builtIn.length+'</em></div>';
-      html += builtIn.map(function(t){return renderGalleryCard(t,false);}).join('');
-    }
+    // Only professional (custom) designs appear in the gallery.
+    // Old color-only templates are available as color options in the control panel.
     if(customNew.length>0){
       html += '<div class="gal-sep"><span>✨ التصاميم الاحترافية الجديدة</span><em>'+customNew.length+'</em></div>';
       html += customNew.map(function(t){return renderGalleryCard(t,true);}).join('');
     }
+    if(customNew.length===0 && builtIn.length>0){
+      html += builtIn.map(function(t){return renderGalleryCard(t,false);}).join('');
+    }
+    if(html===''){
+      html = '<div style="text-align:center;padding:30px;color:var(--tx3);font-size:.75em">جاري تحميل التصاميم الاحترافية...</div>';
+    }
     document.getElementById('tplGrid').innerHTML=html;
+    renderMultiBar();
+    setupLazyPreviews();
+}
+function setupLazyPreviews(){
+  if(!('IntersectionObserver' in window)){return;}
+  var lazyEls=document.querySelectorAll('#tplGrid .gp-real.lazy');
+  if(lazyEls.length===0)return;
+  if(window._lazyIO)window._lazyIO.disconnect();
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if(en.isIntersecting){
+        var el=en.target;
+        io.unobserve(el);
+        var card=el.closest('.gc');
+        if(!card)return;
+        var id=card.getAttribute('data-tpl-id');
+        var t=findTemplate(id);
+        if(!t)return;
+        el.classList.remove('lazy');
+        el.innerHTML=renderRealTemplatePreview(t);
+      }
+    });
+  },{rootMargin:'200px'});
+  window._lazyIO=io;
+  lazyEls.forEach(function(el){io.observe(el);});
+}
+// ---- Multi-select state ----
+var MULTI_SELECT = [];
+try{ MULTI_SELECT = JSON.parse(localStorage.getItem('anki_multi_selected')||'[]'); }catch(e){ MULTI_SELECT=[]; }
+function toggleMultiSelect(id){
+  var i=MULTI_SELECT.indexOf(id);
+  if(i>=0){MULTI_SELECT.splice(i,1);}
+  else{MULTI_SELECT.push(id);}
+  try{localStorage.setItem('anki_multi_selected',JSON.stringify(MULTI_SELECT));}catch(e){}
+  renderGrid();
+}
+function clearMultiSelect(){
+  MULTI_SELECT=[];
+  try{localStorage.setItem('anki_multi_selected','[]');}catch(e){}
+  renderGrid();
+}
+function renderMultiBar(){
+  var bar=document.getElementById('multiBar');
+  if(!bar)return;
+  var num=document.getElementById('mbCountNum');
+  if(num)num.textContent=MULTI_SELECT.length;
+  bar.style.display = MULTI_SELECT.length>0 ? 'flex' : 'none';
+}
+function buildDesignPayload(t){
+  // custom design (front/css) -> raw anki template
+  if(t && (t.front || t.css)){
+    return {
+      name: t.nm || 'تصميم',
+      frontHTML: t.front || '',
+      backHTML: t.back || t.front || '',
+      css: t.css || '',
+      type: 'custom'
+    };
+  }
+  // config-based template -> render like normal
+  if(t && t.cfg){
+    var cfg=Object.assign({}, JSON.parse(JSON.stringify(t.cfg)), {_templateType:'config'});
+    var h=renderAnkiTemplate(cfg);
+    return {name:t.nm||'تصميم', frontHTML:h, backHTML:h, css:'', type:'config'};
+  }
+  return null;
+}
+async function downloadMultiAPKG(){
+  var di=document.getElementById('dlInfo');
+  var veDi=document.getElementById('veDlInfo');
+  var ld=document.getElementById('loading');
+  if(di)di.textContent='';if(veDi)veDi.textContent='';if(ld)ld.style.display='block';
+  try{
+    var designs=[];
+    for(var i=0;i<MULTI_SELECT.length;i++){
+      var t=findTemplate(MULTI_SELECT[i]);
+      var p=buildDesignPayload(t);
+      if(p)designs.push(p);
+    }
+    if(designs.length===0){toast('اختر تصميماً واحداً على الأقل');if(ld)ld.style.display='none';return;}
+    var deckName=(document.getElementById('veDeckName')?.value||document.getElementById('deckName')?.value||'Anki Design')+' (متعدد التصاميم)';
+    var config={deckName:deckName, designs:designs, multi:true};
+    var resp=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config)});
+    if(!resp.ok)throw new Error('Server error: '+resp.status);
+    var blob=await resp.blob();if(blob.size<1000)throw new Error('ملف فارغ');
+    var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download=config.deckName+'.apkg';a.click();URL.revokeObjectURL(url);
+    var msg='تم التنزيل ('+designs.length+' تصميم • '+Math.round(blob.size/1024)+' KB)';
+    if(di)di.textContent=msg;
+    if(veDi)veDi.textContent=msg;
+    toast('✅ تم تنزيل الرزمة بـ '+designs.length+' تصميم');
+  }catch(e){
+    var em='خطأ: '+e.message;
+    if(di)di.textContent=em;
+    if(veDi)veDi.textContent=em;
+  }finally{
+    if(ld)ld.style.display='none';
+  }
 }
 // Toggle gallery actions on click
 function toggleGalleryActions(el){
@@ -1407,6 +1536,10 @@ h+=renderPropertySearch();
   var ch=grp('\u062A\u0646\u0627\u063A\u0645 \u0627\u0644\u0623\u0644\u0648\u0627\u0646',`<div style='display:flex;gap:3px;flex-wrap:wrap'><button class='btn bo bs' onclick="applyHarmony('complementary')">\u0645\u062A\u0643\u0627\u0645\u0644</button><button class='btn bo bs' onclick="applyHarmony('analogous')">\u0645\u062A\u0646\u0627\u0633\u0628</button><button class='btn bo bs' onclick="applyHarmony('triadic')">\u062B\u0644\u0627\u062B\u064A</button><button class='btn bo bs' onclick="applyHarmony('split-complementary')">\u062B\u0644\u0627\u062B\u064A \u0645\u0643\u0645\u0644</button><button class='btn bo bs' onclick="applyHarmony('tetradic')">\u0631\u0628\u0627\u0639\u064A</button></div>`);
   var cq=grp('\u0644\u0648\u062D\u0629 \u0645\u0646 \u0628\u0636\u0627\u0621',"<div style='display:flex;gap:4px;align-items:center'><input type='color' id='baseColorPicker' value='" + (S.cardBg||'#ffffff') + "' style='width:40px;height:32px;border:none;cursor:pointer'><button class='btn bo bs' onclick='generateFromBase()'>\u062A\u0648\u0644\u064A\u062F</button></div><div id='basePalette' style='display:flex;gap:3px;flex-wrap:wrap;margin-top:4px'></div>");
   h+=acc('\u{1F3A8} \u0627\u0644\u0623\u0644\u0648\u0622\u0646',renderColorGrid()+clrH+renderRecentColors()+cg+ch+cq+grp('\u0623\u0644\u0648\u0622\u0646 \u062C\u0627\u0647\u0638\u0629',pr),false);
+  var tplPr='<div style="display:flex;gap:3px;flex-wrap:wrap">';
+  TEMPLATES.forEach(function(t,i){var c=t.cfg||{};var bg=(c.cardBg2&&c.cardBg2!==c.cardBg)?'linear-gradient(135deg,'+c.cardBg+','+c.cardBg2+')':(c.cardBg||'#888');var fg=c.frenchColor||'#fff';tplPr+='<div class="sw" style="background:'+bg+';border:2px solid var(--bd)" title="'+t.nm+'" onclick="applyTemplateColors('+i+')"><span style="font-size:.6em;font-weight:900;color:'+fg+'">A</span></div>';});
+  tplPr+='</div>';
+  h+=acc('\u{1F3A8} \u0623\u0644\u0648\u0627\u0646 \u0627\u0644\u0642\u0648\u0627\u0644\u0628 \u0627\u0644\u0643\u0644\u0627\u0633\u064A\u0643\u064A\u0629',tplPr,false);
 
 
   // 3. TYPOGRAPHY
@@ -1737,6 +1870,21 @@ function updateCtlPreview(){const e=document.getElementById('ctlPreviewCard');if
 
 // PRESETS
 function applyColorPreset(i){const p=PRESETS.colors[i];if(!p)return;S.cardBg=p.bg;S.frenchColor=p.fc;S.meaningColor=p.mc;S.meaningBg=p.mb;S.meaningBorder=p.mbd;pushHist();renderCtrls();renderAll();setTimeout(addDocTooltips,50);}
+
+function applyTemplateColors(i){
+  var t=TEMPLATES[i];if(!t||!t.cfg)return;
+  var c=t.cfg;
+  // Copy only color/styling-related props (old templates were color-only)
+  ['cardBg','cardBg2','bgGradientDir','frenchColor','meaningColor','meaningBg','meaningBorder',
+   'badgeNomBg','badgeNomColor','unitBg','unitColor','secBg','secBorder','secTextColor',
+   'labelColor','cardBorderColor','separatorColor','effect','borderRadius','cardShadow',
+   'fontFrench','fontArabic'].forEach(function(k){
+    if(k in c && c[k]!==undefined) S[k]=c[k];
+  });
+  S._templateId=t.id;S._templateType='config';
+  pushHist();renderCtrls();renderAll();setTimeout(addDocTooltips,50);
+  toast('تم تطبيق ألوان: '+t.nm);
+}
 function applyStylePreset(i){const p=PRESETS.styles[i];if(!p)return;S.borderRadius=p.br;S.cardPadding=p.pd;S.cardShadow=p.sh;S.cardBorderWidth=p.bw;S.cardDirection=p.dir;S.cardAlign=p.al;S.cardGap=p.gap;pushHist();renderCtrls();renderAll();setTimeout(addDocTooltips,50);}
 function applyTextPreset(i){const p=PRESETS.texts[i];if(!p)return;S.frenchFontSize=p.fsFr;S.frenchFontWeight=p.fwFr;S.meaningFontSize=p.fsAr;S.meaningFontWeight=p.fwAr;pushHist();renderCtrls();renderAll();setTimeout(addDocTooltips,50);}
 function applyFontPreset(i){const p=PRESETS.fonts[i];if(!p)return;S.fontFrench=p.fr;S.fontArabic=p.ar;pushHist();renderCtrls();renderAll();setTimeout(addDocTooltips,50);}
@@ -3079,6 +3227,8 @@ document.querySelectorAll('[onclick]').forEach(function(el){
 });
 
 function initApp(){
+  if (window.__ANKI_INITED) return;
+  window.__ANKI_INITED = true;
   loadTheme();
   try{
     if(!localStorage.getItem('anki_onboarded'))showOnboarding();
@@ -3101,8 +3251,6 @@ function initApp(){
     },50);
   },50);
 }
-// Run immediately when script executes (it's at end of body, DOM is ready)
-try{initApp();}catch(e){console.error('Init error:',e);}
 // Also run on DOMContentLoaded as fallback
 if(document.readyState==='loading'){
   document.addEventListener('DOMContentLoaded',function(){try{initApp();}catch(e){}});
@@ -4849,10 +4997,16 @@ function addInfoIcons(){
 // ============================================================
 // CUSTOM TEMPLATE SYSTEM - Professional 20 Designs
 // ============================================================
-var CUSTOM_TEMPLATES = [];
-var CUSTOM_TEMPLATES_LOADED = false;
-
-
+function premiumDesignsLoaded(){
+  if (PREMIUM_ADDED) return;
+  if (typeof EMBEDDED_DESIGNS_PREMIUM === 'undefined' || !EMBEDDED_DESIGNS_PREMIUM || !EMBEDDED_DESIGNS_PREMIUM.length) return;
+  // Only add if main designs are already loaded (initApp ran); otherwise loadCustomDesigns will pick them up
+  if (CUSTOM_TEMPLATES_LOADED) {
+    PREMIUM_ADDED = true;
+    addDesigns(EMBEDDED_DESIGNS_PREMIUM);
+    if (typeof renderGrid === 'function') renderGrid();
+  }
+}
 function loadCustomDesigns() {
   if (CUSTOM_TEMPLATES_LOADED) return;
   CUSTOM_TEMPLATES_LOADED = true;
@@ -4862,6 +5016,10 @@ function loadCustomDesigns() {
   }
   if (typeof EMBEDDED_DESIGNS_102 !== 'undefined' && EMBEDDED_DESIGNS_102.length > 0) {
     addDesigns(EMBEDDED_DESIGNS_102);
+  }
+  if (!PREMIUM_ADDED && typeof EMBEDDED_DESIGNS_PREMIUM !== 'undefined' && EMBEDDED_DESIGNS_PREMIUM && EMBEDDED_DESIGNS_PREMIUM.length > 0) {
+    PREMIUM_ADDED = true;
+    addDesigns(EMBEDDED_DESIGNS_PREMIUM);
   }
   if (typeof renderGrid === 'function') renderGrid();
 }
@@ -5237,6 +5395,12 @@ function restoreOriginalCSS() {
     return orig(c);
   };
 })();
+// ============================================================
+// INIT - run AFTER every top-level declaration above has executed
+// (script sits at end of <body>, so DOM is ready and we don't wait
+//  for the load event, which fonts can block for 10+ seconds)
+// ============================================================
+try{initApp();}catch(e){console.error('Init error:',e);}
 </script>
 </body>
 </html>
