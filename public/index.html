@@ -34,9 +34,10 @@ body{padding-bottom:48px;font-family:"Inter","Noto Sans Arabic",system-ui,sans-s
 #multiBar{display:none;position:sticky;top:0;z-index:20;background:var(--s2);border:1px solid var(--ac);border-radius:var(--br-md);padding:8px 12px;margin-bottom:10px;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;box-shadow:0 4px 16px rgba(124,58,237,.2)}
 #multiBar .mb-count{font-size:.72em;font-weight:800;color:var(--ac2)}
 .gp{height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px;overflow:hidden}
-.gp-real{overflow:hidden;position:relative;height:150px;display:flex;align-items:center;justify-content:center;padding:0;background:var(--s1)}
+.gp-real{overflow:hidden;position:relative;height:160px;display:flex;align-items:center;justify-content:center;padding:0;background:var(--s1)}
 .gp-real style{display:none}
-.gp-real .card{zoom:.6;min-height:0!important;height:auto!important;max-width:100%;pointer-events:none;flex:0 0 auto;margin:0 auto;background:transparent}
+.gp-real *,.gp-real *::before,.gp-real *::after{animation:none!important;transition:none!important}
+.gp-real .card{zoom:.55;min-height:0!important;height:auto!important;max-width:100%;pointer-events:none;flex:0 0 auto;margin:0 auto;background:transparent}
 .gp-real .card-container{min-height:0!important;height:auto!important}
 .gp-real.lazy{display:flex;align-items:center;justify-content:center}
 .lazy-ph{font-size:1.4em;opacity:.4;color:var(--tx3)}
@@ -55,7 +56,7 @@ body{padding-bottom:48px;font-family:"Inter","Noto Sans Arabic",system-ui,sans-s
 .cp{position:sticky;top:14px;display:flex;flex-direction:column;align-items:center;gap:10px}
 .cp-t{font-size:.8em;font-weight:800;color:var(--ac2);text-align:center}
 .cp-c{width:100%;max-width:360px;border-radius:var(--br-md);overflow:hidden;border:1px solid var(--bd);background:var(--s1)}
-@media(max-width:800px){.cl{grid-template-columns:1fr}.cp{position:static}.tabs{flex-wrap:wrap;justify-content:center}.tab{padding:6px 10px;font-size:.65em}.hdr h1{font-size:1.2em}.gal-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:6px}#statusBar{font-size:.5em;padding:3px 8px}#statusBar span:nth-child(3){display:none}
+@media(max-width:800px){.cl{grid-template-columns:1fr}.cp{position:static}.tabs{flex-wrap:wrap;justify-content:center}.tab{padding:6px 10px;font-size:.65em}.hdr h1{font-size:1.2em}.gal-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:6px}#statusBar{font-size:.5em;padding:3px 8px}#statusBar span:nth-child(3){display:none}}
 .cw{background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:10px;margin-bottom:8px}
 .acc{margin:3px 0;border:none;border-radius:var(--br-sm);overflow:hidden;background:var(--s2)}
 .acc-h{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;cursor:pointer;font-size:.72em;font-weight:700;color:var(--tx);background:var(--s1);transition:all .2s;user-select:none}
@@ -104,6 +105,21 @@ select.sl{appearance:none;cursor:pointer}
 .fsn.p{right:8px}.fsn.n{left:8px}
 .fsi{text-align:center;padding:8px;font-size:.7em;color:var(--tx2);font-weight:600}
 .fsc2{text-align:center;font-size:.62em;color:var(--tx3);padding:3px}
+/* Fullscreen template preview modal */
+.fs-overlay{position:fixed;inset:0;background:rgba(5,5,14,.9);backdrop-filter:blur(6px);z-index:99999;display:none;align-items:center;justify-content:center;padding:14px}
+.fs-overlay.open{display:flex}
+.fs-box{background:var(--s1);border:1px solid var(--bd);border-radius:18px;width:100%;max-width:480px;max-height:94vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.6)}
+.fs-head{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--bd);flex-wrap:wrap}
+.fs-title{flex:1;font-size:.74em;font-weight:800;color:var(--ac2);text-align:right;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fs-count{font-size:.62em;font-weight:700;color:var(--tx2);background:var(--s2);padding:3px 10px;border-radius:12px}
+.fs-apply{padding:6px 14px;border:none;border-radius:8px;background:linear-gradient(135deg,var(--ac),#6d28d9);color:#fff;font-size:.66em;font-weight:700;cursor:pointer;transition:all .2s}
+.fs-apply:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(124,58,237,.35)}
+.fs-close{width:28px;height:28px;border-radius:50%;border:none;background:var(--s2);color:var(--tx);font-size:.7em;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.fs-close:hover{background:var(--rd);color:#fff}
+#fsModal .fsw{min-height:380px;background:var(--s2)}
+#fsModal .fsc{max-width:340px;width:86%}
+#fsCard{max-height:68vh;overflow:auto;display:flex;align-items:center;justify-content:center}
+#fsCard .card{max-width:100%}
 
 /* VE element selection */
 [data-ve]{cursor:pointer;border:2px dashed transparent;border-radius:5px;transition:all .15s}
@@ -183,7 +199,6 @@ select.sl{appearance:none;cursor:pointer}
 @keyframes blink{0%,50%,100%{opacity:1}25%,75%{opacity:0}}
 @keyframes colorShift{0%{filter:hue-rotate(0deg)}100%{filter:hue-rotate(360deg)}}
 @keyframes glowPulse{0%,100%{box-shadow:0 0 5px currentColor}50%{box-shadow:0 0 30px currentColor,0 0 60px currentColor}}
-75%{transform:translateX(5px)}}
 
 .tip{position:relative}.tip::after{content:attr(data-tip);position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:var(--s3);color:var(--tx);padding:4px 8px;border-radius:6px;font-size:.6em;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .2s;z-index:999}.tip:hover::after{opacity:1}
 kbd{display:inline-block;padding:1px 5px;font-size:.6em;font-family:monospace;background:var(--s3);border-radius:3px;color:var(--tx2);margin-left:4px}
@@ -388,14 +403,14 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 </div>
 <div class="tabs">
 <button role="tab" class="tab" data-t="editor">🖱️ المحرر</button>
-<button role="tab" class="tab on" data-t="gal">🎨 التصاميم</button>
+<button role="tab" class="tab on" data-t="gal">🎨 القوالب</button>
 <button class="tab" data-t="ctl">⚙️ التحكم</button>
 <button class="tab" data-t="dl">📥 التنزيل</button>
 </div>
 
 <div id="sec-gal" class="sec on">
 <div style="text-align:center;margin-bottom:10px">
-<div style="font-size:.9em;font-weight:900;background:linear-gradient(135deg,#a78bfa,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent">🎨 معرض التصاميم الاحترافية</div>
+<div style="font-size:.9em;font-weight:900;background:linear-gradient(135deg,#a78bfa,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent">🎨 القوالب الاحترافية</div>
 <div id="tplCount" style="font-size:.65em;color:var(--tx2);margin-top:2px">جاري تحميل التصاميم...</div>
 </div>
 <div id="multiBar">
@@ -1082,16 +1097,10 @@ function renderGrid(){
           +'<div style="font-family:'+fa+';font-size:.75em;font-weight:'+cfg.meaningFontWeight+';color:'+cfg.meaningColor+'">'+SAMP.a+'</div>'
           +'</div>';
       }
-      return '<div class="gc'+(sel?' sel':'')+(inMulti?' multi':'')+'" onclick="toggleGalleryActions(this)" data-tpl-id=\''+t.id+'\'" ondblclick="previewFullTemplate(\''+t.id+'\')">'
+      return '<div class="gc'+(sel?' sel':'')+(inMulti?' multi':'')+'" onclick="previewFullTemplate(\''+t.id+'\')" data-tpl-id=\''+t.id+'\'>'
         +preview
         +'<button class="gc-pick'+(inMulti?' on':'')+'" onclick="event.stopPropagation();toggleMultiSelect(\''+t.id+'\')" title="تحديد للرزمة المتعددة">'+(inMulti?'✓':'+')+'</button>'
         +'<button class="gc-fav" onclick="event.stopPropagation();toggleFav(\''+t.id+'\')" title="مفضل">'+(isFav?'⭐':'☆')+'</button>'
-        +'<div class="gc-actions">'
-        +'<button class="gc-action-btn" onclick="event.stopPropagation();selectTemplate(\''+t.id+'\')">📝 تعديل</button>'
-        +'<button class="gc-action-btn" onclick="event.stopPropagation();duplicateTemplate(\''+t.id+'\')">📋 نسخ</button>'
-        +'<button class="gc-action-btn" onclick="event.stopPropagation();previewFullTemplate(\''+t.id+'\')">👁️ معاينة</button>'
-        +'<button class="gc-action-btn" onclick="event.stopPropagation();exportSingleTemplate(\''+t.id+'\')">📤 تصدير</button>'
-        +'</div>'
         +'<div class="gnm"><span>'+t.nm+'</span></div>'
         +'</div>';
     }
@@ -1099,7 +1108,6 @@ function renderGrid(){
     // Only professional (custom) designs appear in the gallery.
     // Old color-only templates are available as color options in the control panel.
     if(customNew.length>0){
-      html += '<div class="gal-sep"><span>✨ التصاميم الاحترافية الجديدة</span><em>'+customNew.length+'</em></div>';
       html += customNew.map(function(t){return renderGalleryCard(t,true);}).join('');
     }
     if(customNew.length===0 && builtIn.length>0){
@@ -1169,8 +1177,8 @@ function buildDesignPayload(t){
     };
   }
   // config-based template -> render like normal
-  if(t && t.cfg){
-    var cfg=Object.assign({}, JSON.parse(JSON.stringify(t.cfg)), {_templateType:'config'});
+  if(t && (t.config || t.cfg)){
+    var cfg=Object.assign({}, JSON.parse(JSON.stringify(t.config || t.cfg)), {_templateType:'config'});
     var h=renderAnkiTemplate(cfg);
     return {name:t.nm||'تصميم', frontHTML:h, backHTML:h, css:'', type:'config'};
   }
@@ -1270,16 +1278,38 @@ function selectTemplate(id){
   toast('تم اختيار: ' + t.nm);
 }
 function previewFullTemplate(id){
-  var t=findTemplate(id);
+  var all=getFilteredTemplates();
+  for(var i=0;i<all.length;i++){
+    if(all[i].id===id){curTplIdx=i;openFullscreen();return;}
+  }
+}
+function openFullscreen(){
+  var m=document.getElementById('fsModal');
+  if(m)m.classList.add('open');
+  renderFullscreen();
+}
+function closeFullscreen(){
+  var m=document.getElementById('fsModal');
+  if(m)m.classList.remove('open');
+}
+function applyFromFullscreen(){
+  var all=getFilteredTemplates();
+  var t=all[curTplIdx];
   if(!t)return;
-  // Check if custom template (has config instead of cfg)
-  var cfg = t.config || t.cfg || {};
-  showFullPreviewWithCfg(t, cfg);
+  closeFullscreen();
+  selectTemplate(t.id);
 }
-function showFullPreviewWithCfg(t, cfg){
-  var html='<div style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.8);z-index:9999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)" onclick="if(event.target===this)this.remove()"><div style="max-width:420px;width:90%">'+renderCardHTML(cfg)+'</div><div style="position:absolute;top:16px;left:50%;transform:translateX(-50%);color:#fff;font-size:.8em;font-weight:700">'+t.nm+'</div></div>';
-  var el=document.createElement('div');el.innerHTML=html;document.body.appendChild(el);
-}
+document.addEventListener('keydown',function(e){
+  var m=document.getElementById('fsModal');
+  if(!m||!m.classList.contains('open'))return;
+  if(e.key==='Escape'){closeFullscreen();}
+  else if(e.key==='ArrowLeft'){nextTpl();}
+  else if(e.key==='ArrowRight'){prevTpl();}
+});
+document.addEventListener('click',function(e){
+  var m=document.getElementById('fsModal');
+  if(m&&m.classList.contains('open')&&e.target===m)closeFullscreen();
+});
 function duplicateTemplate(id){
   var t=findTemplate(id);
   if(!t)return;
@@ -1903,7 +1933,24 @@ function exportConfig(){const b=new Blob([JSON.stringify(S,null,2)],{type:'appli
 function importConfig(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=function(ev){try{const d=JSON.parse(ev.target.result);if(typeof d!=='object'||d===null){toast('ملف غير صحيح');return;}const validKeys=['cardBg','frenchColor','meaningColor','borderRadius','cardPadding','fontFrench','fontArabic','effect','deckName'];if(!validKeys.some(function(k){return k in d;})){toast('ملف غير صالح');return;}S=Object.assign({},defCfg(),d);pushHist();renderCtrls();renderAll();setTimeout(addDocTooltips,50);toast('تم الاستيراد');}catch(err){toast('ملف غير صحيح');}};r.readAsText(f);}
 
 // FULLSCREEN PREVIEW
-function renderFullscreen(){const t=getFilteredTemplates()[curTplIdx]||TEMPLATES[0];const c=document.getElementById('fsCard');const i=document.getElementById('fsInfo');const n=document.getElementById('fsCounter');if(c)c.innerHTML=renderCardHTML(t.cfg);if(i)i.textContent=t.nm+' — '+t.en;if(n)n.textContent=(curTplIdx+1)+' / '+getFilteredTemplates().length;}
+function renderFullPreviewContent(t){
+  // Custom template with raw HTML/CSS -> real preview
+  if(t && (t.front || t.css)) return renderRealTemplatePreview(t);
+  // Config-based template -> render from config
+  return renderCardHTML(t.config || t.cfg || {});
+}
+function renderFullscreen(){
+  var all=getFilteredTemplates();
+  if(!all.length)return;
+  curTplIdx=((curTplIdx%all.length)+all.length)%all.length;
+  var t=all[curTplIdx];
+  var c=document.getElementById('fsCard');
+  var i=document.getElementById('fsInfo');
+  var n=document.getElementById('fsCounter');
+  if(c)c.innerHTML=renderFullPreviewContent(t);
+  if(i)i.textContent=t.nm||'';
+  if(n)n.textContent=(curTplIdx+1)+' / '+all.length;
+}
 function nextTpl(){const t=getFilteredTemplates();curTplIdx=(curTplIdx+1)%t.length;renderFullscreen();}
 function prevTpl(){const t=getFilteredTemplates();curTplIdx=(curTplIdx-1+t.length)%t.length;renderFullscreen();}
 
@@ -3300,7 +3347,7 @@ var CMD_LIST=[
   {icon:"💻",label:"CSS المزامن",action:"showCSSCodeSync();closeCmdPalette()"},
   {icon:"🔗",label:"عارض التبعيات",action:"showDependencyViewer();closeCmdPalette()"},
   {icon:"🎨",label:"محرك السمات",action:"showThemeEngine();closeCmdPalette()"},
-  {icon:"📑",label:"تحديد متعدد",action:"toggleMultiSelect();closeCmdPalette()"},
+  {icon:"📑",label:"تحديد متعدد",action:"closeCmdPalette();switchTab('gal');toast('اضغط زر + على القوالب لتحديدها ثم نزّل الرزمة المتعددة')"},
   {icon:"⚖️",label:"مقارنة قوالب",action:"compareTemplates();closeCmdPalette()"},
   {icon:"📊",label:"مسح شامل",action:"showGlobalSearch();closeCmdPalette()"},
 ];
@@ -4041,59 +4088,17 @@ function applyTheme(t){
 }
 
 // ============================================================
-// MULTI-SELECT
-// ============================================================
-var multiSelectMode=false;
-var selectedTemplates=[];
-
-function toggleMultiSelect(){
-  multiSelectMode=!multiSelectMode;
-  selectedTemplates=[];
-  renderGrid();
-  toast(multiSelectMode?'وضع التحديد المتعدد: مفعّل':'وضع التحديد المتعدد: معطّل');
-}
-
-function toggleTemplateSelect(id,idx){
-  var el=document.querySelectorAll('.gc')[idx];
-  if(!el)return;
-  var pos=selectedTemplates.indexOf(id);
-  if(pos>=0){selectedTemplates.splice(pos,1);el.classList.remove('sel');}
-  else{selectedTemplates.push(id);el.classList.add('sel');}
-}
-
-function batchExport(){
-  if(!selectedTemplates.length){toast('حدد قوالب أولاً');return;}
-  var data=selectedTemplates.map(function(id){return TEMPLATES.find(function(t){return t.id===id;});}).filter(Boolean);
-  var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='templates-batch.json';a.click();
-  toast('تم تصدير '+data.length+' قالب');
-}
-
-function batchDelete(){
-  if(!selectedTemplates.length){toast('حدد قوالب أولاً');return;}
-  if(!confirm('هل أنت متأكد من حذف '+selectedTemplates.length+' قالب؟'))return;
-  selectedTemplates.forEach(function(id){
-    var idx=TEMPLATES.findIndex(function(t){return t.id===id;});
-    if(idx>=0)TEMPLATES.splice(idx,1);
-  });
-  selectedTemplates=[];
-  renderGrid();
-  toast('تم الحذف');
-}
-
-// ============================================================
-// COMPARE TEMPLATES
+// COMPARE TEMPLATES (uses working multi-select)
 // ============================================================
 function compareTemplates(){
-  if(selectedTemplates.length<2){toast('حدد قالبين على الأقل');return;}
-  var t1=TEMPLATES.find(function(t){return t.id===selectedTemplates[0];});
-  var t2=TEMPLATES.find(function(t){return t.id===selectedTemplates[1];});
+  if(!MULTI_SELECT||MULTI_SELECT.length<2){toast('حدد قالبين على الأقل بزر +');return;}
+  var t1=findTemplate(MULTI_SELECT[0]);
+  var t2=findTemplate(MULTI_SELECT[1]);
   if(!t1||!t2)return;
-  
   var html='<div style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.8);z-index:9999;display:flex;align-items:center;justify-content:center;gap:16px;padding:16px;backdrop-filter:blur(4px)" onclick="if(event.target===this)this.remove()">';
-  html+='<div style="max-width:300px;width:45%">'+renderCardHTML(t1.cfg)+'</div>';
+  html+='<div style="max-width:300px;width:45%">'+renderCardHTML(t1.config||t1.cfg||{})+'</div>';
   html+='<div style="color:var(--ac2);font-size:1.5em;font-weight:900">VS</div>';
-  html+='<div style="max-width:300px;width:45%">'+renderCardHTML(t2.cfg)+'</div>';
+  html+='<div style="max-width:300px;width:45%">'+renderCardHTML(t2.config||t2.cfg||{})+'</div>';
   html+='</div>';
   var el=document.createElement('div');el.innerHTML=html;document.body.appendChild(el);
 }
@@ -5402,5 +5407,23 @@ function restoreOriginalCSS() {
 // ============================================================
 try{initApp();}catch(e){console.error('Init error:',e);}
 </script>
+
+<!-- Fullscreen template preview -->
+<div id="fsModal" class="fs-overlay" role="dialog" aria-label="معاينة القالب" aria-modal="true">
+  <div class="fs-box">
+    <div class="fs-head">
+      <div class="fs-title" id="fsInfo"></div>
+      <div class="fs-count" id="fsCounter"></div>
+      <button class="fs-apply" onclick="applyFromFullscreen()">✓ تطبيق القالب</button>
+      <button class="fs-close" onclick="closeFullscreen()" aria-label="إغلاق">✕</button>
+    </div>
+    <div class="fsw">
+      <button class="fsn n" onclick="prevTpl()" aria-label="السابق">❯</button>
+      <div class="fsc" id="fsCard"></div>
+      <button class="fsn p" onclick="nextTpl()" aria-label="التالي">❮</button>
+    </div>
+    <div class="fsi">استخدم الأسهم أو مفاتيح ← → للتنقل بين القوالب</div>
+  </div>
+</div>
 </body>
 </html>
