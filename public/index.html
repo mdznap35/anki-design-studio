@@ -374,11 +374,18 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 .acc-b { transition: max-height var(--transition-normal) ease, opacity var(--transition-normal) ease; }
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
 
-.spk-btn{transition:all .3s cubic-bezier(.4,0,.2,1)!important;position:relative;overflow:hidden}
-.spk-btn:hover{transform:translateY(-3px) scale(1.08)!important;filter:brightness(1.15)!important}
-.spk-btn:active{transform:scale(0.9)!important;filter:brightness(0.9)!important}
+.spk-btn{transition:all .3s cubic-bezier(.4,0,.2,1)!important;position:relative;line-height:1}
+.spk-btn::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(180deg,rgba(255,255,255,.32),rgba(255,255,255,0) 46%);pointer-events:none}
+.spk-btn:hover{transform:translateY(-3px) scale(1.08)!important;filter:brightness(1.12)!important}
+.spk-btn:active{transform:scale(.92)!important;filter:brightness(.95)!important}
 .spk-btn.spk-playing{animation:spkGlow 1s ease-in-out infinite alternate}
+.spk-btn.spk-playing::before{content:'';position:absolute;inset:-3px;border-radius:inherit;border:2px solid rgba(167,139,250,.75);animation:spkRing 1.1s ease-out infinite;pointer-events:none}
 @keyframes spkGlow{from{filter:brightness(1) drop-shadow(0 0 4px rgba(124,58,237,.3))}to{filter:brightness(1.2) drop-shadow(0 0 12px rgba(124,58,237,.6))}}
+@keyframes spkRing{from{transform:scale(.9);opacity:1}to{transform:scale(1.45);opacity:0}}
+@keyframes rotate{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.tpl-sw{width:36px;height:36px;border-radius:10px;cursor:pointer;position:relative;display:inline-flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,.65);box-shadow:0 2px 8px rgba(0,0,0,.14);transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;font-weight:900;font-size:.74em;text-shadow:0 1px 2px rgba(0,0,0,.25)}
+.tpl-sw:hover{transform:translateY(-2px) scale(1.1);box-shadow:0 6px 16px rgba(0,0,0,.22)}
+.tpl-sw.on{border-color:var(--gn);box-shadow:0 0 0 2px var(--gn),0 4px 14px rgba(0,0,0,.2)}
 </style>
 </head>
 <body>
@@ -550,7 +557,11 @@ function defCfg(overrides={}){
     separatorStyle:'none',separatorWidth:2,separatorColor:'#e2e8f0',
     frenchTextShadow:'',meaningTextShadow:'',
     fontFrench:'Inter',fontArabic:'Noto Sans Arabic',
-    speakerIcon:'🔊',speakerBg:'rgba(124,58,237,.2)',speakerColor:'#ffffff',
+    speakerIcon:'🔊',speakerBg:'linear-gradient(135deg,#7c3aed,#a78bfa)',speakerColor:'#ffffff',
+    speakerBtnSize:44,speakerFontSize:1.1,speakerBorderRadius:50,speakerBorderWidth:1,
+    speakerBorderColor:'rgba(255,255,255,.35)',speakerBorderStyle:'solid',
+    speakerShadow:'0 6px 18px rgba(124,58,237,.4),0 2px 6px rgba(0,0,0,.2)',
+    speakerPulse:true,speakerAnim:'none',
     deckName:'📘 Français Bac'
   ,
     frenchTextShadowColor:'rgba(0,0,0,.3)',frenchTextShadowX:0,frenchTextShadowY:2,frenchTextShadowBlur:4,
@@ -772,7 +783,7 @@ function undo(){if(histIdx>0){histIdx--;S=JSON.parse(JSON.stringify(hist[histIdx
 function redo(){if(histIdx<hist.length-1){histIdx++;S=JSON.parse(JSON.stringify(hist[histIdx]));renderAll();}}
 function updateUndoRedo(){const u=document.getElementById('undoBtn');if(u)u.disabled=histIdx<=0;const r=document.getElementById('redoBtn');if(r)r.disabled=histIdx>=hist.length-1;}
 function setVal(k,v){S[k]=v;pushHist();
-  var cssOnlyProps=['cardBg','cardBg2','bgGradientDir','borderRadius','cardPadding','cardGap','cardMinHeight','previewWidth','cardDirection','cardAlign','cardBorderWidth','cardBorderColor','cardShadow','effect','cardClipPath','frenchColor','frenchFontSize','frenchFontWeight','frenchLetterSpacing','frenchLineHeight','frenchOpacity','frenchWidth','frenchScale','frenchMarginTop','frenchMarginBottom','frenchFontStyle','frenchTextTransform','frenchTextDecoration','frenchTextShadowColor','frenchTextShadowX','frenchTextShadowY','frenchTextShadowBlur','frenchTextAlign','meaningColor','meaningBg','meaningBorder','meaningBorderRadius','meaningFontSize','meaningFontWeight','meaningOpacity','meaningWidth','meaningScale','meaningMarginTop','meaningMarginBottom','meaningFontStyle','meaningTextTransform','meaningTextAlign','meaningBorderWidth','showBadge','showMeaning','showPage','separatorColor','separatorWidth','separatorStyle','secBg','secBorder','secTextColor','labelColor','sectionOpacity','secGap','cardBgImage','cardBgBlur','cardBgOpacity','speakerBg','speakerColor','speakerIcon','speakerPos','speakerFontSize','speakerBorderRadius','speakerBtnSize','speakerPulse','speakerRotate','badgeNomBg','badgeNomColor','unitBg','unitColor','unitBorder','secDirection','frenchAnim','frenchAnimDur','frenchAnimDelay','frenchAnimDir','frenchAnimTiming','frenchAnimIter','frenchAnimFill','meaningAnim','meaningAnimDur','meaningAnimDelay','meaningAnimDir','meaningAnimTiming','meaningAnimIter','meaningAnimFill','badgeAnim','badgeAnimDur','badgeAnimDelay','secAnim','secAnimDur','secAnimDelay','frenchBg','frenchBorderRadius','frenchBorderWidth','frenchBorderColor','frenchRotate','frenchSkewX','meaningBorderRadius','meaningBg','meaningBorderColor','meaningRotate','meaningSkewX','meaningPaddingTop','meaningPaddingBottom','frenchPaddingTop','frenchPaddingBottom','fontFrench','fontArabic','plurielBg','plurielBorder','plurielTextColor','plurielFontSize','plurielAnim','plurielAnimDur','synonymeBg','synonymeBorder','synonymeTextColor','synonymeFontSize','synonymeAnim','synonymeAnimDur','contraireBg','contraireBorder','contraireTextColor','contraireFontSize','contraireAnim','contraireAnimDur','cardMarginTop','cardMarginBottom','cardMarginLeft','cardMarginRight','cardRotateX','cardRotateY','mixBlendMode','backdropFilter','customCSS','cardShadowColor','cardShadowX','cardShadowY','cardShadowBlur','bgPattern','bgPatternSize','bgPatternColor','cardOverlay','cardHoverScale','pageColor','pageFontSize','pageFontWeight','frenchBoxShadowColor','frenchBoxShadowBlur','badgeNomBorder','badgeNomBorderWidth','badgeUnitBorderWidth','badgeMarginTop','badgeMarginBottom','badgeNomPaddingX','badgeNomFontSize','badgeNomRotate','badgeUnitPaddingX','badgeUnitBorderRadius','badgeUnitFontSize','badgeUnitRotate','secBorderRadius','secBorderWidth','secFontSize','secWidth','secAnimDelay','meaningTextShadowX','meaningTextShadowY','meaningTextShadowBlur','frenchTextShadowColor','frenchTextShadowX','frenchTextShadowY','frenchTextShadowBlur','frenchMaxWidth','meaningMaxWidth','separatorMarginTop','separatorMarginBottom','separatorWidthPct','aspectRatio','overflowWrap','objectFit','objectPosition','transformOrigin','willChange','pointerEvents','wordBreak','userSelect','customCSS','statesCSS','isolation'];
+  var cssOnlyProps=['cardBg','cardBg2','bgGradientDir','borderRadius','cardPadding','cardGap','cardMinHeight','previewWidth','cardDirection','cardAlign','cardBorderWidth','cardBorderColor','cardShadow','effect','cardClipPath','frenchColor','frenchFontSize','frenchFontWeight','frenchLetterSpacing','frenchLineHeight','frenchOpacity','frenchWidth','frenchScale','frenchMarginTop','frenchMarginBottom','frenchFontStyle','frenchTextTransform','frenchTextDecoration','frenchTextShadowColor','frenchTextShadowX','frenchTextShadowY','frenchTextShadowBlur','frenchTextAlign','meaningColor','meaningBg','meaningBorder','meaningBorderRadius','meaningFontSize','meaningFontWeight','meaningOpacity','meaningWidth','meaningScale','meaningMarginTop','meaningMarginBottom','meaningFontStyle','meaningTextTransform','meaningTextAlign','meaningBorderWidth','showBadge','showMeaning','showPage','separatorColor','separatorWidth','separatorStyle','secBg','secBorder','secTextColor','labelColor','sectionOpacity','secGap','cardBgImage','cardBgBlur','cardBgOpacity','speakerBg','speakerColor','speakerIcon','speakerPos','speakerFontSize','speakerBorderRadius','speakerBtnSize','speakerPulse','speakerRotate','speakerBorderWidth','speakerBorderColor','speakerBorderStyle','speakerShadow','speakerAnim','badgeNomBg','badgeNomColor','unitBg','unitColor','unitBorder','secDirection','frenchAnim','frenchAnimDur','frenchAnimDelay','frenchAnimDir','frenchAnimTiming','frenchAnimIter','frenchAnimFill','meaningAnim','meaningAnimDur','meaningAnimDelay','meaningAnimDir','meaningAnimTiming','meaningAnimIter','meaningAnimFill','badgeAnim','badgeAnimDur','badgeAnimDelay','secAnim','secAnimDur','secAnimDelay','frenchBg','frenchBorderRadius','frenchBorderWidth','frenchBorderColor','frenchRotate','frenchSkewX','meaningBorderRadius','meaningBg','meaningBorderColor','meaningRotate','meaningSkewX','meaningPaddingTop','meaningPaddingBottom','frenchPaddingTop','frenchPaddingBottom','fontFrench','fontArabic','plurielBg','plurielBorder','plurielTextColor','plurielFontSize','plurielAnim','plurielAnimDur','synonymeBg','synonymeBorder','synonymeTextColor','synonymeFontSize','synonymeAnim','synonymeAnimDur','contraireBg','contraireBorder','contraireTextColor','contraireFontSize','contraireAnim','contraireAnimDur','cardMarginTop','cardMarginBottom','cardMarginLeft','cardMarginRight','cardRotateX','cardRotateY','mixBlendMode','backdropFilter','customCSS','cardShadowColor','cardShadowX','cardShadowY','cardShadowBlur','bgPattern','bgPatternSize','bgPatternColor','cardOverlay','cardHoverScale','pageColor','pageFontSize','pageFontWeight','frenchBoxShadowColor','frenchBoxShadowBlur','badgeNomBorder','badgeNomBorderWidth','badgeUnitBorderWidth','badgeMarginTop','badgeMarginBottom','badgeNomPaddingX','badgeNomFontSize','badgeNomRotate','badgeUnitPaddingX','badgeUnitBorderRadius','badgeUnitFontSize','badgeUnitRotate','secBorderRadius','secBorderWidth','secFontSize','secWidth','secAnimDelay','meaningTextShadowX','meaningTextShadowY','meaningTextShadowBlur','frenchTextShadowColor','frenchTextShadowX','frenchTextShadowY','frenchTextShadowBlur','frenchMaxWidth','meaningMaxWidth','separatorMarginTop','separatorMarginBottom','separatorWidthPct','aspectRatio','overflowWrap','objectFit','objectPosition','transformOrigin','willChange','pointerEvents','wordBreak','userSelect','customCSS','statesCSS','isolation'];
   var isEditor=document.getElementById('sec-editor')?.classList.contains('on');
   var isCSS=cssOnlyProps.includes(k);
   if(isCSS&&isEditor){
@@ -1356,13 +1367,12 @@ const bgOverlay=c.cardBgImage?'<div style="position:absolute;inset:0;background-
   const mMt=c.meaningMarginTop||6;const mMb=c.meaningMarginBottom||0;
   const badgeN=c.showBadge!==false?'<span data-ve="badgeNom" style="display:inline-block;font-size:.72em;font-weight:700;padding:4px 14px;border-width:'+(c.badgeNomBorderWidth||0)+'px;border-style:solid;border-color:transparent;border-radius:'+(c.badgeNomBorderRadius||20)+'px;direction:ltr;margin:'+(c.badgeMarginTop||2)+'px 2px '+(c.badgeMarginBottom||2)+'px;background:'+(c.badgeNomBg||'#dbeafe')+';color:'+(c.badgeNomColor||'#1e40af')+';opacity:'+bOp+'">Nom</span>':"";
   const unitB=c.showUnitBadge!==false?'<span data-ve="badgeUnit" style="display:inline-block;font-size:.68em;font-weight:700;padding:3px 12px;border-radius:20px;border-width:'+(c.badgeUnitBorderWidth||0)+'px;border-style:solid;border-color:transparent;direction:ltr;margin:'+(c.badgeMarginTop||2)+'px 2px '+(c.badgeMarginBottom||2)+'px;background:'+(c.unitBg||'#f0fdf4')+';color:'+(c.unitColor||'#166534')+';border:1px solid '+(c.unitBorder||'#bbf7d0')+';opacity:'+bOp+'">Unit 1</span>':'';
-  const sBg2=c.speakerBg||'rgba(124,58,237,.2)';
-  
-    var spkBg=c.speakerBg||'linear-gradient(135deg,#7c3aed,#a78bfa)';
+  var spkBg=c.speakerBg||'linear-gradient(135deg,#7c3aed,#a78bfa)';
   var spkClr=c.speakerColor||'#ffffff';
-  var spkShadow=c.speakerShadow||'0 4px 20px rgba(124,58,237,.35)';
+  var spkShadow=c.speakerShadow||'0 6px 18px rgba(124,58,237,.4)';
   var spkBrdW=c.speakerBorderWidth||0;
-  var spkBrdC=c.speakerBorderColor||'rgba(255,255,255,.3)';
+  var spkBrdC=c.speakerBorderColor||'rgba(255,255,255,.35)';
+  var spkBrdS=c.speakerBorderStyle||'solid';
   var spkSz=c.speakerBtnSize||44;
   var spkBrR=c.speakerBorderRadius||50;
   var spkRot=c.speakerRotate?'transform:rotate('+c.speakerRotate+'deg);':'';
@@ -1370,7 +1380,7 @@ const bgOverlay=c.cardBgImage?'<div style="position:absolute;inset:0;background-
   var sIco=c.speakerIcon||'\uD83D\uDD0A';
   var sPos=c.speakerPos||'inline';
   var spkAnim=c.speakerAnim&&c.speakerAnim!=='none'?'animation:'+c.speakerAnim+' 2s ease-in-out infinite;':'';
-  const speakerBtn='<div data-ve="speaker" class="spk-btn" style="display:inline-flex;align-items:center;justify-content:center;cursor:pointer;background:'+spkBg+';color:'+spkClr+';width:'+spkSz+'px;height:'+spkSz+'px;border-radius:'+spkBrR+'px;box-shadow:'+spkPulse+';font-size:'+(c.speakerFontSize||1.1)+'em;border:'+spkBrdW+'px solid '+spkBrdC+';'+spkRot+(sPos==='inline'?'margin:4px;':'')+'transition:all .3s cubic-bezier(.4,0,.2,1);'+spkAnim+'" onclick="event.stopPropagation();var el=this;el.classList.add(\'spk-playing\');speakWord(SAMP.f,\'fr\');setTimeout(function(){speakWord(SAMP.a,\'ar\')},1500);setTimeout(function(){el.classList.remove(\'spk-playing\')},3500)">'+sIco+'</div>';
+  const speakerBtn='<div data-ve="speaker" class="spk-btn" style="display:inline-flex;align-items:center;justify-content:center;cursor:pointer;background:'+spkBg+';color:'+spkClr+';width:'+spkSz+'px;height:'+spkSz+'px;border-radius:'+spkBrR+'px;box-shadow:'+spkPulse+';font-size:'+(c.speakerFontSize||1.1)+'em;border:'+spkBrdW+'px '+spkBrdS+' '+spkBrdC+';'+spkRot+(sPos==='inline'?'margin:4px;':'')+'transition:all .3s cubic-bezier(.4,0,.2,1);'+spkAnim+'" onclick="event.stopPropagation();var el=this;el.classList.add(\'spk-playing\');speakWord(SAMP.f,\'fr\');setTimeout(function(){speakWord(SAMP.a,\'ar\')},1500);setTimeout(function(){el.classList.remove(\'spk-playing\')},3500)">'+sIco+'</div>';
 const badges=sPos==='inline'?badgeN+unitB+speakerBtn:badgeN+unitB;
   function _animCSS(prefix,c){var name=c[prefix+'Anim'];if(!name||name==='none')return '';var dur=c[prefix+'AnimDur']||0.5;var delay=c[prefix+'AnimDelay']||0;var iter=c[prefix+'AnimIter']||1;var dir=c[prefix+'AnimDir']||'normal';var fill=c[prefix+'AnimFill']||'both';var timing=c[prefix+'AnimTiming']||'ease-in-out';return 'animation:'+name+' '+dur+'s '+timing+' '+delay+'s '+iter+' '+dir+' '+fill+';';}const frenchAnimCSS=_animCSS('french',c);const french='<div data-ve="french" style="opacity:'+fOp+';width:'+fW+';transform:scale('+fSc+');margin-top:'+fMt+'px;margin-bottom:'+fMb+'px;font-family:'+fF+',sans-serif;font-size:'+fsFr+'em;font-weight:'+fwFr+';direction:ltr;unicode-bidi:embed;color:'+fc+';letter-spacing:'+(c.frenchLetterSpacing||0)+'px;line-height:'+(c.frenchLineHeight||1.2)+';'+(c.frenchBorderColor?';border:1px solid '+c.frenchBorderColor:'')+frenchAnimCSS+(c.frenchFontStyle&&c.frenchFontStyle!=='normal'?';font-style:'+c.frenchFontStyle:'')+(c.frenchTextTransform&&c.frenchTextTransform!=='none'?';text-transform:'+c.frenchTextTransform:'')+(c.frenchTextDecoration&&c.frenchTextDecoration!=='none'?';text-decoration:'+c.frenchTextDecoration:'')+(c.frenchTextShadowColor?';text-shadow:'+(c.frenchTextShadowX||0)+'px '+(c.frenchTextShadowY||2)+'px '+(c.frenchTextShadowBlur||4)+'px '+c.frenchTextShadowColor:'')+(c.frenchTextAlign&&c.frenchTextAlign!=='center'?';text-align:'+c.frenchTextAlign:'')+(c.frenchBg?';background:'+c.frenchBg+';padding:8px 16px':'')+(c.frenchBorderRadius?';border-radius:'+c.frenchBorderRadius+'px':'')+(c.frenchBorderWidth?';border:'+c.frenchBorderWidth+'px solid '+(c.frenchBorderColor||'rgba(0,0,0,.1)'):'')+(c.frenchBoxShadowColor?';box-shadow:0 2px '+(c.frenchBoxShadowBlur||8)+'px '+c.frenchBoxShadowColor:'')+(c.frenchRotate?';transform:scale('+fSc+') rotate('+c.frenchRotate+'deg)':'')+(c.frenchSkewX?';transform:scale('+fSc+') skewX('+c.frenchSkewX+'deg)':'')+(c.frenchPaddingTop?';padding-top:'+c.frenchPaddingTop+'px':'')+(c.frenchPaddingBottom?';padding-bottom:'+c.frenchPaddingBottom+'px':'')+'">'+SAMP.f+'</div>';
   const meaningAnimCSS=_animCSS('meaning',c);var meaningFontCSS=(c.meaningFontStyle&&c.meaningFontStyle!=='normal'?';font-style:'+c.meaningFontStyle:'')+(c.meaningTextTransform&&c.meaningTextTransform!=='none'?';text-transform:'+c.meaningTextTransform:'');var meaningShadowCSS=c.meaningTextShadowColor?';text-shadow:'+(c.meaningTextShadowX||0)+'px '+(c.meaningTextShadowY||2)+'px '+(c.meaningTextShadowBlur||4)+'px '+c.meaningTextShadowColor:'';const meaning=c.showMeaning!==false?'<div data-ve="meaning" style="opacity:'+mOp+';width:'+mW+';transform:scale('+mSc+');margin-top:'+mMt+'px;margin-bottom:'+mMb+'px;background:'+(c.meaningBg||'#eff6ff')+';border:'+(c.meaningBorderWidth||2)+'px solid '+(c.meaningBorder||'#bfdbfe')+';border-radius:'+(c.meaningBorderRadius||16)+'px;padding:10px 16px;'+meaningAnimCSS+'"><div style="font-family:'+fA+',sans-serif;font-size:'+fsAr+'em;font-weight:'+fwAr+';color:'+mc+';'+meaningFontCSS+meaningShadowCSS+(c.meaningTextAlign&&c.meaningTextAlign!=='center'?';text-align:'+c.meaningTextAlign:'')+(c.meaningPaddingTop?';padding-top:'+c.meaningPaddingTop+'px':'')+(c.meaningPaddingBottom?';padding-bottom:'+c.meaningPaddingBottom+'px':'')+'">'+SAMP.a+'</div></div>':'';
@@ -1398,7 +1408,7 @@ const badges=sPos==='inline'?badgeN+unitB+speakerBtn:badgeN+unitB;
   if(sPos!=='inline'){
     var sFPos=sPos.indexOf('top')>=0?'top:12px':'bottom:12px';
     sFPos+=';'+(sPos.indexOf('right')>=0?'right:12px':'left:12px');
-    spkFloat='<div data-ve="speaker" class="spk-btn" style="position:absolute;'+sFPos+';z-index:5;display:inline-flex;align-items:center;justify-content:center;width:'+spkSz+'px;height:'+spkSz+'px;border-radius:'+spkBrR+'px;cursor:pointer;background:'+spkBg+';color:'+spkClr+';box-shadow:'+spkPulse+';transition:all .3s cubic-bezier(.4,0,.2,1);font-size:'+(c.speakerFontSize||1.1)+'em;border:'+spkBrdW+'px solid '+spkBrdC+';'+spkRot+'" onclick="event.stopPropagation();var el=this;el.classList.add(\'spk-playing\');speakWord(SAMP.f,\'fr\');setTimeout(function(){speakWord(SAMP.a,\'ar\')},1500);setTimeout(function(){el.classList.remove(\'spk-playing\')},3500)">'+sIco+'</div>';
+    spkFloat='<div data-ve="speaker" class="spk-btn" style="position:absolute;'+sFPos+';z-index:5;display:inline-flex;align-items:center;justify-content:center;width:'+spkSz+'px;height:'+spkSz+'px;border-radius:'+spkBrR+'px;cursor:pointer;background:'+spkBg+';color:'+spkClr+';box-shadow:'+spkPulse+';transition:all .3s cubic-bezier(.4,0,.2,1);font-size:'+(c.speakerFontSize||1.1)+'em;border:'+spkBrdW+'px '+spkBrdS+' '+spkBrdC+';'+spkRot+spkAnim+'" onclick="event.stopPropagation();var el=this;el.classList.add(\'spk-playing\');speakWord(SAMP.f,\'fr\');setTimeout(function(){speakWord(SAMP.a,\'ar\')},1500);setTimeout(function(){el.classList.remove(\'spk-playing\')},3500)">'+sIco+'</div>';
   }
   var patternCSS=typeof _patternCSS==='function'?_patternCSS(c.bgPattern,c.bgPatternColor||'rgba(0,0,0,.05)',c.bgPatternSize||20):'';
   // Overlay CSS
@@ -1501,20 +1511,19 @@ h+=renderPropertySearch();
     ['secTextColor','\u0644\u0648\u0646 \u0627\u0644\u0646\u0635','#333'],
     ['labelColor','\u0644\u0648\u0646 \u0627\u0644\u062A\u0633\u0645\u064A\u0627\u062A','#999'],
     ['cardBorderColor','\u062D\u062F\u0648\u062F','#e2e8f0'],
-    ['separatorColor','\u0644\u0648\u0646 \u0627\u0644\u0641\u0627\u0635\u0644','#e2e8f0'],
-    ['speakerBg','\u062E\u0644\u0641\u064A\u0629 \u0632\u0631','rgba(124,58,237,.2)']
+    ['separatorColor','\u0644\u0648\u0646 \u0627\u0644\u0641\u0627\u0635\u0644','#e2e8f0']
   ]));
+  var spkCtl=grp('\u0632\u0631 \u0627\u0644\u0635\u0648\u062a','<div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap"><button class="btn bo bs" style="font-size:.6em" onclick="setVal(\'speakerBg\',\'linear-gradient(135deg,#7c3aed,#a78bfa)\')">\u{1F3A8} \u062A\u062F\u0631\u062C</button><input type="color" aria-label="Color picker" value="'+spkBgColor()+'" oninput="setVal(\'speakerBg\',this.value)" style="width:36px;height:28px;border:none;cursor:pointer;background:var(--s2)"></div>');
   var pr='<div style="display:flex;gap:3px;flex-wrap:wrap">';
   PRESETS.colors.forEach(function(p,i){pr+='<div class="sw" style="background:'+p.bg+'" onclick="applyColorPreset('+i+')"><div style="width:12px;height:12px;border-radius:50%;background:'+p.fc+'"></div></div>';});
   pr+='</div>';
   var cg=grp('\u062A\u0648\u0644\u064A\u062F \u0623\u0644\u0648\u0627\u0646',"<div id='colorGenPalette' style='display:flex;gap:3px;flex-wrap:wrap'></div><button class='btn bo bs' onclick='generateColorPalette()' style='margin-top:4px'>\u{1F3B2} \u062A\u0648\u0644\u064A\u062F \u0644\u0648\u062D\u0629</button><button class='btn bo bs' onclick='applyPaletteToCard()' style='margin-top:4px'>\u2705 \u062A\u0637\u0628\u064A\u0642 \u0639\u0644\u0649 \u0627\u0644\u0628\u0637\u0627\u0642\u0629</button>");
   var ch=grp('\u062A\u0646\u0627\u063A\u0645 \u0627\u0644\u0623\u0644\u0648\u0627\u0646',`<div style='display:flex;gap:3px;flex-wrap:wrap'><button class='btn bo bs' onclick="applyHarmony('complementary')">\u0645\u062A\u0643\u0627\u0645\u0644</button><button class='btn bo bs' onclick="applyHarmony('analogous')">\u0645\u062A\u0646\u0627\u0633\u0628</button><button class='btn bo bs' onclick="applyHarmony('triadic')">\u062B\u0644\u0627\u062B\u064A</button><button class='btn bo bs' onclick="applyHarmony('split-complementary')">\u062B\u0644\u0627\u062B\u064A \u0645\u0643\u0645\u0644</button><button class='btn bo bs' onclick="applyHarmony('tetradic')">\u0631\u0628\u0627\u0639\u064A</button></div>`);
   var cq=grp('\u0644\u0648\u062D\u0629 \u0645\u0646 \u0628\u0636\u0627\u0621',"<div style='display:flex;gap:4px;align-items:center'><input type='color' id='baseColorPicker' value='" + (S.cardBg||'#ffffff') + "' style='width:40px;height:32px;border:none;cursor:pointer'><button class='btn bo bs' onclick='generateFromBase()'>\u062A\u0648\u0644\u064A\u062F</button></div><div id='basePalette' style='display:flex;gap:3px;flex-wrap:wrap;margin-top:4px'></div>");
-  h+=acc('\u{1F3A8} \u0627\u0644\u0623\u0644\u0648\u0622\u0646',renderColorGrid()+clrH+renderRecentColors()+cg+ch+cq+grp('\u0623\u0644\u0648\u0622\u0646 \u062C\u0627\u0647\u0638\u0629',pr),false);
-  var tplPr='<div style="display:flex;gap:3px;flex-wrap:wrap">';
-  TEMPLATES.forEach(function(t,i){var c=t.cfg||{};var bg=(c.cardBg2&&c.cardBg2!==c.cardBg)?'linear-gradient(135deg,'+c.cardBg+','+c.cardBg2+')':(c.cardBg||'#888');var fg=c.frenchColor||'#fff';tplPr+='<div class="sw" style="background:'+bg+';border:2px solid var(--bd)" title="'+t.nm+'" onclick="applyTemplateColors('+i+')"><span style="font-size:.6em;font-weight:900;color:'+fg+'">A</span></div>';});
+  var tplPr='<div style="font-size:.6em;color:var(--tx2);margin-bottom:5px">\u{1F4A1} \u0643\u0628\u0633\u0629 \u0648\u0627\u062D\u062F\u0629 \u062A\u0637\u0628\u0642 \u0627\u0644\u0642\u0627\u0644\u0628 \u0643\u0627\u0645\u0644\u0627\u064B</div><div style="display:flex;gap:5px;flex-wrap:wrap">';
+  TEMPLATES.forEach(function(t,i){if(isCustomTemplate(t.id))return;var c=t.cfg||{};var bg=(c.cardBg2&&c.cardBg2!==c.cardBg)?'linear-gradient(135deg,'+c.cardBg+','+c.cardBg2+')':(c.cardBg||'#888');var fg=c.frenchColor||'#fff';var on=S._templateId===t.id?' on':'';tplPr+='<div class="tpl-sw'+on+'" style="background:'+bg+';color:'+fg+'" title="'+t.nm+'" onclick="applyTemplateColors('+i+')"><span>M</span></div>';});
   tplPr+='</div>';
-  h+=acc('\u{1F3A8} \u0623\u0644\u0648\u0627\u0646 \u0627\u0644\u0642\u0648\u0627\u0644\u0628 \u0627\u0644\u0643\u0644\u0627\u0633\u064A\u0643\u064A\u0629',tplPr,false);
+  h+=acc('\u{1F3A8} \u0627\u0644\u0623\u0644\u0648\u0622\u0646',renderColorGrid()+clrH+spkCtl+renderRecentColors()+cg+ch+cq+grp('\u0623\u0644\u0648\u0622\u0646 \u062C\u0627\u0647\u0638\u0629',pr)+grp('\u0642\u0648\u0627\u0644\u0628 \u0627\u0644\u0623\u0644\u0648\u0627\u0646 \u0627\u0644\u062C\u0627\u0647\u0638\u0629',tplPr),false);
 
 
   // 3. TYPOGRAPHY
@@ -1668,10 +1677,15 @@ h+=renderPropertySearch();
       return '<div class="sw" data-icon="'+ic+'" style="font-size:1em;background:'+(S.speakerIcon===ic?'var(--ac)':'var(--s2)')+';border-color:'+(S.speakerIcon===ic?'var(--gn)':'var(--bd)')+'" onclick="setVal(\'speakerIcon\',\''+ic+'\')">'+ic+'</div>';
     }).join('')+'</div>');
   sp+=grp('\u062A\u062D\u0643\u0645',sl([
-    ['speakerSize','\u0627\u0644\u062D\u062C\u0645',0.4,2,0.05,0.8],
+    ['speakerBtnSize','\u0627\u0644\u062D\u062C\u0645',24,80,2,44],
+    ['speakerFontSize','\u062D\u062C\u0645 \u0627\u0644\u0623\u064A\u0642\u0648\u0646\u0629',0.3,2.5,0.05,1.1],
     ['speakerRotate','\u062F\u0648\u0631\u0627\u0646',-180,180,1,0],
-    ['speakerBorderRadius','\u0627\u0633\u062A\u062F\u0627\u0631\u0629',0,50,1,20]
-  ])+clr('speakerBg','\u062E\u0644\u0641\u064A\u0629','rgba(124,58,237,.2)'));
+    ['speakerBorderRadius','\u0627\u0633\u062A\u062F\u0627\u0631\u0629',0,50,1,50],
+    ['speakerBorderWidth','\u0633\u0645\u0643 \u0627\u0644\u062D\u062F\u0648\u062F',0,5,1,1]
+  ])+clr('speakerBorderColor','\u0644\u0648\u0646 \u0627\u0644\u062D\u062F\u0648\u062F','rgba(255,255,255,.35)')
+  +'<div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap;margin-top:4px"><button class="btn bo bs" style="font-size:.6em" onclick="setVal(\'speakerBg\',\'linear-gradient(135deg,#7c3aed,#a78bfa)\')">\u{1F3A8} \u062A\u062F\u0631\u062C</button><input type="color" aria-label="Color picker" value="'+spkBgColor()+'" oninput="setVal(\'speakerBg\',this.value)" style="width:36px;height:28px;border:none;cursor:pointer;background:var(--s2)"></div>'
+  +sel('speakerAnim','\u062D\u0631\u0643\u0629 \u062F\u0627\u0626\u0645\u0629',[{v:'none',l:'\u0628\u062F\u0648\u0646'},{v:'pulse',l:'\u0646\u0628\u0636'},{v:'bounce',l:'\u0627\u0631\u062A\u062F\u0627\u062F'},{v:'glow',l:'\u062A\u0648\u0647\u062C'},{v:'rotate',l:'\u062F\u0648\u0631\u0627\u0646'},{v:'shake',l:'\u0627\u0647\u062A\u0632\u0627\u0632'},{v:'wobble',l:'\u062A\u0645\u0627\u064A\u0644'}])
+  +tog('speakerPulse','\u0646\u0628\u0636 \u0639\u0646\u062F \u0627\u0644\u062A\u0634\u063A\u064A\u0644'));
   h+=acc('\u{1F50A} \u0632\u0631 \u0627\u0644\u0635\u0648\u062A',sp,false);
 
   // 13. ORDER
@@ -1846,19 +1860,15 @@ function updateCtlPreview(){const e=document.getElementById('ctlPreviewCard');if
 // PRESETS
 function applyColorPreset(i){const p=PRESETS.colors[i];if(!p)return;S.cardBg=p.bg;S.frenchColor=p.fc;S.meaningColor=p.mc;S.meaningBg=p.mb;S.meaningBorder=p.mbd;pushHist();renderCtrls();renderAll();setTimeout(addDocTooltips,50);}
 
+function spkBgColor(){var v=S.speakerBg||'';return /^(#[0-9a-fA-F]{3,8}|rgba?\(|hsla?\()/.test(v)?v:'#7c3aed';}
 function applyTemplateColors(i){
   var t=TEMPLATES[i];if(!t||!t.cfg)return;
-  var c=t.cfg;
-  // Copy only color/styling-related props (old templates were color-only)
-  ['cardBg','cardBg2','bgGradientDir','frenchColor','meaningColor','meaningBg','meaningBorder',
-   'badgeNomBg','badgeNomColor','unitBg','unitColor','secBg','secBorder','secTextColor',
-   'labelColor','cardBorderColor','separatorColor','effect','borderRadius','cardShadow',
-   'fontFrench','fontArabic'].forEach(function(k){
-    if(k in c && c[k]!==undefined) S[k]=c[k];
-  });
-  S._templateId=t.id;S._templateType='config';
+  // Apply the template's FULL config so the whole card becomes identical to it
+  S=Object.assign({},JSON.parse(JSON.stringify(t.cfg)),{_templateId:t.id,_templateType:'config'});
   pushHist();renderCtrls();renderAll();setTimeout(addDocTooltips,50);
-  toast('تم تطبيق ألوان: '+t.nm);
+  // Keep the colors accordion open so the user can try other ready-made color templates
+  document.querySelectorAll('.acc').forEach(function(a){var ah=a.querySelector('.acc-h');if(ah&&ah.textContent.indexOf('\u{1F3A8}')>=0){ah.classList.add('open');var ab=a.querySelector('.acc-b');if(ab)ab.classList.add('open');}});
+  toast('تم تطبيق القالب: '+t.nm);
 }
 function applyStylePreset(i){const p=PRESETS.styles[i];if(!p)return;S.borderRadius=p.br;S.cardPadding=p.pd;S.cardShadow=p.sh;S.cardBorderWidth=p.bw;S.cardDirection=p.dir;S.cardAlign=p.al;S.cardGap=p.gap;pushHist();renderCtrls();renderAll();setTimeout(addDocTooltips,50);}
 function applyTextPreset(i){const p=PRESETS.texts[i];if(!p)return;S.frenchFontSize=p.fsFr;S.frenchFontWeight=p.fwFr;S.meaningFontSize=p.fsAr;S.meaningFontWeight=p.fwAr;pushHist();renderCtrls();renderAll();setTimeout(addDocTooltips,50);}
@@ -2050,8 +2060,7 @@ const VE_PROPS={
     _rng('pageFontSize','حجم الخط',0.4,1.5,0.05),_sel('pageFontWeight','سمك الخط',[{v:'400',l:'عادي'},{v:'600',l:'متوسط'},{v:'700',l:'سميك'}])
   ],
   speaker:[
-    _clr('speakerBg','خلفية الزر'),_clr('speakerColor','لون الأيقونة'),
-    _clr('speakerGradient','التدرج'),_clr('speakerShadow','ظل الزر'),_clr('speakerActiveShadow','ظل عند الضغط'),
+    _clr('speakerBg','خلفية الزر'),_clr('speakerColor','لون الأيقونة'),_clr('speakerShadow','ظل الزر'),
     _sel('speakerIcon','الأيقونة',[{v:'🔊',l:'🔊 صوت'},{v:'🔉',l:'🔉 خفيض'},{v:'🎵',l:'🎵 موسيقى'},{v:'🗣️',l:'🗣️ كلام'},{v:'📢',l:'📢 مكبر'},{v:'🎙️',l:'🎙️ مايك'}]),
     _sel('speakerPos','الموقع',[{v:'inline',l:'مع الشارات'},{v:'top-right',l:'أعلى يمين'},{v:'top-left',l:'أعلى يسار'},{v:'bottom-right',l:'أسفل يمين'},{v:'bottom-left',l:'أسفل يسار'}]),
     _rng('speakerBtnSize','حجم الزر',24,80,2),_rng('speakerFontSize','حجم الأيقونة',0.3,2.5,0.05),
@@ -2096,7 +2105,9 @@ function renderVEProps(elId){
   props.forEach(pr=>{
     const v=S[pr.id]!==undefined?S[pr.id]:(pr.type==='range'?0.5:pr.type==='toggle'?true:'#000000');
     if(pr.type==='color'){
-      h+='<div class="ct"><div class="cl-b">'+pr.lb+'</div><div class="rw"><input type="color" aria-label="Color picker" value="'+v+'" oninput="setVal(\''+pr.id+'\',this.value)"><span class="rv" style="font-size:.55em">'+v+'</span></div></div>';
+      var raw=v;
+      var cv=/^(#[0-9a-fA-F]{3,8}|rgba?\(|hsla?\()/.test(raw)?raw:'#7c3aed';
+      h+='<div class="ct"><div class="cl-b">'+pr.lb+'</div><div class="rw"><input type="color" aria-label="Color picker" value="'+cv+'" oninput="setVal(\''+pr.id+'\',this.value)"><span class="rv" style="font-size:.55em">'+raw+'</span></div></div>';
     }else if(pr.type==='range'){
       const fmt=pr.fmt||(vv=>vv);
       const fmtStr=pr.fmt?pr.fmt.toString():'(x=>x)';
@@ -2230,7 +2241,7 @@ var PROP_DOCS = {
   'cardClipPath': {tip:'شكل البطاقة',use:'قص البطاقة بشكل مخصص',example:'circle(50%) = دائري، فاضي = عادي'},
   'customCSS': {tip:'CSS مخصص',use:'أضف أي CSS يدوي',example:'.card { border: 2px solid red; }'},
   'speakerIcon': {tip:'أيقونة الصوت',use:'أيقونة زر الصوت',example:'🔊 = صوت، 🔇 = صامت'},
-  'speakerBg': {tip:'خلفية زر الصوت',use:'لون خلفية زر الصوت',example:'rgba(124,58,237,.2) = بنفسجي شفاف'},
+  'speakerBg': {tip:'خلفية زر الصوت',use:'لون أو تدرج خلفية زر الصوت',example:'linear-gradient(135deg,#7c3aed,#a78bfa) = تدرج بنفسجي فاخر'},
   'speakerColor': {tip:'لون أيقونة الصوت',use:'لون أيقونة الزر',example:'#ffffff = أبيض'},
   'separatorStyle': {tip:'نمط الفاصل',use:'شكل الخط الفاصل بين الكلمة والمعنى',example:'none = بدون، solid = خط صلب'},
   'separatorWidth': {tip:'سمك الفاصل',use:'سمك الخط الفاصل',example:'1 = رفيع، 3 = سميك'},
