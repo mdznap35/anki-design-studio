@@ -34,16 +34,9 @@ body{padding-bottom:48px;font-family:"Inter","Noto Sans Arabic",system-ui,sans-s
 #multiBar{display:none;position:sticky;top:0;z-index:20;background:var(--s2);border:1px solid var(--ac);border-radius:var(--br-md);padding:8px 12px;margin-bottom:10px;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;box-shadow:0 4px 16px rgba(124,58,237,.2)}
 #multiBar .mb-count{font-size:.72em;font-weight:800;color:var(--ac2)}
 .gp{height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px;overflow:hidden}
-.gp-real{overflow:hidden;position:relative;height:160px;display:flex;align-items:center;justify-content:center;padding:0;background:var(--s1)}
-.gp-real style{display:none}
-.gp-real *,.gp-real *::before,.gp-real *::after{animation:none!important;transition:none!important}
-.gp-real .card{zoom:.55;min-height:0!important;height:auto!important;max-width:100%;pointer-events:none;flex:0 0 auto;margin:0 auto;background:transparent}
-.gp-real .card-container{min-height:0!important;height:auto!important}
-.gp-real.lazy{display:flex;align-items:center;justify-content:center}
-.lazy-ph{font-size:1.4em;opacity:.4;color:var(--tx3)}
-.gal-sep{display:flex;align-items:center;justify-content:space-between;grid-column:1/-1;background:var(--s2);border:1px solid var(--bd);border-radius:var(--br-md);padding:8px 14px;margin:6px 0 2px}
-.gal-sep span{font-size:.72em;font-weight:800;color:var(--ac2)}
-.gal-sep em{font-style:normal;font-size:.6em;font-weight:700;color:var(--tx2);background:var(--s3);padding:2px 10px;border-radius:12px}
+.gp-cover{overflow:hidden;position:relative;height:150px;display:flex;align-items:center;justify-content:center;padding:0;background:var(--s1)}
+.gp-cover::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(0,0,0,.18));pointer-events:none}
+.gp-ic{font-size:2.6em;filter:drop-shadow(0 4px 14px rgba(0,0,0,.35));z-index:1;line-height:1}
 .gnm{padding:5px 8px;border-top:1px solid var(--bd);display:flex;justify-content:center;align-items:center;min-height:22px}
 .gnm span{font-weight:700;font-size:.6em;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 .gc-cat{font-size:.52em;padding:2px 6px;border-radius:4px;background:var(--s1);color:var(--tx3)}
@@ -116,10 +109,8 @@ select.sl{appearance:none;cursor:pointer}
 .fs-apply:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(124,58,237,.35)}
 .fs-close{width:28px;height:28px;border-radius:50%;border:none;background:var(--s2);color:var(--tx);font-size:.7em;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
 .fs-close:hover{background:var(--rd);color:#fff}
-#fsModal .fsw{min-height:380px;background:var(--s2)}
-#fsModal .fsc{max-width:340px;width:86%}
-#fsCard{max-height:68vh;overflow:auto;display:flex;align-items:center;justify-content:center}
-#fsCard .card{max-width:100%}
+#fsModal .fsw{min-height:0;height:62vh;background:var(--s2)}
+#fsModal .fsc{max-width:440px;width:92%;height:100%;border:none;border-radius:14px;background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.35)}
 
 /* VE element selection */
 [data-ve]{cursor:pointer;border:2px dashed transparent;border-radius:5px;transition:all .15s}
@@ -300,8 +291,6 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 /* === GALLERY ENHANCED ===
 .gc{position:relative;transition:all .25s cubic-bezier(.4,0,.2,1)}
 .color-grid-item:hover{border-color:var(--ac)!important;transform:scale(1.02)!important;box-shadow:0 4px 12px rgba(124,58,237,.2)}
-.gc.show-actions .gc-actions{opacity:1;transform:translateY(0)}.gc.touched .gc-actions{opacity:1;transform:translateY(0)}
-.gc-actions{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px;padding:10px;opacity:0;transform:translateY(6px);transition:all .3s;border-radius:var(--br-md);z-index:10;background:rgba(15,15,26,.85);backdrop-filter:blur(8px)}
 .gc-action-btn{padding:8px 18px;border:none;border-radius:10px;font-size:.75em;font-weight:700;cursor:pointer;text-align:center;color:#fff;transition:all .2s;border:1px solid rgba(255,255,255,.2);backdrop-filter:blur(8px)}
 .gc-action-btn:hover{background:var(--ac2);transform:scale(1.05);border-color:var(--ac2);box-shadow:0 4px 12px rgba(124,58,237,.3)}
 .gc-tags{display:none}
@@ -503,6 +492,7 @@ var CUSTOM_TEMPLATES = [];
 var CUSTOM_TEMPLATES_LOADED = false;
 var PREMIUM_ADDED = false;
 const SAMP={f:'Maison',a:'منزل',p:'Maisons',s:'Contrat',c:'Désabonnement'};
+window.SAMP=SAMP;
 const FMAP={"Inter":"'Inter',sans-serif","Noto Sans Arabic":"'Noto Sans Arabic',sans-serif","Poppins":"'Poppins',sans-serif","Playfair Display":"'Playfair Display',serif","Cairo":"'Cairo',sans-serif","Tajawal":"'Tajawal',sans-serif","Amiri":"'Amiri',serif","System":"system-ui,sans-serif"};
 
 
@@ -1004,11 +994,7 @@ function getFilteredTemplates(){
 }
 
 // Render a REAL preview of a custom template (uses actual HTML/CSS from the design)
-function renderRealTemplatePreview(t){
-  // Build the full preview: style + front HTML with sample values
-  var css = t.css || '';
-  var front = t.front || '';
-  // Replace Anki field placeholders with sample text
+function fillSampleFields(front){
   front = front.split('{{French}}').join(SAMP.f);
   front = front.split('{{Arabic}}').join(SAMP.a);
   front = front.split('{{Pluriel}}').join(SAMP.p);
@@ -1022,11 +1008,34 @@ function renderRealTemplatePreview(t){
   front = front.split('{{Preposition}}').join('');
   front = front.split('{{Auxiliaire}}').join('');
   front = front.split('{{Participe}}').join('');
-  // Remove conditional sections {{#...}}...{{/...}}
-  front = front.replace(/{{#\w+}}[\s\S]*?{{\/\w+}}/g, '');
-  // Wrap in .card so .card CSS rules apply (Anki wraps cards in .card)
-  var previewHtml = '<div class="card" style="max-width:100%;min-height:80px">' + front + '</div>';
-  return '<style>'+css+'</style>' + previewHtml;
+  // Keep conditional sections whose sample value exists, drop empty ones
+  front = front.replace(/{{#(\w+)}}([\s\S]*?){{\/\1}}/g, function(m,f,inner){
+    var v={French:SAMP.f,Arabic:SAMP.a,Pluriel:SAMP.p,Synonyme:SAMP.s,Contraire:SAMP.c,Badge:'Nom',Unit:'1',Page:'12',WordType:'Nom'}[f];
+    return v ? inner : '';
+  });
+  return front;
+}
+function buildPreviewDoc(t){
+  var css='', body='';
+  if(t && (t.front || t.css)){
+    css=t.css||'';
+    body='<div class="card">'+fillSampleFields(t.front||'')+'</div>';
+  }else if(t && (t.config || t.cfg)){
+    var cfg=Object.assign({}, JSON.parse(JSON.stringify(t.config||t.cfg)), {_templateType:'config'});
+    body=renderCardHTML(cfg);
+  }else{
+    body='<div style="padding:30px;text-align:center;font-family:sans-serif">تصميم فارغ</div>';
+  }
+  var fr=(SAMP.f||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+  return '<!DOCTYPE html><html dir="rtl"><head><meta charset="utf-8"><style>'
+    +'html,body{margin:0;padding:0;min-height:100%}'
+    +'#pvSpk{position:fixed;top:14px;right:14px;z-index:2147483647;width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;background:linear-gradient(135deg,#7c3aed,#a78bfa);color:#fff;border:2px solid rgba(255,255,255,.4);box-shadow:0 6px 24px rgba(124,58,237,.55);transition:transform .2s;animation:pvPulse 2s infinite}'
+    +'#pvSpk:hover{transform:scale(1.12)}'
+    +'@keyframes pvPulse{0%{box-shadow:0 6px 24px rgba(124,58,237,.55),0 0 0 0 rgba(124,58,237,.5)}70%{box-shadow:0 6px 24px rgba(124,58,237,.55),0 0 0 16px rgba(124,58,237,0)}100%{box-shadow:0 6px 24px rgba(124,58,237,.55),0 0 0 0 rgba(124,58,237,0)}}'
+    +'</style><style>'+css+'</style></head><body>'+body
+    +'<button id="pvSpk" type="button" title="تشغيل الصوت" onclick="speakWord(\''+fr+'\',\'fr\')">🔊</button>'
+    +'<script>var SAMP=parent.SAMP;var speakWord=function(w,l){try{parent.speakWord(w,l)}catch(e){}};<\/script>'
+    +'</body></html>';
 }
 
 function renderGrid(){
@@ -1076,25 +1085,19 @@ function renderGrid(){
       var sel=S._templateId===t.id;
       var cfg = isCustom ? (t.config || {}) : (t.cfg || {});
       var bg = isCustom ? (cfg.cardBg || '#1a1a2e') : (cfg.cardBg2 ? 'linear-gradient(135deg,'+cfg.cardBg+','+cfg.cardBg2+')' : (cfg.cardBg || '#ffffff'));
-      var ff = isCustom ? (FMAP[cfg.fontFrench]||"'Segoe UI',sans-serif") : (FMAP[cfg.fontFrench]||"'Inter',sans-serif");
-      var fa = isCustom ? (FMAP[cfg.fontArabic]||"'Segoe UI',sans-serif") : (FMAP[cfg.fontArabic]||"'Noto Sans Arabic',sans-serif");
-      var br = (cfg.borderRadius||16);
       var isFav=false;
       try{var favs=JSON.parse(localStorage.getItem('anki_favorites')||'[]');isFav=favs.some(function(f){return f._templateId===t.id;});}catch(e){}
       var inMulti=(MULTI_SELECT.indexOf(t.id)>=0);
       var preview;
       if(isCustom && (t.front || t.css)){
-        // Lazy real preview: render immediately for the first batch, defer the rest
-        var li=(window._lazyCount||0); window._lazyCount=li+1;
-        if(li < (window._lazyBatch||16)){
-          preview='<div class="gp gp-real">'+renderRealTemplatePreview(t)+'</div>';
-        }else{
-          preview='<div class="gp gp-real lazy" data-lazy="1"><div class="lazy-ph">🖼️</div></div>';
-        }
+        // Clean cover: the real design appears only in the fullscreen preview
+        var icon=designIcon(t.front);
+        preview='<div class="gp gp-cover" style="background:'+designCover(t)+'">'
+          +(icon?'<span class="gp-ic">'+icon+'</span>':'')
+          +'</div>';
       }else{
-        preview='<div class="gp" style="background:'+bg+';border-radius:'+br+'px">'
-          +'<div style="font-family:'+ff+';font-size:1.2em;font-weight:'+cfg.frenchFontWeight+';color:'+cfg.frenchColor+';margin-bottom:2px">'+SAMP.f+'</div>'
-          +'<div style="font-family:'+fa+';font-size:.75em;font-weight:'+cfg.meaningFontWeight+';color:'+cfg.meaningColor+'">'+SAMP.a+'</div>'
+        preview='<div class="gp gp-cover" style="background:'+bg+'">'
+          +'<span class="gp-ic" style="font-size:1.5em">🎨</span>'
           +'</div>';
       }
       return '<div class="gc'+(sel?' sel':'')+(inMulti?' multi':'')+'" onclick="previewFullTemplate(\''+t.id+'\')" data-tpl-id=\''+t.id+'\'>'
@@ -1118,30 +1121,19 @@ function renderGrid(){
     }
     document.getElementById('tplGrid').innerHTML=html;
     renderMultiBar();
-    setupLazyPreviews();
 }
-function setupLazyPreviews(){
-  if(!('IntersectionObserver' in window)){return;}
-  var lazyEls=document.querySelectorAll('#tplGrid .gp-real.lazy');
-  if(lazyEls.length===0)return;
-  if(window._lazyIO)window._lazyIO.disconnect();
-  var io=new IntersectionObserver(function(entries){
-    entries.forEach(function(en){
-      if(en.isIntersecting){
-        var el=en.target;
-        io.unobserve(el);
-        var card=el.closest('.gc');
-        if(!card)return;
-        var id=card.getAttribute('data-tpl-id');
-        var t=findTemplate(id);
-        if(!t)return;
-        el.classList.remove('lazy');
-        el.innerHTML=renderRealTemplatePreview(t);
-      }
-    });
-  },{rootMargin:'200px'});
-  window._lazyIO=io;
-  lazyEls.forEach(function(el){io.observe(el);});
+function designCover(t){
+  var css=t.css||'';
+  var m=css.match(/background(?:-image|-color)?\s*:\s*(linear-gradient\([^;]*?\)|radial-gradient\([^;]*?\)|conic-gradient\([^;]*?\)|#[0-9a-fA-F]{3,8}|rgba?\([^;]*\))/);
+  if(m)return m[1];
+  var c=t.config||t.cfg||{};
+  if(c.cardBg2)return 'linear-gradient(135deg,'+c.cardBg+','+c.cardBg2+')';
+  if(c.cardBg)return c.cardBg;
+  return 'linear-gradient(135deg,#1a1a2e,#3b3b6b)';
+}
+function designIcon(front){
+  var m=(front||'').match(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}]/u);
+  return m?m[0]:'';
 }
 // ---- Multi-select state ----
 var MULTI_SELECT = [];
@@ -1215,33 +1207,6 @@ async function downloadMultiAPKG(){
     if(ld)ld.style.display='none';
   }
 }
-// Toggle gallery actions on click
-function toggleGalleryActions(el){
-  var wasOpen=el.classList.contains('show-actions');
-  document.querySelectorAll('.gc.show-actions').forEach(function(x){x.classList.remove('show-actions');});
-  if(!wasOpen) el.classList.add('show-actions');
-}
-document.addEventListener('click',function(e){
-  if(!e.target.closest('.gc')){
-    document.querySelectorAll('.gc.show-actions').forEach(function(x){x.classList.remove('show-actions');});
-  }
-});
-// Mobile tap support for gallery
-document.addEventListener('click',function(e){
-  var gc=e.target.closest('.gc');
-  if(!gc)return;
-  // On touch devices, toggle actions
-  if('ontouchstart' in window){
-    var wasOpen=gc.classList.contains('touched');
-    document.querySelectorAll('.gc.touched').forEach(function(x){x.classList.remove('touched');});
-    if(!wasOpen){gc.classList.add('touched');e.preventDefault();}
-  }
-});
-document.addEventListener('click',function(e){
-  if(!e.target.closest('.gc-actions')){
-    document.querySelectorAll('.gc.touched').forEach(function(x){x.classList.remove('touched');});
-  }
-});
 function renderTags(){
   var el=document.getElementById('tagBar');
   if(!el)return;
@@ -1933,21 +1898,15 @@ function exportConfig(){const b=new Blob([JSON.stringify(S,null,2)],{type:'appli
 function importConfig(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=function(ev){try{const d=JSON.parse(ev.target.result);if(typeof d!=='object'||d===null){toast('ملف غير صحيح');return;}const validKeys=['cardBg','frenchColor','meaningColor','borderRadius','cardPadding','fontFrench','fontArabic','effect','deckName'];if(!validKeys.some(function(k){return k in d;})){toast('ملف غير صالح');return;}S=Object.assign({},defCfg(),d);pushHist();renderCtrls();renderAll();setTimeout(addDocTooltips,50);toast('تم الاستيراد');}catch(err){toast('ملف غير صحيح');}};r.readAsText(f);}
 
 // FULLSCREEN PREVIEW
-function renderFullPreviewContent(t){
-  // Custom template with raw HTML/CSS -> real preview
-  if(t && (t.front || t.css)) return renderRealTemplatePreview(t);
-  // Config-based template -> render from config
-  return renderCardHTML(t.config || t.cfg || {});
-}
 function renderFullscreen(){
   var all=getFilteredTemplates();
   if(!all.length)return;
   curTplIdx=((curTplIdx%all.length)+all.length)%all.length;
   var t=all[curTplIdx];
-  var c=document.getElementById('fsCard');
+  var f=document.getElementById('fsFrame');
   var i=document.getElementById('fsInfo');
   var n=document.getElementById('fsCounter');
-  if(c)c.innerHTML=renderFullPreviewContent(t);
+  if(f)f.srcdoc=buildPreviewDoc(t);
   if(i)i.textContent=t.nm||'';
   if(n)n.textContent=(curTplIdx+1)+' / '+all.length;
 }
@@ -5147,12 +5106,6 @@ function renderCustomPreview() {
   if (el) el.innerHTML = html;
   el = document.getElementById('veCanvas');
   if (el) el.innerHTML = html;
-  el = document.getElementById('fsCard');
-  if (el) {
-    el.innerHTML = html;
-    var info = document.getElementById('fsInfo');
-    if (info && S._templateName) info.textContent = S._templateName;
-  }
 }
 
 function buildCustomCardHTML(tmpl, css) {
@@ -5419,7 +5372,7 @@ try{initApp();}catch(e){console.error('Init error:',e);}
     </div>
     <div class="fsw">
       <button class="fsn n" onclick="prevTpl()" aria-label="السابق">❯</button>
-      <div class="fsc" id="fsCard"></div>
+      <iframe class="fsc" id="fsFrame" title="معاينة القالب"></iframe>
       <button class="fsn p" onclick="nextTpl()" aria-label="التالي">❮</button>
     </div>
     <div class="fsi">استخدم الأسهم أو مفاتيح ← → للتنقل بين القوالب</div>
