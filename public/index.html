@@ -417,6 +417,9 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
     <button class="btn bo bs" onclick="clearMultiSelect()" style="padding:5px 10px;font-size:.68em">✖ مسح</button>
   </div>
 </div>
+<div style="display:flex;justify-content:center;gap:8px;margin:0 0 10px">
+  <button class="btn bo bs" onclick="selectAllTemplates()" style="padding:5px 18px;font-size:.7em">☑ تحديد الكل</button>
+</div>
 <div class="gal-grid" id="tplGrid"></div>
 </div>
 
@@ -492,13 +495,14 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 <div id="toast"></div>
 <div id="statusBar" style="position:fixed;bottom:0;left:0;right:0;background:var(--s1);border-top:1px solid var(--bd);padding:4px 16px;display:flex;justify-content:space-between;font-size:.58em;color:var(--tx3);z-index:100"><span>Anki Design Studio v4.2</span><span style="color:var(--gn)">✓</span><span id="undoCount">0 / 0</span></div>
 
-<script src="designs_data.js"></script>
-<script src="designs_premium.js" defer onload="try{premiumDesignsLoaded()}catch(e){}"></script>
+<!-- القوالب القديمة محفوظة على جنب: designs_data.js (فاخرة 102 + إنجليزية 20) و designs_premium.js (احترافية) -->
+<script src="designs_100.js" defer onload="try{designs100Loaded()}catch(e){}"></script>
 <script>
 // Global state - MUST be declared before initApp() runs (see end of script)
 var CUSTOM_TEMPLATES = [];
 var CUSTOM_TEMPLATES_LOADED = false;
 var PREMIUM_ADDED = false;
+var DESIGNS100_ADDED = false;
 const SAMP={f:'Maison',a:'منزل',p:'Maisons',s:'Contrat',c:'Désabonnement'};
 window.SAMP=SAMP;
 const FMAP={"Inter":"'Inter',sans-serif","Noto Sans Arabic":"'Noto Sans Arabic',sans-serif","Poppins":"'Poppins',sans-serif","Playfair Display":"'Playfair Display',serif","Cairo":"'Cairo',sans-serif","Tajawal":"'Tajawal',sans-serif","Amiri":"'Amiri',serif","System":"system-ui,sans-serif"};
@@ -1002,7 +1006,12 @@ function getFilteredTemplates(){
   if (CUSTOM_TEMPLATES_LOADED && CUSTOM_TEMPLATES.length > 0) {
     for (var i = 0; i < CUSTOM_TEMPLATES.length; i++) all.push(CUSTOM_TEMPLATES[i]);
   }
-  return all;
+  // المعرض يعرض القوالب الاحترافية (المخصصة) فقط — القديمة (ألوان) محفوظة على جنب
+  var customOnly = [];
+  for (var j = 0; j < all.length; j++) {
+    if (isCustomTemplate(all[j].id)) customOnly.push(all[j]);
+  }
+  return customOnly.length > 0 ? customOnly : all;
 }
 
 // Render a REAL preview of a custom template (uses actual HTML/CSS from the design)
@@ -1133,6 +1142,21 @@ function toggleMultiSelect(id){
   var i=MULTI_SELECT.indexOf(id);
   if(i>=0){MULTI_SELECT.splice(i,1);}
   else{MULTI_SELECT.push(id);}
+  try{localStorage.setItem('anki_multi_selected',JSON.stringify(MULTI_SELECT));}catch(e){}
+  renderGrid();
+}
+function selectAllTemplates(){
+  var all=getFilteredTemplates();
+  if(!all.length)return;
+  var visible=all.map(function(t){return t.id;});
+  var allSelected=visible.length>0 && visible.every(function(id){return MULTI_SELECT.indexOf(id)>=0;});
+  if(allSelected){
+    MULTI_SELECT=MULTI_SELECT.filter(function(id){return visible.indexOf(id)<0;});
+    toast('تم إلغاء تحديد الكل');
+  }else{
+    visible.forEach(function(id){if(MULTI_SELECT.indexOf(id)<0)MULTI_SELECT.push(id);});
+    toast('تم تحديد الكل ('+visible.length+' تصميم)');
+  }
   try{localStorage.setItem('anki_multi_selected',JSON.stringify(MULTI_SELECT));}catch(e){}
   renderGrid();
 }
@@ -4953,15 +4977,14 @@ function addInfoIcons(){
 // ============================================================
 // CUSTOM TEMPLATE SYSTEM - Professional 20 Designs
 // ============================================================
-function premiumDesignsLoaded(){
-  if (PREMIUM_ADDED) return;
-  if (typeof EMBEDDED_DESIGNS_PREMIUM === 'undefined' || !EMBEDDED_DESIGNS_PREMIUM || !EMBEDDED_DESIGNS_PREMIUM.length) return;
-  // Only add if main designs are already loaded (initApp ran); otherwise loadCustomDesigns will pick them up
+function designs100Loaded(){
+  if (DESIGNS100_ADDED) return;
+  if (typeof EMBEDDED_DESIGNS_100 === 'undefined' || !EMBEDDED_DESIGNS_100 || !EMBEDDED_DESIGNS_100.length) return;
   if (CUSTOM_TEMPLATES_LOADED) {
-    PREMIUM_ADDED = true;
-    addDesigns(EMBEDDED_DESIGNS_PREMIUM);
-    // Ensure premium designs come first (designs_premium.js may load after initApp)
-    var n = EMBEDDED_DESIGNS_PREMIUM.length;
+    DESIGNS100_ADDED = true;
+    addDesigns(EMBEDDED_DESIGNS_100);
+    // Ensure the new pack comes first
+    var n = EMBEDDED_DESIGNS_100.length;
     var prem = CUSTOM_TEMPLATES.slice(-n);
     var rest = CUSTOM_TEMPLATES.slice(0, CUSTOM_TEMPLATES.length - n);
     CUSTOM_TEMPLATES = prem.concat(rest);
@@ -4969,19 +4992,18 @@ function premiumDesignsLoaded(){
     if (typeof renderGrid === 'function') renderGrid();
   }
 }
+function premiumDesignsLoaded(){
+  // القوالب الاحترافية القديمة محفوظة على جنب (لا تُعرض في المعرض حالياً)
+  return;
+}
 function loadCustomDesigns() {
   if (CUSTOM_TEMPLATES_LOADED) return;
   CUSTOM_TEMPLATES_LOADED = true;
-  // Premium professional designs first, then فاخرة 102, then the English showcase 20
-  if (!PREMIUM_ADDED && typeof EMBEDDED_DESIGNS_PREMIUM !== 'undefined' && EMBEDDED_DESIGNS_PREMIUM && EMBEDDED_DESIGNS_PREMIUM.length > 0) {
-    PREMIUM_ADDED = true;
-    addDesigns(EMBEDDED_DESIGNS_PREMIUM);
-  }
-  if (typeof EMBEDDED_DESIGNS_102 !== 'undefined' && EMBEDDED_DESIGNS_102.length > 0) {
-    addDesigns(EMBEDDED_DESIGNS_102);
-  }
-  if (typeof EMBEDDED_DESIGNS_20 !== 'undefined' && EMBEDDED_DESIGNS_20.length > 0) {
-    addDesigns(EMBEDDED_DESIGNS_20);
+  // المعرض يعرض الـ100 تصميم الموحّدة فقط (بس الكلمة موحّدة).
+  // باقي القوالب محفوظة على جنب في الملفات: designs_premium.js / designs_data.js
+  if (!DESIGNS100_ADDED && typeof EMBEDDED_DESIGNS_100 !== 'undefined' && EMBEDDED_DESIGNS_100 && EMBEDDED_DESIGNS_100.length > 0) {
+    DESIGNS100_ADDED = true;
+    addDesigns(EMBEDDED_DESIGNS_100);
   }
   if (typeof renderGrid === 'function') renderGrid();
 }
@@ -5370,7 +5392,6 @@ try{initApp();}catch(e){console.error('Init error:',e);}
     <div class="fs-head">
       <div class="fs-title" id="fsInfo"></div>
       <div class="fs-count" id="fsCounter"></div>
-      <button class="fs-apply" onclick="applyFromFullscreen()">✓ تطبيق القالب</button>
       <button class="fs-close" onclick="closeFullscreen()" aria-label="إغلاق">✕</button>
     </div>
     <div class="fsw">

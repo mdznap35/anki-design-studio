@@ -68,6 +68,10 @@ def serve_designs_data():
 def serve_designs_premium():
     return send_from_directory('public', 'designs_premium.js')
 
+@app.route('/designs_100.js', methods=['GET'])
+def serve_designs_100():
+    return send_from_directory('public', 'designs_100.js')
+
 def generate_multi_design(deck_name, designs):
     """Create a deck where words are distributed round-robin across the selected designs."""
     fields_order = ['word', 'arabe', 'type', 'unit', 'page', 'pluriel', 'feminin_s', 'feminin_p',
