@@ -1145,6 +1145,15 @@ function toggleMultiSelect(id){
   try{localStorage.setItem('anki_multi_selected',JSON.stringify(MULTI_SELECT));}catch(e){}
   renderGrid();
 }
+
+function apiBase(){
+  try{
+    var h=location.hostname||'';
+    if(h.indexOf('onrender.com')>=0||h==='127.0.0.1'||h==='localhost')return '';
+  }catch(e){}
+  return 'https://anki-design-studio.onrender.com';
+}
+
 function selectAllTemplates(){
   var all=getFilteredTemplates();
   if(!all.length)return;
@@ -1206,7 +1215,7 @@ async function downloadMultiAPKG(){
     if(designs.length===0){toast('اختر تصميماً واحداً على الأقل');if(ld)ld.style.display='none';return;}
     var deckName=(document.getElementById('veDeckName')?.value||document.getElementById('deckName')?.value||'Anki Design')+' (متعدد التصاميم)';
     var config={deckName:deckName, designs:designs, multi:true};
-    var resp=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config)});
+    var resp=await fetch(apiBase()+'/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config)});
     if(!resp.ok)throw new Error('Server error: '+resp.status);
     var blob=await resp.blob();if(blob.size<1000)throw new Error('ملف فارغ');
     var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download=config.deckName+'.apkg';a.click();URL.revokeObjectURL(url);
@@ -2221,7 +2230,7 @@ async function downloadAPKG(){
     // Also send preview version for backend reference
     const previewHTML=renderCardHTML(S);
     const config={...S,deckName:(document.getElementById('veDeckName')?.value||document.getElementById('deckName')?.value||'Anki Design'),cardFrontHTML:cardHTML,cardBackHTML:cardHTML,previewHTML:previewHTML};
-    const resp=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config)});
+    const resp=await fetch(apiBase()+'/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config)});
     if(!resp.ok)throw new Error('Server error: '+resp.status);
     const blob=await resp.blob();if(blob.size<1000)throw new Error('ملف فارغ');
     const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=config.deckName+'.apkg';a.click();URL.revokeObjectURL(url);
