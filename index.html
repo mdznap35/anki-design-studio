@@ -105,7 +105,7 @@ select.sl{appearance:none;cursor:pointer}
 .fs-close{width:28px;height:28px;border-radius:50%;border:none;background:var(--s2);color:var(--tx);font-size:.7em;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
 .fs-close:hover{background:var(--rd);color:#fff}
 #fsModal .fsw{min-height:0;height:78vh;background:var(--s2)}
-#fsModal .fsc{max-width:480px;width:92%;height:100%;border:none;border-radius:14px;background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.35)}
+#fsModal .fsc{width:min(360px,88vw);height:min(580px,74vh);border:none;border-radius:14px;background:#14121f;box-shadow:0 10px 40px rgba(0,0,0,.35)}
 
 /* In-template TTS speaker button (preview) */
 .tts-preview{display:inline-flex;align-items:center;justify-content:center;width:100%;height:100%;cursor:pointer;font-size:1.15em;line-height:1;color:inherit}
@@ -1019,7 +1019,7 @@ function fillSampleFields(front){
   // TTS tags -> in-template speaker button (keeps the design's own styling/container)
   front = front.replace(/\{\{tts\s+([A-Za-z_]+):([A-Za-z_]+)\}\}/g, function(m, lang, fld){
     var l = lang.indexOf('fr')===0 ? 'fr' : 'ar';
-    return '<span class="tts-preview" data-lang="'+l+'" data-field="'+fld+'" title="استمع">▶</span>';
+    return '<button class="replay-button tts-preview" data-lang="'+l+'" data-field="'+fld+'" title="استمع">▶</button>';
   });
   front = front.split('{{French}}').join(SAMP.f);
   front = front.split('{{Arabic}}').join(SAMP.a);
@@ -1055,9 +1055,10 @@ function buildPreviewDoc(t){
     body='<div style="padding:30px;text-align:center;font-family:sans-serif">تصميم فارغ</div>';
   }
   return '<!DOCTYPE html><html><head><meta charset="utf-8"><style>'
-    +'html,body{margin:0;padding:0;min-height:100vh;background:#fff;display:flex;align-items:center;justify-content:center}'
+    +'html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#14121f;display:flex;align-items:center;justify-content:center}'
+    +'.replay-button{display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:50%;background:rgba(124,58,237,.12);border:2px solid rgba(124,58,237,.45);margin:10px auto;font-size:20px;line-height:1;color:#7c3aed;cursor:pointer;padding:0}'
     +'.tts-preview{display:inline-flex;align-items:center;justify-content:center;width:100%;height:100%;cursor:pointer;font-size:1.15em;line-height:1}'
-    +'.card-container>.tts-preview,.card>.tts-preview{width:52px;height:52px;border-radius:50%;background:rgba(124,58,237,.12);border:2px solid rgba(124,58,237,.45);margin:10px auto;font-size:22px;color:#7c3aed}'
+    +'.tts-preview>svg,.tts-preview>*{pointer-events:none}'
     +'</style><style>'+css+'</style></head><body>'+body
     +'<script>var SAMP=parent.SAMP;var speakWord=function(w,l){try{parent.speakWord(w,l)}catch(e){}};'
     +'document.querySelectorAll(".tts-preview").forEach(function(el){el.addEventListener("click",function(){'
