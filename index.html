@@ -120,6 +120,7 @@ select.sl{appearance:none;cursor:pointer}
 .tts-preview{display:inline-flex;align-items:center;justify-content:center;width:100%;height:100%;cursor:pointer;font-size:1.15em;line-height:1;color:inherit}
 .card-container>.tts-preview,.card>.tts-preview{width:52px;height:52px;border-radius:50%;background:rgba(124,58,237,.12);border:2px solid rgba(124,58,237,.45);margin:10px auto;font-size:22px;color:#7c3aed}
 .tts-preview:hover{transform:scale(1.08)}
+.tts-preview::before{content:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='22' height='22'><path fill='%237c3aed' d='M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05A4.5 4.5 0 0 0 16.5 12zM14 3.23v2.06a7 7 0 0 1 0 13.42v2.06a9 9 0 0 0 0-17.54z'/></svg>");display:block;width:22px;height:22px;margin:auto}
 
 /* VE element selection */
 [data-ve]{cursor:pointer;border:2px dashed transparent;border-radius:5px;transition:all .15s}
@@ -409,10 +410,8 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 <div id="loadingMsg">⏳ جاري تحميل التصاميم...</div>
 </div>
 <div class="tabs">
-<button role="tab" class="tab" data-t="editor">🖱️ المحرر</button>
 <button role="tab" class="tab on" data-t="gal">🎨 القوالب</button>
-<button class="tab" data-t="ctl">⚙️ التحكم</button>
-<button class="tab" data-t="dl">📥 التنزيل</button>
+<button role="tab" class="tab" data-t="maker">🛠️ اصنع قالبك الخاص</button>
 </div>
 
 <div id="sec-gal" class="sec on">
@@ -433,7 +432,21 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 <div class="gal-grid" id="tplGrid"></div>
 </div>
 
-<div id="sec-ctl" class="sec">
+<div id="sec-maker" class="sec">
+<div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:14px">
+  <button class="btn bo bs" onclick="undo()" id="undoBtn" disabled>↩ تراجع</button>
+  <button class="btn bo bs" onclick="redo()" id="redoBtn" disabled>↪ إعادة</button>
+  <button class="btn bo bs" onclick="resetDesign()">♻ إعادة ضبط</button>
+  <button class="btn bo bs" onclick="saveCustom()">💾 حفظ قالب</button>
+  <button class="btn bo bs" onclick="openCmdPalette()">⚡ أوامر سريعة</button>
+</div>
+<div class="ve-l" style="margin-bottom:16px">
+<div class="ve-c" id="veCanvas"></div>
+<div class="ve-p" id="veProps">
+<div style="font-size:.72em;font-weight:800;color:var(--ac2);margin-bottom:6px">خصائص العنصر</div>
+<div id="vePropPanel" style="font-size:.65em;color:var(--tx2)">اضغط على عنصر بالبطاقة</div>
+</div>
+</div>
 <div class="cl">
 <div class="cs">
 <div style="font-size:.72em;font-weight:700;color:var(--ac2);margin-bottom:8px">⚙️ لوحة التحكم</div>
@@ -442,32 +455,11 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 </div>
 <div class="cp"><div class="cp-c" id="ctlPreviewCard"></div></div>
 </div>
-</div>
-
-<div id="sec-editor" class="sec">
-<div class="ve-l">
-<div class="ve-c" id="veCanvas"></div>
-<div class="ve-p" id="veProps">
-<div style="font-size:.72em;font-weight:800;color:var(--ac2);margin-bottom:6px">خصائص العنصر</div>
-<div id="vePropPanel" style="font-size:.65em;color:var(--tx2)">اضغط على عنصر بالبطاقة</div>
-<div style="margin-top:10px;border-top:1px solid var(--bd);padding-top:10px">
-<div style="font-size:.68em;font-weight:700;color:var(--ac2);margin-bottom:6px">📥 تنزيل</div>
-<input class="tx" aria-label="Text input" id="veDeckName" value="Français Bac" style="width:100%;text-align:center;font-size:.65em;margin-bottom:6px;padding:6px;border-radius:6px;border:1px solid var(--bd);background:var(--s2);color:var(--tx)" placeholder="اسم الرزمة">
-<button class="btn ba" style="width:100%;padding:8px;font-size:.68em" onclick="var dn=document.getElementById('veDeckName');if(dn&&dn.value)document.getElementById('deckName').value=dn.value;downloadAPKG()">⬇ تنزيل .apkg</button>
-<div id="veDlInfo" style="margin-top:4px;font-size:.6em;color:var(--tx2);text-align:center"></div>
-</div>
-</div>
-</div>
-</div>
-
-
-
-<div id="sec-dl" class="sec">
-<div class="dl-c">
-<h3>تنزيل رزمة Anki</h3>
+<div class="dl-c" style="margin-top:18px">
+<h3>📥 تنزيل رزمة Anki</h3>
 <p style="font-size:.68em;color:var(--tx2);margin-bottom:10px">ملف .apkg جاهز للاستيراد</p>
 <div style="margin-bottom:10px">
-<label for="deckNameInput" style="font-size:.68em;color:var(--tx2);display:block;margin-bottom:3px">اسم الرزمة</label>
+<label for="deckName" style="font-size:.68em;color:var(--tx2);display:block;margin-bottom:3px">اسم الرزمة</label>
 <input class="tx" aria-label="Text input" id="deckName" value="Français Bac" style="text-align:center;font-weight:700">
 </div>
 <button class="btn ba" style="width:100%;padding:10px" onclick="downloadAPKG()">⬇ تنزيل .apkg</button>
@@ -475,7 +467,7 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 <div id="loading" style="display:none;margin-top:8px;text-align:center"><span style="font-size:.68em;color:var(--tx2)">جاري التوليد...</span></div>
 </div>
 <div class="cw" style="margin-top:10px;max-width:450px;margin-left:auto;margin-right:auto">
-<div style="font-size:.72em;font-weight:800;color:var(--ac2);margin-bottom:6px">نسخ احتياطي</div>
+<div style="font-size:.72em;font-weight:800;color:var(--ac2);margin-bottom:6px">💾 نسخ احتياطي</div>
 <div style="display:flex;gap:6px">
 <button class="btn bo bs" onclick="exportConfig()">تصدير الإعدادات</button>
 <label class="btn bo bs" style="cursor:pointer">استيراد الإعدادات<input type="file" aria-label="File upload" accept=".json" onchange="importConfig(event)" style="display:none"></label>
@@ -798,7 +790,7 @@ function redo(){if(histIdx<hist.length-1){histIdx++;S=JSON.parse(JSON.stringify(
 function updateUndoRedo(){const u=document.getElementById('undoBtn');if(u)u.disabled=histIdx<=0;const r=document.getElementById('redoBtn');if(r)r.disabled=histIdx>=hist.length-1;}
 function setVal(k,v){S[k]=v;pushHist();
   var cssOnlyProps=['cardBg','cardBg2','bgGradientDir','borderRadius','cardPadding','cardGap','cardMinHeight','previewWidth','cardDirection','cardAlign','cardBorderWidth','cardBorderColor','cardShadow','effect','cardClipPath','frenchColor','frenchFontSize','frenchFontWeight','frenchLetterSpacing','frenchLineHeight','frenchOpacity','frenchWidth','frenchScale','frenchMarginTop','frenchMarginBottom','frenchFontStyle','frenchTextTransform','frenchTextDecoration','frenchTextShadowColor','frenchTextShadowX','frenchTextShadowY','frenchTextShadowBlur','frenchTextAlign','meaningColor','meaningBg','meaningBorder','meaningBorderRadius','meaningFontSize','meaningFontWeight','meaningOpacity','meaningWidth','meaningScale','meaningMarginTop','meaningMarginBottom','meaningFontStyle','meaningTextTransform','meaningTextAlign','meaningBorderWidth','showBadge','showMeaning','showPage','separatorColor','separatorWidth','separatorStyle','secBg','secBorder','secTextColor','labelColor','sectionOpacity','secGap','cardBgImage','cardBgBlur','cardBgOpacity','speakerBg','speakerColor','speakerIcon','speakerPos','speakerFontSize','speakerBorderRadius','speakerBtnSize','speakerPulse','speakerRotate','speakerBorderWidth','speakerBorderColor','speakerBorderStyle','speakerShadow','speakerAnim','badgeNomBg','badgeNomColor','unitBg','unitColor','unitBorder','secDirection','frenchAnim','frenchAnimDur','frenchAnimDelay','frenchAnimDir','frenchAnimTiming','frenchAnimIter','frenchAnimFill','meaningAnim','meaningAnimDur','meaningAnimDelay','meaningAnimDir','meaningAnimTiming','meaningAnimIter','meaningAnimFill','badgeAnim','badgeAnimDur','badgeAnimDelay','secAnim','secAnimDur','secAnimDelay','frenchBg','frenchBorderRadius','frenchBorderWidth','frenchBorderColor','frenchRotate','frenchSkewX','meaningBorderRadius','meaningBg','meaningBorderColor','meaningRotate','meaningSkewX','meaningPaddingTop','meaningPaddingBottom','frenchPaddingTop','frenchPaddingBottom','fontFrench','fontArabic','plurielBg','plurielBorder','plurielTextColor','plurielFontSize','plurielAnim','plurielAnimDur','synonymeBg','synonymeBorder','synonymeTextColor','synonymeFontSize','synonymeAnim','synonymeAnimDur','contraireBg','contraireBorder','contraireTextColor','contraireFontSize','contraireAnim','contraireAnimDur','cardMarginTop','cardMarginBottom','cardMarginLeft','cardMarginRight','cardRotateX','cardRotateY','mixBlendMode','backdropFilter','customCSS','cardShadowColor','cardShadowX','cardShadowY','cardShadowBlur','bgPattern','bgPatternSize','bgPatternColor','cardOverlay','cardHoverScale','pageColor','pageFontSize','pageFontWeight','frenchBoxShadowColor','frenchBoxShadowBlur','badgeNomBorder','badgeNomBorderWidth','badgeUnitBorderWidth','badgeMarginTop','badgeMarginBottom','badgeNomPaddingX','badgeNomFontSize','badgeNomRotate','badgeUnitPaddingX','badgeUnitBorderRadius','badgeUnitFontSize','badgeUnitRotate','secBorderRadius','secBorderWidth','secFontSize','secWidth','secAnimDelay','meaningTextShadowX','meaningTextShadowY','meaningTextShadowBlur','frenchTextShadowColor','frenchTextShadowX','frenchTextShadowY','frenchTextShadowBlur','frenchMaxWidth','meaningMaxWidth','separatorMarginTop','separatorMarginBottom','separatorWidthPct','aspectRatio','overflowWrap','objectFit','objectPosition','transformOrigin','willChange','pointerEvents','wordBreak','userSelect','customCSS','statesCSS','isolation'];
-  var isEditor=document.getElementById('sec-editor')?.classList.contains('on');
+  var isEditor=document.getElementById('sec-maker')?.classList.contains('on');
   var isCSS=cssOnlyProps.includes(k);
   if(isCSS&&isEditor){
     var cv=document.getElementById('veCanvas');var card=cv?cv.querySelector('.card'):null;
@@ -968,7 +960,7 @@ function applyCSSToCard(card,k,v){
   });
   // Custom CSS fallback: if no handler matched, full rebuild is needed
 }
-function renderAll(){renderGrid();updateCtlPreview();syncToggles();syncGradAngle();syncIcons();if(document.getElementById('sec-editor').classList.contains('on'))renderVE();}
+function renderAll(){renderGrid();updateCtlPreview();syncToggles();syncGradAngle();syncIcons();if(document.getElementById('sec-maker').classList.contains('on'))renderVE();}
 function syncIcons(){document.querySelectorAll('[data-icon]').forEach(function(el){var ic=el.getAttribute('data-icon');var active=S.speakerIcon===ic;el.style.background=active?'var(--ac)':'var(--s2)';el.style.borderColor=active?'var(--gn)':'var(--bd)';el.style.boxShadow=active?'0 0 8px rgba(34,197,94,.4)':'none';});}
 function syncGradAngle(){document.querySelectorAll('[data-grad]').forEach(function(el){var g=el.getAttribute('data-grad');var active=(S.bgGradientDir||'135deg')===g;el.style.borderColor=active?'var(--gn)':'var(--bd)';el.style.boxShadow=active?'0 0 8px rgba(34,197,94,.4)':'none';});}
 
@@ -1001,8 +993,7 @@ document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',function
   document.querySelectorAll('.sec').forEach(x=>x.classList.remove('on'));
   document.getElementById('sec-'+this.dataset.t).classList.add('on');
   if(this.dataset.t==='gal'){setTimeout(function(){renderGrid();},10);}
-  if(this.dataset.t==='ctl')renderCtrls();
-  if(this.dataset.t==='editor')renderVE();
+  if(this.dataset.t==='maker'){renderCtrls();renderVE();updateCtlPreview();}
   
 }));
 function syncToggles(){document.querySelectorAll("[data-tog]").forEach(function(el){var k=el.getAttribute("data-tog");if(k.startsWith("sec-"))return;var v=S[k]!==false;el.className="btn bo bs";el.style.borderColor=v?'var(--gn)':'var(--rd)';el.style.color=v?'var(--gn)':'var(--rd)';el.textContent=(v?"\u2713":"\u2717")+" "+el.getAttribute("data-lbl");});}
@@ -1029,7 +1020,7 @@ function fillSampleFields(front){
   // TTS tags -> in-template speaker button (keeps the design's own styling/container)
   front = front.replace(/\{\{tts\s+([A-Za-z_]+):([A-Za-z_]+)\}\}/g, function(m, lang, fld){
     var l = lang.indexOf('fr')===0 ? 'fr' : 'ar';
-    return '<button class="replay-button tts-preview" data-lang="'+l+'" data-field="'+fld+'" title="استمع">▶</button>';
+    return '<button class="replay-button tts-preview" data-lang="'+l+'" data-field="'+fld+'" title="استمع"></button>';
   });
   front = front.split('{{French}}').join(SAMP.f);
   front = front.split('{{Arabic}}').join(SAMP.a);
@@ -1072,6 +1063,7 @@ function buildPreviewDoc(t){
     +'.replay-button{display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:50%;background:rgba(124,58,237,.12);border:2px solid rgba(124,58,237,.45);margin:10px auto;font-size:20px;line-height:1;color:#7c3aed;cursor:pointer;padding:0}'
     +'.tts-preview{display:inline-flex;align-items:center;justify-content:center;width:100%;height:100%;cursor:pointer;font-size:1.15em;line-height:1}'
     +'.tts-preview>svg,.tts-preview>*{pointer-events:none}'
+    +'.replay-button::before{content:url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' width=\'22\' height=\'22\'><path fill=\'%237c3aed\' d=\'M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05A4.5 4.5 0 0 0 16.5 12zM14 3.23v2.06a7 7 0 0 1 0 13.42v2.06a9 9 0 0 0 0-17.54z\'/></svg>");display:block;width:22px;height:22px;margin:auto}'
     +'</style><style>'+css+'</style></head><body>'+body
     +UNIVERSAL_FIT_SCRIPT+'<script>var SAMP=parent.SAMP;var speakWord=function(w,l){try{parent.speakWord(w,l)}catch(e){}};'
     +'document.querySelectorAll(".tts-preview").forEach(function(el){el.addEventListener("click",function(){'
@@ -1141,7 +1133,7 @@ function renderGrid(){
     // Old color-only templates are available as color options in the control panel.
     if(customNew.length>0){
       html += customNew.map(function(t){return renderGalleryCard(t,true);}).join('');
-      html += '<div class="gc gc-new" onclick="switchTab(\'editor\')" title="تحكم كامل + تنزيل"><div class="gc-new-ic">＋</div><div class="gnm"><span>صمم قالبك الخاص</span></div><div class="gc-new-sub">تحكم كامل • تنزيل</div></div>';
+      html += '<div class="gc gc-new" onclick="switchTab(\'maker\')" title="تحكم كامل + تنزيل"><div class="gc-new-ic">＋</div><div class="gnm"><span>اصنع قالبك الخاص</span></div><div class="gc-new-sub">تحكم كامل • تنزيل</div></div>';
     }
     if(customNew.length===0 && builtIn.length>0){
       html += builtIn.map(function(t){return renderGalleryCard(t,false);}).join('');
@@ -1230,7 +1222,7 @@ async function downloadMultiAPKG(){
       if(p)designs.push(p);
     }
     if(designs.length===0){toast('اختر تصميماً واحداً على الأقل');if(ld)ld.style.display='none';return;}
-    var deckName=(document.getElementById('veDeckName')?.value||document.getElementById('deckName')?.value||'Anki Design')+' (متعدد التصاميم)';
+    var deckName=(document.getElementById('deckName')?.value||'Anki Design')+' (متعدد التصاميم)';
     var config={deckName:deckName, designs:designs, multi:true};
     var resp=await fetch(apiBase()+'/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config)});
     if(!resp.ok)throw new Error('Server error: '+resp.status);
@@ -1280,7 +1272,7 @@ function selectTemplate(id){
   S._customId = undefined; S._customFront = undefined; S._customCSS = undefined; S._customFields = undefined;
   S._hasReverse = false;
   S = Object.assign({}, JSON.parse(JSON.stringify(t.cfg)), {_templateId:id, _templateType:'config'});
-  pushHist(); renderGrid(); renderCtrls(); updateCtlPreview(); switchTab('ctl');
+  pushHist(); renderGrid(); renderCtrls(); updateCtlPreview(); switchTab('maker');
   toast('تم اختيار: ' + t.nm);
 }
 function previewFullTemplate(id){
@@ -2149,7 +2141,7 @@ function renderVE(){
   });
 }
 
-function updateVEPreview(){if(document.getElementById('sec-editor').classList.contains('on'))renderVE();}
+function updateVEPreview(){if(document.getElementById('sec-maker').classList.contains('on'))renderVE();}
 
 function renderVEProps(elId){
   const p=document.getElementById('vePropPanel');if(!p)return;
@@ -2249,7 +2241,7 @@ async function downloadAPKG(){
     const cardHTML=renderAnkiTemplate(S);
     // Also send preview version for backend reference
     const previewHTML=renderCardHTML(S);
-    const config={...S,deckName:(document.getElementById('veDeckName')?.value||document.getElementById('deckName')?.value||'Anki Design'),cardFrontHTML:cardHTML,cardBackHTML:cardHTML,previewHTML:previewHTML};
+    const config={...S,deckName:(document.getElementById('deckName')?.value||'Anki Design'),cardFrontHTML:cardHTML,cardBackHTML:cardHTML,previewHTML:previewHTML};
     const resp=await fetch(apiBase()+'/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config)});
     if(!resp.ok)throw new Error('Server error: '+resp.status);
     const blob=await resp.blob();if(blob.size<1000)throw new Error('ملف فارغ');
@@ -3058,7 +3050,8 @@ function restoreState() {
   try {
     var state = JSON.parse(localStorage.getItem('anki_state') || '{}');
     if(state.lastTab) {
-      var tab = document.querySelector('[data-t="' + state.lastTab + '"]');
+      var legacyMap={editor:'maker',ctl:'maker',dl:'maker'};
+      var tab = document.querySelector('[data-t="' + (legacyMap[state.lastTab]||state.lastTab) + '"]');
       if(tab) tab.click();
     }
 
@@ -3319,17 +3312,13 @@ var CMD_LIST=[
   {icon:'🔄',label:'إعادة ضبط',action:'resetDesign();closeCmdPalette()'},
   {icon:'📥',label:'تنزيل .apkg',action:'downloadAPKG();closeCmdPalette()'},
   {icon:'📤',label:'تصدير الإعدادات',action:'exportConfig();closeCmdPalette()'},
-  {icon:'📥',label:'استيراد الإعدادات',action:'closeCmdPalette();document.querySelector("[data-t=dl]").click()'},
+  {icon:'📥',label:'استيراد الإعدادات',action:'closeCmdPalette();switchTab("maker")'},
   {icon:'🎯',label:'تحليل التصميم',action:'showDesignScore();closeCmdPalette()'},
   {icon:'🧹',label:'تنظيف غير المستخدم',action:'showCleanupTool();closeCmdPalette()'},
   {icon:'📊',label:'قياس الأداء',action:'showPerfMeter();closeCmdPalette()'},
   {icon:'🔧',label:'فحص التوافق',action:'showCompatChecker();closeCmdPalette()'},
-  {icon:'1️⃣',label:'تبويب المعرض',action:'document.querySelector("[data-t=gal]").click();closeCmdPalette()',keys:'Ctrl+1'},
-  {icon:'2️⃣',label:'تبويب التحكم',action:'document.querySelector("[data-t=ctl]").click();closeCmdPalette()',keys:'Ctrl+2'},
-  {icon:'3️⃣',label:'تبويب المحرر',action:'document.querySelector("[data-t=editor]").click();closeCmdPalette()',keys:'Ctrl+3'},
-  
-  
-  {icon:'4️⃣',label:'تبويب التنزيل',action:'document.querySelector("[data-t=dl]").click();closeCmdPalette()',keys:'Ctrl+4'},
+  {icon:'1️⃣',label:'تبويب القوالب',action:'switchTab("gal");closeCmdPalette()',keys:'Ctrl+1'},
+  {icon:'2️⃣',label:'اصنع قالبك الخاص',action:'switchTab("maker");closeCmdPalette()',keys:'Ctrl+2'},
   {icon:'🌙',label:'تبديل الوضع',action:'toggleDarkLight();closeCmdPalette()'},
   {icon:'🔍',label:'بحث في الخصائص',action:'focusPropertySearch();closeCmdPalette()'},
   {icon:'❓',label:'شرح التطبيق',action:'showOnboarding();closeCmdPalette()'},
@@ -3340,7 +3329,7 @@ var CMD_LIST=[
   {icon:'🔊',label:'اختبار النطق',action:'speakWord(SAMP.f,"fr");closeCmdPalette()'},
   {icon:'🎨',label:'توليد لوحة ألوان',action:'generateColorPalette();closeCmdPalette()'},
   {icon:'✨',label:'تطبيق تناغم',action:'applyHarmony("complementary");closeCmdPalette()'},
-  {icon:'📐',label:'تغيير الخط',action:'closeCmdPalette();document.querySelector("[data-t=ctl]").click();setTimeout(function(){document.querySelector(".acc-h").click()},100)'},
+  {icon:'📐',label:'تغيير الخط',action:'closeCmdPalette();switchTab("maker");setTimeout(function(){document.querySelector(".acc-h").click()},150)'},
   {icon:'🔄',label:'تبديل المعرض/القائمة',action:'toggleGalleryView();closeCmdPalette()'},
   {icon:"📐",label:"التخطيط التلقائي",action:"showAutoLayout();closeCmdPalette()"},
   {icon:"🔄",label:"لوحة التحويل",action:"showTransformPanel();closeCmdPalette()"},
@@ -3412,7 +3401,7 @@ function handleCmdKey(e){
 
 function searchProperty(keyword){
   // Switch to controls tab and focus search
-  document.querySelector('[data-t="ctl"]').click();
+  switchTab('maker');
   setTimeout(function(){
     var el=document.getElementById('propSearchInput');
     if(el){el.value=keyword;el.focus();filterProperties(keyword);}
@@ -3728,10 +3717,8 @@ function showCompatChecker(){
 // ============================================================
 var ONBOARD_STEPS=[
   {title:'مرحباً بك في Anki Design Studio! 🎨',text:'هذا التطبيق يسمح لك بتصميم بطاقات Anki احترافية بدون كتابة أي كود. كل شيء تفاعلي وسهل!',icon:'🎨'},
-  {title:'المعرض 📚',text:'ابدأ باختيار قالب من المعرض. فيه أكثر من 50 قالب جاهز يمكنك تعديله بالكامل.',icon:'📚'},
-  {title:'لوحة التحكم ⚙️',text:'هنا تعدل كل شيء: الألوان، الخطوط، الأحجام، الحركات، التأثيرات، وأكثر من 100 خاصية!',icon:'⚙️'},
-  {title:'المحرر البصري 🖱️',text:'اضغط مباشرة على أي عنصر بالبطاقة لتعديله. كل عنصر قابل للتحكم!',icon:'🖱️'},
-  {title:'التنزيل 📥',text:'صمم بطاقتك، ثم نزّلها كملف .apkg جاهز للاستيراد في Anki مباشرة!',icon:'📥'},
+  {title:'القوالب 🎨',text:'ابدأ باختيار قالب جاهز من المعرض (100 قالب احترافي) واضغط عليه لمعاينته كاملاً.',icon:'🎨'},
+  {title:'اصنع قالبك الخاص 🛠️',text:'تبويب واحد يجمع كل شيء: المحرر البصري، لوحة التحكم (أكثر من 100 خاصية)، والتنزيل كملف .apkg جاهز.',icon:'🛠️'},
   {title:'اختصارات لوحة المفاتيح ⌨️',text:'Ctrl+Shift+P: أوامر سريعة | Ctrl+Z/Y: تراجع/إعادة | Ctrl+S: حفظ | R: عشوائي',icon:'⌨️'},
   {title:'جاهز للبدء! 🚀',text:'ابدأ باختيار قالب من المعرض ثم عدّله حسب ذوقك. استمتع بالتصميم!',icon:'🚀'},
 ];
@@ -3926,7 +3913,7 @@ function saveAsFavorite(){
 }
 
 function focusPropertySearch(){
-  document.querySelector('[data-t="ctl"]').click();
+  switchTab('maker');
   setTimeout(function(){
     var el=document.getElementById('propSearchInput');
     if(el)el.focus();
@@ -5120,8 +5107,8 @@ function selectCustomTemplate(id) {
     renderGrid();
     renderCtrls();
     updateCtlPreview();
-    if (document.getElementById('sec-editor').classList.contains('on')) renderVE();
-    switchTab('ctl');
+    if (document.getElementById('sec-maker').classList.contains('on')) renderVE();
+    switchTab('maker');
     toast('🎨 تم اختيار: ' + t.nm + ' — تحكم كامل');
     return;
   }
@@ -5142,7 +5129,7 @@ function selectCustomTemplate(id) {
   pushHist();
   renderGrid();
   renderCustomPreview();
-  switchTab('ctl');
+  switchTab('maker');
   toast('تم اختيار: ' + t.nm);
 }
 
@@ -5165,7 +5152,7 @@ function buildCustomCardHTML(tmpl, css) {
   // TTS tags -> in-template speaker button
   h = h.replace(/\{\{tts\s+([A-Za-z_]+):([A-Za-z_]+)\}\}/g, function(m, lang, fld){
     var l = lang.indexOf('fr')===0 ? 'fr' : 'ar';
-    return '<span class="tts-preview" data-lang="'+l+'" data-field="'+fld+'" onclick="speakWord((this.getAttribute(\'data-lang\')===\'ar\'?SAMP.a:SAMP.f),this.getAttribute(\'data-lang\')||\'fr\')" title="استمع">▶</span>';
+    return '<span class="replay-button tts-preview" data-lang="'+l+'" data-field="'+fld+'" onclick="speakWord((this.getAttribute(\'data-lang\')===\'ar\'?SAMP.a:SAMP.f),this.getAttribute(\'data-lang\')||\'fr\')" title="استمع"></span>';
   });
   // Replace field placeholders with sample text for preview
   h = h.split('{{French}}').join('Maison');
