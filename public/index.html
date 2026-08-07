@@ -1118,6 +1118,7 @@ function renderGrid(){
       return '<div class="gc'+(sel?' sel':'')+(inMulti?' multi':'')+'" onclick="previewFullTemplate(\''+t.id+'\')" data-tpl-id=\''+t.id+'\'>'
         +'<button class="gc-pick'+(inMulti?' on':'')+'" onclick="event.stopPropagation();toggleMultiSelect(\''+t.id+'\')" title="تحديد للرزمة المتعددة">'+(inMulti?'✓':'+')+'</button>'
         +'<button class="gc-fav'+(isFav?' on':'')+'" onclick="event.stopPropagation();toggleFav(\''+t.id+'\')" title="مفضل">'+(isFav?'★':'☆')+'</button>'
+        +(t.pack?'<div class="gc-cat">'+t.pack+'</div>':'')
         +'<div class="gnm"><span>'+t.nm+'</span></div>'
         +'</div>';
     }
@@ -5025,6 +5026,7 @@ function addDesigns(designs) {
     CUSTOM_TEMPLATES.push({
       id: 'custom-' + (startId + i),
       nm: d.name,
+      pack: d.pack || '',
       cat: 'professional',
       fields: d.fields || [],
       front: d.front || '',
