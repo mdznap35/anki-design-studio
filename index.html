@@ -35,6 +35,7 @@ body{padding-bottom:48px;font-family:"Inter","Noto Sans Arabic",system-ui,sans-s
 .gnm{display:flex;justify-content:center;align-items:center;text-align:center;width:100%;padding:0 4px}
 .gnm span{font-weight:700;font-size:.68em;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 .gc-cat{font-size:.52em;padding:2px 6px;border-radius:4px;background:var(--s1);color:var(--tx3)}
+.gc-num{position:absolute;top:6px;left:8px;font-size:.62em;font-weight:800;color:var(--ac2);background:var(--s1);border:1px solid var(--bd);border-radius:6px;padding:2px 7px;z-index:5}
 .filt{display:flex;justify-content:center;gap:3px;margin-bottom:10px;flex-wrap:wrap}
 .fb{padding:4px 10px;border:none;border-radius:8px;background:var(--s2);color:var(--tx2);font-size:.62em;font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit}
 .fb:hover{border-color:var(--ac);color:var(--ac2)}.fb.on{background:var(--ac);color:#fff}
@@ -1119,6 +1120,7 @@ function renderGrid(){
         +'<button class="gc-pick'+(inMulti?' on':'')+'" onclick="event.stopPropagation();toggleMultiSelect(\''+t.id+'\')" title="تحديد للرزمة المتعددة">'+(inMulti?'✓':'+')+'</button>'
         +'<button class="gc-fav'+(isFav?' on':'')+'" onclick="event.stopPropagation();toggleFav(\''+t.id+'\')" title="مفضل">'+(isFav?'★':'☆')+'</button>'
         +(t.pack?'<div class="gc-cat">'+t.pack+'</div>':'')
+        +(t.num?'<div class="gc-num">#'+t.num+'</div>':'')
         +'<div class="gnm"><span>'+t.nm+'</span></div>'
         +'</div>';
     }
@@ -1932,7 +1934,7 @@ function renderFullscreen(){
   var i=document.getElementById('fsInfo');
   var n=document.getElementById('fsCounter');
   if(f)f.srcdoc=buildPreviewDoc(t);
-  if(i)i.textContent=t.nm||'';
+  if(i)i.textContent=(t.num?'#'+t.num+' — ':'')+(t.nm||'');
   if(n)n.textContent=(curTplIdx+1)+' / '+all.length;
 }
 function nextTpl(){const t=getFilteredTemplates();curTplIdx=(curTplIdx+1)%t.length;renderFullscreen();}
@@ -5026,6 +5028,7 @@ function addDesigns(designs) {
     CUSTOM_TEMPLATES.push({
       id: 'custom-' + (startId + i),
       nm: d.name,
+      num: startId + i + 1,
       pack: d.pack || '',
       cat: 'professional',
       fields: d.fields || [],
