@@ -462,9 +462,22 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 <label for="deckName" style="font-size:.68em;color:var(--tx2);display:block;margin-bottom:3px">اسم الرزمة</label>
 <input class="tx" aria-label="Text input" id="deckName" value="Français Bac" style="text-align:center;font-weight:700">
 </div>
+<div style="display:flex;gap:8px;margin-bottom:10px">
+<div style="flex:1">
+<label for="ttsSpeed" style="font-size:.68em;color:var(--tx2);display:block;margin-bottom:3px">سرعة الصوت</label>
+<input class="tx" aria-label="Text input" id="ttsSpeed" type="number" min="0.5" max="2" step="0.1" value="1" style="text-align:center">
+</div>
+<div style="flex:1">
+<label for="ttsPitch" style="font-size:.68em;color:var(--tx2);display:block;margin-bottom:3px">نغمة الصوت</label>
+<input class="tx" aria-label="Text input" id="ttsPitch" type="number" min="0.5" max="2" step="0.1" value="1" style="text-align:center">
+</div>
+</div>
+<label style="display:flex;align-items:center;gap:6px;font-size:.68em;color:var(--tx2);margin-bottom:10px;cursor:pointer">
+<input type="checkbox" id="includeAudio" checked style="width:15px;height:15px;accent-color:var(--ac)"> <span id="audioNote">🎧 تضمين الصوت (رجالي تلقائي)</span>
+</label>
 <button class="btn ba" style="width:100%;padding:10px" onclick="downloadAPKG()">⬇ تنزيل .apkg</button>
 <div id="dlInfo" style="margin-top:8px;font-size:.68em;color:var(--tx2);text-align:center"></div>
-<div id="loading" style="display:none;margin-top:8px;text-align:center"><span style="font-size:.68em;color:var(--tx2)">جاري التوليد...</span></div>
+<div id="loading" style="display:none;margin-top:8px;text-align:center"><span style="font-size:.68em;color:var(--tx2)">جاري التوليد... قد يستغرق دقائق عند إضافة الصوت</span></div>
 </div>
 <div class="cw" style="margin-top:10px;max-width:450px;margin-left:auto;margin-right:auto">
 <div style="font-size:.72em;font-weight:800;color:var(--ac2);margin-bottom:6px">💾 نسخ احتياطي</div>
@@ -1037,11 +1050,23 @@ function fillSampleFields(front){
   front = front.split('{{Preposition}}').join('');
   front = front.split('{{Auxiliaire}}').join('');
   front = front.split('{{Participe}}').join('');
+  front = front.split('{{AudioFR}}').join('');
+  front = front.split('{{AudioAR}}').join('');
+  front = front.split('{{AudioBOTH}}').join('');
+  front = front.split('{{FrSound}}').join('');
+  front = front.split('{{ArSound}}').join('');
+  front = front.split('{{BothSound}}').join('');
+  front = front.split('{{FrFile}}').join('');
+  front = front.split('{{ArFile}}').join('');
+  front = front.split('{{BothFile}}').join('');
+  front = front.split('{{ExtraRows}}').join('<b>الوحدة:</b> 1<br><b>النوع:</b> الأسماء<br><b>الجمع:</b> Maisons');
   // Keep conditional sections whose sample value exists, drop empty ones
   front = front.replace(/{{#(\w+)}}([\s\S]*?){{\/\1}}/g, function(m,f,inner){
     var v={French:SAMP.f,Arabic:SAMP.a,Pluriel:SAMP.p,Synonyme:SAMP.s,Contraire:SAMP.c,Badge:'Nom',Unit:'1',Page:'12',WordType:'Nom'}[f];
     return v ? inner : '';
   });
+  // Remove any remaining {{...}} placeholders so no raw text leaks into preview
+  front = front.replace(/\{\{[^}]+\}\}/g, '');
   return front;
 }
 var FIT_SRC="(function(){function fitOne(el){var p=el.parentElement;if(!p)return;var cs=getComputedStyle(el);var base=parseFloat(cs.fontSize)||14;if(!(base>0))return;var min=parseFloat(el.getAttribute('data-min'))||7;if(min>9)min=9;var old=el.style.cssText;el.style.whiteSpace='nowrap';el.style.display='inline-block';el.style.maxWidth='none';el.style.fontSize=base+'px';var aw=p.clientWidth-8,ah=p.clientHeight;if(aw<=12){el.style.cssText=old;return}var tw=el.scrollWidth,th=el.scrollHeight;if(tw<=2||th<=2){el.style.cssText=old;return}var k=aw/tw;if(ah>12)k=Math.min(k,ah/th);if(k<1){el.style.fontSize=Math.max(min,Math.round(base*k*10)/10)+'px'}else{el.style.cssText=old}}function fitAll(){var sels='.fitme,.ds-word,.ds-trans,.word,.trans,.meaning,.subtitle,.board-txt,.cfit,[class*=\"-word\"],[class*=\"-trans\"],[class*=\"-sub\"],[class*=\"-txt\"]';var els=document.querySelectorAll(sels);for(var i=0;i<els.length;i++)fitOne(els[i])}function boot(){fitAll();setTimeout(fitAll,80);setTimeout(fitAll,300);setTimeout(fitAll,900);setTimeout(fitAll,1800)}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',boot)}else{boot()}window.addEventListener('load',boot);window.addEventListener('resize',boot)})();";
@@ -1124,7 +1149,7 @@ function renderGrid(){
         +'<button class="gc-pick'+(inMulti?' on':'')+'" onclick="event.stopPropagation();toggleMultiSelect(\''+t.id+'\')" title="تحديد للرزمة المتعددة">'+(inMulti?'✓':'+')+'</button>'
         +'<button class="gc-fav'+(isFav?' on':'')+'" onclick="event.stopPropagation();toggleFav(\''+t.id+'\')" title="مفضل">'+(isFav?'★':'☆')+'</button>'
         +(t.pack?'<div class="gc-cat">'+t.pack+'</div>':'')
-        +(t.num?'<div class="gc-num">#'+t.num+'</div>':'')
+        +(t.num&&!isCustom?'<div class="gc-num">#'+t.num+'</div>':'')
         +'<div class="gnm"><span>'+t.nm+'</span></div>'
         +'</div>';
     }
@@ -1198,6 +1223,7 @@ function buildDesignPayload(t){
       frontHTML: t.front || '',
       backHTML: t.back || t.front || '',
       css: t.css || '',
+      fields: t.fields || [],
       type: 'custom'
     };
   }
@@ -1223,9 +1249,9 @@ async function downloadMultiAPKG(){
     }
     if(designs.length===0){toast('اختر تصميماً واحداً على الأقل');if(ld)ld.style.display='none';return;}
     var deckName=(document.getElementById('deckName')?.value||'Anki Design')+' (متعدد التصاميم)';
-    var config={deckName:deckName, designs:designs, multi:true};
+    var config={deckName:deckName, designs:designs, multi:true, ttsSpeed:parseFloat(document.getElementById('ttsSpeed')?.value)||1, ttsPitch:parseFloat(document.getElementById('ttsPitch')?.value)||1, includeAudio:document.getElementById('includeAudio')?.checked!==false};
     var resp=await fetch(apiBase()+'/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config)});
-    if(!resp.ok)throw new Error('Server error: '+resp.status);
+    if(!resp.ok){var em='Server error: '+resp.status;try{var ej=await resp.json();if(ej&&ej.error)em=ej.error;}catch(_e){}throw new Error(em);}
     var blob=await resp.blob();if(blob.size<1000)throw new Error('ملف فارغ');
     var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download=config.deckName+'.apkg';a.click();URL.revokeObjectURL(url);
     var msg='تم التنزيل ('+designs.length+' تصميم • '+Math.round(blob.size/1024)+' KB)';
@@ -1941,7 +1967,7 @@ function renderFullscreen(){
   var i=document.getElementById('fsInfo');
   var n=document.getElementById('fsCounter');
   if(f)f.srcdoc=buildPreviewDoc(t);
-  if(i)i.textContent=(t.num?'#'+t.num+' — ':'')+(t.nm||'');
+  if(i)i.textContent=isCustomTemplate(t.id)?(t.nm||''):((t.num?'#'+t.num+' — ':'')+(t.nm||''));
   if(n)n.textContent=(curTplIdx+1)+' / '+all.length;
 }
 function nextTpl(){const t=getFilteredTemplates();curTplIdx=(curTplIdx+1)%t.length;renderFullscreen();}
@@ -2241,9 +2267,9 @@ async function downloadAPKG(){
     const cardHTML=renderAnkiTemplate(S);
     // Also send preview version for backend reference
     const previewHTML=renderCardHTML(S);
-    const config={...S,deckName:(document.getElementById('deckName')?.value||'Anki Design'),cardFrontHTML:cardHTML,cardBackHTML:cardHTML,previewHTML:previewHTML};
+    const config={...S,deckName:(document.getElementById('deckName')?.value||'Anki Design'),cardFrontHTML:cardHTML,cardBackHTML:cardHTML,previewHTML:previewHTML,ttsSpeed:parseFloat(document.getElementById('ttsSpeed')?.value)||1,ttsPitch:parseFloat(document.getElementById('ttsPitch')?.value)||1,includeAudio:document.getElementById('includeAudio')?.checked!==false};
     const resp=await fetch(apiBase()+'/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config)});
-    if(!resp.ok)throw new Error('Server error: '+resp.status);
+    if(!resp.ok){let em='Server error: '+resp.status;try{const ej=await resp.json();if(ej&&ej.error)em=ej.error;}catch(_e){}throw new Error(em);}
     const blob=await resp.blob();if(blob.size<1000)throw new Error('ملف فارغ');
     const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=config.deckName+'.apkg';a.click();URL.revokeObjectURL(url);
     if(di)di.textContent='تم التنزيل ('+Math.round(blob.size/1024)+' KB)';
@@ -5167,6 +5193,16 @@ function buildCustomCardHTML(tmpl, css) {
   h = h.split('{{Preposition}}').join('\u00E0');
   h = h.split('{{Auxiliaire}}').join('avoir');
   h = h.split('{{Participe}}').join('mang\u00E9');
+  h = h.split('{{AudioFR}}').join('');
+  h = h.split('{{AudioAR}}').join('');
+  h = h.split('{{AudioBOTH}}').join('');
+  h = h.split('{{FrSound}}').join('');
+  h = h.split('{{ArSound}}').join('');
+  h = h.split('{{BothSound}}').join('');
+  h = h.split('{{FrFile}}').join('');
+  h = h.split('{{ArFile}}').join('');
+  h = h.split('{{BothFile}}').join('');
+  h = h.split('{{ExtraRows}}').join('<b>الوحدة:</b> 1<br><b>النوع:</b> الأسماء<br><b>الجمع:</b> Maisons');
   // Handle conditionals: {{#Field}}content{{/Field}} -> show content
   for (var iter = 0; iter < 20; iter++) {
     var s = h.indexOf('{{#');
@@ -5402,7 +5438,24 @@ function restoreOriginalCSS() {
 // (script sits at end of <body>, so DOM is ready and we don't wait
 //  for the load event, which fonts can block for 10+ seconds)
 // ============================================================
+function initAudioStatus(){
+  try{
+    fetch(apiBase()+'/api/audio_status').then(function(r){return r.json();}).then(function(d){
+      var cb=document.getElementById('includeAudio');
+      var lb=document.getElementById('audioNote');
+      if(!cb)return;
+      if(d&&d.library_words>0){
+        cb.checked=true;
+        if(lb)lb.textContent='\uD83C\uDFA7 تضمين الصوت — مكتبتك الجاهزة ('+d.library_words+' كلمة)';
+      }else if(d){
+        cb.checked=false;
+        if(lb)lb.textContent='\uD83C\uDFA7 تضمين الصوت — يتطلب مكتبتك الصوتية أو رزمة صغيرة (حتى '+d.max_generate_words+' كلمة)';
+      }
+    }).catch(function(){});
+  }catch(e){}
+}
 try{initApp();}catch(e){console.error('Init error:',e);}
+setTimeout(initAudioStatus,300);
 </script>
 
 <!-- Fullscreen template preview -->
