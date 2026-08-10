@@ -102,6 +102,25 @@ def audio_status():
     })
 
 
+@app.route('/api/tts_voices', methods=['GET'])
+def tts_voices():
+    return jsonify(tts.voice_list())
+
+
+@app.route('/api/tts_preview', methods=['POST'])
+def tts_preview():
+    try:
+        data = request.get_json() or {}
+        cfg = data.get('ttsConfig') or {}
+        if not isinstance(cfg, dict):
+            cfg = {}
+        fr_a, ar_a, both_a = tts.preview(cfg, data.get('fr') or 'Bonjour',
+                                         data.get('ar') or 'مرحبا')
+        return jsonify({'fr': fr_a, 'ar': ar_a, 'both': both_a})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
 @app.route('/', methods=['GET'])
 def index():
     return send_from_directory(app.static_folder, 'index.html')
@@ -137,9 +156,9 @@ def serve_designs_100():
     return send_from_directory(app.static_folder, 'designs_100.js')
 
 
-def _build_note_fields(fields, w, speed, pitch, include_audio):
+def _build_note_fields(fields, w, tts_cfg, include_audio):
     return tts.note_fields_for(fields, w.get('word', ''), w.get('arabe', ''),
-                               speed, pitch, extra_rows(w), include_audio)
+                               tts_cfg, extra_rows(w), include_audio)
 
 
 def _write_deck(deck, safe_name):
@@ -166,7 +185,7 @@ def _audio_guard(all_words, include_audio):
     return None
 
 
-def generate_multi_design(deck_name, designs, speed, pitch, include_audio):
+def generate_multi_design(deck_name, designs, tts_cfg, include_audio):
     """رزمة واحدة: توزيع عادل للكلمات على التصاميم المختارة (round-robin)."""
     all_words = get_all_words() + get_important_words()
     if not all_words:
@@ -196,7 +215,7 @@ def generate_multi_design(deck_name, designs, speed, pitch, include_audio):
 
     def make_fields(idx):
         model, fields = models[idx % n]
-        return model, _build_note_fields(fields, all_words[idx], speed, pitch, include_audio)
+        return model, _build_note_fields(fields, all_words[idx], tts_cfg, include_audio)
 
     if include_audio:
         with ThreadPoolExecutor(max_workers=6) as ex:
@@ -221,14 +240,23 @@ def generate():
         print(f"Generating: {config.get('deckName','?')}")
 
         deck_name = config.get('deckName', 'Français Bac')
-        speed = config.get('ttsSpeed') or 1
-        pitch = config.get('ttsPitch') or 1
         include_audio = config.get('includeAudio', True)
+        tts_cfg = config.get('ttsConfig') or {}
+        if not isinstance(tts_cfg, dict):
+            tts_cfg = {}
+        tts_cfg.setdefault('speed', config.get('ttsSpeed') or 1)
+        tts_cfg.setdefault('pitch', config.get('ttsPitch') or 1)
+        tts_cfg.setdefault('frVoice', tts.DEFAULT_VOICES['fr'])
+        tts_cfg.setdefault('arVoice', tts.DEFAULT_VOICES['ar'])
+        tts_cfg.setdefault('frGapBefore', 0)
+        tts_cfg.setdefault('frGapAfter', 0)
+        tts_cfg.setdefault('arGapBefore', 0)
+        tts_cfg.setdefault('arGapAfter', 0)
 
         # MULTI-DESIGN: توزيع عادل على التصاميم المختارة
         designs = config.get('designs')
         if designs and len(designs) > 0:
-            return generate_multi_design(deck_name, designs, speed, pitch, include_audio)
+            return generate_multi_design(deck_name, designs, tts_cfg, include_audio)
 
         # ===== القوالب الجاهزة (custom): HTML/CSS حرفياً من الرزمة =====
         template_type = config.get('_templateType', 'config')
@@ -253,7 +281,7 @@ def generate():
             deck = genanki.Deck(stable_id('Deck_' + deck_name), deck_name)
 
             def make_fields(idx):
-                return _build_note_fields(custom_fields, all_words[idx], speed, pitch, include_audio)
+                return _build_note_fields(custom_fields, all_words[idx], tts_cfg, include_audio)
 
             if include_audio:
                 with ThreadPoolExecutor(max_workers=6) as ex:

@@ -2,21 +2,79 @@
 """
 توليد الصوت للرزم:
 1) مكتبة صوتية جاهزة (audio_library.json): كلمة -> {fr, ar, both} (base64)
-2) مكمّل عبر Edge-TTS (أصوات رجالية) مع تحكم بالسرعة والنغمة + كاش
+2) مكمّل عبر Edge-TTS (أصوات رجالية/نسائية/لهجات عربية وفرنسية)
+   مع تحكم بالسرعة والنغمة والفاصل الزمني بين الكلمات + كاش
 """
-import os, json, base64, threading
+import os, json, base64, threading, subprocess, tempfile, shutil
 
 LIBRARY_PATH = os.path.join(os.path.dirname(__file__), "audio_library.json")
-VOICES = {"fr": "fr-FR-HenriNeural", "ar": "ar-SA-HamedNeural"}
 DEFAULT_FIELDS = ["French", "Arabic", "FrSound", "ArSound", "BothSound",
                   "FrFile", "ArFile", "BothFile", "AudioFR", "AudioAR",
                   "AudioBOTH", "ExtraRows"]
+
+# ===== بنك الأصوات (edge-tts) — فرنسية: رجال/نساء، عربية: لهجات كاملة =====
+FR_VOICES = [
+    {"id": "fr-FR-HenriNeural",            "label": "فرنسي (فرنسا) — هنري",    "gender": "male"},
+    {"id": "fr-FR-RemyMultilingualNeural", "label": "فرنسي (فرنسا) — ريمي",    "gender": "male"},
+    {"id": "fr-CA-AntoineNeural",          "label": "فرنسي (كندا) — أنطوان",   "gender": "male"},
+    {"id": "fr-CA-JeanNeural",             "label": "فرنسي (كندا) — جان",      "gender": "male"},
+    {"id": "fr-CA-ThierryNeural",          "label": "فرنسي (كندا) — تييري",    "gender": "male"},
+    {"id": "fr-BE-GerardNeural",           "label": "فرنسي (بلجيكا) — جيرار",  "gender": "male"},
+    {"id": "fr-CH-FabriceNeural",          "label": "فرنسي (سويسرا) — فابريس", "gender": "male"},
+    {"id": "fr-FR-DeniseNeural",           "label": "فرنسي (فرنسا) — دينيس",   "gender": "female"},
+    {"id": "fr-FR-EloiseNeural",           "label": "فرنسي (فرنسا) — إلويز",   "gender": "female"},
+    {"id": "fr-FR-VivienneMultilingualNeural", "label": "فرنسي (فرنسا) — فيفيان", "gender": "female"},
+    {"id": "fr-CA-SylvieNeural",           "label": "فرنسي (كندا) — سيلفي",    "gender": "female"},
+    {"id": "fr-BE-CharlineNeural",         "label": "فرنسي (بلجيكا) — شارلين", "gender": "female"},
+    {"id": "fr-CH-ArianeNeural",           "label": "فرنسي (سويسرا) — أريان",  "gender": "female"},
+]
+
+AR_VOICES = [
+    {"id": "ar-SA-HamedNeural",    "label": "عربي (السعودية) — حامد",   "gender": "male"},
+    {"id": "ar-SA-ZariyahNeural",  "label": "عربي (السعودية) — زريا",   "gender": "female"},
+    {"id": "ar-AE-HamdanNeural",   "label": "عربي (الإمارات) — حمدان",  "gender": "male"},
+    {"id": "ar-AE-FatimaNeural",   "label": "عربي (الإمارات) — فاطمة",  "gender": "female"},
+    {"id": "ar-BH-AliNeural",      "label": "عربي (البحرين) — علي",     "gender": "male"},
+    {"id": "ar-BH-LailaNeural",    "label": "عربي (البحرين) — ليلى",    "gender": "female"},
+    {"id": "ar-DZ-IsmaelNeural",   "label": "عربي (الجزائر) — إسماعيل", "gender": "male"},
+    {"id": "ar-DZ-AminaNeural",    "label": "عربي (الجزائر) — أمينة",   "gender": "female"},
+    {"id": "ar-EG-ShakirNeural",   "label": "عربي (مصر) — شاكر",        "gender": "male"},
+    {"id": "ar-EG-SalmaNeural",    "label": "عربي (مصر) — سلمى",        "gender": "female"},
+    {"id": "ar-IQ-BasselNeural",   "label": "عربي (العراق) — باسل",     "gender": "male"},
+    {"id": "ar-IQ-RanaNeural",     "label": "عربي (العراق) — رنا",      "gender": "female"},
+    {"id": "ar-JO-TaimNeural",     "label": "عربي (الأردن) — تيم",      "gender": "male"},
+    {"id": "ar-JO-SanaNeural",     "label": "عربي (الأردن) — سناء",     "gender": "female"},
+    {"id": "ar-KW-FahedNeural",    "label": "عربي (الكويت) — فهد",      "gender": "male"},
+    {"id": "ar-KW-NouraNeural",    "label": "عربي (الكويت) — نورة",     "gender": "female"},
+    {"id": "ar-LB-RamiNeural",     "label": "عربي (لبنان) — رامي",      "gender": "male"},
+    {"id": "ar-LB-LaylaNeural",    "label": "عربي (لبنان) — ليلى",      "gender": "female"},
+    {"id": "ar-LY-OmarNeural",     "label": "عربي (ليبيا) — عمر",       "gender": "male"},
+    {"id": "ar-LY-ImanNeural",     "label": "عربي (ليبيا) — إيمان",     "gender": "female"},
+    {"id": "ar-MA-JamalNeural",    "label": "عربي (المغرب) — جمال",     "gender": "male"},
+    {"id": "ar-MA-MounaNeural",    "label": "عربي (المغرب) — منى",      "gender": "female"},
+    {"id": "ar-OM-AbdullahNeural", "label": "عربي (عُمان) — عبدالله",   "gender": "male"},
+    {"id": "ar-OM-AyshaNeural",    "label": "عربي (عُمان) — عائشة",     "gender": "female"},
+    {"id": "ar-QA-MoazNeural",     "label": "عربي (قطر) — معاذ",        "gender": "male"},
+    {"id": "ar-QA-AmalNeural",     "label": "عربي (قطر) — أمل",         "gender": "female"},
+    {"id": "ar-SY-LaithNeural",    "label": "عربي (سوريا) — ليث",       "gender": "male"},
+    {"id": "ar-SY-AmanyNeural",    "label": "عربي (سوريا) — أماني",     "gender": "female"},
+    {"id": "ar-TN-HediNeural",     "label": "عربي (تونس) — هادي",       "gender": "male"},
+    {"id": "ar-TN-ReemNeural",     "label": "عربي (تونس) — ريم",        "gender": "female"},
+    {"id": "ar-YE-SalehNeural",    "label": "عربي (اليمن) — صالح",      "gender": "male"},
+    {"id": "ar-YE-MaryamNeural",   "label": "عربي (اليمن) — مريم",      "gender": "female"},
+]
+
+VOICE_POOL = {"fr": FR_VOICES, "ar": AR_VOICES}
+DEFAULT_VOICES = {"fr": "fr-FR-HenriNeural", "ar": "ar-SA-HamedNeural"}
 
 _lib = {}
 _lib_loaded = False
 _lib_lock = threading.Lock()
 _cache = {}
 _cache_lock = threading.Lock()
+_sil_cache = {}
+_sil_lock = threading.Lock()
+_FFMPEG = shutil.which("ffmpeg")
 
 
 def _norm(w):
@@ -45,13 +103,28 @@ def library_lookup(word):
     return _lib.get(_norm(word))
 
 
-def _edge_synth(text, lang, rate_pct, pitch_hz):
+def voice_list():
+    """قائمة الأصوات الكاملة للواجهة (فرنسي + عربي)"""
+    return {"fr": FR_VOICES, "ar": AR_VOICES}
+
+
+def resolve_voice(lang, vid):
+    """تأكيد أن الصوت المطلوب موجود فعلاً، وإلا الرجوع للافتراضي"""
+    pool = VOICE_POOL.get(lang, [])
+    if vid:
+        for v in pool:
+            if v["id"] == vid:
+                return vid
+    return DEFAULT_VOICES.get(lang, "fr-FR-HenriNeural")
+
+
+def _edge_synth(text, lang, rate_pct, pitch_hz, voice):
     import asyncio
     import edge_tts
 
     async def _run():
-        com = edge_tts.Communicate(text, VOICES.get(lang, VOICES["fr"]),
-                                   rate=f"{rate_pct:+d}%", pitch=f"{pitch_hz:+d}Hz")
+        com = edge_tts.Communicate(text, voice,
+                                   rate="%+d%%" % rate_pct, pitch="%+dHz" % pitch_hz)
         buf = b""
         async for chunk in com.stream():
             if chunk["type"] == "audio":
@@ -61,20 +134,26 @@ def _edge_synth(text, lang, rate_pct, pitch_hz):
     return asyncio.run(_run())
 
 
-def _synth_base64(text, lang, rate_pct, pitch_hz):
+def _synth_base64(text, lang, rate_pct, pitch_hz, voice, _tries=3):
     if not text:
         return ""
-    key = (text, lang, rate_pct, pitch_hz)
+    key = (text, lang, rate_pct, pitch_hz, voice)
     with _cache_lock:
         if key in _cache:
             return _cache[key]
-    try:
-        mp3 = _edge_synth(text, lang, rate_pct, pitch_hz)
-        if not mp3:
-            return ""
-        b64 = base64.b64encode(mp3).decode("ascii")
-        b64 = "data:audio/mpeg;base64," + b64
-    except Exception:
+    import time
+    b64 = ""
+    for i in range(_tries):
+        try:
+            mp3 = _edge_synth(text, lang, rate_pct, pitch_hz, voice)
+            if mp3:
+                b64 = "data:audio/mpeg;base64," + base64.b64encode(mp3).decode("ascii")
+                break
+        except Exception:
+            pass
+        if i < _tries - 1:
+            time.sleep(0.8 * (i + 1))
+    if not b64:
         return ""
     with _cache_lock:
         _cache[key] = b64
@@ -96,37 +175,158 @@ def speed_pitch_to_params(speed, pitch):
     return rate_pct, pitch_hz
 
 
-def ensure_word_audio(word, arabic, speed=1.0, pitch=1.0):
-    """يرجع (fr_b64, ar_b64, both_b64) أو ('','','') عند الفشل"""
+def _silence(ms):
+    """مقطع mp3 صامت (24000Hz mono) بالطول المطلوب — يُولَّد مرة واحدة ويُخزَّن"""
+    if not _FFMPEG or not ms:
+        return b""
+    ms = int(ms)
+    if ms <= 0:
+        return b""
+    with _sil_lock:
+        if ms in _sil_cache:
+            return _sil_cache[ms]
+    tmp = tempfile.NamedTemporaryFile(suffix=".mp3", delete=False)
+    tmp.close()
+    try:
+        subprocess.run([_FFMPEG, "-y", "-f", "lavfi", "-i", "anullsrc=r=24000:cl=mono",
+                        "-t", "%.3f" % (ms / 1000.0), "-q:a", "9", tmp.name],
+                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=20)
+        with open(tmp.name, "rb") as f:
+            data = f.read()
+    except Exception:
+        data = b""
+    finally:
+        try:
+            os.remove(tmp.name)
+        except OSError:
+            pass
+    if data:
+        with _sil_lock:
+            _sil_cache[ms] = data
+    return data
+
+
+def _concat_mp3(parts):
+    """دمج مقاطع mp3 متطابقة الخصائص عبر ffmpeg (نسخ مباشر بدون إعادة ترميز)"""
+    parts = [p for p in parts if p]
+    if not parts:
+        return b""
+    if len(parts) == 1:
+        return parts[0]
+    if not _FFMPEG:
+        return b"".join(parts)
+    try:
+        with tempfile.TemporaryDirectory() as td:
+            list_path = os.path.join(td, "list.txt")
+            with open(list_path, "w", encoding="utf-8") as lf:
+                for i, p in enumerate(parts):
+                    fp = os.path.join(td, "p%d.mp3" % i)
+                    with open(fp, "wb") as f:
+                        f.write(p)
+                    lf.write("file '%s'\n" % fp)
+            out = os.path.join(td, "out.mp3")
+            r = subprocess.run([_FFMPEG, "-y", "-f", "concat", "-safe", "0",
+                                "-i", list_path, "-c", "copy", out],
+                               stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                               timeout=30)
+            if r.returncode == 0 and os.path.exists(out):
+                with open(out, "rb") as f:
+                    return f.read()
+    except Exception:
+        pass
+    return b"".join(parts)
+
+
+def _b64_mp3(raw):
+    return "data:audio/mpeg;base64," + base64.b64encode(raw).decode("ascii") if raw else ""
+
+
+def _build_clips(fr_raw, ar_raw, cfg):
+    """تطبيق الفواصل الزمنية ويرجع (fr_b64, ar_b64, both_b64)
+    - قبل الفرنسي / بعد الفرنسي (= الفاصل بين الكلمتين في المقطع المدمج)
+    - قبل العربي / بعد العربي
+    """
+    fr_before = _silence(cfg.get("frGapBefore", 0))
+    fr_after = _silence(cfg.get("frGapAfter", 0))
+    ar_before = _silence(cfg.get("arGapBefore", 0))
+    ar_after = _silence(cfg.get("arGapAfter", 0))
+
+    fr_clip = _concat_mp3([fr_before, fr_raw, fr_after]) if fr_raw else b""
+    ar_clip = _concat_mp3([ar_before, ar_raw, ar_after]) if ar_raw else b""
+    if fr_raw and ar_raw:
+        both_raw = _concat_mp3([fr_before, fr_raw, fr_after, ar_raw, ar_after])
+    elif fr_raw:
+        both_raw = fr_clip
+    else:
+        both_raw = b""
+    return _b64_mp3(fr_clip), _b64_mp3(ar_clip), _b64_mp3(both_raw)
+
+
+def _gaps_active(cfg):
+    for k in ("frGapBefore", "frGapAfter", "arGapBefore", "arGapAfter"):
+        try:
+            if int(cfg.get(k, 0) or 0) > 0:
+                return True
+        except (TypeError, ValueError):
+            pass
+    return False
+
+
+def _raw_from_b64(b64):
+    if not b64:
+        return b""
+    try:
+        return base64.b64decode(str(b64).split(",", 1)[1])
+    except Exception:
+        return b""
+
+
+def ensure_word_audio(word, arabic, cfg=None):
+    """يرجع (fr_b64, ar_b64, both_b64) حسب الإعدادات (أصوات + فاصل + سرعة + نغمة)"""
+    cfg = cfg or {}
     word = (word or "").strip()
     arabic = (arabic or "").strip()
     if not word:
         return ("", "", "")
+
     lib = library_lookup(word)
-    if lib:
+    has_gaps = _gaps_active(cfg)
+
+    # مكتبة جاهزة بدون فواصل: مسار سريع مطابق للسلوك السابق تماماً
+    if lib and not has_gaps:
         return (lib.get("fr", ""), lib.get("ar", ""), lib.get("both", ""))
-    rate_pct, pitch_hz = speed_pitch_to_params(speed, pitch)
-    fr_a = _synth_base64(word, "fr", rate_pct, pitch_hz)
-    ar_a = _synth_base64(arabic, "ar", rate_pct, pitch_hz) if arabic else ""
-    both_a = ""
-    if fr_a and ar_a:
-        # دمج FR + AR في مقطع واحد (نفس ترميز mp3) -> زر "الاثنان معاً"
-        try:
-            fr_raw = base64.b64decode(fr_a.split(",", 1)[1])
-            ar_raw = base64.b64decode(ar_a.split(",", 1)[1])
-            both_raw = fr_raw + ar_raw
-            both_a = "data:audio/mpeg;base64," + base64.b64encode(both_raw).decode("ascii")
-        except Exception:
-            both_a = ""
-    return (fr_a, ar_a, both_a)
+
+    # مكتبة جاهزة مع فواصل: نبني المقاطع من ملفات المكتبة مع إضافة الصمت
+    if lib and has_gaps:
+        fr_raw = _raw_from_b64(lib.get("fr", ""))
+        ar_raw = _raw_from_b64(lib.get("ar", ""))
+        return _build_clips(fr_raw, ar_raw, cfg)
+
+    # توليد عبر edge-tts بالصوت المحدد لكل لغة
+    rate_pct, pitch_hz = speed_pitch_to_params(cfg.get("speed", 1.0), cfg.get("pitch", 1.0))
+    fr_voice = resolve_voice("fr", cfg.get("frVoice"))
+    ar_voice = resolve_voice("ar", cfg.get("arVoice"))
+    fr_b64 = _synth_base64(word, "fr", rate_pct, pitch_hz, fr_voice)
+    ar_b64 = _synth_base64(arabic, "ar", rate_pct, pitch_hz, ar_voice) if arabic else ""
+    if not fr_b64 and not ar_b64:
+        return ("", "", "")
+    fr_raw = _raw_from_b64(fr_b64)
+    ar_raw = _raw_from_b64(ar_b64)
+    return _build_clips(fr_raw, ar_raw, cfg)
 
 
-def note_fields_for(fields, word, arabic, speed=1.0, pitch=1.0, extra="", include_audio=True):
+def preview(cfg=None, fr_text="Bonjour", ar_text="مرحبا"):
+    """معاينة سريعة بإعدادات المستخدم الحالية"""
+    cfg = dict(cfg or {})
+    return ensure_word_audio(fr_text, ar_text, cfg)
+
+
+def note_fields_for(fields, word, arabic, cfg=None, extra="", include_audio=True):
     """يبني صف الحقول بالترتيب المطلوب من القالب"""
     fr_a = ar_a = both_a = ""
     if include_audio:
         try:
-            fr_a, ar_a, both_a = ensure_word_audio(word, arabic, speed, pitch)
+            fr_a, ar_a, both_a = ensure_word_audio(word, arabic, cfg)
         except Exception:
             fr_a = ar_a = both_a = ""
     mapping = {

@@ -89,6 +89,12 @@ select.sl{appearance:none;cursor:pointer}
 @media(max-width:800px){.ve-l{grid-template-columns:1fr}}
 .dl-c{background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:14px;text-align:center;max-width:450px;margin:0 auto}
 .dl-c h3{font-size:.85em;font-weight:800;color:var(--ac2);margin-bottom:6px}
+.aa{background:var(--s1);border:1px solid var(--bd);border-radius:var(--br-md);margin-bottom:10px;overflow:hidden}
+.aa-t{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;cursor:pointer;font-size:.72em;font-weight:800;color:var(--ac2);background:var(--s2);user-select:none}
+.aa-t:hover{color:var(--ac)}
+.aa-b{display:none;padding:10px}
+.aa-b.open{display:block}
+.aa-lb{display:block;font-size:.6em;color:var(--tx2);margin-bottom:3px;text-align:right}
 .tt-c{background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:12px;max-width:500px;margin:0 auto}
 .tt-c h3{font-size:.82em;font-weight:800;color:var(--ac2);margin-bottom:6px}
 #toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--gn);color:#fff;padding:7px 16px;border-radius:8px;font-weight:700;font-size:.74em;opacity:0;transition:all .3s;pointer-events:none;z-index:999}
@@ -462,18 +468,46 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 <label for="deckName" style="font-size:.68em;color:var(--tx2);display:block;margin-bottom:3px">اسم الرزمة</label>
 <input class="tx" aria-label="Text input" id="deckName" value="Français Bac" style="text-align:center;font-weight:700">
 </div>
-<div style="display:flex;gap:8px;margin-bottom:10px">
+<div class="aa" id="audioPanel">
+<div class="aa-t" onclick="toggleAudioPanel()"><span>🎙️ لوحة تحكم الصوت</span><span class="arr" id="aaArr">▾</span></div>
+<div class="aa-b open" id="audioPanelBody">
+<div style="display:flex;gap:8px;margin-bottom:8px">
 <div style="flex:1">
-<label for="ttsSpeed" style="font-size:.68em;color:var(--tx2);display:block;margin-bottom:3px">سرعة الصوت</label>
-<input class="tx" aria-label="Text input" id="ttsSpeed" type="number" min="0.5" max="2" step="0.1" value="1" style="text-align:center">
+<label for="ttsFrVoice" class="aa-lb">🎤 الصوت الفرنسي</label>
+<select class="sl" aria-label="French voice" id="ttsFrVoice" onchange="saveVoiceSel()"></select>
 </div>
 <div style="flex:1">
-<label for="ttsPitch" style="font-size:.68em;color:var(--tx2);display:block;margin-bottom:3px">نغمة الصوت</label>
-<input class="tx" aria-label="Text input" id="ttsPitch" type="number" min="0.5" max="2" step="0.1" value="1" style="text-align:center">
+<label for="ttsArVoice" class="aa-lb">🎤 الصوت العربي</label>
+<select class="sl" aria-label="Arabic voice" id="ttsArVoice" onchange="saveVoiceSel()"></select>
+</div>
+</div>
+<div class="aa-lb" style="margin-bottom:4px">⏱️ الفاصل الزمني بين المقاطع (ملي ثانية)</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px">
+<div><label for="ttsGapFrBefore" class="aa-lb">صمت قبل الفرنسي</label><input class="tx" aria-label="Gap before French" id="ttsGapFrBefore" type="number" min="0" max="5000" step="50" value="0" onchange="saveVoiceSel()"></div>
+<div><label for="ttsGapFrAfter" class="aa-lb">الفاصل بين الكلمتين</label><input class="tx" aria-label="Gap between words" id="ttsGapFrAfter" type="number" min="0" max="5000" step="50" value="0" onchange="saveVoiceSel()"></div>
+<div><label for="ttsGapArBefore" class="aa-lb">صمت قبل العربي</label><input class="tx" aria-label="Gap before Arabic" id="ttsGapArBefore" type="number" min="0" max="5000" step="50" value="0" onchange="saveVoiceSel()"></div>
+<div><label for="ttsGapArAfter" class="aa-lb">صمت بعد العربي</label><input class="tx" aria-label="Gap after Arabic" id="ttsGapArAfter" type="number" min="0" max="5000" step="50" value="0" onchange="saveVoiceSel()"></div>
+</div>
+<div style="display:flex;gap:8px;margin-bottom:8px">
+<div style="flex:1">
+<label for="ttsSpeed" class="aa-lb">⚡ السرعة (<span id="ttsSpeedVal">1.0</span>x)</label>
+<input class="tx" aria-label="TTS speed" id="ttsSpeed" type="number" min="0.5" max="2" step="0.1" value="1" oninput="document.getElementById('ttsSpeedVal').textContent=parseFloat(this.value).toFixed(1)" onchange="saveVoiceSel()" style="text-align:center">
+</div>
+<div style="flex:1">
+<label for="ttsPitch" class="aa-lb">🎵 النغمة (<span id="ttsPitchVal">1.0</span>)</label>
+<input class="tx" aria-label="TTS pitch" id="ttsPitch" type="number" min="0.5" max="2" step="0.1" value="1" oninput="document.getElementById('ttsPitchVal').textContent=parseFloat(this.value).toFixed(1)" onchange="saveVoiceSel()" style="text-align:center">
+</div>
+</div>
+<div style="display:flex;gap:6px;align-items:center;margin-bottom:8px">
+<button class="btn ba bs" id="ttsPreviewBtn" style="flex:1" onclick="previewTTS()">🔊 معاينة الصوت <span id="ttsPreviewLd" style="display:none">⏳</span></button>
+<button class="btn bo bs" onclick="resetTTSConfig()">↺ افتراضي</button>
+</div>
+<audio id="ttsPreviewAudio" controls preload="none" style="display:none;width:100%;height:34px;margin-bottom:6px;border-radius:8px"></audio>
+<div id="ttsPanelNote" style="font-size:.6em;color:var(--tx3);text-align:right;line-height:1.7"></div>
 </div>
 </div>
 <label style="display:flex;align-items:center;gap:6px;font-size:.68em;color:var(--tx2);margin-bottom:10px;cursor:pointer">
-<input type="checkbox" id="includeAudio" checked style="width:15px;height:15px;accent-color:var(--ac)"> <span id="audioNote">🎧 تضمين الصوت (رجالي تلقائي)</span>
+<input type="checkbox" id="includeAudio" checked style="width:15px;height:15px;accent-color:var(--ac)"> <span id="audioNote">🎧 تضمين الصوت</span>
 </label>
 <button class="btn ba" style="width:100%;padding:10px" onclick="downloadAPKG()">⬇ تنزيل .apkg</button>
 <div id="dlInfo" style="margin-top:8px;font-size:.68em;color:var(--tx2);text-align:center"></div>
@@ -1235,6 +1269,104 @@ function buildDesignPayload(t){
   }
   return null;
 }
+// ============================================================
+// لوحة تحكم الصوت — أصوات + لهجات + فاصل + سرعة + نغمة + معاينة
+// ============================================================
+var TTS_VOICES_FALLBACK={"fr":[{"id":"fr-FR-HenriNeural","label":"فرنسي (فرنسا) — هنري","gender":"male"},{"id":"fr-FR-RemyMultilingualNeural","label":"فرنسي (فرنسا) — ريمي","gender":"male"},{"id":"fr-CA-AntoineNeural","label":"فرنسي (كندا) — أنطوان","gender":"male"},{"id":"fr-CA-JeanNeural","label":"فرنسي (كندا) — جان","gender":"male"},{"id":"fr-CA-ThierryNeural","label":"فرنسي (كندا) — تييري","gender":"male"},{"id":"fr-BE-GerardNeural","label":"فرنسي (بلجيكا) — جيرار","gender":"male"},{"id":"fr-CH-FabriceNeural","label":"فرنسي (سويسرا) — فابريس","gender":"male"},{"id":"fr-FR-DeniseNeural","label":"فرنسي (فرنسا) — دينيس","gender":"female"},{"id":"fr-FR-EloiseNeural","label":"فرنسي (فرنسا) — إلويز","gender":"female"},{"id":"fr-FR-VivienneMultilingualNeural","label":"فرنسي (فرنسا) — فيفيان","gender":"female"},{"id":"fr-CA-SylvieNeural","label":"فرنسي (كندا) — سيلفي","gender":"female"},{"id":"fr-BE-CharlineNeural","label":"فرنسي (بلجيكا) — شارلين","gender":"female"},{"id":"fr-CH-ArianeNeural","label":"فرنسي (سويسرا) — أريان","gender":"female"}],"ar":[{"id":"ar-SA-HamedNeural","label":"عربي (السعودية) — حامد","gender":"male"},{"id":"ar-SA-ZariyahNeural","label":"عربي (السعودية) — زريا","gender":"female"},{"id":"ar-AE-HamdanNeural","label":"عربي (الإمارات) — حمدان","gender":"male"},{"id":"ar-AE-FatimaNeural","label":"عربي (الإمارات) — فاطمة","gender":"female"},{"id":"ar-BH-AliNeural","label":"عربي (البحرين) — علي","gender":"male"},{"id":"ar-BH-LailaNeural","label":"عربي (البحرين) — ليلى","gender":"female"},{"id":"ar-DZ-IsmaelNeural","label":"عربي (الجزائر) — إسماعيل","gender":"male"},{"id":"ar-DZ-AminaNeural","label":"عربي (الجزائر) — أمينة","gender":"female"},{"id":"ar-EG-ShakirNeural","label":"عربي (مصر) — شاكر","gender":"male"},{"id":"ar-EG-SalmaNeural","label":"عربي (مصر) — سلمى","gender":"female"},{"id":"ar-IQ-BasselNeural","label":"عربي (العراق) — باسل","gender":"male"},{"id":"ar-IQ-RanaNeural","label":"عربي (العراق) — رنا","gender":"female"},{"id":"ar-JO-TaimNeural","label":"عربي (الأردن) — تيم","gender":"male"},{"id":"ar-JO-SanaNeural","label":"عربي (الأردن) — سناء","gender":"female"},{"id":"ar-KW-FahedNeural","label":"عربي (الكويت) — فهد","gender":"male"},{"id":"ar-KW-NouraNeural","label":"عربي (الكويت) — نورة","gender":"female"},{"id":"ar-LB-RamiNeural","label":"عربي (لبنان) — رامي","gender":"male"},{"id":"ar-LB-LaylaNeural","label":"عربي (لبنان) — ليلى","gender":"female"},{"id":"ar-LY-OmarNeural","label":"عربي (ليبيا) — عمر","gender":"male"},{"id":"ar-LY-ImanNeural","label":"عربي (ليبيا) — إيمان","gender":"female"},{"id":"ar-MA-JamalNeural","label":"عربي (المغرب) — جمال","gender":"male"},{"id":"ar-MA-MounaNeural","label":"عربي (المغرب) — منى","gender":"female"},{"id":"ar-OM-AbdullahNeural","label":"عربي (عُمان) — عبدالله","gender":"male"},{"id":"ar-OM-AyshaNeural","label":"عربي (عُمان) — عائشة","gender":"female"},{"id":"ar-QA-MoazNeural","label":"عربي (قطر) — معاذ","gender":"male"},{"id":"ar-QA-AmalNeural","label":"عربي (قطر) — أمل","gender":"female"},{"id":"ar-SY-LaithNeural","label":"عربي (سوريا) — ليث","gender":"male"},{"id":"ar-SY-AmanyNeural","label":"عربي (سوريا) — أماني","gender":"female"},{"id":"ar-TN-HediNeural","label":"عربي (تونس) — هادي","gender":"male"},{"id":"ar-TN-ReemNeural","label":"عربي (تونس) — ريم","gender":"female"},{"id":"ar-YE-SalehNeural","label":"عربي (اليمن) — صالح","gender":"male"},{"id":"ar-YE-MaryamNeural","label":"عربي (اليمن) — مريم","gender":"female"}]};
+function _ttsNum(id,d){var el=document.getElementById(id);var v=parseFloat(el?el.value:NaN);return isNaN(v)?d:v;}
+function collectTTSConfig(){
+  return {
+    frVoice:document.getElementById('ttsFrVoice')?document.getElementById('ttsFrVoice').value:'fr-FR-HenriNeural',
+    arVoice:document.getElementById('ttsArVoice')?document.getElementById('ttsArVoice').value:'ar-SA-HamedNeural',
+    frGapBefore:_ttsNum('ttsGapFrBefore',0),
+    frGapAfter:_ttsNum('ttsGapFrAfter',0),
+    arGapBefore:_ttsNum('ttsGapArBefore',0),
+    arGapAfter:_ttsNum('ttsGapArAfter',0),
+    speed:_ttsNum('ttsSpeed',1),
+    pitch:_ttsNum('ttsPitch',1)
+  };
+}
+function _fillVoiceSelect(sel,list,key,saved){
+  if(!sel)return;
+  sel.innerHTML=list.map(function(v){return '<option value="'+v.id+'">'+(v.gender==='male'?'♂':'♀')+' '+v.label+'</option>';}).join('');
+  var want=(saved&&saved[key])?saved[key]:null;
+  if(want&&list.some(function(v){return v.id===want;}))sel.value=want;
+}
+function populateVoiceSelects(){
+  var frSel=document.getElementById('ttsFrVoice');
+  var arSel=document.getElementById('ttsArVoice');
+  if(!frSel||!arSel)return;
+  var saved=null;try{saved=JSON.parse(localStorage.getItem('anki_tts_panel')||'null');}catch(e){}
+  fetch(apiBase()+'/api/tts_voices').then(function(r){return r.json();}).then(function(d){
+    if(d&&d.fr&&d.fr.length&&d.ar&&d.ar.length){
+      _fillVoiceSelect(frSel,d.fr,'frVoice',saved);
+      _fillVoiceSelect(arSel,d.ar,'arVoice',saved);
+    }else{
+      _fillVoiceSelect(frSel,TTS_VOICES_FALLBACK.fr,'frVoice',saved);
+      _fillVoiceSelect(arSel,TTS_VOICES_FALLBACK.ar,'arVoice',saved);
+    }
+    applySavedTTS();
+  }).catch(function(){
+    _fillVoiceSelect(frSel,TTS_VOICES_FALLBACK.fr,'frVoice',saved);
+    _fillVoiceSelect(arSel,TTS_VOICES_FALLBACK.ar,'arVoice',saved);
+    applySavedTTS();
+  });
+}
+function applySavedTTS(){
+  var saved=null;try{saved=JSON.parse(localStorage.getItem('anki_tts_panel')||'null');}catch(e){}
+  if(!saved)return;
+  var map={frVoice:'ttsFrVoice',arVoice:'ttsArVoice',frGapBefore:'ttsGapFrBefore',frGapAfter:'ttsGapFrAfter',arGapBefore:'ttsGapArBefore',arGapAfter:'ttsGapArAfter',speed:'ttsSpeed',pitch:'ttsPitch'};
+  for(var k in map){var el=document.getElementById(map[k]);if(el&&saved[k]!==undefined&&saved[k]!=='')el.value=saved[k];}
+  var sv=document.getElementById('ttsSpeedVal');if(sv)sv.textContent=parseFloat(document.getElementById('ttsSpeed')?document.getElementById('ttsSpeed').value:1).toFixed(1);
+  var pv=document.getElementById('ttsPitchVal');if(pv)pv.textContent=parseFloat(document.getElementById('ttsPitch')?document.getElementById('ttsPitch').value:1).toFixed(1);
+}
+function saveVoiceSel(){
+  try{localStorage.setItem('anki_tts_panel',JSON.stringify(collectTTSConfig()));}catch(e){}
+}
+function toggleAudioPanel(){
+  var b=document.getElementById('audioPanelBody');if(!b)return;
+  var open=b.classList.toggle('open');
+  var arr=document.getElementById('aaArr');if(arr)arr.textContent=open?'▾':'▸';
+  try{localStorage.setItem('anki_tts_panel_open',open?'1':'0');}catch(e){}
+}
+function resetTTSConfig(){
+  var frSel=document.getElementById('ttsFrVoice');if(frSel)frSel.value='fr-FR-HenriNeural';
+  var arSel=document.getElementById('ttsArVoice');if(arSel)arSel.value='ar-SA-HamedNeural';
+  ['ttsGapFrBefore','ttsGapFrAfter','ttsGapArBefore','ttsGapArAfter'].forEach(function(id){var el=document.getElementById(id);if(el)el.value=0;});
+  var sEl=document.getElementById('ttsSpeed');if(sEl)sEl.value=1;
+  var pEl=document.getElementById('ttsPitch');if(pEl)pEl.value=1;
+  var sv=document.getElementById('ttsSpeedVal');if(sv)sv.textContent='1.0';
+  var pv=document.getElementById('ttsPitchVal');if(pv)pv.textContent='1.0';
+  saveVoiceSel();toast('تمت إعادة ضبط الصوت للافتراضي');previewTTS();
+}
+async function previewTTS(){
+  var btn=document.getElementById('ttsPreviewBtn');
+  var ld=document.getElementById('ttsPreviewLd');
+  var au=document.getElementById('ttsPreviewAudio');
+  var note=document.getElementById('ttsPanelNote');
+  if(btn)btn.disabled=true;
+  if(ld)ld.style.display='inline-block';
+  if(note)note.textContent='⏳ جاري توليد المعاينة...';
+  try{
+    var cfg=collectTTSConfig();
+    var resp=await fetch(apiBase()+'/api/tts_preview',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fr:'Bonjour',ar:'مرحبا',ttsConfig:cfg})});
+    if(!resp.ok){var em='Server error: '+resp.status;try{var ej=await resp.json();if(ej&&ej.error)em=ej.error;}catch(_e){}throw new Error(em);}
+    var d=await resp.json();
+    if(d&&d.both&&au){
+      au.src=d.both;au.style.display='block';au.play().catch(function(){});
+      if(note)note.textContent='✓ تم توليد المعاينة: صوت '+cfg.frVoice.split('-').slice(0,2).join('-')+' ثم صوت '+cfg.arVoice.split('-').slice(0,2).join('-')+' مع الفواصل المحددة';
+    }else{
+      if(note)note.textContent='⚠️ فشل توليد المعاينة — تحقق من الإنترنت وأعد المحاولة';
+      if(au)au.style.display='none';
+    }
+  }catch(e){
+    if(note)note.textContent='⚠️ خطأ: '+e.message;
+  }finally{
+    if(btn)btn.disabled=false;
+    if(ld)ld.style.display='none';
+  }
+}
+
 async function downloadMultiAPKG(){
   var di=document.getElementById('dlInfo');
   var veDi=document.getElementById('veDlInfo');
@@ -1249,7 +1381,7 @@ async function downloadMultiAPKG(){
     }
     if(designs.length===0){toast('اختر تصميماً واحداً على الأقل');if(ld)ld.style.display='none';return;}
     var deckName=(document.getElementById('deckName')?.value||'Anki Design')+' (متعدد التصاميم)';
-    var config={deckName:deckName, designs:designs, multi:true, ttsSpeed:parseFloat(document.getElementById('ttsSpeed')?.value)||1, ttsPitch:parseFloat(document.getElementById('ttsPitch')?.value)||1, includeAudio:document.getElementById('includeAudio')?.checked!==false};
+    var config={deckName:deckName, designs:designs, multi:true, ttsConfig:collectTTSConfig(), includeAudio:document.getElementById('includeAudio')?.checked!==false};
     var resp=await fetch(apiBase()+'/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config)});
     if(!resp.ok){var em='Server error: '+resp.status;try{var ej=await resp.json();if(ej&&ej.error)em=ej.error;}catch(_e){}throw new Error(em);}
     var blob=await resp.blob();if(blob.size<1000)throw new Error('ملف فارغ');
@@ -2267,7 +2399,7 @@ async function downloadAPKG(){
     const cardHTML=renderAnkiTemplate(S);
     // Also send preview version for backend reference
     const previewHTML=renderCardHTML(S);
-    const config={...S,deckName:(document.getElementById('deckName')?.value||'Anki Design'),cardFrontHTML:cardHTML,cardBackHTML:cardHTML,previewHTML:previewHTML,ttsSpeed:parseFloat(document.getElementById('ttsSpeed')?.value)||1,ttsPitch:parseFloat(document.getElementById('ttsPitch')?.value)||1,includeAudio:document.getElementById('includeAudio')?.checked!==false};
+    const config={...S,deckName:(document.getElementById('deckName')?.value||'Anki Design'),cardFrontHTML:cardHTML,cardBackHTML:cardHTML,previewHTML:previewHTML,ttsConfig:collectTTSConfig(),includeAudio:document.getElementById('includeAudio')?.checked!==false};
     const resp=await fetch(apiBase()+'/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config)});
     if(!resp.ok){let em='Server error: '+resp.status;try{const ej=await resp.json();if(ej&&ej.error)em=ej.error;}catch(_e){}throw new Error(em);}
     const blob=await resp.blob();if(blob.size<1000)throw new Error('ملف فارغ');
@@ -3310,6 +3442,7 @@ function initApp(){
   var lm=document.getElementById('loadingMsg');if(lm)lm.style.display='none';
   // Initialize immediately - don't wait for load event (fonts can block it for 10+ seconds)
   loadCustomDesigns();pushHist();renderGrid();
+  setTimeout(function(){try{populateVoiceSelects();}catch(e){}},400);
   setTimeout(function(){
     try{renderVE();}catch(e){}
     try{renderCtrls();}catch(e){}
@@ -5438,18 +5571,25 @@ function restoreOriginalCSS() {
 // (script sits at end of <body>, so DOM is ready and we don't wait
 //  for the load event, which fonts can block for 10+ seconds)
 // ============================================================
+try{
+  var _apOpen=localStorage.getItem('anki_tts_panel_open');
+  if(_apOpen==='0'){var _apB=document.getElementById('audioPanelBody');var _apA=document.getElementById('aaArr');if(_apB){_apB.classList.remove('open');if(_apA)_apA.textContent='▸';}}
+}catch(e){}
 function initAudioStatus(){
   try{
     fetch(apiBase()+'/api/audio_status').then(function(r){return r.json();}).then(function(d){
       var cb=document.getElementById('includeAudio');
       var lb=document.getElementById('audioNote');
       if(!cb)return;
+      var pn=document.getElementById('ttsPanelNote');
       if(d&&d.library_words>0){
         cb.checked=true;
         if(lb)lb.textContent='\uD83C\uDFA7 تضمين الصوت — مكتبتك الجاهزة ('+d.library_words+' كلمة)';
+        if(pn&&!pn.textContent)pn.textContent='\uD83D\uDCE6 مكتبة صوتية جاهزة ('+d.library_words+' كلمة): تُضمَّن مباشرة. الفواصل الزمنية تُطبَّق تلقائياً.';
       }else if(d){
         cb.checked=false;
         if(lb)lb.textContent='\uD83C\uDFA7 تضمين الصوت — يتطلب مكتبتك الصوتية أو رزمة صغيرة (حتى '+d.max_generate_words+' كلمة)';
+        if(pn&&!pn.textContent)pn.textContent='\u26A0\uFE0F بدون مكتبة: التوليد التلقائي متاح للرزم الصغيرة فقط (حتى '+d.max_generate_words+' كلمة). أرسل مكتبتك الصوتية للرزمة الكاملة.';
       }
     }).catch(function(){});
   }catch(e){}
