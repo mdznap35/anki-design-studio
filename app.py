@@ -236,9 +236,23 @@ def _cache_put(h, path):
     try:
         dest = os.path.join(DECK_CACHE_DIR, h + '.apkg')
         shutil.copyfile(path, dest)
+        _trim_cache(3)  # إبقاء آخر 3 رزم محفوظة فقط
         return dest
     except Exception:
         return path
+
+
+def _trim_cache(keep):
+    try:
+        files = [f for f in os.listdir(DECK_CACHE_DIR) if f.endswith('.apkg')]
+        files.sort(key=lambda f: os.path.getmtime(os.path.join(DECK_CACHE_DIR, f)), reverse=True)
+        for f in files[keep:]:
+            try:
+                os.remove(os.path.join(DECK_CACHE_DIR, f))
+            except OSError:
+                pass
+    except Exception:
+        pass
 
 
 def _build_deck_apkg(deck_name, designs, tts_cfg, include_audio, progress=None):
