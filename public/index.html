@@ -1131,6 +1131,16 @@ function buildPreviewDoc(t){
     +'</body></html>';
 }
 
+function addSpinKeyframes(){
+  try{
+    var st = document.getElementById('spinKeyframes');
+    if (st) return;
+    var ss = document.createElement('style');
+    ss.id = 'spinKeyframes';
+    ss.textContent = '@keyframes spin{to{transform:rotate(360deg)}}';
+    document.head.appendChild(ss);
+  }catch(e){}
+}
 function renderGrid(){
   // Hide loading message when grid renders
   var lm=document.getElementById('loadingMsg');if(lm)lm.remove();
@@ -1198,7 +1208,8 @@ function renderGrid(){
       html += builtIn.map(function(t){return renderGalleryCard(t,false);}).join('');
     }
     if(html===''){
-      html = '<div style="text-align:center;padding:30px;color:var(--tx3);font-size:.75em">جاري تحميل التصاميم الاحترافية...</div>';
+      html = '<div style="text-align:center;padding:30px;color:var(--tx3);font-size:.75em"><span style="display:inline-block;width:14px;height:14px;border:2px solid var(--ac3);border-top-color:transparent;border-radius:50%;animation:spin 1s linear infinite;vertical-align:middle;margin-left:6px"></span>جاري تحميل التصاميم الاحترافية...</div>';
+      if (typeof addSpinKeyframes === 'function') addSpinKeyframes();
     }
     document.getElementById('tplGrid').innerHTML=html;
     renderMultiBar();
@@ -3443,6 +3454,7 @@ function initApp(){
   // Initialize immediately - don't wait for load event (fonts can block it for 10+ seconds)
   loadCustomDesigns();pushHist();renderGrid();
   setTimeout(function(){try{populateVoiceSelects();}catch(e){}},400);
+  setTimeout(function(){try{startGalleryWatcher();}catch(e){}},1500);
   setTimeout(function(){
     try{renderVE();}catch(e){}
     try{renderCtrls();}catch(e){}
@@ -5170,6 +5182,25 @@ function designs100Loaded(){
 function premiumDesignsLoaded(){
   // القوالب الاحترافية القديمة محفوظة على جنب (لا تُعرض في المعرض حالياً)
   return;
+}
+function ensureGalleryDesigns(){
+  if (DESIGNS100_ADDED) return;
+  if (typeof EMBEDDED_DESIGNS_100 === 'undefined' || !EMBEDDED_DESIGNS_100 || !EMBEDDED_DESIGNS_100.length) return;
+  DESIGNS100_ADDED = true;
+  addDesigns(EMBEDDED_DESIGNS_100);
+  if (typeof renderGrid === 'function') renderGrid();
+}
+function startGalleryWatcher(){
+  var tries = 0;
+  var timer = setInterval(function(){
+    tries++;
+    try{ ensureGalleryDesigns(); }catch(e){}
+    try{
+      var tpl = document.getElementById('tplGrid');
+      if (tpl && !tpl.querySelector('.gc') && tries > 2) renderGrid();
+    }catch(e){}
+    if (tries >= 20) clearInterval(timer);
+  }, 1500);
 }
 function loadCustomDesigns() {
   if (CUSTOM_TEMPLATES_LOADED) return;

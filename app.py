@@ -13,6 +13,35 @@ def add_cors_headers(response):  # nosec SXXX
     response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
     return response
 
+@app.after_request
+def maybe_gzip(response):  # nosec SXXX
+    # ضغط الملفات الكبيرة (JS/JSON/HTML) لتسريع التحميل على الجوال
+    try:
+        pth = request.path or ''
+        if request.method != 'GET' or response.status_code >= 400:
+            return response
+        if not (pth.endswith('.js') or pth.endswith('.json') or pth.endswith('.html')):
+            return response
+        if 'gzip' not in (request.headers.get('Accept-Encoding') or '').lower():
+            return response
+        if response.direct_passthrough:
+            response.direct_passthrough = False
+        body = response.get_data()
+        if len(body) < 2048:
+            return response
+        comp = __import__('gzip').compress(body, 6)
+        if len(comp) >= len(body):
+            return response
+        import hashlib
+        response.set_data(comp)
+        response.headers['Content-Encoding'] = 'gzip'
+        response.headers['Content-Length'] = str(len(comp))
+        response.headers['Vary'] = 'Accept-Encoding'
+        response.headers['ETag'] = '"' + hashlib.md5(comp).hexdigest()[:16] + '-gz"'
+    except Exception:
+        pass
+    return response
+
 @app.route('/api/generate', methods=['OPTIONS'])
 def generate_preflight():
     return '', 204
