@@ -425,6 +425,45 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 <div style="font-size:.9em;font-weight:900;background:linear-gradient(135deg,#a78bfa,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent">🎨 القوالب الاحترافية</div>
 <div id="tplCount" style="font-size:.65em;color:var(--tx2);margin-top:2px">جاري تحميل التصاميم...</div>
 </div>
+<div class="aa">
+<div class="aa-t" onclick="toggleAudioPanel()"><span>🎙️ لوحة تحكم الصوت</span><span class="arr" id="gAaArr" data-pid="aaArr">▾</span></div>
+<div class="aa-b open" id="gAudioPanelBody" data-pid="audioPanelBody">
+<div style="display:flex;gap:8px;margin-bottom:8px">
+<div style="flex:1">
+<label for="gTtsFrVoice" class="aa-lb">🎤 الصوت الفرنسي</label>
+<select class="sl" aria-label="French voice" id="gTtsFrVoice" data-pid="ttsFrVoice" onchange="saveVoiceSel(this)"></select>
+</div>
+<div style="flex:1">
+<label for="gTtsArVoice" class="aa-lb">🎤 الصوت العربي</label>
+<select class="sl" aria-label="Arabic voice" id="gTtsArVoice" data-pid="ttsArVoice" onchange="saveVoiceSel(this)"></select>
+</div>
+</div>
+<div class="aa-lb" style="margin-bottom:4px">⏱️ الفاصل الزمني بين المقاطع (ملي ثانية)</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px">
+<div><label for="gTtsGapFrBefore" class="aa-lb">صمت قبل الفرنسي</label><input class="tx" aria-label="Gap before French" id="gTtsGapFrBefore" data-pid="ttsGapFrBefore" type="number" min="0" max="5000" step="50" value="0" onchange="saveVoiceSel(this)"></div>
+<div><label for="gTtsGapFrAfter" class="aa-lb">الفاصل بين الكلمتين</label><input class="tx" aria-label="Gap between words" id="gTtsGapFrAfter" data-pid="ttsGapFrAfter" type="number" min="0" max="5000" step="50" value="0" onchange="saveVoiceSel(this)"></div>
+<div><label for="gTtsGapArBefore" class="aa-lb">صمت قبل العربي</label><input class="tx" aria-label="Gap before Arabic" id="gTtsGapArBefore" data-pid="ttsGapArBefore" type="number" min="0" max="5000" step="50" value="0" onchange="saveVoiceSel(this)"></div>
+<div><label for="gTtsGapArAfter" class="aa-lb">صمت بعد العربي</label><input class="tx" aria-label="Gap after Arabic" id="gTtsGapArAfter" data-pid="ttsGapArAfter" type="number" min="0" max="5000" step="50" value="0" onchange="saveVoiceSel(this)"></div>
+</div>
+<div style="display:flex;gap:8px;margin-bottom:8px">
+<div style="flex:1">
+<label for="gTtsSpeed" class="aa-lb">⚡ السرعة (<span id="gTtsSpeedVal" data-pid="ttsSpeedVal">1.0</span>x)</label>
+<input class="tx" aria-label="TTS speed" id="gTtsSpeed" data-pid="ttsSpeed" type="number" min="0.5" max="2" step="0.1" value="1" oninput="ttsValLabel(this)" onchange="saveVoiceSel(this)" style="text-align:center">
+</div>
+<div style="flex:1">
+<label for="gTtsPitch" class="aa-lb">🎵 النغمة (<span id="gTtsPitchVal" data-pid="ttsPitchVal">1.0</span>)</label>
+<input class="tx" aria-label="TTS pitch" id="gTtsPitch" data-pid="ttsPitch" type="number" min="0.5" max="2" step="0.1" value="1" oninput="ttsValLabel(this)" onchange="saveVoiceSel(this)" style="text-align:center">
+</div>
+</div>
+<div style="display:flex;gap:6px;align-items:center;margin-bottom:8px">
+<button class="btn ba bs" id="gTtsPreviewBtn" data-pid="ttsPreviewBtn" style="flex:1" onclick="previewTTS()">🔊 معاينة الصوت <span id="gTtsPreviewLd" data-pid="ttsPreviewLd" style="display:none">⏳</span></button>
+<button class="btn bo bs" onclick="resetTTSConfig()">↺ افتراضي</button>
+</div>
+<audio id="gTtsPreviewAudio" data-pid="ttsPreviewAudio" controls preload="none" style="display:none;width:100%;height:34px;margin-bottom:6px;border-radius:8px"></audio>
+<div id="gTtsPanelNote" data-pid="ttsPanelNote" style="font-size:.6em;color:var(--tx3);text-align:right;line-height:1.7"></div>
+</div>
+</div>
+
 <div id="multiBar">
   <span class="mb-count">🎯 <b id="mbCountNum">0</b> تصميم محدد</span>
   <div style="display:flex;gap:6px;align-items:center">
@@ -469,43 +508,44 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 <input class="tx" aria-label="Text input" id="deckName" value="Français Bac" style="text-align:center;font-weight:700">
 </div>
 <div class="aa" id="audioPanel">
-<div class="aa-t" onclick="toggleAudioPanel()"><span>🎙️ لوحة تحكم الصوت</span><span class="arr" id="aaArr">▾</span></div>
-<div class="aa-b open" id="audioPanelBody">
+<div class="aa-t" onclick="toggleAudioPanel()"><span>🎙️ لوحة تحكم الصوت</span><span class="arr" id="aaArr" data-pid="aaArr">▾</span></div>
+<div class="aa-b open" id="audioPanelBody" data-pid="audioPanelBody">
 <div style="display:flex;gap:8px;margin-bottom:8px">
 <div style="flex:1">
 <label for="ttsFrVoice" class="aa-lb">🎤 الصوت الفرنسي</label>
-<select class="sl" aria-label="French voice" id="ttsFrVoice" onchange="saveVoiceSel()"></select>
+<select class="sl" aria-label="French voice" id="ttsFrVoice" data-pid="ttsFrVoice" onchange="saveVoiceSel(this)"></select>
 </div>
 <div style="flex:1">
 <label for="ttsArVoice" class="aa-lb">🎤 الصوت العربي</label>
-<select class="sl" aria-label="Arabic voice" id="ttsArVoice" onchange="saveVoiceSel()"></select>
+<select class="sl" aria-label="Arabic voice" id="ttsArVoice" data-pid="ttsArVoice" onchange="saveVoiceSel(this)"></select>
 </div>
 </div>
 <div class="aa-lb" style="margin-bottom:4px">⏱️ الفاصل الزمني بين المقاطع (ملي ثانية)</div>
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px">
-<div><label for="ttsGapFrBefore" class="aa-lb">صمت قبل الفرنسي</label><input class="tx" aria-label="Gap before French" id="ttsGapFrBefore" type="number" min="0" max="5000" step="50" value="0" onchange="saveVoiceSel()"></div>
-<div><label for="ttsGapFrAfter" class="aa-lb">الفاصل بين الكلمتين</label><input class="tx" aria-label="Gap between words" id="ttsGapFrAfter" type="number" min="0" max="5000" step="50" value="0" onchange="saveVoiceSel()"></div>
-<div><label for="ttsGapArBefore" class="aa-lb">صمت قبل العربي</label><input class="tx" aria-label="Gap before Arabic" id="ttsGapArBefore" type="number" min="0" max="5000" step="50" value="0" onchange="saveVoiceSel()"></div>
-<div><label for="ttsGapArAfter" class="aa-lb">صمت بعد العربي</label><input class="tx" aria-label="Gap after Arabic" id="ttsGapArAfter" type="number" min="0" max="5000" step="50" value="0" onchange="saveVoiceSel()"></div>
+<div><label for="ttsGapFrBefore" class="aa-lb">صمت قبل الفرنسي</label><input class="tx" aria-label="Gap before French" id="ttsGapFrBefore" data-pid="ttsGapFrBefore" type="number" min="0" max="5000" step="50" value="0" onchange="saveVoiceSel(this)"></div>
+<div><label for="ttsGapFrAfter" class="aa-lb">الفاصل بين الكلمتين</label><input class="tx" aria-label="Gap between words" id="ttsGapFrAfter" data-pid="ttsGapFrAfter" type="number" min="0" max="5000" step="50" value="0" onchange="saveVoiceSel(this)"></div>
+<div><label for="ttsGapArBefore" class="aa-lb">صمت قبل العربي</label><input class="tx" aria-label="Gap before Arabic" id="ttsGapArBefore" data-pid="ttsGapArBefore" type="number" min="0" max="5000" step="50" value="0" onchange="saveVoiceSel(this)"></div>
+<div><label for="ttsGapArAfter" class="aa-lb">صمت بعد العربي</label><input class="tx" aria-label="Gap after Arabic" id="ttsGapArAfter" data-pid="ttsGapArAfter" type="number" min="0" max="5000" step="50" value="0" onchange="saveVoiceSel(this)"></div>
 </div>
 <div style="display:flex;gap:8px;margin-bottom:8px">
 <div style="flex:1">
-<label for="ttsSpeed" class="aa-lb">⚡ السرعة (<span id="ttsSpeedVal">1.0</span>x)</label>
-<input class="tx" aria-label="TTS speed" id="ttsSpeed" type="number" min="0.5" max="2" step="0.1" value="1" oninput="document.getElementById('ttsSpeedVal').textContent=parseFloat(this.value).toFixed(1)" onchange="saveVoiceSel()" style="text-align:center">
+<label for="ttsSpeed" class="aa-lb">⚡ السرعة (<span id="ttsSpeedVal" data-pid="ttsSpeedVal">1.0</span>x)</label>
+<input class="tx" aria-label="TTS speed" id="ttsSpeed" data-pid="ttsSpeed" type="number" min="0.5" max="2" step="0.1" value="1" oninput="ttsValLabel(this)" onchange="saveVoiceSel(this)" style="text-align:center">
 </div>
 <div style="flex:1">
-<label for="ttsPitch" class="aa-lb">🎵 النغمة (<span id="ttsPitchVal">1.0</span>)</label>
-<input class="tx" aria-label="TTS pitch" id="ttsPitch" type="number" min="0.5" max="2" step="0.1" value="1" oninput="document.getElementById('ttsPitchVal').textContent=parseFloat(this.value).toFixed(1)" onchange="saveVoiceSel()" style="text-align:center">
+<label for="ttsPitch" class="aa-lb">🎵 النغمة (<span id="ttsPitchVal" data-pid="ttsPitchVal">1.0</span>)</label>
+<input class="tx" aria-label="TTS pitch" id="ttsPitch" data-pid="ttsPitch" type="number" min="0.5" max="2" step="0.1" value="1" oninput="ttsValLabel(this)" onchange="saveVoiceSel(this)" style="text-align:center">
 </div>
 </div>
 <div style="display:flex;gap:6px;align-items:center;margin-bottom:8px">
-<button class="btn ba bs" id="ttsPreviewBtn" style="flex:1" onclick="previewTTS()">🔊 معاينة الصوت <span id="ttsPreviewLd" style="display:none">⏳</span></button>
+<button class="btn ba bs" id="ttsPreviewBtn" data-pid="ttsPreviewBtn" style="flex:1" onclick="previewTTS()">🔊 معاينة الصوت <span id="ttsPreviewLd" data-pid="ttsPreviewLd" style="display:none">⏳</span></button>
 <button class="btn bo bs" onclick="resetTTSConfig()">↺ افتراضي</button>
 </div>
-<audio id="ttsPreviewAudio" controls preload="none" style="display:none;width:100%;height:34px;margin-bottom:6px;border-radius:8px"></audio>
-<div id="ttsPanelNote" style="font-size:.6em;color:var(--tx3);text-align:right;line-height:1.7"></div>
+<audio id="ttsPreviewAudio" data-pid="ttsPreviewAudio" controls preload="none" style="display:none;width:100%;height:34px;margin-bottom:6px;border-radius:8px"></audio>
+<div id="ttsPanelNote" data-pid="ttsPanelNote" style="font-size:.6em;color:var(--tx3);text-align:right;line-height:1.7"></div>
 </div>
 </div>
+
 <label style="display:flex;align-items:center;gap:6px;font-size:.68em;color:var(--tx2);margin-bottom:10px;cursor:pointer">
 <input type="checkbox" id="includeAudio" checked style="width:15px;height:15px;accent-color:var(--ac)"> <span id="audioNote">🎧 تضمين الصوت</span>
 </label>
@@ -1288,11 +1328,18 @@ function buildDesignPayload(t){
 // لوحة تحكم الصوت — أصوات + لهجات + فاصل + سرعة + نغمة + معاينة
 // ============================================================
 var TTS_VOICES_FALLBACK={"fr":[{"id":"fr-FR-HenriNeural","label":"فرنسي (فرنسا) — هنري","gender":"male"},{"id":"fr-FR-RemyMultilingualNeural","label":"فرنسي (فرنسا) — ريمي","gender":"male"},{"id":"fr-CA-AntoineNeural","label":"فرنسي (كندا) — أنطوان","gender":"male"},{"id":"fr-CA-JeanNeural","label":"فرنسي (كندا) — جان","gender":"male"},{"id":"fr-CA-ThierryNeural","label":"فرنسي (كندا) — تييري","gender":"male"},{"id":"fr-BE-GerardNeural","label":"فرنسي (بلجيكا) — جيرار","gender":"male"},{"id":"fr-CH-FabriceNeural","label":"فرنسي (سويسرا) — فابريس","gender":"male"},{"id":"fr-FR-DeniseNeural","label":"فرنسي (فرنسا) — دينيس","gender":"female"},{"id":"fr-FR-EloiseNeural","label":"فرنسي (فرنسا) — إلويز","gender":"female"},{"id":"fr-FR-VivienneMultilingualNeural","label":"فرنسي (فرنسا) — فيفيان","gender":"female"},{"id":"fr-CA-SylvieNeural","label":"فرنسي (كندا) — سيلفي","gender":"female"},{"id":"fr-BE-CharlineNeural","label":"فرنسي (بلجيكا) — شارلين","gender":"female"},{"id":"fr-CH-ArianeNeural","label":"فرنسي (سويسرا) — أريان","gender":"female"}],"ar":[{"id":"ar-SA-HamedNeural","label":"عربي (السعودية) — حامد","gender":"male"},{"id":"ar-SA-ZariyahNeural","label":"عربي (السعودية) — زريا","gender":"female"},{"id":"ar-AE-HamdanNeural","label":"عربي (الإمارات) — حمدان","gender":"male"},{"id":"ar-AE-FatimaNeural","label":"عربي (الإمارات) — فاطمة","gender":"female"},{"id":"ar-BH-AliNeural","label":"عربي (البحرين) — علي","gender":"male"},{"id":"ar-BH-LailaNeural","label":"عربي (البحرين) — ليلى","gender":"female"},{"id":"ar-DZ-IsmaelNeural","label":"عربي (الجزائر) — إسماعيل","gender":"male"},{"id":"ar-DZ-AminaNeural","label":"عربي (الجزائر) — أمينة","gender":"female"},{"id":"ar-EG-ShakirNeural","label":"عربي (مصر) — شاكر","gender":"male"},{"id":"ar-EG-SalmaNeural","label":"عربي (مصر) — سلمى","gender":"female"},{"id":"ar-IQ-BasselNeural","label":"عربي (العراق) — باسل","gender":"male"},{"id":"ar-IQ-RanaNeural","label":"عربي (العراق) — رنا","gender":"female"},{"id":"ar-JO-TaimNeural","label":"عربي (الأردن) — تيم","gender":"male"},{"id":"ar-JO-SanaNeural","label":"عربي (الأردن) — سناء","gender":"female"},{"id":"ar-KW-FahedNeural","label":"عربي (الكويت) — فهد","gender":"male"},{"id":"ar-KW-NouraNeural","label":"عربي (الكويت) — نورة","gender":"female"},{"id":"ar-LB-RamiNeural","label":"عربي (لبنان) — رامي","gender":"male"},{"id":"ar-LB-LaylaNeural","label":"عربي (لبنان) — ليلى","gender":"female"},{"id":"ar-LY-OmarNeural","label":"عربي (ليبيا) — عمر","gender":"male"},{"id":"ar-LY-ImanNeural","label":"عربي (ليبيا) — إيمان","gender":"female"},{"id":"ar-MA-JamalNeural","label":"عربي (المغرب) — جمال","gender":"male"},{"id":"ar-MA-MounaNeural","label":"عربي (المغرب) — منى","gender":"female"},{"id":"ar-OM-AbdullahNeural","label":"عربي (عُمان) — عبدالله","gender":"male"},{"id":"ar-OM-AyshaNeural","label":"عربي (عُمان) — عائشة","gender":"female"},{"id":"ar-QA-MoazNeural","label":"عربي (قطر) — معاذ","gender":"male"},{"id":"ar-QA-AmalNeural","label":"عربي (قطر) — أمل","gender":"female"},{"id":"ar-SY-LaithNeural","label":"عربي (سوريا) — ليث","gender":"male"},{"id":"ar-SY-AmanyNeural","label":"عربي (سوريا) — أماني","gender":"female"},{"id":"ar-TN-HediNeural","label":"عربي (تونس) — هادي","gender":"male"},{"id":"ar-TN-ReemNeural","label":"عربي (تونس) — ريم","gender":"female"},{"id":"ar-YE-SalehNeural","label":"عربي (اليمن) — صالح","gender":"male"},{"id":"ar-YE-MaryamNeural","label":"عربي (اليمن) — مريم","gender":"female"}]};
-function _ttsNum(id,d){var el=document.getElementById(id);var v=parseFloat(el?el.value:NaN);return isNaN(v)?d:v;}
+function ttsEls(pid){return Array.prototype.slice.call(document.querySelectorAll('[data-pid="'+pid+'"]'));}
+function ttsEl(pid){return ttsEls(pid)[0];}
+function _ttsNum(id,d){var el=ttsEl(id);var v=parseFloat(el?el.value:NaN);return isNaN(v)?d:v;}
+function ttsValLabel(el){
+  if(!el||!el.dataset||!el.dataset.pid)return;
+  var v=parseFloat(el.value);if(isNaN(v))v=0;
+  ttsEls(el.dataset.pid+'Val').forEach(function(s){if(s)s.textContent=v.toFixed(1);});
+}
 function collectTTSConfig(){
   return {
-    frVoice:document.getElementById('ttsFrVoice')?document.getElementById('ttsFrVoice').value:'fr-FR-HenriNeural',
-    arVoice:document.getElementById('ttsArVoice')?document.getElementById('ttsArVoice').value:'ar-SA-HamedNeural',
+    frVoice:ttsEl('ttsFrVoice')?ttsEl('ttsFrVoice').value:'fr-FR-HenriNeural',
+    arVoice:ttsEl('ttsArVoice')?ttsEl('ttsArVoice').value:'ar-SA-HamedNeural',
     frGapBefore:_ttsNum('ttsGapFrBefore',0),
     frGapAfter:_ttsNum('ttsGapFrAfter',0),
     arGapBefore:_ttsNum('ttsGapArBefore',0),
@@ -1308,77 +1355,82 @@ function _fillVoiceSelect(sel,list,key,saved){
   if(want&&list.some(function(v){return v.id===want;}))sel.value=want;
 }
 function populateVoiceSelects(){
-  var frSel=document.getElementById('ttsFrVoice');
-  var arSel=document.getElementById('ttsArVoice');
-  if(!frSel||!arSel)return;
+  var frSels=ttsEls('ttsFrVoice');
+  var arSels=ttsEls('ttsArVoice');
+  if(!frSels.length||!arSels.length)return;
   var saved=null;try{saved=JSON.parse(localStorage.getItem('anki_tts_panel')||'null');}catch(e){}
+  function fill(frList,arList){
+    frSels.forEach(function(sel){_fillVoiceSelect(sel,frList,'frVoice',saved);});
+    arSels.forEach(function(sel){_fillVoiceSelect(sel,arList,'arVoice',saved);});
+    applySavedTTS();
+  }
   fetch(apiBase()+'/api/tts_voices').then(function(r){return r.json();}).then(function(d){
-    if(d&&d.fr&&d.fr.length&&d.ar&&d.ar.length){
-      _fillVoiceSelect(frSel,d.fr,'frVoice',saved);
-      _fillVoiceSelect(arSel,d.ar,'arVoice',saved);
-    }else{
-      _fillVoiceSelect(frSel,TTS_VOICES_FALLBACK.fr,'frVoice',saved);
-      _fillVoiceSelect(arSel,TTS_VOICES_FALLBACK.ar,'arVoice',saved);
-    }
-    applySavedTTS();
-  }).catch(function(){
-    _fillVoiceSelect(frSel,TTS_VOICES_FALLBACK.fr,'frVoice',saved);
-    _fillVoiceSelect(arSel,TTS_VOICES_FALLBACK.ar,'arVoice',saved);
-    applySavedTTS();
-  });
+    if(d&&d.fr&&d.fr.length&&d.ar&&d.ar.length)fill(d.fr,d.ar);
+    else fill(TTS_VOICES_FALLBACK.fr,TTS_VOICES_FALLBACK.ar);
+  }).catch(function(){fill(TTS_VOICES_FALLBACK.fr,TTS_VOICES_FALLBACK.ar);});
 }
 function applySavedTTS(){
   var saved=null;try{saved=JSON.parse(localStorage.getItem('anki_tts_panel')||'null');}catch(e){}
   if(!saved)return;
   var map={frVoice:'ttsFrVoice',arVoice:'ttsArVoice',frGapBefore:'ttsGapFrBefore',frGapAfter:'ttsGapFrAfter',arGapBefore:'ttsGapArBefore',arGapAfter:'ttsGapArAfter',speed:'ttsSpeed',pitch:'ttsPitch'};
-  for(var k in map){var el=document.getElementById(map[k]);if(el&&saved[k]!==undefined&&saved[k]!=='')el.value=saved[k];}
-  var sv=document.getElementById('ttsSpeedVal');if(sv)sv.textContent=parseFloat(document.getElementById('ttsSpeed')?document.getElementById('ttsSpeed').value:1).toFixed(1);
-  var pv=document.getElementById('ttsPitchVal');if(pv)pv.textContent=parseFloat(document.getElementById('ttsPitch')?document.getElementById('ttsPitch').value:1).toFixed(1);
+  for(var k in map){
+    ttsEls(map[k]).forEach(function(el){if(el&&saved[k]!==undefined&&saved[k]!=='')el.value=saved[k];});
+  }
+  var sv=ttsEl('ttsSpeed');
+  ttsEls('ttsSpeedVal').forEach(function(s){if(s)s.textContent=parseFloat(sv?sv.value:1).toFixed(1);});
+  var pv=ttsEl('ttsPitch');
+  ttsEls('ttsPitchVal').forEach(function(s){if(s)s.textContent=parseFloat(pv?pv.value:1).toFixed(1);});
 }
-function saveVoiceSel(){
+function saveVoiceSel(evEl){
+  if(evEl&&evEl.dataset&&evEl.dataset.pid){
+    var v=evEl.value;
+    ttsEls(evEl.dataset.pid).forEach(function(el){if(el&&el!==evEl)el.value=v;});
+  }
   try{localStorage.setItem('anki_tts_panel',JSON.stringify(collectTTSConfig()));}catch(e){}
 }
 function toggleAudioPanel(){
-  var b=document.getElementById('audioPanelBody');if(!b)return;
-  var open=b.classList.toggle('open');
-  var arr=document.getElementById('aaArr');if(arr)arr.textContent=open?'▾':'▸';
+  var bodies=ttsEls('audioPanelBody');if(!bodies.length)return;
+  var open=bodies[0].classList.toggle('open');
+  bodies.forEach(function(b,i){if(i>0){if(open)b.classList.add('open');else b.classList.remove('open');}});
+  ttsEls('aaArr').forEach(function(arr){if(arr)arr.textContent=open?'▾':'▸';});
   try{localStorage.setItem('anki_tts_panel_open',open?'1':'0');}catch(e){}
 }
 function resetTTSConfig(){
-  var frSel=document.getElementById('ttsFrVoice');if(frSel)frSel.value='fr-FR-HenriNeural';
-  var arSel=document.getElementById('ttsArVoice');if(arSel)arSel.value='ar-SA-HamedNeural';
-  ['ttsGapFrBefore','ttsGapFrAfter','ttsGapArBefore','ttsGapArAfter'].forEach(function(id){var el=document.getElementById(id);if(el)el.value=0;});
-  var sEl=document.getElementById('ttsSpeed');if(sEl)sEl.value=1;
-  var pEl=document.getElementById('ttsPitch');if(pEl)pEl.value=1;
-  var sv=document.getElementById('ttsSpeedVal');if(sv)sv.textContent='1.0';
-  var pv=document.getElementById('ttsPitchVal');if(pv)pv.textContent='1.0';
+  ttsEls('ttsFrVoice').forEach(function(el){if(el)el.value='fr-FR-HenriNeural';});
+  ttsEls('ttsArVoice').forEach(function(el){if(el)el.value='ar-SA-HamedNeural';});
+  ['ttsGapFrBefore','ttsGapFrAfter','ttsGapArBefore','ttsGapArAfter'].forEach(function(pid){ttsEls(pid).forEach(function(el){if(el)el.value=0;});});
+  ttsEls('ttsSpeed').forEach(function(el){if(el)el.value=1;});
+  ttsEls('ttsPitch').forEach(function(el){if(el)el.value=1;});
+  ttsEls('ttsSpeedVal').forEach(function(s){if(s)s.textContent='1.0';});
+  ttsEls('ttsPitchVal').forEach(function(s){if(s)s.textContent='1.0';});
   saveVoiceSel();toast('تمت إعادة ضبط الصوت للافتراضي');previewTTS();
 }
 async function previewTTS(){
-  var btn=document.getElementById('ttsPreviewBtn');
-  var ld=document.getElementById('ttsPreviewLd');
-  var au=document.getElementById('ttsPreviewAudio');
-  var note=document.getElementById('ttsPanelNote');
-  if(btn)btn.disabled=true;
-  if(ld)ld.style.display='inline-block';
-  if(note)note.textContent='⏳ جاري توليد المعاينة...';
+  var btns=ttsEls('ttsPreviewBtn');
+  var lds=ttsEls('ttsPreviewLd');
+  var aus=ttsEls('ttsPreviewAudio');
+  var notes=ttsEls('ttsPanelNote');
+  function setNotes(t){notes.forEach(function(n){if(n)n.textContent=t;});}
+  btns.forEach(function(b){if(b)b.disabled=true;});
+  lds.forEach(function(l){if(l)l.style.display='inline-block';});
+  setNotes('⏳ جاري توليد المعاينة...');
   try{
     var cfg=collectTTSConfig();
     var resp=await fetch(apiBase()+'/api/tts_preview',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fr:'Bonjour',ar:'مرحبا',ttsConfig:cfg})});
     if(!resp.ok){var em='Server error: '+resp.status;try{var ej=await resp.json();if(ej&&ej.error)em=ej.error;}catch(_e){}throw new Error(em);}
     var d=await resp.json();
-    if(d&&d.both&&au){
-      au.src=d.both;au.style.display='block';au.play().catch(function(){});
-      if(note)note.textContent='✓ تم توليد المعاينة: صوت '+cfg.frVoice.split('-').slice(0,2).join('-')+' ثم صوت '+cfg.arVoice.split('-').slice(0,2).join('-')+' مع الفواصل المحددة';
+    if(d&&d.both&&aus.length){
+      aus.forEach(function(a){if(a){a.src=d.both;a.style.display='block';a.play().catch(function(){});}});
+      setNotes('✓ تم توليد المعاينة: صوت '+cfg.frVoice.split('-').slice(0,2).join('-')+' ثم صوت '+cfg.arVoice.split('-').slice(0,2).join('-')+' مع الفواصل المحددة');
     }else{
-      if(note)note.textContent='⚠️ فشل توليد المعاينة — تحقق من الإنترنت وأعد المحاولة';
-      if(au)au.style.display='none';
+      setNotes('⚠️ فشل توليد المعاينة — تحقق من الإنترنت وأعد المحاولة');
+      aus.forEach(function(a){if(a)a.style.display='none';});
     }
   }catch(e){
-    if(note)note.textContent='⚠️ خطأ: '+e.message;
+    setNotes('⚠️ خطأ: '+e.message);
   }finally{
-    if(btn)btn.disabled=false;
-    if(ld)ld.style.display='none';
+    btns.forEach(function(b){if(b)b.disabled=false;});
+    lds.forEach(function(l){if(l)l.style.display='none';});
   }
 }
 
@@ -2378,7 +2430,7 @@ function initTTS(){
   const rateEl=document.getElementById('ttsRate');
   const pitchEl=document.getElementById('ttsPitch');
   if(rateEl)rateEl.oninput=function(){document.getElementById('ttsRateVal').textContent=this.value+'x';};
-  if(pitchEl)pitchEl.oninput=function(){document.getElementById('ttsPitchVal').textContent=parseFloat(this.value).toFixed(1);};
+  if(pitchEl)pitchEl.oninput=function(){ttsValLabel(this);};
 }
 function selectVoice(lang,name){
   if(!name){if(lang==='fr')ttsFRManual=null;else ttsARManual=null;return;}
@@ -5660,7 +5712,7 @@ function restoreOriginalCSS() {
 // ============================================================
 try{
   var _apOpen=localStorage.getItem('anki_tts_panel_open');
-  if(_apOpen==='0'){var _apB=document.getElementById('audioPanelBody');var _apA=document.getElementById('aaArr');if(_apB){_apB.classList.remove('open');if(_apA)_apA.textContent='▸';}}
+  if(_apOpen==='0'){ttsEls('audioPanelBody').forEach(function(b){if(b)b.classList.remove('open');});ttsEls('aaArr').forEach(function(a){if(a)a.textContent='▸';});}
 }catch(e){}
 function initAudioStatus(){
   try{
@@ -5668,15 +5720,16 @@ function initAudioStatus(){
       var cb=document.getElementById('includeAudio');
       var lb=document.getElementById('audioNote');
       if(!cb)return;
-      var pn=document.getElementById('ttsPanelNote');
+      var pns=ttsEls('ttsPanelNote');
+      function setNote(t){pns.forEach(function(n){if(n&&!n.textContent)n.textContent=t;});}
       if(d&&d.library_words>0){
         cb.checked=true;
         if(lb)lb.textContent='\uD83C\uDFA7 تضمين الصوت — مكتبتك الجاهزة ('+d.library_words+' كلمة)';
-        if(pn&&!pn.textContent)pn.textContent='\uD83D\uDCE6 مكتبة صوتية جاهزة ('+d.library_words+' كلمة): تُضمَّن مباشرة. الفواصل الزمنية تُطبَّق تلقائياً.';
+        setNote('\uD83D\uDCE6 مكتبة صوتية جاهزة ('+d.library_words+' كلمة): تُضمَّن مباشرة. الفواصل الزمنية تُطبَّق تلقائياً.');
       }else if(d){
         cb.checked=false;
         if(lb)lb.textContent='\uD83C\uDFA7 تضمين الصوت — يتطلب مكتبتك الصوتية أو رزمة صغيرة (حتى '+d.max_generate_words+' كلمة)';
-        if(pn&&!pn.textContent)pn.textContent='\uD83D\uDCA1 بدون مكتبة: الرزمة الكبيرة بتنولد أول مرة بصوتك (بتاخد وقت وتظهر بشريط تقدّم)، وبعدها بتصير فورية. أرسل مكتبتك الصوتية للتوليد الفوري.';
+        setNote('\uD83D\uDCA1 بدون مكتبة: الرزمة الكبيرة بتنولد أول مرة بصوتك (بتاخد وقت وتظهر بشريط تقدّم)، وبعدها بتصير فورية. أرسل مكتبتك الصوتية للتوليد الفوري.');
       }
     }).catch(function(){});
   }catch(e){}
