@@ -2430,7 +2430,9 @@ async function pollJobDownload(jobId, fileName, statusEl){
       var pct=d.total?Math.min(99,Math.round((d.done||0)/d.total*100)):0;
       if(pct!==lastPct){
         lastPct=pct;
-        if(jt)jt.textContent='🎧 جاري توليد صوت الرزمة الكبيرة... '+(d.done||0)+' / '+(d.total||0)+' كلمة ('+pct+'%) — أول مرة بتاخد وقت، وبعدها بتصير فورية';
+        var reuseTxt='';
+        if(d.cached>0)reuseTxt=' — 💾 '+d.cached+' كلمة محفوظة من توليد سابق (بيستأنف منها)';
+        if(jt)jt.textContent='🎧 جاري توليد صوت الرزمة... '+(d.done||0)+' / '+(d.total||0)+' كلمة ('+pct+'%)'+reuseTxt;
         if(jb)jb.style.width=pct+'%';
       }
       if(d.status==='done'){
@@ -2461,6 +2463,8 @@ async function downloadAPKG(){
     const resp=await fetch(apiBase()+'/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config)});
     if(resp.status===202){
       const dj=await resp.json();
+      var jt0=document.getElementById('jobProgTxt');
+      if(jt0)jt0.textContent='🎧 جاري التوليد... إذا انقطع، أعد الضغط وبيستأنف من وين ما وصل (الأصوات المولّدة محفوظة)';
       await pollJobDownload(dj.job, config.deckName+'.apkg', di);
       return;
     }

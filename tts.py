@@ -76,6 +76,88 @@ _sil_cache = {}
 _sil_lock = threading.Lock()
 _FFMPEG = shutil.which("ffmpeg")
 
+WORD_CACHE_DIR = os.path.join(tempfile.gettempdir(), "anki_word_cache")  # nosec S5443
+WORD_CACHE_MAX_BYTES = 600 * 1024 * 1024  # سقف حجم الكاش (~600MB)
+os.makedirs(WORD_CACHE_DIR, exist_ok=True)
+
+
+def _word_cache_path(text, lang, rate_pct, pitch_hz, voice):
+    import hashlib
+    h = hashlib.md5(("%s|%s|%d|%d|%s" % (text, lang, rate_pct, pitch_hz, voice)).encode("utf-8")).hexdigest()
+    return os.path.join(WORD_CACHE_DIR, h + ".txt")
+
+
+def _word_cache_read(text, lang, rate_pct, pitch_hz, voice):
+    try:
+        with open(_word_cache_path(text, lang, rate_pct, pitch_hz, voice), encoding="utf-8") as f:
+            return f.read().strip() or ""
+    except Exception:
+        return ""
+
+
+_trim_counter = [0]
+
+
+def _word_cache_write(text, lang, rate_pct, pitch_hz, voice, b64):
+    try:
+        p = _word_cache_path(text, lang, rate_pct, pitch_hz, voice)
+        with open(p, "w", encoding="utf-8") as f:
+            f.write(b64)
+        _trim_counter[0] += 1
+        if _trim_counter[0] % 25 == 0:
+            _trim_word_cache()
+    except Exception:
+        pass
+
+
+def _trim_word_cache():
+    try:
+        files = []
+        total = 0
+        for fn in os.listdir(WORD_CACHE_DIR):
+            if not fn.endswith(".txt"):
+                continue
+            fp = os.path.join(WORD_CACHE_DIR, fn)
+            try:
+                sz = os.path.getsize(fp)
+            except OSError:
+                continue
+            files.append((os.path.getmtime(fp), fp, sz))
+            total += sz
+        if total <= WORD_CACHE_MAX_BYTES:
+            return
+        files.sort()
+        for _, fp, sz in files:
+            if total <= WORD_CACHE_MAX_BYTES:
+                break
+            try:
+                os.remove(fp)
+                total -= sz
+            except OSError:
+                pass
+    except Exception:
+        pass
+
+
+def word_cached(word, arabic="", cfg=None):
+    """هل صوت الفرنسي والعربي لهذه الكلمة مولّد ومحفوظ من قبل (بنفس الإعدادات)؟"""
+    cfg = cfg or {}
+    try:
+        rate_pct, pitch_hz = speed_pitch_to_params(cfg.get("speed", 1.0), cfg.get("pitch", 1.0))
+        fr_voice = resolve_voice("fr", cfg.get("frVoice"))
+        ar_voice = resolve_voice("ar", cfg.get("arVoice"))
+        w = (word or "").strip()
+        a = (arabic or "").strip()
+        if not w:
+            return False
+        if not bool(_word_cache_read(w, "fr", rate_pct, pitch_hz, fr_voice)):
+            return False
+        if a and not bool(_word_cache_read(a, "ar", rate_pct, pitch_hz, ar_voice)):
+            return False
+        return True
+    except Exception:
+        return False
+
 
 def _norm(w):
     return (w or "").strip().lower()
@@ -159,6 +241,11 @@ def _synth_base64(text, lang, rate_pct, pitch_hz, voice, _tries=3):
     with _cache_lock:
         if key in _cache:
             return _cache[key]
+    disk = _word_cache_read(text, lang, rate_pct, pitch_hz, voice)
+    if disk:
+        with _cache_lock:
+            _cache[key] = disk
+        return disk
     import time
     b64 = ""
     for i in range(_tries):
@@ -173,6 +260,7 @@ def _synth_base64(text, lang, rate_pct, pitch_hz, voice, _tries=3):
             time.sleep(0.8 * (i + 1))
     if not b64:
         return ""
+    _word_cache_write(text, lang, rate_pct, pitch_hz, voice, b64)
     with _cache_lock:
         _cache[key] = b64
     return b64

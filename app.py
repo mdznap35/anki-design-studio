@@ -291,7 +291,7 @@ def _build_deck_apkg(deck_name, designs, tts_cfg, include_audio, progress=None):
         return r
 
     if include_audio:
-        with ThreadPoolExecutor(max_workers=6) as ex:
+        with ThreadPoolExecutor(max_workers=8) as ex:
             results = list(ex.map(make_fields, range(len(all_words))))
     else:
         results = [make_fields(i) for i in range(len(all_words))]
@@ -331,9 +331,14 @@ def _job_progress(jid, n):
 
 def _start_job(jid, h, deck_name, designs, tts_cfg, include_audio):
     all_words = get_all_words() + get_important_words()
+    cached_n = 0
+    try:
+        cached_n = sum(1 for w in all_words if tts.word_cached(w.get('word', ''), w.get('arabe', ''), tts_cfg))
+    except Exception:
+        cached_n = 0
     with JOBS_LOCK:
         JOBS[jid] = {'status': 'queued', 'done': 0, 'total': len(all_words),
-                     'error': '', 'path': '', 'deck_name': deck_name}
+                     'cached': cached_n, 'error': '', 'path': '', 'deck_name': deck_name}
 
     def run():
         with JOBS_LOCK:
@@ -371,7 +376,8 @@ def job_status(jid):
     if not j:
         return jsonify({'status': 'notfound'}), 404
     return jsonify({'status': j.get('status'), 'done': j.get('done', 0),
-                    'total': j.get('total', 0), 'error': j.get('error', '')})
+                    'total': j.get('total', 0), 'cached': j.get('cached', 0),
+                    'error': j.get('error', '')})
 
 
 @app.route('/api/download/<jid>', methods=['GET'])
