@@ -511,7 +511,11 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 </label>
 <button class="btn ba" style="width:100%;padding:10px" onclick="downloadAPKG()">⬇ تنزيل .apkg</button>
 <div id="dlInfo" style="margin-top:8px;font-size:.68em;color:var(--tx2);text-align:center"></div>
-<div id="loading" style="display:none;margin-top:8px;text-align:center"><span style="font-size:.68em;color:var(--tx2)">جاري التوليد... قد يستغرق دقائق عند إضافة الصوت</span></div>
+<div id="loading" style="display:none;margin-top:8px;text-align:center"><span style="font-size:.68em;color:var(--tx2)">جاري التوليد...</span></div>
+<div id="jobProg" style="display:none;margin-top:10px">
+<div style="font-size:.62em;color:var(--tx2);margin-bottom:5px;line-height:1.6" id="jobProgTxt">جاري توليد الصوت...</div>
+<div style="height:9px;background:var(--s2);border-radius:7px;overflow:hidden;border:1px solid var(--bd)"><div id="jobProgBar" style="height:100%;width:0%;background:linear-gradient(90deg,var(--ac),var(--ac2));transition:width .5s ease"></div></div>
+</div>
 </div>
 <div class="cw" style="margin-top:10px;max-width:450px;margin-left:auto;margin-right:auto">
 <div style="font-size:.72em;font-weight:800;color:var(--ac2);margin-bottom:6px">💾 نسخ احتياطي</div>
@@ -1394,9 +1398,14 @@ async function downloadMultiAPKG(){
     var deckName=(document.getElementById('deckName')?.value||'Anki Design')+' (متعدد التصاميم)';
     var config={deckName:deckName, designs:designs, multi:true, ttsConfig:collectTTSConfig(), includeAudio:document.getElementById('includeAudio')?.checked!==false};
     var resp=await fetch(apiBase()+'/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config)});
+    if(resp.status===202){
+      var dj=await resp.json();
+      try{await pollJobDownload(dj.job, config.deckName+'.apkg', di);if(veDi)veDi.textContent=di.textContent;}catch(e){if(veDi)veDi.textContent='خطأ: '+e.message;}
+      return;
+    }
     if(!resp.ok){var em='Server error: '+resp.status;try{var ej=await resp.json();if(ej&&ej.error)em=ej.error;}catch(_e){}throw new Error(em);}
     var blob=await resp.blob();if(blob.size<1000)throw new Error('ملف فارغ');
-    var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download=config.deckName+'.apkg';a.click();URL.revokeObjectURL(url);
+    triggerBlobDownload(blob, config.deckName+'.apkg');
     var msg='تم التنزيل ('+designs.length+' تصميم • '+Math.round(blob.size/1024)+' KB)';
     if(di)di.textContent=msg;
     if(veDi)veDi.textContent=msg;
@@ -2403,6 +2412,44 @@ function speakWord(text,lang){
 }
 
 // DOWNLOAD APKG
+// ===== التنزيل المؤجل للرزم الكبيرة (Background Job) =====
+function triggerBlobDownload(blob, name){
+  var url=URL.createObjectURL(blob);var a=document.createElement('a');
+  a.href=url;a.download=name||'deck.apkg';document.body.appendChild(a);a.click();
+  setTimeout(function(){URL.revokeObjectURL(url);a.remove();},4000);
+}
+async function pollJobDownload(jobId, fileName, statusEl){
+  var jp=document.getElementById('jobProg'),jt=document.getElementById('jobProgTxt'),jb=document.getElementById('jobProgBar');
+  if(jp)jp.style.display='block';
+  var lastPct=-1;
+  while(true){
+    await new Promise(function(r){setTimeout(r,4000);});
+    try{
+      var r=await fetch(apiBase()+'/api/job/'+jobId);
+      var d=await r.json();
+      var pct=d.total?Math.min(99,Math.round((d.done||0)/d.total*100)):0;
+      if(pct!==lastPct){
+        lastPct=pct;
+        if(jt)jt.textContent='🎧 جاري توليد صوت الرزمة الكبيرة... '+(d.done||0)+' / '+(d.total||0)+' كلمة ('+pct+'%) — أول مرة بتاخد وقت، وبعدها بتصير فورية';
+        if(jb)jb.style.width=pct+'%';
+      }
+      if(d.status==='done'){
+        var blob=await (await fetch(apiBase()+'/api/download/'+jobId)).blob();
+        if(jp)jp.style.display='none';
+        triggerBlobDownload(blob, fileName);
+        if(statusEl)statusEl.textContent='تم التنزيل ('+Math.round(blob.size/1024)+' KB)';
+        toast('✅ تم تنزيل الرزمة');
+        return;
+      }
+      if(d.status==='error'){throw new Error(d.error||'فشل توليد الصوت');}
+      if(d.status==='notfound'){throw new Error('انتهت المهلة — أعد المحاولة');}
+    }catch(e){
+      if(jp)jp.style.display='none';
+      if(statusEl)statusEl.textContent='خطأ: '+e.message;
+      throw e;
+    }
+  }
+}
 async function downloadAPKG(){
   const di=document.getElementById('dlInfo');const ld=document.getElementById('loading');
   if(di)di.textContent='';if(ld)ld.style.display='block';
@@ -2412,9 +2459,14 @@ async function downloadAPKG(){
     const previewHTML=renderCardHTML(S);
     const config={...S,deckName:(document.getElementById('deckName')?.value||'Anki Design'),cardFrontHTML:cardHTML,cardBackHTML:cardHTML,previewHTML:previewHTML,ttsConfig:collectTTSConfig(),includeAudio:document.getElementById('includeAudio')?.checked!==false};
     const resp=await fetch(apiBase()+'/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config)});
+    if(resp.status===202){
+      const dj=await resp.json();
+      await pollJobDownload(dj.job, config.deckName+'.apkg', di);
+      return;
+    }
     if(!resp.ok){let em='Server error: '+resp.status;try{const ej=await resp.json();if(ej&&ej.error)em=ej.error;}catch(_e){}throw new Error(em);}
     const blob=await resp.blob();if(blob.size<1000)throw new Error('ملف فارغ');
-    const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=config.deckName+'.apkg';a.click();URL.revokeObjectURL(url);
+    triggerBlobDownload(blob, config.deckName+'.apkg');
     if(di)di.textContent='تم التنزيل ('+Math.round(blob.size/1024)+' KB)';
   }catch(e){if(di)di.textContent='خطأ: '+e.message;}finally{if(ld)ld.style.display='none';}
 }
@@ -5620,7 +5672,7 @@ function initAudioStatus(){
       }else if(d){
         cb.checked=false;
         if(lb)lb.textContent='\uD83C\uDFA7 تضمين الصوت — يتطلب مكتبتك الصوتية أو رزمة صغيرة (حتى '+d.max_generate_words+' كلمة)';
-        if(pn&&!pn.textContent)pn.textContent='\u26A0\uFE0F بدون مكتبة: التوليد التلقائي متاح للرزم الصغيرة فقط (حتى '+d.max_generate_words+' كلمة). أرسل مكتبتك الصوتية للرزمة الكاملة.';
+        if(pn&&!pn.textContent)pn.textContent='\uD83D\uDCA1 بدون مكتبة: الرزمة الكبيرة بتنولد أول مرة بصوتك (بتاخد وقت وتظهر بشريط تقدّم)، وبعدها بتصير فورية. أرسل مكتبتك الصوتية للتوليد الفوري.';
       }
     }).catch(function(){});
   }catch(e){}

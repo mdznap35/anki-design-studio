@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import os, json, re, genanki, hashlib
+import os, json, re, genanki, hashlib, shutil, threading, uuid
 from concurrent.futures import ThreadPoolExecutor
 from flask import Flask, request, jsonify, send_file, send_from_directory
 import tts
@@ -201,28 +201,51 @@ def _write_deck(deck, safe_name):
 
 
 def _audio_guard(all_words, include_audio):
-    """يرجع رسالة خطأ إذا كان التوليد التلقائي غير عملي، أو None للسماح."""
-    if not include_audio:
-        return None
-    tts.load_library()
-    if tts._lib:
-        return None  # المكتبة جاهزة: تضمين مباشر بدون توليد
-    unique = len({(w.get('word') or '').strip().lower() for w in all_words if (w.get('word') or '').strip()})
-    if unique > AUDIO_MAX_WORDS:
-        return ('الرزمة كبيرة جداً للتوليد التلقائي للصوت (أكثر من %d كلمة). '
-                'أرسل مكتبتك الصوتية الجاهزة ليتم تضمينها، أو فعّل الصوت لرزمة أصغر.') % AUDIO_MAX_WORDS
+    """(محجوزة) الرزم الكبيرة أصبحت تُدار عبر نظام المهام الخلفية"""
     return None
 
 
-def generate_multi_design(deck_name, designs, tts_cfg, include_audio):
-    """رزمة واحدة: توزيع عادل للكلمات على التصاميم المختارة (round-robin)."""
+# ===== نظام الرزم الكبيرة: كاش + مهام خلفية (Jobs) =====
+DECK_CACHE_DIR = '/tmp/anki_deck_cache'  # nosec S5443
+os.makedirs(DECK_CACHE_DIR, exist_ok=True)
+JOBS = {}
+JOBS_LOCK = threading.Lock()
+JOB_SEM = threading.Semaphore(2)
+
+
+def _settings_hash(config):
+    key = {
+        'deck': config.get('deckName', ''),
+        'designs': config.get('designs'),
+        'tts': config.get('ttsConfig'),
+        'audio': config.get('includeAudio', True),
+        'custom': [config.get('_templateType'), config.get('_customFront'),
+                   config.get('_customBack'), config.get('_customCSS'),
+                   config.get('_customFields'), config.get('_templateName')],
+        'words': len(get_all_words()) + len(get_important_words()),
+    }
+    return hashlib.md5(json.dumps(key, sort_keys=True, ensure_ascii=False).encode('utf-8')).hexdigest()
+
+
+def _cache_get(h):
+    p = os.path.join(DECK_CACHE_DIR, h + '.apkg')
+    return p if os.path.exists(p) else None
+
+
+def _cache_put(h, path):
+    try:
+        dest = os.path.join(DECK_CACHE_DIR, h + '.apkg')
+        shutil.copyfile(path, dest)
+        return dest
+    except Exception:
+        return path
+
+
+def _build_deck_apkg(deck_name, designs, tts_cfg, include_audio, progress=None):
+    """يبني الرزمة (توزيع عادل للكلمات على التصاميم) ويعيد مسار ملف apkg"""
     all_words = get_all_words() + get_important_words()
     if not all_words:
-        return jsonify({'error': 'No word data found'}), 500
-    guard = _audio_guard(all_words, include_audio)
-    if guard:
-        return jsonify({'error': guard}), 400
-
+        raise ValueError('No word data found')
     deck = genanki.Deck(stable_id('MultiDeck_' + deck_name), deck_name)
     models = []
     for i, d in enumerate(designs):
@@ -241,10 +264,17 @@ def generate_multi_design(deck_name, designs, tts_cfg, include_audio):
         models.append((model, fields))
 
     n = len(models)
+    done = [0]
+    done_lock = threading.Lock()
 
     def make_fields(idx):
         model, fields = models[idx % n]
-        return model, _build_note_fields(fields, all_words[idx], tts_cfg, include_audio)
+        r = (model, _build_note_fields(fields, all_words[idx], tts_cfg, include_audio))
+        with done_lock:
+            done[0] += 1
+            if progress:
+                progress(done[0])
+        return r
 
     if include_audio:
         with ThreadPoolExecutor(max_workers=6) as ex:
@@ -256,8 +286,87 @@ def generate_multi_design(deck_name, designs, tts_cfg, include_audio):
         deck.add_note(genanki.Note(model=model, fields=nf))
 
     safe_name = deck_name.replace('/', '_').replace('\\', '_')
-    print(f"Multi-design deck sent: {len(all_words)} notes across {n} designs (audio={include_audio})")
-    return _write_deck(deck, safe_name)
+    apkg_path = os.path.join('/tmp', f'{safe_name}_{os.getpid()}_{uuid.uuid4().hex[:6]}.apkg')  # nosec S5443
+    genanki.Package(deck).write_to_file(apkg_path)
+    print(f"Deck built: {len(all_words)} notes across {n} designs (audio={include_audio})")
+    return apkg_path
+
+
+def _should_job(tts_cfg, include_audio):
+    """هل تحتاج الرزمة توليد صوت بالخلفية (كبيرة أو إعدادات غير افتراضية)؟"""
+    if not include_audio:
+        return False
+    all_words = get_all_words() + get_important_words()
+    if len(all_words) <= AUDIO_MAX_WORDS:
+        return False  # رزمة صغيرة: توليد فوري
+    tts.load_library()
+    gaps = any(int(tts_cfg.get(k, 0) or 0) > 0
+               for k in ('frGapBefore', 'frGapAfter', 'arGapBefore', 'arGapAfter'))
+    if tts._lib:
+        missing = [w for w in all_words if not tts.library_lookup(w.get('word', ''))]
+        if not missing and not gaps and not tts.needs_regen(tts_cfg, True):
+            return False  # مكتبة كاملة + إعدادات افتراضية: تضمين فوري
+    return True
+
+
+def _job_progress(jid, n):
+    with JOBS_LOCK:
+        if jid in JOBS:
+            JOBS[jid]['done'] = n
+
+
+def _start_job(jid, h, deck_name, designs, tts_cfg, include_audio):
+    all_words = get_all_words() + get_important_words()
+    with JOBS_LOCK:
+        JOBS[jid] = {'status': 'queued', 'done': 0, 'total': len(all_words),
+                     'error': '', 'path': '', 'deck_name': deck_name}
+
+    def run():
+        with JOBS_LOCK:
+            if jid in JOBS:
+                JOBS[jid]['status'] = 'running'
+        with JOB_SEM:
+            try:
+                path = _build_deck_apkg(deck_name, designs, tts_cfg, include_audio,
+                                        progress=lambda n: _job_progress(jid, n))
+                cached = _cache_put(h, path)
+                with JOBS_LOCK:
+                    if jid in JOBS:
+                        JOBS[jid]['status'] = 'done'
+                        JOBS[jid]['path'] = cached
+                        JOBS[jid]['done'] = JOBS[jid]['total']
+            except Exception as e:
+                print(f"Job {jid} error: {e}")
+                with JOBS_LOCK:
+                    if jid in JOBS:
+                        JOBS[jid]['status'] = 'error'
+                        JOBS[jid]['error'] = str(e)
+
+    threading.Thread(target=run, daemon=True).start()
+
+
+def _send_apkg(path, deck_name):
+    safe = deck_name.replace('/', '_').replace('\\', '_') + '.apkg'
+    return send_file(path, as_attachment=True, download_name=safe, mimetype='application/octet-stream')
+
+
+@app.route('/api/job/<jid>', methods=['GET'])
+def job_status(jid):
+    with JOBS_LOCK:
+        j = dict(JOBS.get(jid) or {})
+    if not j:
+        return jsonify({'status': 'notfound'}), 404
+    return jsonify({'status': j.get('status'), 'done': j.get('done', 0),
+                    'total': j.get('total', 0), 'error': j.get('error', '')})
+
+
+@app.route('/api/download/<jid>', methods=['GET'])
+def job_download(jid):
+    with JOBS_LOCK:
+        j = dict(JOBS.get(jid) or {})
+    if not j or j.get('status') != 'done' or not j.get('path') or not os.path.exists(j.get('path')):
+        return jsonify({'error': 'غير جاهز بعد'}), 404
+    return _send_apkg(j['path'], j.get('deck_name', 'deck'))
 
 
 @app.route('/api/generate', methods=['POST'])
@@ -282,46 +391,31 @@ def generate():
         tts_cfg.setdefault('arGapBefore', 0)
         tts_cfg.setdefault('arGapAfter', 0)
 
-        # MULTI-DESIGN: توزيع عادل على التصاميم المختارة
+        # تحضير قائمة التصاميم (متعددة أو قالب مخصص)
         designs = config.get('designs')
-        if designs and len(designs) > 0:
-            return generate_multi_design(deck_name, designs, tts_cfg, include_audio)
-
-        # ===== القوالب الجاهزة (custom): HTML/CSS حرفياً من الرزمة =====
         template_type = config.get('_templateType', 'config')
-        custom_front = config.get('_customFront', '')
-        custom_back = config.get('_customBack', '')
-        custom_css_extra = config.get('_customCSS', '')
-        custom_fields = config.get('_customFields') or tts.DEFAULT_FIELDS
-        custom_name = config.get('_templateName') or 'تصميم'
+        if (not designs or not len(designs)) and template_type == 'custom' and config.get('_customFront'):
+            designs = [{
+                'name': config.get('_templateName') or 'تصميم',
+                'fields': config.get('_customFields') or tts.DEFAULT_FIELDS,
+                'frontHTML': config.get('_customFront', ''),
+                'backHTML': config.get('_customBack', '') or config.get('_customFront', ''),
+                'css': config.get('_customCSS', ''),
+            }]
 
-        if template_type == 'custom' and custom_front:
-            all_words = get_all_words() + get_important_words()
-            if not all_words:
-                return jsonify({'error': 'No word data found'}), 500
-            guard = _audio_guard(all_words, include_audio)
-            if guard:
-                return jsonify({'error': guard}), 400
-            model = genanki.Model(
-                stable_id('Custom_' + custom_name + '_' + deck_name), custom_name,
-                fields=[{'name': f} for f in custom_fields],
-                templates=[{'name': 'بطاقة', 'qfmt': custom_front, 'afmt': custom_back or custom_front}],
-                css=custom_css_extra)
-            deck = genanki.Deck(stable_id('Deck_' + deck_name), deck_name)
-
-            def make_fields(idx):
-                return _build_note_fields(custom_fields, all_words[idx], tts_cfg, include_audio)
-
-            if include_audio:
-                with ThreadPoolExecutor(max_workers=6) as ex:
-                    results = list(ex.map(make_fields, range(len(all_words))))
-            else:
-                results = [make_fields(i) for i in range(len(all_words))]
-            for nf in results:
-                deck.add_note(genanki.Note(model=model, fields=nf))
-            safe_name = deck_name.replace('/', '_').replace('\\', '_')
-            print(f"Custom deck sent: {len(all_words)} notes (audio={include_audio})")
-            return _write_deck(deck, safe_name)
+        if designs and len(designs) > 0:
+            h = _settings_hash(config)
+            cached = _cache_get(h)
+            if cached:
+                print(f"Serving cached deck: {deck_name}")
+                return _send_apkg(cached, deck_name)
+            if _should_job(tts_cfg, include_audio):
+                jid = uuid.uuid4().hex[:10]
+                _start_job(jid, h, deck_name, designs, tts_cfg, include_audio)
+                return jsonify({'job': jid, 'status': 'started'}), 202
+            path = _build_deck_apkg(deck_name, designs, tts_cfg, include_audio)
+            cached = _cache_put(h, path)
+            return _send_apkg(cached, deck_name)
 
         # ===== المحرر (config): المسار القديم بدون تغيير =====
         card_front_html = config.get('cardFrontHTML', '')

@@ -118,6 +118,24 @@ def resolve_voice(lang, vid):
     return DEFAULT_VOICES.get(lang, "fr-FR-HenriNeural")
 
 
+def needs_regen(cfg, has_lib):
+    """هل يجب إعادة توليد الصوت عبر edge-tts (تغيير صوت/سرعة/نغمة) أم تكفي المكتبة؟"""
+    if not has_lib:
+        return True
+    try:
+        if float(cfg.get("speed", 1.0) or 1.0) != 1.0:
+            return True
+        if float(cfg.get("pitch", 1.0) or 1.0) != 1.0:
+            return True
+    except (TypeError, ValueError):
+        return True
+    if cfg.get("frVoice") and cfg.get("frVoice") != DEFAULT_VOICES["fr"]:
+        return True
+    if cfg.get("arVoice") and cfg.get("arVoice") != DEFAULT_VOICES["ar"]:
+        return True
+    return False
+
+
 def _edge_synth(text, lang, rate_pct, pitch_hz, voice):
     import asyncio
     import edge_tts
@@ -291,13 +309,19 @@ def ensure_word_audio(word, arabic, cfg=None):
 
     lib = library_lookup(word)
     has_gaps = _gaps_active(cfg)
+    regen = needs_regen(cfg, bool(lib))
 
-    # مكتبة جاهزة بدون فواصل: مسار سريع مطابق للسلوك السابق تماماً
-    if lib and not has_gaps:
-        return (lib.get("fr", ""), lib.get("ar", ""), lib.get("both", ""))
+    # مكتبة جاهزة + إعدادات افتراضية بدون فواصل: مسار سريع (تضمين مباشر)
+    if lib and not has_gaps and not regen:
+        fr_a = lib.get("fr", "")
+        ar_a = lib.get("ar", "")
+        both_a = lib.get("both", "")
+        if not both_a and fr_a and ar_a:
+            both_a = _b64_mp3(_raw_from_b64(fr_a) + _raw_from_b64(ar_a))
+        return (fr_a, ar_a, both_a)
 
-    # مكتبة جاهزة مع فواصل: نبني المقاطع من ملفات المكتبة مع إضافة الصمت
-    if lib and has_gaps:
+    # مكتبة جاهزة + إعدادات افتراضية مع فواصل: نبني المقاطع من المكتبة مع الصمت
+    if lib and has_gaps and not regen:
         fr_raw = _raw_from_b64(lib.get("fr", ""))
         ar_raw = _raw_from_b64(lib.get("ar", ""))
         return _build_clips(fr_raw, ar_raw, cfg)
