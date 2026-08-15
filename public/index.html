@@ -121,6 +121,12 @@ select.sl{appearance:none;cursor:pointer}
 .fs-close:hover{background:var(--rd);color:#fff}
 #fsModal .fsw{min-height:0;height:78vh;background:var(--s2)}
 #fsModal .fsc{width:min(360px,88vw);height:min(580px,74vh);border:none;border-radius:14px;background:#14121f;box-shadow:0 10px 40px rgba(0,0,0,.35)}
+.maker-quick{text-align:center;padding:10px 0 2px}
+.maker-quick a{display:inline-block;font-size:.66em;font-weight:700;color:var(--tx2);text-decoration:none;padding:5px 14px;border:1px dashed var(--bd);border-radius:14px;opacity:.75;transition:all .2s}
+.maker-quick a:hover{opacity:1;color:var(--ac2);border-color:var(--ac3)}
+.fs-actions{display:flex;justify-content:center;gap:8px;padding:9px 0 2px}
+.fs-flip{padding:8px 20px;border:none;border-radius:20px;background:linear-gradient(135deg,var(--ac),#6d28d9);color:#fff;font-size:.72em;font-weight:800;cursor:pointer;transition:all .2s;box-shadow:0 3px 12px rgba(124,58,237,.3)}
+.fs-flip:hover{transform:translateY(-1px);box-shadow:0 5px 16px rgba(124,58,237,.45)}
 
 /* In-template TTS speaker button (preview) */
 .tts-preview{display:inline-flex;align-items:center;justify-content:center;width:100%;height:100%;cursor:pointer;font-size:1.15em;line-height:1;color:inherit}
@@ -417,7 +423,6 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 </div>
 <div class="tabs">
 <button role="tab" class="tab on" data-t="gal">🎨 القوالب</button>
-<button role="tab" class="tab" data-t="maker">🛠️ اصنع قالبك الخاص</button>
 </div>
 
 <div id="sec-gal" class="sec on">
@@ -475,6 +480,7 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
   <button class="btn bo bs" onclick="selectAllTemplates()" style="padding:5px 18px;font-size:.7em">☑ تحديد الكل</button>
 </div>
 <div class="gal-grid" id="tplGrid"></div>
+<div class="maker-quick"><a href="#" onclick="switchTab('maker');return false" title="تحكم كامل وتنزيل">✏️ محرر بسيط — تحكم كامل وتنزيل</a></div>
 </div>
 
 <div id="sec-maker" class="sec">
@@ -1077,7 +1083,13 @@ function moveElement(dir,el){
 // NAVIGATION
 function switchTab(tabId){
   var tab=document.querySelector('.tab[data-t="'+tabId+'"]');
-  if(tab) tab.click();
+  if(tab){ tab.click(); return; }
+  document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on');});
+  document.querySelectorAll('.sec').forEach(function(x){x.classList.remove('on');});
+  var sec=document.getElementById('sec-'+tabId);
+  if(sec) sec.classList.add('on');
+  if(tabId==='gal'){setTimeout(function(){renderGrid();},10);}
+  if(tabId==='maker'){renderCtrls();renderVE();updateCtlPreview();}
 }
 document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',function(){
   document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));this.classList.add('on');
@@ -1160,7 +1172,7 @@ function buildPreviewDoc(t){
   var css='', body='';
   if(t && (t.front || t.css)){
     css=t.css||'';
-    body=fillSampleFields(t.front||'');
+    body='<div class="card">'+fillSampleFields(t.front||'')+'</div>';
   }else if(t && (t.config || t.cfg)){
     var cfg=Object.assign({}, JSON.parse(JSON.stringify(t.config||t.cfg)), {_templateType:'config'});
     body=renderCardHTML(cfg);
@@ -1168,7 +1180,7 @@ function buildPreviewDoc(t){
     body='<div style="padding:30px;text-align:center;font-family:sans-serif">تصميم فارغ</div>';
   }
   return '<!DOCTYPE html><html><head><meta charset="utf-8"><style>'
-    +'html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#14121f;display:flex;align-items:center;justify-content:center}'
+    +'html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#14121f}'
     +'.replay-button{display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:50%;background:rgba(124,58,237,.12);border:2px solid rgba(124,58,237,.45);margin:10px auto;font-size:20px;line-height:1;color:#7c3aed;cursor:pointer;padding:0}'
     +'.tts-preview{display:inline-flex;align-items:center;justify-content:center;width:100%;height:100%;cursor:pointer;font-size:1.15em;line-height:1}'
     +'.tts-preview>svg,.tts-preview>*{pointer-events:none}'
@@ -1252,7 +1264,7 @@ function renderGrid(){
     // Old color-only templates are available as color options in the control panel.
     if(customNew.length>0){
       html += customNew.map(function(t){return renderGalleryCard(t,true);}).join('');
-      html += '<div class="gc gc-new" onclick="switchTab(\'maker\')" title="تحكم كامل + تنزيل"><div class="gc-new-ic">＋</div><div class="gnm"><span>اصنع قالبك الخاص</span></div><div class="gc-new-sub">تحكم كامل • تنزيل</div></div>';
+      html += '<div class="gc gc-new" onclick="switchTab(\'maker\')" title="محرر بسيط: تحكم كامل وتنزيل"><div class="gc-new-ic">✏️</div><div class="gnm"><span>محرر بسيط</span></div><div class="gc-new-sub">تحكم كامل وتنزيل</div></div>';
     }
     if(customNew.length===0 && builtIn.length>0){
       html += builtIn.map(function(t){return renderGalleryCard(t,false);}).join('');
@@ -1520,6 +1532,11 @@ function previewFullTemplate(id){
 function openFullscreen(){
   var m=document.getElementById('fsModal');
   if(m)m.classList.add('open');
+  fsFlipped=false;
+  renderFullscreen();
+}
+function flipCard(){
+  fsFlipped=!fsFlipped;
   renderFullscreen();
 }
 function closeFullscreen(){
@@ -2168,6 +2185,7 @@ function exportConfig(){const b=new Blob([JSON.stringify(S,null,2)],{type:'appli
 function importConfig(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=function(ev){try{const d=JSON.parse(ev.target.result);if(typeof d!=='object'||d===null){toast('ملف غير صحيح');return;}const validKeys=['cardBg','frenchColor','meaningColor','borderRadius','cardPadding','fontFrench','fontArabic','effect','deckName'];if(!validKeys.some(function(k){return k in d;})){toast('ملف غير صالح');return;}S=Object.assign({},defCfg(),d);pushHist();renderCtrls();renderAll();setTimeout(addDocTooltips,50);toast('تم الاستيراد');}catch(err){toast('ملف غير صحيح');}};r.readAsText(f);}
 
 // FULLSCREEN PREVIEW
+var fsFlipped=false;
 function renderFullscreen(){
   var all=getFilteredTemplates();
   if(!all.length)return;
@@ -2176,7 +2194,10 @@ function renderFullscreen(){
   var f=document.getElementById('fsFrame');
   var i=document.getElementById('fsInfo');
   var n=document.getElementById('fsCounter');
-  if(f)f.srcdoc=buildPreviewDoc(t);
+  var fb=document.getElementById('fsFlipBtn');
+  var tv=fsFlipped?Object.assign({},t,{front:t.back||t.front}):t;
+  if(f)f.srcdoc=buildPreviewDoc(tv);
+  if(fb)fb.textContent=fsFlipped?'🔄 ارجع للواجهة':'🔄 اقلب البطاقة';
   if(i)i.textContent=isCustomTemplate(t.id)?(t.nm||''):((t.num?'#'+t.num+' — ':'')+(t.nm||''));
   if(n)n.textContent=(curTplIdx+1)+' / '+all.length;
 }
@@ -3603,7 +3624,7 @@ var CMD_LIST=[
   {icon:'📊',label:'قياس الأداء',action:'showPerfMeter();closeCmdPalette()'},
   {icon:'🔧',label:'فحص التوافق',action:'showCompatChecker();closeCmdPalette()'},
   {icon:'1️⃣',label:'تبويب القوالب',action:'switchTab("gal");closeCmdPalette()',keys:'Ctrl+1'},
-  {icon:'2️⃣',label:'اصنع قالبك الخاص',action:'switchTab("maker");closeCmdPalette()',keys:'Ctrl+2'},
+  {icon:'✏️',label:'محرر بسيط',action:'switchTab("maker");closeCmdPalette()',keys:'Ctrl+2'},
   {icon:'🌙',label:'تبديل الوضع',action:'toggleDarkLight();closeCmdPalette()'},
   {icon:'🔍',label:'بحث في الخصائص',action:'focusPropertySearch();closeCmdPalette()'},
   {icon:'❓',label:'شرح التطبيق',action:'showOnboarding();closeCmdPalette()'},
@@ -4003,7 +4024,7 @@ function showCompatChecker(){
 var ONBOARD_STEPS=[
   {title:'مرحباً بك في Anki Design Studio! 🎨',text:'هذا التطبيق يسمح لك بتصميم بطاقات Anki احترافية بدون كتابة أي كود. كل شيء تفاعلي وسهل!',icon:'🎨'},
   {title:'القوالب 🎨',text:'ابدأ باختيار قالب جاهز من المعرض (100 قالب احترافي) واضغط عليه لمعاينته كاملاً.',icon:'🎨'},
-  {title:'اصنع قالبك الخاص 🛠️',text:'تبويب واحد يجمع كل شيء: المحرر البصري، لوحة التحكم (أكثر من 100 خاصية)، والتنزيل كملف .apkg جاهز.',icon:'🛠️'},
+  {title:'محرر بسيط ✏️',text:'أداة جانبية للمتقدمين: محرر بصري + لوحة تحكم (أكثر من 100 خاصية) + تنزيل .apkg مباشر.',icon:'✏️'},
   {title:'اختصارات لوحة المفاتيح ⌨️',text:'Ctrl+Shift+P: أوامر سريعة | Ctrl+Z/Y: تراجع/إعادة | Ctrl+S: حفظ | R: عشوائي',icon:'⌨️'},
   {title:'جاهز للبدء! 🚀',text:'ابدأ باختيار قالب من المعرض ثم عدّله حسب ذوقك. استمتع بالتصميم!',icon:'🚀'},
 ];
@@ -5763,7 +5784,8 @@ setTimeout(initAudioStatus,300);
       <iframe class="fsc" id="fsFrame" title="معاينة القالب"></iframe>
       <button class="fsn p" onclick="prevTpl()" aria-label="السابق">❯</button>
     </div>
-    <div class="fsi">استخدم الأسهم أو مفاتيح ← → للتنقل بين القوالب</div>
+    <div class="fs-actions"><button class="fs-flip" id="fsFlipBtn" onclick="flipCard()" aria-label="اقلب البطاقة">🔄 اقلب البطاقة</button></div>
+    <div class="fsi">استخدم الأسهم أو مفاتيح ← → للتنقل بين القوالب • اضغط "اقلب البطاقة" لمشاهدة الخلف</div>
   </div>
 </div>
 </body>

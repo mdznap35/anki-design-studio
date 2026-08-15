@@ -170,12 +170,22 @@ def load_library():
     with _lib_lock:
         if _lib_loaded:
             return _lib
-        if os.path.exists(LIBRARY_PATH):
+        merged = {}
+        base = os.path.dirname(os.path.abspath(__file__))
+        try:
+            files = sorted(f for f in os.listdir(base)
+                           if f.startswith('audio_library') and f.endswith('.json'))
+        except Exception:
+            files = []
+        for fn in files:
             try:
-                with open(LIBRARY_PATH, encoding="utf-8") as f:
-                    _lib = json.load(f)
+                with open(os.path.join(base, fn), encoding='utf-8') as f:
+                    data = json.load(f)
+                if isinstance(data, dict):
+                    merged.update(data)
             except Exception:
-                _lib = {}
+                pass
+        _lib = merged
         _lib_loaded = True
     return _lib
 
