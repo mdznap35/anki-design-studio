@@ -638,6 +638,7 @@ body.light #toast{background:linear-gradient(135deg,#ffffff,#f5f3ff);border-colo
 <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center">
 <span class="ver">الإصدار 6.0 — 100 قالب</span>
 <div class="hdr-actions">
+<a class="ha-btn" href="gallery-tas9.html" title="المعرض الثاني — رزمة فرنسي تاسع (1475 كلمة حقيقية)" aria-label="رزمة فرنسي تاسع" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;color:var(--tx2);border:1px solid var(--bd);background:rgba(255,255,255,.05);border-radius:11px;font-size:.82em;padding:9px 12px">📚 فرنسي تاسع</a>
 <button class="ha-btn" onclick="showHelp()" title="دليل الاستخدام الشامل" aria-label="دليل الاستخدام">ⓘ</button>
 <button class="ha-btn" onclick="toggleDarkLight()" title="تبديل الوضع الداكن/الفاتح" aria-label="تبديل الوضع">🌙</button>
 <button class="ha-btn" onclick="openCmdPalette()" title="الأوامر السريعة (Ctrl+Shift+P)" aria-label="الأوامر السريعة">⌘</button>
@@ -858,7 +859,7 @@ var CUSTOM_TEMPLATES = [];
 var CUSTOM_TEMPLATES_LOADED = false;
 var PREMIUM_ADDED = false;
 var DESIGNS100_ADDED = false;
-const SAMP={f:'Maison',a:'منزل',p:'Maisons',s:'Contrat',c:'Désabonnement'};
+const SAMP={f:'La scène',a:'مشهد',p:'Maisons',s:'Contrat',c:'Désabonnement',dossier:'Dossier 1'};
 window.SAMP=SAMP;
 const FMAP={"Inter":"'Inter',sans-serif","Noto Sans Arabic":"'Noto Sans Arabic',sans-serif","Poppins":"'Poppins',sans-serif","Playfair Display":"'Playfair Display',serif","Cairo":"'Cairo',sans-serif","Tajawal":"'Tajawal',sans-serif","Amiri":"'Amiri',serif","System":"system-ui,sans-serif"};
 
@@ -1382,6 +1383,8 @@ function fillSampleFields(front){
     return '<button class="replay-button tts-preview" data-lang="'+l+'" data-field="'+fld+'" title="استمع"></button>';
   });
   front = front.split('{{French}}').join(SAMP.f);
+  front = front.split('{{Français}}').join(SAMP.f);
+  front = front.split('{{Dossier}}').join(SAMP.dossier||'Dossier 1');
   front = front.split('{{Arabic}}').join(SAMP.a);
   front = front.split('{{Pluriel}}').join(SAMP.p);
   front = front.split('{{Synonyme}}').join(SAMP.s);

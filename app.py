@@ -156,6 +156,10 @@ def tts_preview():
 def index():
     return send_from_directory(app.static_folder, 'index.html')
 
+@app.route('/gallery-tas9.html', methods=['GET'])
+def serve_gallery_tas9():
+    return send_from_directory(app.static_folder, 'gallery-tas9.html')
+
 
 @app.route('/designs_20.json', methods=['GET'])
 def serve_designs():
