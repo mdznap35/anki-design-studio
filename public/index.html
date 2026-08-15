@@ -1445,7 +1445,7 @@ function buildPreviewDoc(t){
     +UNIVERSAL_FIT_SCRIPT+'<script>var SAMP=parent.SAMP;var speakWord=function(w,l){try{parent.speakWord(w,l)}catch(e){}};'
     +'document.querySelectorAll(".tts-preview").forEach(function(el){el.addEventListener("click",function(){'
     +'var l=el.getAttribute("data-lang")||"fr";var fld=el.getAttribute("data-field")||"French";'
-    +'var txt=(l==="ar"?SAMP.a:SAMP.f);speakWord(txt,l);});});<\/script>'
+    +'var txt=(l==="ar"?SAMP.a:SAMP.f);speakWord(txt,l);});});try{window.playFr=function(){speakWord(SAMP.f,"fr")};window.playAr=function(){speakWord(SAMP.a,"ar")};window.playBoth=function(){speakWord(SAMP.f,"fr");setTimeout(function(){speakWord(SAMP.a,"ar")},700)}}catch(e){}<\/script>'
     +'</body></html>';
 }
 
