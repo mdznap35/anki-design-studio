@@ -107,6 +107,8 @@ def extra_rows(w):
     for label, key in [('الوحدة', 'unit'), ('النوع', 'type'), ('الجمع', 'pluriel'),
                        ('المرادف', 'synonyme'), ('الضد', 'contraire'), ('الصفحة', 'page')]:
         v = (w.get(key) or '').strip()
+        if key == 'unit' and v.startswith('الوحدة '):
+            v = v[len('الوحدة '):].strip()
         if v:
             rows.append('<b>' + label + ':</b> ' + v)
     return '<br>'.join(rows)
@@ -186,8 +188,7 @@ def serve_designs_100():
 
 
 def _build_note_fields(fields, w, tts_cfg, include_audio):
-    return tts.note_fields_for(fields, w.get('word', ''), w.get('arabe', ''),
-                               tts_cfg, extra_rows(w), include_audio)
+    return tts.note_fields_for(fields, w, tts_cfg, extra_rows(w), include_audio)
 
 
 def _write_deck(deck, safe_name):
@@ -255,12 +256,24 @@ def _trim_cache(keep):
         pass
 
 
+def _unit_subdeck(deck_name, unit):
+    """يعيد اسم الرزمة الفرعية حسب الوحدة (بنية الرزمة الجاهزة)"""
+    u = (unit or '').strip()
+    if not u:
+        return None
+    if u.startswith('كلمات مهمة') or 'مهمة' in u:
+        return deck_name + '::كلمات مهمة'
+    if u.startswith('الوحدة '):
+        return deck_name + '::' + u
+    return deck_name + '::' + u
+
+
 def _build_deck_apkg(deck_name, designs, tts_cfg, include_audio, progress=None):
-    """يبني الرزمة (توزيع عادل للكلمات على التصاميم) ويعيد مسار ملف apkg"""
+    """يبني الرزمة (توزيع عادل للكلمات على التصاميم + رزم فرعية حسب الوحدة) ويعيد مسار ملف apkg"""
     all_words = get_all_words() + get_important_words()
     if not all_words:
         raise ValueError('No word data found')
-    deck = genanki.Deck(stable_id('MultiDeck_' + deck_name), deck_name)
+    decks = {deck_name: genanki.Deck(stable_id('MultiDeck_' + deck_name), deck_name)}
     models = []
     for i, d in enumerate(designs):
         name = d.get('name') or f'{i + 1:02d}'
@@ -272,7 +285,7 @@ def _build_deck_apkg(deck_name, designs, tts_cfg, include_audio, progress=None):
         model = genanki.Model(
             mid, name,
             fields=[{'name': f} for f in fields],
-            templates=[{'name': 'بطاقة', 'qfmt': front, 'afmt': back}],
+            templates=[{'name': 'فرنسي ← عربي', 'qfmt': front, 'afmt': back}],
             css=css,
             sort_field_index=0)
         models.append((model, fields))
@@ -296,13 +309,18 @@ def _build_deck_apkg(deck_name, designs, tts_cfg, include_audio, progress=None):
     else:
         results = [make_fields(i) for i in range(len(all_words))]
 
-    for model, nf in results:
+    for idx, (model, nf) in enumerate(results):
+        sub = _unit_subdeck(deck_name, all_words[idx].get('unit', ''))
+        deck = decks.get(sub) or decks.get(deck_name)
+        if sub and sub not in decks:
+            decks[sub] = genanki.Deck(stable_id('Sub_' + sub), sub)
+            deck = decks[sub]
         deck.add_note(genanki.Note(model=model, fields=nf))
 
     safe_name = deck_name.replace('/', '_').replace('\\', '_')
     apkg_path = os.path.join('/tmp', f'{safe_name}_{os.getpid()}_{uuid.uuid4().hex[:6]}.apkg')  # nosec S5443
-    genanki.Package(deck).write_to_file(apkg_path)
-    print(f"Deck built: {len(all_words)} notes across {n} designs (audio={include_audio})")
+    genanki.Package(list(decks.values())).write_to_file(apkg_path)
+    print(f"Deck built: {len(all_words)} notes across {n} designs (audio={include_audio}, decks={len(decks)})")
     return apkg_path
 
 

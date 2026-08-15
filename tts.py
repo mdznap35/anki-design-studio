@@ -433,19 +433,31 @@ def preview(cfg=None, fr_text="Bonjour", ar_text="مرحبا"):
     return ensure_word_audio(fr_text, ar_text, cfg)
 
 
-def note_fields_for(fields, word, arabic, cfg=None, extra="", include_audio=True):
-    """يبني صف الحقول بالترتيب المطلوب من القالب"""
+def note_fields_for(fields, w, cfg=None, extra="", include_audio=True):
+    """يبني صف الحقول بالترتيب المطلوب من القالب (يدعم الحقول الدلالية + الصوت)"""
+    if isinstance(w, dict):
+        word = w.get('word', '') or ''
+        arabic = w.get('arabe', '') or ''
+    else:
+        word = w or ''
+        arabic = ''
     fr_a = ar_a = both_a = ""
     if include_audio:
         try:
             fr_a, ar_a, both_a = ensure_word_audio(word, arabic, cfg)
         except Exception:
             fr_a = ar_a = both_a = ""
+    if isinstance(w, dict):
+        g = lambda k: str(w.get(k, '') or '')
+    else:
+        g = lambda k: ''
     mapping = {
         "French": word, "Arabic": arabic,
         "FrSound": "", "ArSound": "", "BothSound": "",
         "FrFile": "", "ArFile": "", "BothFile": "",
         "AudioFR": fr_a, "AudioAR": ar_a, "AudioBOTH": both_a,
-        "ExtraRows": extra,
+        "ExtraRows": extra, "Extras": extra,
+        "Plural": g('pluriel'), "Synonym": g('synonyme'), "Antonym": g('contraire'),
+        "Unit": g('unit'), "Type": g('type'), "Page": g('page'), "Extra": g('extra'),
     }
     return [str(mapping.get(f, "")) for f in fields]

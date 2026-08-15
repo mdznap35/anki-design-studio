@@ -505,7 +505,7 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 <p style="font-size:.68em;color:var(--tx2);margin-bottom:10px">ملف .apkg جاهز للاستيراد</p>
 <div style="margin-bottom:10px">
 <label for="deckName" style="font-size:.68em;color:var(--tx2);display:block;margin-bottom:3px">اسم الرزمة</label>
-<input class="tx" aria-label="Text input" id="deckName" value="Français Bac" style="text-align:center;font-weight:700">
+<input class="tx" aria-label="Text input" id="deckName" value="فرنسي بكالوريا — نهائي (3082 بطاقة)" style="text-align:center;font-weight:700">
 </div>
 <div class="aa" id="audioPanel">
 <div class="aa-t" onclick="toggleAudioPanel()"><span>🎙️ لوحة تحكم الصوت</span><span class="arr" id="aaArr" data-pid="aaArr">▾</span></div>
@@ -1138,6 +1138,12 @@ function fillSampleFields(front){
   front = front.split('{{ArFile}}').join('');
   front = front.split('{{BothFile}}').join('');
   front = front.split('{{ExtraRows}}').join('<b>الوحدة:</b> 1<br><b>النوع:</b> الأسماء<br><b>الجمع:</b> Maisons');
+  front = front.split('{{Extras}}').join('<b>الوحدة:</b> 1<br><b>النوع:</b> الأسماء<br><b>الجمع:</b> Maisons');
+  front = front.split('{{Plural}}').join('Maisons');
+  front = front.split('{{Synonym}}').join(SAMP.s);
+  front = front.split('{{Antonym}}').join(SAMP.c);
+  front = front.split('{{Type}}').join('Nom');
+  front = front.split('{{Extra}}').join('');
   // Keep conditional sections whose sample value exists, drop empty ones
   front = front.replace(/{{#(\w+)}}([\s\S]*?){{\/\1}}/g, function(m,f,inner){
     var v={French:SAMP.f,Arabic:SAMP.a,Pluriel:SAMP.p,Synonyme:SAMP.s,Contraire:SAMP.c,Badge:'Nom',Unit:'1',Page:'12',WordType:'Nom'}[f];
@@ -5475,6 +5481,12 @@ function buildCustomCardHTML(tmpl, css) {
   h = h.split('{{ArFile}}').join('');
   h = h.split('{{BothFile}}').join('');
   h = h.split('{{ExtraRows}}').join('<b>الوحدة:</b> 1<br><b>النوع:</b> الأسماء<br><b>الجمع:</b> Maisons');
+  h = h.split('{{Extras}}').join('<b>الوحدة:</b> 1<br><b>النوع:</b> الأسماء<br><b>الجمع:</b> Maisons');
+  h = h.split('{{Plural}}').join('Maisons');
+  h = h.split('{{Synonym}}').join(SAMP.s);
+  h = h.split('{{Antonym}}').join(SAMP.c);
+  h = h.split('{{Type}}').join('Nom');
+  h = h.split('{{Extra}}').join('');
   // Handle conditionals: {{#Field}}content{{/Field}} -> show content
   for (var iter = 0; iter < 20; iter++) {
     var s = h.indexOf('{{#');
