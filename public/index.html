@@ -7,7 +7,7 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <title>Anki Design Studio</title>
-<link rel="preload" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&family=Inter:wght@400;500;600;700;900&family=Amiri:wght@400;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&family=Inter:wght@400;500;600;700;900&family=Amiri:wght@400;700&display=swap"></noscript>
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Tajawal:wght@500;700&family=Noto+Sans+Arabic:wght@400;600;700;900&family=Inter:wght@400;500;600;700;900&family=Amiri:wght@400;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Tajawal:wght@500;700&family=Noto+Sans+Arabic:wght@400;600;700;900&family=Inter:wght@400;500;600;700;900&family=Amiri:wght@400;700&display=swap"></noscript>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#0f0f1a;--s1:#1a1a2e;--s2:#22223a;--s3:#2d2d4a;--bd:rgba(255,255,255,.08);--tx:#e8e8f0;--tx2:#8888aa;--tx3:#555577;--ac:#7c3aed;--ac2:#a78bfa;--ac3:#c4b5fd;--ac-bg:rgba(124,58,237,.1);--gn:#22c55e;--gn-bg:rgba(34,197,94,.1);--rd:#ef4444;--rd-bg:rgba(239,68,68,.1);--warn:#f59e0b;--warn-bg:rgba(245,158,11,.1);--r:12px;--sp-xs:4px;--sp-sm:8px;--sp-md:16px;--sp-lg:24px;--sp-xl:32px;--fs-xs:.55em;--fs-sm:.65em;--fs-md:.72em;--fs-lg:.82em;--fs-xl:.95em;--fs-2xl:1.2em;--fs-3xl:1.6em;--br-sm:6px;--br-md:10px;--br-lg:16px;--br-xl:24px;--br-full:50px;--shadow-sm:none;--shadow-md:0 2px 8px rgba(0,0,0,.08);--shadow-lg:0 4px 16px rgba(0,0,0,.12);--shadow-xl:0 8px 32px rgba(0,0,0,.15)}
@@ -408,16 +408,241 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 .tpl-sw{width:36px;height:36px;border-radius:10px;cursor:pointer;position:relative;display:inline-flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,.65);box-shadow:0 2px 8px rgba(0,0,0,.14);transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;font-weight:900;font-size:.74em;text-shadow:0 1px 2px rgba(0,0,0,.25)}
 .tpl-sw:hover{transform:translateY(-2px) scale(1.1);box-shadow:0 6px 16px rgba(0,0,0,.22)}
 .tpl-sw.on{border-color:var(--gn);box-shadow:0 0 0 2px var(--gn),0 4px 14px rgba(0,0,0,.2)}
+
+/* ============================================================
+   UI 2026 — طبقة إعادة تصميم الواجهة (فوق البنية القائمة، دون كسر)
+   ============================================================ */
+:root{
+  --ac:#7c3aed;--ac2:#a78bfa;--ac3:#c4b5fd;
+  --gn:#22c55e;--gn2:#34d399;
+  --bg:#0b0b16;--s1:#15152a;--s2:#1c1c36;--s3:#262647;--s4:#31315c;
+  --bd:rgba(255,255,255,.09);--bd2:rgba(167,139,250,.38);
+  --tx:#f1f0fa;--tx2:#a09cc4;--tx3:#6a6892;
+  --r:14px;--br-sm:8px;--br-md:12px;--br-lg:18px;--br-xl:26px;--br-full:999px;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.3);--shadow-md:0 6px 18px rgba(0,0,0,.25);
+  --shadow-lg:0 12px 36px rgba(0,0,0,.35);--shadow-xl:0 24px 70px rgba(0,0,0,.5);
+  --glow:0 0 0 1px rgba(167,139,250,.22),0 8px 30px rgba(124,58,237,.22);
+  --grad:linear-gradient(135deg,#8b5cf6,#7c3aed 45%,#d946ef);
+  --font-head:'Cairo','Noto Sans Arabic',system-ui,sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);letter-spacing:-.01em}
+body::before{content:'';position:fixed;inset:0;z-index:-2;pointer-events:none;
+  background:
+    radial-gradient(1100px 700px at 88% -8%,rgba(124,58,237,.30),transparent 60%),
+    radial-gradient(900px 650px at -12% 25%,rgba(52,211,153,.13),transparent 55%),
+    radial-gradient(800px 600px at 55% 115%,rgba(217,70,239,.14),transparent 60%),
+    var(--bg);
+  animation:aurora 26s ease-in-out infinite alternate}
+body::after{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,rgba(124,58,237,.05),transparent 40%,transparent 70%,rgba(124,58,237,.04))}
+@keyframes aurora{0%{filter:hue-rotate(0deg) saturate(1)}100%{filter:hue-rotate(26deg) saturate(1.12)}}
+body.light{--bg:#f4f4fb;--s1:#ffffff;--s2:#f4f4fb;--s3:#e8e8f4;--s4:#dcdcf0;--bd:rgba(20,16,60,.10);--bd2:rgba(124,58,237,.35);--tx:#191937;--tx2:#5b5a85;--tx3:#8d8bb0;--shadow-md:0 6px 18px rgba(40,30,120,.08);--shadow-lg:0 14px 40px rgba(40,30,120,.12);--glow:0 0 0 1px rgba(124,58,237,.14),0 8px 30px rgba(124,58,237,.12)}
+body.light::before{background:
+    radial-gradient(1100px 700px at 88% -8%,rgba(124,58,237,.15),transparent 60%),
+    radial-gradient(900px 650px at -12% 25%,rgba(16,185,129,.09),transparent 55%),
+    radial-gradient(800px 600px at 55% 115%,rgba(217,70,239,.10),transparent 60%),
+    var(--bg)}
+.hdr{background:rgba(11,11,22,.72);backdrop-filter:blur(18px) saturate(1.4);-webkit-backdrop-filter:blur(18px) saturate(1.4);border-bottom:1px solid var(--bd);padding:10px 18px}
+body.light .hdr{background:rgba(255,255,255,.74)}
+.hdr-in{justify-content:space-between;max-width:1400px;margin:0 auto;gap:12px}
+.brand .logo{width:40px;height:40px;border-radius:13px;background:linear-gradient(135deg,#a78bfa,#7c3aed 55%,#d946ef);box-shadow:0 6px 20px rgba(124,58,237,.45),inset 0 1px 0 rgba(255,255,255,.35);font-size:1.15em;animation:logoFloat 5s ease-in-out infinite}
+@keyframes logoFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.brand h1{font-family:var(--font-head);font-size:1.2em;background:linear-gradient(90deg,#c4b5fd,#a78bfa 40%,#e879f9);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+body.light .brand h1{background:linear-gradient(90deg,#6d28d9,#9333ea 40%,#db2777);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.brand p{font-size:.62em;color:var(--tx2)}
+.ver{background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.3);box-shadow:0 2px 10px rgba(34,197,94,.12)}
+.hdr-actions{display:flex;gap:8px;align-items:center}
+.ha-btn{width:38px;height:38px;border-radius:12px;border:1px solid var(--bd);background:rgba(255,255,255,.05);color:var(--tx2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1em;transition:all .2s cubic-bezier(.4,0,.2,1)}
+.ha-btn:hover{color:var(--tx);border-color:var(--bd2);background:rgba(124,58,237,.14);transform:translateY(-1px);box-shadow:0 4px 14px rgba(124,58,237,.2)}
+.ha-btn:active{transform:scale(.94)}
+/* ===== Hero ===== */
+.hero{max-width:1400px;margin:0 auto;padding:36px 14px 24px;text-align:center;position:relative}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:999px;background:rgba(124,58,237,.12);border:1px solid rgba(167,139,250,.3);color:var(--ac2);font-size:.66em;font-weight:700;letter-spacing:.02em}
+.hero-badge .dot{width:7px;height:7px;border-radius:50%;background:#22c55e;animation:pulseDot 2s infinite}
+@keyframes pulseDot{0%{box-shadow:0 0 0 0 rgba(34,197,94,.55)}70%{box-shadow:0 0 0 9px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
+.hero h1{font-family:var(--font-head);font-size:clamp(1.65em,4.6vw,2.9em);font-weight:900;line-height:1.3;margin:14px auto 10px;max-width:780px;background:linear-gradient(115deg,#c4b5fd 5%,#8b5cf6 35%,#e879f9 65%,#f0abfc 95%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;background-size:200% auto;animation:heroShine 9s linear infinite}
+@keyframes heroShine{to{background-position:200% center}}
+body.light .hero h1{background:linear-gradient(115deg,#4c1d95,#7c3aed 40%,#be185d 70%,#9d174d);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;background-size:200% auto;animation:heroShine 9s linear infinite}
+.hero p{color:var(--tx2);font-size:.82em;max-width:640px;margin:0 auto 16px;line-height:1.9}
+.hero-stats{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:16px 0 4px}
+.hero-stat{background:rgba(255,255,255,.045);border:1px solid var(--bd);border-radius:16px;padding:10px 20px;min-width:116px;transition:all .25s cubic-bezier(.4,0,.2,1);text-align:center}
+body.light .hero-stat{background:rgba(124,58,237,.05)}
+.hero-stat:hover{transform:translateY(-3px);border-color:var(--bd2);box-shadow:var(--glow)}
+.hero-stat b{display:block;font-family:var(--font-head);font-size:1.35em;font-weight:900;background:linear-gradient(135deg,var(--ac2),#e879f9);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+body.light .hero-stat b{background:linear-gradient(135deg,#7c3aed,#db2777);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.hero-stat span{font-size:.6em;color:var(--tx3);font-weight:600}
+.hero-cta{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:14px}
+.btn-hero{padding:11px 26px;border-radius:14px;border:none;font-family:var(--font-head);font-weight:800;font-size:.78em;cursor:pointer;transition:all .25s cubic-bezier(.4,0,.2,1)}
+.btn-hero.primary{background:linear-gradient(135deg,#8b5cf6,#7c3aed 55%,#d946ef);color:#fff;box-shadow:0 10px 28px rgba(124,58,237,.4)}
+.btn-hero.primary:hover{transform:translateY(-2px);box-shadow:0 16px 42px rgba(124,58,237,.5)}
+.btn-hero.ghost{background:rgba(255,255,255,.06);border:1px solid var(--bd);color:var(--tx)}
+.btn-hero.ghost:hover{border-color:var(--bd2);color:#fff;background:rgba(124,58,237,.12);transform:translateY(-2px)}
+.how{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:840px;margin:22px auto 2px}
+.how-card{background:rgba(255,255,255,.04);border:1px solid var(--bd);border-radius:18px;padding:14px 14px;text-align:right;transition:all .25s cubic-bezier(.4,0,.2,1)}
+body.light .how-card{background:rgba(124,58,237,.04)}
+.how-card:hover{transform:translateY(-3px);border-color:var(--bd2);background:rgba(124,58,237,.08);box-shadow:var(--glow)}
+.how-ic{width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1em;background:linear-gradient(135deg,rgba(139,92,246,.28),rgba(217,70,239,.2));margin-bottom:8px}
+.how-card b{display:block;font-size:.72em;color:var(--tx);margin-bottom:4px;font-family:var(--font-head)}
+.how-card span{font-size:.6em;color:var(--tx3);line-height:1.7;display:block}
+@media(max-width:640px){.how{grid-template-columns:1fr}.hero{padding-top:26px}}
+/* ===== Tabs ===== */
+.tabs{background:rgba(255,255,255,.05);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--bd);border-radius:999px;padding:5px;box-shadow:var(--shadow-md)}
+.tab{padding:9px 22px;border-radius:999px;font-size:.72em;color:var(--tx2);font-family:var(--font-head)}
+.tab:hover{background:rgba(255,255,255,.06);color:var(--tx)}
+.tab.on{background:linear-gradient(135deg,#8b5cf6,#7c3aed 60%,#a855f7);color:#fff;box-shadow:0 6px 20px rgba(124,58,237,.45)}
+/* ===== Gallery toolbar ===== */
+.gal-toolbar{display:flex;flex-direction:column;gap:10px;background:rgba(255,255,255,.045);border:1px solid var(--bd);border-radius:20px;padding:12px;margin-bottom:14px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+body.light .gal-toolbar{background:rgba(124,58,237,.04)}
+.gt-row1{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.gt-search{flex:1;min-width:170px;display:flex;align-items:center;gap:8px;background:var(--s2);border:1px solid var(--bd);border-radius:13px;padding:9px 12px;transition:all .2s}
+.gt-search:focus-within{border-color:var(--bd2);box-shadow:0 0 0 3px rgba(124,58,237,.15)}
+.gt-search .ic{color:var(--tx3);font-size:.8em}
+.gt-search input{flex:1;border:none;background:none;color:var(--tx);font-size:.74em;outline:none;font-family:inherit;min-width:0}
+.chip-row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.chip-row .lbl{font-size:.58em;color:var(--tx3);font-weight:700;margin-left:2px}
+.chip{padding:5px 13px;border-radius:999px;border:1px solid var(--bd);background:rgba(255,255,255,.04);color:var(--tx2);font-size:.6em;font-weight:700;cursor:pointer;transition:all .2s;font-family:inherit;display:inline-flex;align-items:center;gap:4px}
+.chip:hover{border-color:var(--bd2);color:var(--tx);transform:translateY(-1px)}
+.chip.on{background:linear-gradient(135deg,#8b5cf6,#7c3aed);color:#fff;border-color:transparent;box-shadow:0 4px 14px rgba(124,58,237,.35)}
+.chip:disabled,.chip.dis{opacity:.4;cursor:not-allowed;transform:none}
+.chip i{font-style:normal;font-size:.82em;opacity:.75;min-width:1.1em;text-align:center}
+.gt-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+select.gt-sel{padding:9px 12px;border-radius:12px;border:1px solid var(--bd);background:var(--s2);color:var(--tx);font-size:.64em;font-family:inherit;cursor:pointer;outline:none}
+select.gt-sel:focus{border-color:var(--bd2)}
+/* ===== Gallery cards ===== */
+.gal-grid{grid-template-columns:repeat(auto-fill,minmax(172px,1fr));gap:12px}
+.gc{background:linear-gradient(180deg,var(--s2),var(--s1));border:1px solid var(--bd);border-radius:18px;padding:0;display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;cursor:pointer;transition:transform .25s cubic-bezier(.4,0,.2,1),box-shadow .25s,border-color .25s;animation:cardIn .5s cubic-bezier(.22,.8,.3,1) both;animation-delay:var(--d,0ms)}
+.gc:hover{transform:translateY(-5px);border-color:var(--bd2);box-shadow:0 16px 40px rgba(0,0,0,.35),0 0 0 1px rgba(167,139,250,.16)}
+body.light .gc:hover{box-shadow:0 16px 40px rgba(40,30,120,.16)}
+.gc.sel{border-color:var(--gn);box-shadow:0 0 0 1.5px var(--gn),0 10px 28px rgba(34,197,94,.18)}
+.gc.multi{border-color:var(--ac);box-shadow:0 0 0 1.5px var(--ac),0 10px 28px rgba(124,58,237,.2)}
+@keyframes cardIn{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
+.gc-thumb{width:100%;height:132px;position:relative;background:radial-gradient(120px 80px at 50% 0%,rgba(124,58,237,.16),transparent 70%),#0d0d1c;overflow:hidden;border-bottom:1px solid var(--bd)}
+.gc-thumb iframe{position:absolute;top:0;left:0;width:200%;height:200%;transform:scale(.5);transform-origin:top left;border:0;pointer-events:none}
+.thumb-ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:1.6em;color:rgba(167,139,250,.45);background:linear-gradient(150deg,rgba(124,58,237,.10),rgba(217,70,239,.06))}
+.gc-meta{width:100%;padding:9px 11px 10px;display:flex;align-items:center;justify-content:space-between;gap:6px}
+.gc-name{font-size:.64em;font-weight:800;color:var(--tx);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:var(--font-head)}
+.gc-tags{display:flex;gap:4px;flex-shrink:0}
+.gc-tag{font-size:.5em;padding:2px 7px;border-radius:999px;background:rgba(167,139,250,.15);color:var(--ac2);font-weight:700;white-space:nowrap}
+.gc-num{position:absolute;top:8px;right:8px;z-index:3;background:rgba(11,11,22,.72);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);color:var(--ac2);border:1px solid var(--bd2);font-size:.56em;font-weight:800;padding:2px 9px;border-radius:999px}
+.gc-cat{position:absolute;top:34px;right:8px;z-index:3;background:rgba(11,11,22,.6);color:var(--tx2);border:1px solid var(--bd);font-size:.5em;font-weight:700;padding:2px 8px;border-radius:999px;max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gc-pick,.gc-fav{position:absolute;z-index:4;width:26px;height:26px;border-radius:50%;border:1px solid var(--bd);background:rgba(11,11,22,.7);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);color:var(--tx2);font-size:.62em;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;padding:0;line-height:1}
+.gc-pick{top:8px;left:8px}.gc-fav{top:38px;left:8px}
+.gc-pick:hover,.gc-fav:hover{border-color:var(--bd2);color:var(--tx);transform:scale(1.12)}
+.gc-pick.on{background:linear-gradient(135deg,#8b5cf6,#7c3aed);color:#fff;border-color:transparent}
+.gc-fav.on{background:linear-gradient(135deg,#f59e0b,#f97316);color:#fff;border-color:transparent}
+.gc-new{background:linear-gradient(160deg,rgba(34,197,94,.07),rgba(124,58,237,.06));border:1.5px dashed rgba(167,139,250,.4);border-radius:18px;min-height:200px;gap:6px;padding:18px 10px}
+.gc-new:hover{border-color:var(--gn);box-shadow:0 12px 32px rgba(34,197,94,.15)}
+.gc-new-ic{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,rgba(139,92,246,.25),rgba(52,211,153,.18));color:var(--ac2);border:1.5px dashed var(--bd2);font-size:1.2em}
+.gc-new .gnm span{font-family:var(--font-head);font-size:.72em;color:var(--tx)}
+.gc-new-sub{color:var(--tx3);font-size:.56em}
+/* ===== Panels / accordion ===== */
+.aa{background:rgba(255,255,255,.045);border:1px solid var(--bd);border-radius:18px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+body.light .aa{background:rgba(124,58,237,.035)}
+.aa-t{border-radius:18px;padding:11px 14px;font-size:.74em;color:var(--tx);background:linear-gradient(90deg,rgba(124,58,237,.12),transparent 70%);font-family:var(--font-head);font-weight:800}
+.aa-t .arr{transition:transform .3s;color:var(--ac2)}
+.aa-b{padding:12px 14px}
+/* ===== Buttons / inputs ===== */
+.btn{border-radius:11px;font-weight:700;font-family:inherit}
+.btn.ba{background:linear-gradient(135deg,#8b5cf6,#7c3aed 60%,#a855f7);box-shadow:0 6px 18px rgba(124,58,237,.3)}
+.btn.ba:hover{transform:translateY(-1px);box-shadow:0 10px 26px rgba(124,58,237,.42)}
+.btn.bo{background:rgba(255,255,255,.05);border:1px solid var(--bd);color:var(--tx2)}
+.btn.bo:hover{border-color:var(--bd2);color:var(--tx);background:rgba(124,58,237,.1)}
+.tx,.sl{border-radius:10px;background:var(--s2);border-color:var(--bd);font-size:.7em;transition:border-color .2s,box-shadow .2s}
+.tx:focus,.sl:focus{outline:none;border-color:var(--bd2);box-shadow:0 0 0 3px rgba(124,58,237,.14)}
+/* ===== Multi bar ===== */
+#multiBar{background:linear-gradient(90deg,rgba(124,58,237,.16),rgba(217,70,239,.08));border:1px solid var(--bd2);border-radius:16px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 8px 28px rgba(124,58,237,.18)}
+/* ===== Fullscreen preview ===== */
+.fs-overlay{background:rgba(7,7,18,.86);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.fs-box{border:1px solid var(--bd2);border-radius:24px;box-shadow:0 30px 90px rgba(0,0,0,.65),0 0 0 1px rgba(167,139,250,.1);animation:fsIn .35s cubic-bezier(.22,.8,.3,1)}
+@keyframes fsIn{from{opacity:0;transform:translateY(18px) scale(.97)}to{opacity:1;transform:none}}
+.fs-head{background:rgba(255,255,255,.04);padding:12px 16px}
+.fs-title{font-family:var(--font-head);font-size:.78em}
+.fs-actions{display:flex;justify-content:center;gap:8px;padding:10px 12px;flex-wrap:wrap}
+.fs-act{padding:8px 16px;border-radius:12px;border:1px solid var(--bd);background:rgba(255,255,255,.06);color:var(--tx);font-size:.66em;font-weight:700;cursor:pointer;transition:all .2s;font-family:var(--font-head)}
+.fs-act:hover{border-color:var(--bd2);background:rgba(124,58,237,.16);transform:translateY(-1px)}
+.fs-act.primary{background:linear-gradient(135deg,#8b5cf6,#7c3aed);border-color:transparent;color:#fff;box-shadow:0 6px 18px rgba(124,58,237,.35)}
+/* ===== Onboarding ===== */
+.onboard-overlay{background:linear-gradient(150deg,#0b0b1c 0%,#151033 45%,#20092f 100%);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);z-index:10002}
+body.light .onboard-overlay{background:linear-gradient(150deg,#f4f4fb 0%,#ede9fe 45%,#fdf2f8 100%)}
+.onboard-box{max-width:580px;width:92%;text-align:center;padding:38px 24px 30px;border-radius:30px;background:rgba(255,255,255,.055);border:1px solid rgba(167,139,250,.28);box-shadow:0 30px 90px rgba(0,0,0,.55);position:relative;overflow:hidden;animation:fsIn .4s cubic-bezier(.22,.8,.3,1)}
+body.light .onboard-box{background:rgba(255,255,255,.8);border-color:rgba(124,58,237,.2);box-shadow:0 30px 90px rgba(40,30,120,.18)}
+.onboard-box::before{content:'';position:absolute;left:-20%;right:-20%;top:-30%;height:230px;background:radial-gradient(420px 180px at 50% 0%,rgba(139,92,246,.4),transparent 70%);pointer-events:none}
+.onboard-box::after{content:'';position:absolute;left:6%;top:8%;width:14px;height:14px;border-radius:50%;background:rgba(167,139,250,.5);animation:obFloat 4s ease-in-out infinite}
+.onboard-box .ob-b2{position:absolute;right:10%;top:16%;width:9px;height:9px;border-radius:50%;background:rgba(217,70,239,.5);animation:obFloat 5s ease-in-out .6s infinite}
+@keyframes obFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+.onboard-steps{display:flex;justify-content:center;gap:8px;margin:18px 0 6px}
+.onboard-step{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.07);border:1px solid var(--bd);color:var(--tx3);font-size:.7em;font-weight:800;display:flex;align-items:center;justify-content:center;transition:all .3s;font-family:var(--font-head)}
+.onboard-step.active{background:linear-gradient(135deg,#8b5cf6,#7c3aed);color:#fff;border-color:transparent;box-shadow:0 6px 18px rgba(124,58,237,.4);transform:scale(1.15)}
+.onboard-step.done{background:rgba(34,197,94,.18);color:var(--gn);border-color:rgba(34,197,94,.35)}
+/* ===== Help modal ===== */
+.help-overlay{position:fixed;inset:0;background:rgba(7,7,18,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);z-index:10001;display:none;align-items:center;justify-content:center;padding:14px}
+.help-overlay.open{display:flex}
+.help-box{background:var(--s1);border:1px solid var(--bd2);border-radius:26px;width:100%;max-width:640px;max-height:88vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 30px 90px rgba(0,0,0,.6);animation:fsIn .35s cubic-bezier(.22,.8,.3,1)}
+.help-head{display:flex;align-items:center;gap:10px;padding:16px 20px;border-bottom:1px solid var(--bd);background:rgba(255,255,255,.04)}
+.help-head h2{font-family:var(--font-head);font-size:.95em;font-weight:900;color:var(--tx);flex:1;text-align:right}
+.help-body{padding:16px 20px;overflow-y:auto;line-height:1.9}
+.help-sec{margin-bottom:18px}
+.help-sec h3{font-family:var(--font-head);font-size:.78em;font-weight:900;color:var(--ac2);margin-bottom:8px;display:flex;align-items:center;gap:7px}
+.help-sec h3 .h-ic{width:28px;height:28px;border-radius:9px;background:linear-gradient(135deg,rgba(139,92,246,.28),rgba(217,70,239,.18));display:flex;align-items:center;justify-content:center;font-size:.95em;flex-shrink:0}
+.help-sec p,.help-sec li{font-size:.68em;color:var(--tx2)}
+.help-sec ul{padding-right:16px;margin-top:4px}
+.help-sec li{margin-bottom:5px}
+.help-tip{background:rgba(124,58,237,.09);border:1px solid rgba(167,139,250,.25);border-radius:12px;padding:9px 12px;font-size:.62em;color:var(--ac2);margin-top:8px}
+.help-kbd{display:inline-block;background:var(--s2);border:1px solid var(--bd);border-bottom-width:2px;border-radius:6px;padding:1px 7px;font-size:.85em;font-family:var(--font-head);color:var(--tx);margin:0 2px}
+/* ===== Toast / status / misc ===== */
+#toast{background:linear-gradient(135deg,#232346,#2c2c56);border:1px solid var(--bd2);color:var(--tx);border-radius:14px;padding:11px 20px;box-shadow:0 12px 40px rgba(0,0,0,.5);font-size:.74em;font-weight:700;z-index:10050}
+body.light #toast{background:linear-gradient(135deg,#ffffff,#f5f3ff);border-color:rgba(124,58,237,.3);color:var(--tx);box-shadow:0 12px 40px rgba(40,30,120,.18)}
+#statusBar{background:rgba(21,21,42,.85);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid var(--bd)}
+.cmd-box{background:var(--s1);border:1px solid var(--bd2);border-radius:22px;box-shadow:0 30px 90px rgba(0,0,0,.6)}
+.ctx-menu{background:var(--s1);border:1px solid var(--bd2);border-radius:14px;box-shadow:var(--shadow-lg)}
+.autosave-dot{box-shadow:0 0 0 0 rgba(34,197,94,.5)}
+.maker-quick a{color:var(--tx3);font-size:.64em;font-weight:600;text-decoration:none;border:1px dashed var(--bd);border-radius:999px;padding:6px 16px;transition:all .2s;display:inline-flex;align-items:center;gap:6px}
+.maker-quick a:hover{color:var(--ac2);border-color:var(--bd2);background:rgba(124,58,237,.08)}
+.gal-empty{text-align:center;padding:44px 20px;color:var(--tx3);font-size:.74em;display:flex;flex-direction:column;align-items:center;gap:10px}
+.gal-empty-ic{width:64px;height:64px;border-radius:22px;background:linear-gradient(135deg,rgba(139,92,246,.18),rgba(217,70,239,.1));display:flex;align-items:center;justify-content:center;font-size:1.8em;margin-bottom:4px}
+.gal-empty b{font-family:var(--font-head);font-size:.92em;color:var(--tx)}
+.gal-empty span{font-size:.72em;color:var(--tx3)}
+@media(max-width:520px){
+@media(max-width:520px){
+  .gal-grid{grid-template-columns:repeat(auto-fill,minmax(142px,1fr));gap:9px}
+  .gc-thumb{height:112px}
+  .hdr-in{flex-direction:column;gap:6px}
+  .hdr-actions{justify-content:center}
+  .hero{padding-top:20px;padding-bottom:12px}
+  .hero h1{font-size:1.32em;margin-top:10px}
+  .hero p{font-size:.73em}
+  .hero-badge{font-size:.58em;padding:5px 12px}
+  .hero-stat{padding:7px 10px;min-width:92px}
+  .hero-stat b{font-size:1.05em}
+  .hero-stat span{font-size:.54em}
+  .btn-hero{padding:9px 18px;font-size:.7em}
+  .how{grid-template-columns:repeat(3,1fr);gap:6px;margin-top:12px}
+  .how-ic{width:26px;height:26px;font-size:.85em;margin-bottom:4px}
+  .how-card{padding:9px 8px}
+  .how-card b{font-size:.56em}
+  .how-card span{font-size:.5em}
+  .gal-toolbar{padding:10px}
+  .chip{padding:4px 10px;font-size:.56em}
+  .tabs{max-width:94%;margin-left:auto;margin-right:auto}
+  .tab{padding:8px 16px;font-size:.66em}
+}
 </style>
 </head>
 <body>
 <div class="hdr">
 <div class="hdr-in">
 <div class="brand">
-<div class="logo">A</div>
-<div><h1>Anki Design Studio</h1><p>مصمم بطاقات احترافي</p></div>
+<div class="logo">✦</div>
+<div><h1>Anki Design Studio</h1><p>مصمم بطاقات احترافي — معرض 100 تصميم</p></div>
 </div>
-<span class="ver">الإصدار 5.0 — 100 قالب</span>
+<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center">
+<span class="ver">الإصدار 6.0 — 100 قالب</span>
+<div class="hdr-actions">
+<button class="ha-btn" onclick="showHelp()" title="دليل الاستخدام الشامل" aria-label="دليل الاستخدام">ⓘ</button>
+<button class="ha-btn" onclick="toggleDarkLight()" title="تبديل الوضع الداكن/الفاتح" aria-label="تبديل الوضع">🌙</button>
+<button class="ha-btn" onclick="openCmdPalette()" title="الأوامر السريعة (Ctrl+Shift+P)" aria-label="الأوامر السريعة">⌘</button>
+</div>
+</div>
 </div>
 <div id="loadingMsg">⏳ جاري تحميل التصاميم...</div>
 </div>
@@ -426,9 +651,42 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 </div>
 
 <div id="sec-gal" class="sec on">
-<div style="text-align:center;margin-bottom:10px">
-<div style="font-size:.9em;font-weight:900;background:linear-gradient(135deg,#a78bfa,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent">🎨 القوالب الاحترافية</div>
-<div id="tplCount" style="font-size:.65em;color:var(--tx2);margin-top:2px">جاري تحميل التصاميم...</div>
+<!-- ===== واجهة افتتاحية ===== -->
+<div class="hero">
+<div class="hero-badge"><span class="dot"></span> جاهز للاستخدام — 100 تصميم احترافي</div>
+<h1>صمّم بطاقات Anki الأجمل بلا أي كود</h1>
+<p>معرض ضخم من التصاميم الجاهزة، معاينة كاملة، تحكم كامل بالألوان والخطوط والحركات والصوت — وكل شيء يتنزّل رزمة <b>.apkg</b> جاهزة للاستيراد.</p>
+<div class="hero-stats">
+<div class="hero-stat"><b id="statTpl">100</b><span>قالب احترافي</span></div>
+<div class="hero-stat"><b>3082</b><span>كلمة جاهزة</span></div>
+<div class="hero-stat"><b id="statAudio">2081</b><span>صوت مدمج</span></div>
+</div>
+<div class="hero-cta">
+<button class="btn-hero primary" onclick="document.getElementById('galGridAnchor').scrollIntoView({behavior:'smooth'})">🎨 استعراض القوالب</button>
+<button class="btn-hero ghost" onclick="showOnboarding()">🚀 جولة سريعة</button>
+</div>
+<div class="how">
+<div class="how-card"><div class="how-ic">1️⃣</div><b>اختر قالباً</b><span>تصفّح المعرض، شاهد معاينة حقيقية لكل تصميم، وقلّب البطاقة لمشاهدة الخلف.</span></div>
+<div class="how-card"><div class="how-ic">2️⃣</div><b>خصّص صوتك</b><span>افتح لوحة تحكم الصوت: اختر الصوت الفرنسي والعربي، اضبط السرعة والنغمة والفاصل.</span></div>
+<div class="how-card"><div class="how-ic">3️⃣</div><b>نزّل الرزمة</b><span>اختر قالباً واحداً أو أكثر، واضغط تنزيل لتحصل على .apkg جاهزة بكل الأصوات.</span></div>
+</div>
+</div>
+<div style="text-align:center;margin:6px 0 12px" id="galGridAnchor">
+<div style="font-size:.9em;font-weight:900;font-family:var(--font-head);background:linear-gradient(135deg,#a78bfa,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent">🎨 القوالب الاحترافية</div>
+<div id="tplCount" style="font-size:.65em;color:var(--tx2);margin-top:3px">جاري تحميل التصاميم...</div>
+</div>
+<!-- ===== شريط أدوات المعرض ===== -->
+<div class="gal-toolbar">
+<div class="gt-row1">
+<div class="gt-search"><span class="ic">🔍</span><input id="gSearchInput" placeholder="ابحث عن قالب بالاسم أو الرقم..." aria-label="بحث في القوالب" oninput="filterGallery(this.value)" value=""><span class="ic" style="opacity:.4">/</span></div>
+<div class="gt-actions">
+<select class="gt-sel" aria-label="ترتيب القوالب" onchange="gallerySort=this.value;renderGrid()"><option value="default">ترتيب افتراضي</option><option value="name">الاسم</option><option value="newest">الأحدث</option></select>
+<button class="chip" onclick="selectAllTemplates()" title="تحديد أو إلغاء تحديد كل القوالب">☑ الكل</button>
+<button class="chip" onclick="toggleGalleryView()" title="تبديل عرض الشبكة/القائمة">▦ عرض</button>
+</div>
+</div>
+<div class="chip-row" id="colBar"><span class="lbl">المجموعات:</span></div>
+<div class="chip-row" id="tagBar"><span class="lbl">التصنيفات:</span></div>
 </div>
 <div class="aa">
 <div class="aa-t" onclick="toggleAudioPanel()"><span>🎙️ لوحة تحكم الصوت</span><span class="arr" id="gAaArr" data-pid="aaArr">▾</span></div>
@@ -476,9 +734,7 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
     <button class="btn bo bs" onclick="clearMultiSelect()" style="padding:5px 10px;font-size:.68em">✖ مسح</button>
   </div>
 </div>
-<div style="display:flex;justify-content:center;gap:8px;margin:0 0 10px">
-  <button class="btn bo bs" onclick="selectAllTemplates()" style="padding:5px 18px;font-size:.7em">☑ تحديد الكل</button>
-</div>
+
 <div class="gal-grid" id="tplGrid"></div>
 <div class="maker-quick"><a href="#" onclick="switchTab('maker');return false" title="تحكم كامل وتنزيل">✏️ محرر بسيط — تحكم كامل وتنزيل</a></div>
 </div>
@@ -631,7 +887,7 @@ const ARFONTS=[
 // ============================================================
 const CATS={all:'الكل',classic:'كلاسيكي',modern:'عصري',colorful:'ملون',elegant:'أنيق',minimal:'بسيط',bold:'جريء',creative:'إبداعي',french:'فرنسي',arabic:'عربي'};
 // TAGS SYSTEM
-const TAGS=[{k:"dark",l:"داكن",e:"🌙"},{k:"light",l:"فاتح",e:"☀️"},{k:"modern",l:"عصري",e:"✨"},{k:"classic",l:"كلاسيكي",e:"📜"},{k:"minimal",l:"بسيط",e:"◻️"},{k:"colorful",l:"ملون",e:"🌈"},{k:"elegant",l:"أنيق",e:"💎"},{k:"bold",l:"جريء",e:"🔥"},{k:"neon",l:"نيون",e:"⚡"},{k:"glass",l:"زجاجي",e:"🔮"},{k:"gradient",l:"تدرج",e:"🎨"},{k:"rounded",l:"دائري",e:"⭕"},{k:"professional",l:"احترافي",e:"💼"},{k:"medical",l:"طبي",e:"🏥"},{k:"french",l:"فرنسي",e:"🇫🇷"},{k:"arabic",l:"عربي",e:"🇸🇦"}];
+const TAGS=[{k:"dark",l:"داكن",e:"🌙"},{k:"light",l:"فاتح",e:"☀️"},{k:"glass",l:"زجاجي",e:"🔮"},{k:"rounded",l:"دائري",e:"⭕"},{k:"colorful",l:"ملون",e:"🌈"},{k:"elegant",l:"أنيق",e:"💎"},{k:"bold",l:"جريء",e:"🔥"}];
 var curTag="all";
 // COLLECTIONS SYSTEM
 const COLLECTIONS=[{k:"all",l:"الكل",e:"📚"},{k:"favorites",l:"المفضلة",e:"⭐"},{k:"recent",l:"الأخيرة",e:"🕐"},{k:"official",l:"الرسمية",e:"✅"},{k:"custom",l:"المخصصة",e:"📝"}];
@@ -1212,7 +1468,7 @@ function renderGrid(){
   if(gallerySearchQ){
     var q=gallerySearchQ.toLowerCase();
     templates=templates.filter(function(t){
-      return (t.nm||'').toLowerCase().indexOf(q)>=0||(t.en||'').toLowerCase().indexOf(q)>=0||(t.cat||'').toLowerCase().indexOf(q)>=0;
+      return (t.nm||'').toLowerCase().indexOf(q)>=0||(t.en||'').toLowerCase().indexOf(q)>=0||(t.cat||'').toLowerCase().indexOf(q)>=0||((t.tags||[]).join(' ').toLowerCase().indexOf(q)>=0);
     });
   }
   // Apply tag filter
@@ -1239,6 +1495,7 @@ function renderGrid(){
   var gridClass=galleryView==='list'?'gal-grid list-view':'gal-grid';
   document.getElementById('tplGrid').className=gridClass;
   var tc=document.getElementById('tplCount');if(tc)tc.textContent=templates.length+' تصميم احترافي جاهز';
+    var _totalCards=0;
     // Split into built-in and custom (new) designs, group them with headers
     var builtIn = [];
     var customNew = [];
@@ -1246,20 +1503,26 @@ function renderGrid(){
       if (isCustomTemplate(templates[ti].id)) customNew.push(templates[ti]);
       else builtIn.push(templates[ti]);
     }
+    var _cIdx=0;
     function renderGalleryCard(t, isCustom){
       var sel=S._templateId===t.id;
       var isFav=false;
       try{var favs=JSON.parse(localStorage.getItem('anki_favorites')||'[]');isFav=favs.some(function(f){return f._templateId===t.id;});}catch(e){}
       var inMulti=(MULTI_SELECT.indexOf(t.id)>=0);
-      return '<div class="gc'+(sel?' sel':'')+(inMulti?' multi':'')+'" onclick="previewFullTemplate(\''+t.id+'\')" data-tpl-id=\''+t.id+'\'>'
+      var delay=Math.min(_cIdx*16,380);_cIdx++;
+      var TAG_L={};TAGS.forEach(function(tg){TAG_L[tg.k]=tg.l;});
+      var tags=(t.tags||[]).slice(0,3).map(function(tg){return '<span class="gc-tag">'+(TAG_L[tg]||tg)+'</span>';}).join('');
+      return '<div class="gc'+(sel?' sel':'')+(inMulti?' multi':'')+'" style="--d:'+delay+'ms" onclick="previewFullTemplate(\''+t.id+'\')" data-tpl-id=\''+t.id+'\'>'
         +'<button class="gc-pick'+(inMulti?' on':'')+'" onclick="event.stopPropagation();toggleMultiSelect(\''+t.id+'\')" title="تحديد للرزمة المتعددة">'+(inMulti?'✓':'+')+'</button>'
         +'<button class="gc-fav'+(isFav?' on':'')+'" onclick="event.stopPropagation();toggleFav(\''+t.id+'\')" title="مفضل">'+(isFav?'★':'☆')+'</button>'
-        +(t.pack?'<div class="gc-cat">'+t.pack+'</div>':'')
         +(t.num&&!isCustom?'<div class="gc-num">#'+t.num+'</div>':'')
-        +'<div class="gnm"><span>'+t.nm+'</span></div>'
+        +(t.pack?'<div class="gc-cat">'+t.pack+'</div>':'')
+        +buildThumbHTML(t)
+        +'<div class="gc-meta"><span class="gc-name">'+t.nm+'</span><span class="gc-tags">'+tags+'</span></div>'
         +'</div>';
     }
     var html = '';
+    if(tc)_totalCards=customNew.length+builtIn.length;
     // Only professional (custom) designs appear in the gallery.
     // Old color-only templates are available as color options in the control panel.
     if(customNew.length>0){
@@ -1270,12 +1533,137 @@ function renderGrid(){
       html += builtIn.map(function(t){return renderGalleryCard(t,false);}).join('');
     }
     if(html===''){
-      html = '<div style="text-align:center;padding:30px;color:var(--tx3);font-size:.75em"><span style="display:inline-block;width:14px;height:14px;border:2px solid var(--ac3);border-top-color:transparent;border-radius:50%;animation:spin 1s linear infinite;vertical-align:middle;margin-left:6px"></span>جاري تحميل التصاميم الاحترافية...</div>';
-      if (typeof addSpinKeyframes === 'function') addSpinKeyframes();
+      var hasFilter=!!(gallerySearchQ||(curTag&&curTag!=='all')||(curCol&&curCol!=='all'));
+      if(hasFilter){
+        html='<div class="gal-empty"><div class="gal-empty-ic">🔍</div><b>لا توجد نتائج مطابقة</b><span>جرّب كلمة بحث أخرى أو غيّر التصنيف</span><button class="btn-hero ghost" onclick="gallerySearchQ=\'\';document.getElementById(\'gSearchInput\').value=\'\';curTag=\'all\';curCol=\'all\';renderTags();renderCollections();renderGrid()">مسح الفلاتر</button></div>';
+      }else{
+        html = '<div style="text-align:center;padding:30px;color:var(--tx3);font-size:.75em"><span style="display:inline-block;width:14px;height:14px;border:2px solid var(--ac3);border-top-color:transparent;border-radius:50%;animation:spin 1s linear infinite;vertical-align:middle;margin-left:6px"></span>جاري تحميل التصاميم الاحترافية...</div>';
+        if (typeof addSpinKeyframes === 'function') addSpinKeyframes();
+      }
     }
     document.getElementById('tplGrid').innerHTML=html;
+    if(tc&&_totalCards>0)tc.textContent=_totalCards+' تصميم احترافي جاهز';
     renderMultiBar();
+    try{mountThumbs();}catch(e){}
+    try{updateHeroStats();}catch(e){}
+    try{renderTags();renderCollections();}catch(e){}
 }
+
+// ============================================================
+// UI 2026 — معاينات مصغرة + إحصائيات + دليل شامل + أدوات المعاينة
+// ============================================================
+function escAttr(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function buildThumbHTML(t){
+  return '<div class="gc-thumb" data-th="'+(t.id||'')+'"><div class="thumb-ph">🎴</div></div>';
+}
+function mountThumbs(){
+  var boxes=document.querySelectorAll('.gc-thumb[data-th]');
+  if(!boxes.length)return;
+  var io=window.__thumbIO;
+  if(!io && 'IntersectionObserver' in window){
+    io=new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){mountThumb(en.target);io.unobserve(en.target);}
+      });
+    },{rootMargin:'700px'});
+    window.__thumbIO=io;
+  }
+  boxes.forEach(function(box){
+    if(box.dataset.done)return;
+    if(window.__thumbIO)window.__thumbIO.observe(box);
+    else mountThumb(box);
+  });
+}
+function mountThumb(box){
+  var id=box.getAttribute('data-th');if(!id||box.dataset.done)return;
+  box.dataset.done='1';
+  var t=null;
+  try{t=findTemplate(id);}catch(e){}
+  if(!t){box.innerHTML='<div class="thumb-ph">🎴</div>';return;}
+  var key='th_'+id;
+  if(window.__THUMBS&&window.__THUMBS[key]){box.innerHTML=window.__THUMBS[key];return;}
+  var doc='';
+  try{
+    var h=(t.front||'').replace(/<script[\s\S]*?<\/script>/gi,'').replace(/@import[^;]+;/gi,'');
+    doc=buildPreviewDoc(Object.assign({},t,{front:h,back:h}));
+  }catch(e){}
+  if(!doc){box.innerHTML='<div class="thumb-ph">🎴</div>';return;}
+  var html='<iframe loading="lazy" scrolling="no" title="معاينة '+(t.nm||'قالب')+'" srcdoc="'+escAttr(doc)+'"></iframe>';
+  if(!window.__THUMBS)window.__THUMBS={};
+  if(Object.keys(window.__THUMBS).length<170)window.__THUMBS[key]=html;
+  box.innerHTML=html;
+}
+function updateHeroStats(){
+  try{
+    var tpl=document.getElementById('statTpl');
+    if(tpl){var n=getFilteredTemplates?getFilteredTemplates().length:TEMPLATES.length;tpl.textContent=n;}
+  }catch(e){}
+}
+// ===== الدليل الشامل =====
+function showHelp(){
+  var ov=document.getElementById('helpOverlay');
+  if(!ov)return;
+  var html='<div class="help-head"><h2>📖 الدليل الشامل</h2><button class="fs-close" onclick="closeHelp()" aria-label="إغلاق">✕</button></div><div class="help-body">';
+  html+='<div class="help-sec"><h3><span class="h-ic">🚀</span> كيف تبدأ في 3 خطوات</h3><ul>'
+    +'<li><b>اختر قالباً:</b> اضغط أي بطاقة في المعرض لفتح معاينة كاملة، واستخدم الأسهم للتنقل، وزر <span class="help-kbd">🔄 اقلب البطاقة</span> لمشاهدة الخلف.</li>'
+    +'<li><b>خصّص الصوت:</b> افتح «لوحة تحكم الصوت» في المعرض أو المحرر: اختر الصوت الفرنسي/العربي، اضبط السرعة والنغمة والفاصل الزمني.</li>'
+    +'<li><b>نزّل الرزمة:</b> اختر قالباً (أو أكثر من قالب) ثم اضغط «⬇ تنزيل الرزمة» لتحصل على ملف <b>.apkg</b> جاهز للاستيراد في Anki.</li></ul></div>';
+  html+='<div class="help-sec"><h3><span class="h-ic">🎛️</span> لوحة التحكم والمحرر البسيط</h3><p>رابط «✏️ محرر بسيط» تحت المعرض يفتح محرراً كاملاً: معاينة حية + لوحة تحكم بأكثر من 100 خاصية (الألوان، الخطوط، الحدود، الظلال، الحركات، التأثيرات) + تنزيل مباشر. كل تغيير ينعكس فوراً على المعاينة وعلى الرزمة المولّدة.</p></div>';
+  html+='<div class="help-sec"><h3><span class="h-ic">🎙️</span> نظام الصوت</h3><ul>'
+    +'<li>المكتبة الجاهزة: <b>2081 كلمة</b> بأصوات رجالية مدمجة تُضمَّن تلقائياً بدون إنترنت.</li>'
+    +'<li>لوحة التحكم تسمح بتغيير الصوت (فرنسي/عربي، رجال/نساء، لهجات متعددة)، والسرعة (0.5–2x)، والنغمة، والفاصل الزمني بين المقاطع.</li>'
+    +'<li>الرزمة الناتجة تحتوي الصوت داخل الحقول (AudioFR/AudioAR/AudioBOTH) كما في الرزمة المعتمدة.</li></ul></div>';
+  html+='<div class="help-sec"><h3><span class="h-ic">⌨️</span> اختصارات لوحة المفاتيح</h3><ul>'
+    +'<li><span class="help-kbd">Ctrl+Shift+P</span> لوحة الأوامر</li>'
+    +'<li><span class="help-kbd">Ctrl+Z</span> تراجع &nbsp; <span class="help-kbd">Ctrl+Y</span> إعادة</li>'
+    +'<li><span class="help-kbd">Ctrl+S</span> حفظ &nbsp; <span class="help-kbd">R</span> قالب عشوائي</li>'
+    +'<li><span class="help-kbd">← / →</span> تنقل بين القوالب في المعاينة</li></ul></div>';
+  html+='<div class="help-sec"><h3><span class="h-ic">❓</span> أسئلة شائعة</h3><ul>'
+    +'<li><b>هل التنزيل يشمل التصميم كما أراه بالضبط؟</b> نعم — الرزمة تُبنى من نفس HTML/CSS الذي تراه في المعاينة.</li>'
+    +'<li><b>هل يمكن دمج أكثر من قالب في رزمة واحدة؟</b> نعم — اضغط ＋ على عدة بطاقات ثم «⬇ تنزيل الرزمة المتعددة».</li>'
+    +'<li><b>الرزمة كبيرة؟</b> بدون صوت تكون ~1.5MB، ومع الصوت تكون كبيرة لأن الصوت مدمج داخل البطاقات (متل الرزمة المعتمدة).</li></ul></div>';
+  html+='<div class="help-tip">💡 <b>نصيحة:</b> اضغط على أيقونة ⓘ بجانب الخصائص في لوحة التحكم للحصول على شرح لكل خاصية على حدة.</div>';
+  html+='</div>';
+  ov.innerHTML='<div class="help-box">'+html+'</div>';
+  ov.classList.add('open');
+}
+function closeHelp(){var ov=document.getElementById('helpOverlay');if(ov)ov.classList.remove('open');}
+// ===== تنزيل قالب واحد من المعاينة =====
+function fsCurTemplate(){try{var all=getFilteredTemplates();return all[curTplIdx]||null;}catch(e){return null;}}
+function fsToggleSelect(){
+  var t=fsCurTemplate();if(!t)return;
+  toggleMultiSelect(t.id);
+  var b=document.getElementById('fsSelBtn');
+  if(b)b.textContent=(MULTI_SELECT.indexOf(t.id)>=0)?'✓ محدد':'＋ تحديد';
+  toast((MULTI_SELECT.indexOf(t.id)>=0)?'تمت إضافة القالب للرزمة المتعددة':'تمت إزالة القالب');
+}
+function fsDownload(){var t=fsCurTemplate();if(!t)return;downloadSingleTpl(t.id);}
+function downloadSingleTpl(id){
+  var t=null;try{t=findTemplate(id);}catch(e){}
+  if(!t){toast('تعذر العثور على القالب');return;}
+  var p=buildDesignPayload(t);
+  if(!p){toast('لا يمكن تنزيل هذا القالب');return;}
+  var deckName=((document.getElementById('deckName')&&document.getElementById('deckName').value)||'فرنسي بكالوريا')+' — قالب '+(t.nm||id);
+  var config={deckName:deckName,designs:[p],multi:true,ttsConfig:collectTTSConfig(),includeAudio:((document.getElementById('includeAudio')&&document.getElementById('includeAudio').checked)!==false)};
+  var ld=document.getElementById('loading');if(ld)ld.style.display='block';
+  var di=document.getElementById('dlInfo');if(di)di.textContent='';
+  fetch(apiBase()+'/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config)}).then(function(resp){
+    if(resp.status===202){return resp.json().then(function(dj){return pollJobDownload(dj.job,config.deckName+'.apkg',di);});}
+    if(!resp.ok){throw new Error('Server error: '+resp.status);}
+    return resp.blob().then(function(blob){
+      if(blob.size<1000)throw new Error('ملف فارغ');
+      triggerBlobDownload(blob,config.deckName+'.apkg');
+      var msg='✅ تم التنزيل ('+Math.round(blob.size/1024)+' KB)';
+      if(di)di.textContent=msg;
+      toast(msg);
+    });
+  }).catch(function(e){
+    var em='خطأ: '+e.message;
+    if(di)di.textContent=em;
+    toast(em);
+  }).finally(function(){if(ld)ld.style.display='none';});
+}
+
 // ---- Multi-select state ----
 var MULTI_SELECT = [];
 try{ MULTI_SELECT = JSON.parse(localStorage.getItem('anki_multi_selected')||'[]'); }catch(e){ MULTI_SELECT=[]; }
@@ -1491,12 +1879,20 @@ async function downloadMultiAPKG(){
 function renderTags(){
   var el=document.getElementById('tagBar');
   if(!el)return;
-  el.innerHTML=TAGS.map(function(tag){return '<div class="tag'+(curTag===tag.k?' on':'')+'" onclick="curTag=\''+tag.k+'\';renderTags();renderGrid()">'+tag.e+' '+tag.l+'</div>';}).join('');
+  var all=getFilteredTemplates();
+  var counts={};
+  for(var i=0;i<all.length;i++){(all[i].tags||[]).forEach(function(t){counts[t]=(counts[t]||0)+1;});}
+  var html='<span class="lbl">التصنيفات:</span><button class="chip'+(curTag==='all'?' on':'')+'" onclick="curTag=\'all\';renderTags();renderGrid()">📚 الكل ('+all.length+')</button>';
+  html+=TAGS.map(function(tag){
+    var n=counts[tag.k]||0;
+    return '<button class="chip'+(curTag===tag.k?' on':'')+(n===0?' dis':'')+'" '+(n===0?'disabled':'')+' onclick="'+(n===0?'':'curTag=\''+tag.k+'\';renderTags();renderGrid()')+'">'+tag.e+' '+tag.l+' <i>'+n+'</i></button>';
+  }).join('');
+  el.innerHTML=html;
 }
 function renderCollections(){
   var el=document.getElementById('colBar');
   if(!el)return;
-  el.innerHTML=COLLECTIONS.map(function(col){return '<div class="col-btn'+(curCol===col.k?' on':'')+'" onclick="curCol=\''+col.k+'\';renderCollections();renderGrid()">'+col.e+' '+col.l+'</div>';}).join('');
+  el.innerHTML='<span class="lbl">المجموعات:</span>'+COLLECTIONS.map(function(col){return '<button class="chip'+(curCol===col.k?' on':'')+'" onclick="curCol=\''+col.k+'\';renderCollections();renderGrid()">'+col.e+' '+col.l+'</button>';}).join('');
 }
 function renderFilt(){return;
   document.getElementById('filtBar').innerHTML='<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 0"><input style="flex:1;min-width:120px;padding:8px 12px;border-radius:8px;border:1px solid var(--bd);background:var(--s2);color:var(--tx);font-size:.75em" placeholder="\u{1F50D} \u0627\u0628\u062D\u062B \u0639\u0646 \u0642\u0627\u0644\u0628..." oninput="filterGallery(this.value)" value="'+gallerySearchQ+'"><select style="padding:8px 12px;border-radius:8px;border:1px solid var(--bd);background:var(--s2);color:var(--tx);font-size:.7em" onchange="gallerySort=this.value;renderGrid()"><option value="name"'+(gallerySort==='name'?' selected':'')+'>\u0627\u0644\u0627\u0633\u0645</option><option value="newest"'+(gallerySort==='newest'?' selected':'')+'>\u0627\u0644\u0623\u062D\u062F\u062B</option></select></div>';
@@ -2198,6 +2594,8 @@ function renderFullscreen(){
   var tv=fsFlipped?Object.assign({},t,{front:t.back||t.front}):t;
   if(f)f.srcdoc=buildPreviewDoc(tv);
   if(fb)fb.textContent=fsFlipped?'🔄 ارجع للواجهة':'🔄 اقلب البطاقة';
+  var sb=document.getElementById('fsSelBtn');
+  if(sb)sb.textContent=(MULTI_SELECT.indexOf(t.id)>=0)?'✓ محدد':'＋ تحديد';
   if(i)i.textContent=isCustomTemplate(t.id)?(t.nm||''):((t.num?'#'+t.num+' — ':'')+(t.nm||''));
   if(n)n.textContent=(curTplIdx+1)+' / '+all.length;
 }
@@ -3579,7 +3977,7 @@ function initApp(){
   loadTheme();
   try{
     if(!localStorage.getItem('anki_onboarded'))showOnboarding();
-    else if(!localStorage.getItem('anki_whatsnew_v21'))showWhatsNew();
+    else if(!localStorage.getItem('anki_whatsnew_v60'))showWhatsNew();
   }catch(e){}
   try{checkCrashRecovery();}catch(e){}
   try{setupAutosave();}catch(e){}
@@ -4022,11 +4420,12 @@ function showCompatChecker(){
 // ONBOARDING
 // ============================================================
 var ONBOARD_STEPS=[
-  {title:'مرحباً بك في Anki Design Studio! 🎨',text:'هذا التطبيق يسمح لك بتصميم بطاقات Anki احترافية بدون كتابة أي كود. كل شيء تفاعلي وسهل!',icon:'🎨'},
-  {title:'القوالب 🎨',text:'ابدأ باختيار قالب جاهز من المعرض (100 قالب احترافي) واضغط عليه لمعاينته كاملاً.',icon:'🎨'},
-  {title:'محرر بسيط ✏️',text:'أداة جانبية للمتقدمين: محرر بصري + لوحة تحكم (أكثر من 100 خاصية) + تنزيل .apkg مباشر.',icon:'✏️'},
-  {title:'اختصارات لوحة المفاتيح ⌨️',text:'Ctrl+Shift+P: أوامر سريعة | Ctrl+Z/Y: تراجع/إعادة | Ctrl+S: حفظ | R: عشوائي',icon:'⌨️'},
-  {title:'جاهز للبدء! 🚀',text:'ابدأ باختيار قالب من المعرض ثم عدّله حسب ذوقك. استمتع بالتصميم!',icon:'🚀'},
+  {title:'مرحباً بك في Anki Design Studio! 🎨',text:'المكان الأجمل لصنع بطاقات Anki الاحترافية — بدون كتابة أي سطر كود. كل شيء مرئي، تفاعلي، وجاهز للتنزيل.',icon:'✨'},
+  {title:'معرض من 100 تصميم 🎨',text:'كل بطاقة في المعرض معاينة حقيقية للتصميم نفسه. اضغط عليها لعرضها بملء الشاشة، وقلّب البطاقة لمشاهدة الخلف، وتنقّل بالأسهم.',icon:'🖼️'},
+  {title:'لوحة تحكم الصوت 🎙️',text:'مكتبة جاهزة من 2081 صوتاً مدمجاً. غيّر الصوت الفرنسي والعربي، واضبط السرعة والنغمة والفاصل الزمني — والصوت ينزل داخل الرزمة تلقائياً.',icon:'🔊'},
+  {title:'المحرر البسيط ✏️',text:'للمتقدمين: محرر بصري + لوحة تحكم بأكثر من 100 خاصية (ألوان، خطوط، حدود، ظلال، حركات، تأثيرات) + تنزيل .apkg مباشر.',icon:'🛠️'},
+  {title:'اختصارات مفيدة ⌨️',text:'Ctrl+Shift+P: أوامر سريعة • Ctrl+Z/Y: تراجع/إعادة • Ctrl+S: حفظ • R: قالب عشوائي',icon:'⌨️'},
+  {title:'جاهز للبدء! 🚀',text:'اختر قالباً من المعرض، خصّص صوتك، ونزّل رزمتك. بالتوفيق!',icon:'🎉'},
 ];
 var onbStep=0;
 
@@ -4045,19 +4444,21 @@ function renderOnboardStep(){
   var box=document.getElementById('onboardBox');
   if(!box)return;
   var step=ONBOARD_STEPS[onbStep];
-  var h='<div style="font-size:4em;margin-bottom:16px;animation:fi .5s ease">'+step.icon+'</div>';
-  h+='<h2 style="font-size:1.6em;font-weight:900;color:var(--ac2);margin-bottom:12px;line-height:1.4">'+step.title+'</h2>';
-  h+='<p style="font-size:1em;color:var(--tx2);line-height:1.8;margin-bottom:24px;max-width:500px">'+step.text+'</p>';
+  var h='<div class="ob-b2"></div>';
+  h+='<div style="font-size:3.6em;margin-bottom:14px;animation:fi .5s ease;filter:drop-shadow(0 8px 24px rgba(139,92,246,.45))">'+step.icon+'</div>';
+  h+='<h2 style="font-size:1.55em;font-weight:900;font-family:var(--font-head);background:linear-gradient(115deg,#c4b5fd,#a78bfa 40%,#e879f9);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:12px;line-height:1.4">'+step.title+'</h2>';
+  h+='<p style="font-size:.92em;color:var(--tx2);line-height:1.9;margin-bottom:20px;max-width:520px;margin-left:auto;margin-right:auto">'+step.text+'</p>';
   h+='<div class="onboard-steps">';
   ONBOARD_STEPS.forEach(function(_,i){
     h+='<div class="onboard-step'+(i===onbStep?' active':i<onbStep?' done':'')+'">'+(i<onbStep?'✓':(i+1))+'</div>';
   });
   h+='</div>';
-  h+='<div style="display:flex;gap:12px;justify-content:center;margin-top:8px">';
-  if(onbStep>0)h+='<button class="btn bo bs" style="padding:10px 24px;font-size:.9em" onclick="onbStep--;renderOnboardStep()">السابق</button>';
-  if(onbStep<ONBOARD_STEPS.length-1)h+='<button class="btn ba bs" style="padding:10px 24px;font-size:.9em" onclick="onbStep++;renderOnboardStep()">التالي</button>';
-  else h+='<button class="btn ba bs" style="padding:12px 32px;font-size:1em" onclick="closeOnboarding()">ابدأ!</button>';
+  h+='<div style="display:flex;gap:12px;justify-content:center;margin-top:16px;flex-wrap:wrap">';
+  if(onbStep>0)h+='<button class="btn-hero ghost" style="padding:10px 24px;font-size:.8em" onclick="onbStep--;renderOnboardStep()">السابق</button>';
+  if(onbStep<ONBOARD_STEPS.length-1)h+='<button class="btn-hero primary" style="padding:10px 30px;font-size:.82em" onclick="onbStep++;renderOnboardStep()">التالي ←</button>';
+  else h+='<button class="btn-hero primary" style="padding:12px 36px;font-size:.9em" onclick="closeOnboarding()">🚀 ابدأ الآن!</button>';
   h+='</div>';
+  h+='<div style="margin-top:14px;font-size:.6em;color:var(--tx3)"><button onclick="closeOnboarding()" style="background:none;border:none;color:var(--tx3);text-decoration:underline;cursor:pointer;font-size:1em">تخطَّ الجولة والبدء مباشرة</button></div>';
   box.innerHTML=h;
 }
 
@@ -4065,10 +4466,19 @@ function renderOnboardStep(){
 // WHAT'S NEW
 // ============================================================
 function showWhatsNew(){
-  var html='<h2>🆕 ما الجديد في v4.2</h2>';
+  var html='<h2>🆕 ما الجديد في v6.0 — واجهة جديدة كلياً</h2>';
   var items=[
+    {icon:'✨',text:'واجهة جديدة كلياً — خلفية أورورا متحركة، زجاجية، وخطوط Cairo الحديثة'},
+    {icon:'🖼️',text:'معاينات حقيقية لكل قالب داخل المعرض — شوف التصميم قبل ما تكبس'},
+    {icon:'🏠',text:'واجهة افتتاحية (Hero) بإحصائيات وأزرار سريعة وشرح 3 خطوات'},
+    {icon:'🔍',text:'شريط أدوات المعرض — بحث فوري + تصنيفات + مجموعات + ترتيب'},
+    {icon:'🔄',text:'معاينة كاملة محسّنة — زر قلب الخلف + تحديد + تنزيل القالب مباشرة'},
+    {icon:'📖',text:'دليل شامل من الهيدر (ⓘ) — شرح كل شيء خطوة بخطوة'},
+    {icon:'🚀',text:'شاشة بداية جميلة بملء الشاشة — جولة تفاعلية أول مرة'},
     {icon:'⌨️',text:'لوحة أوامر (Ctrl+Shift+P) — ابحث عن أي أمر أو خاصية بسرعة'},
-    {icon:'🔍',text:'بحث في الخصائص — اجد أي إعداد بسرعة'},
+    {icon:'🌙',text:'الوضع الفاتح/الداكن بجمال متساوٍ'},
+    {icon:'💾',text:'حفظ تلقائي — لا تفقد عملك أبداً'},
+    {icon:'🔊',text:'مكتبة صوت 2081 كلمة — صوت رجالي مدمج في كل رزمة تلقائياً'},
     {icon:'🎯',text:'تحليل التصميم — احصل على تقييم لأدائك'},
     {icon:'📊',text:'قياس الأداء — اعرف استهلاك موارد تصميمك'},
     {icon:'🔧',text:'فحص التوافق — تأكد من عمل البطاقة على كل أجهزة Anki'},
@@ -4108,7 +4518,7 @@ function showWhatsNew(){
 
 function closeWhatsNew(){
   document.getElementById('whatsNewOverlay').style.display='none';
-  localStorage.setItem('anki_whatsnew_v21','1');
+  localStorage.setItem('anki_whatsnew_v60','1');
 }
 
 // ============================================================
@@ -5349,6 +5759,51 @@ function loadCustomDesigns() {
   if (typeof renderGrid === 'function') renderGrid();
 }
 
+function deriveDesignTags(d){
+  try{
+    var tags=[];
+    var css=d.css||'';
+    var lc=(css+(d.front||'')+(d.back||'')).toLowerCase();
+    var cfg=d.config||{};
+    function lum(hex){
+      if(!hex)return null;
+      var h=String(hex).replace('#','');
+      if(h.length===3)h=h.split('').map(function(c){return c+c;}).join('');
+      if(h.length!==6)return null;
+      var r=parseInt(h.substr(0,2),16),g=parseInt(h.substr(2,2),16),b=parseInt(h.substr(4,2),16);
+      return 0.2126*r+0.7152*g+0.0722*b;
+    }
+    var bg=[cfg.cardBg,cfg.cardBg2];
+    var cssHex=css.match(/#[0-9a-fA-F]{3,8}\b/g)||[];
+    for(var i=0;i<Math.min(cssHex.length,10);i++)bg.push(cssHex[i]);
+    var lums=[];
+    bg.forEach(function(h){var v=lum(h);if(v!==null)lums.push(v);});
+    var dark=false;
+    if(lums.length){
+      var avg=lums.reduce(function(a,b){return a+b;},0)/lums.length;
+      dark=avg<100;
+    }else{
+      dark=/linear-gradient\([^)]*(#0[0-9a-f]{5}|#1[0-9a-f]{5}|#2[0-4][0-9a-f]{5})\b/.test(lc);
+    }
+    tags.push(dark?'dark':'light');
+    if(/background(?:-color|-image)?\s*:\s*(?:linear|radial)-gradient/.test(lc)||!!(cfg.bgGradientDir||(cfg.cardBg&&cfg.cardBg2)))tags.push('gradient');
+    if(/backdrop-filter/.test(lc)||/rgba?\(\s*\d+,\s*\d+,\s*\d+,\s*0\.\d\d?/.test(css)||/glass|frost/.test(lc))tags.push('glass');
+    var rr=css.match(/border-radius:\s*([0-9.]+)px/g)||[];
+    var maxR=0;
+    rr.forEach(function(m){var v=parseFloat(m.replace(/[^0-9.]/g,''));if(v>maxR)maxR=v;});
+    if(maxR>=22)tags.push('rounded');
+    var cols={};
+    (css.match(/#[0-9a-fA-F]{6}\b/g)||[]).forEach(function(h){
+      var r=parseInt(h.substr(1,2),16),g=parseInt(h.substr(3,2),16),b=parseInt(h.substr(5,2),16);
+      if(Math.max(r,g,b)-Math.min(r,g,b)>80)cols[h.toLowerCase()]=1;
+    });
+    if(Object.keys(cols).length>=6)tags.push('colorful');
+    if(/#(d4af37|c9a227|b8860b|daa520|ffd700|e6c35c|f5d061|cfa84f)\b/.test(lc)||/\b(playfair|cormorant|georgia|garamond|times)\b/.test(lc))tags.push('elegant');
+    if(/font-weight:\s*(900|800)\b/.test(css)&&/uppercase/.test(lc))tags.push('bold');
+    tags.push('professional');
+    return tags;
+  }catch(e){return ['professional'];}
+}
 function addDesigns(designs) {
   var startId = CUSTOM_TEMPLATES.length;
   for (var i = 0; i < designs.length; i++) {
@@ -5359,6 +5814,7 @@ function addDesigns(designs) {
       num: startId + i + 1,
       pack: d.pack || '',
       cat: 'professional',
+      tags: deriveDesignTags(d),
       fields: d.fields || [],
       front: d.front || '',
       back: d.back || '',
@@ -5771,6 +6227,8 @@ try{initApp();}catch(e){console.error('Init error:',e);}
 setTimeout(initAudioStatus,300);
 </script>
 
+<!-- Help overlay -->
+<div class="help-overlay" id="helpOverlay" role="dialog" aria-label="الدليل الشامل" onclick="if(event.target===this)closeHelp()"></div>
 <!-- Fullscreen template preview -->
 <div id="fsModal" class="fs-overlay" role="dialog" aria-label="معاينة القالب" aria-modal="true">
   <div class="fs-box">
@@ -5784,7 +6242,11 @@ setTimeout(initAudioStatus,300);
       <iframe class="fsc" id="fsFrame" title="معاينة القالب"></iframe>
       <button class="fsn p" onclick="prevTpl()" aria-label="السابق">❯</button>
     </div>
-    <div class="fs-actions"><button class="fs-flip" id="fsFlipBtn" onclick="flipCard()" aria-label="اقلب البطاقة">🔄 اقلب البطاقة</button></div>
+    <div class="fs-actions">
+      <button class="fs-act primary" id="fsSelBtn" onclick="fsToggleSelect()" aria-label="تحديد القالب">＋ تحديد</button>
+      <button class="fs-flip" id="fsFlipBtn" onclick="flipCard()" aria-label="اقلب البطاقة">🔄 اقلب البطاقة</button>
+      <button class="fs-act" onclick="fsDownload()" aria-label="تنزيل هذا القالب">⬇ تنزيل</button>
+    </div>
     <div class="fsi">استخدم الأسهم أو مفاتيح ← → للتنقل بين القوالب • اضغط "اقلب البطاقة" لمشاهدة الخلف</div>
   </div>
 </div>
