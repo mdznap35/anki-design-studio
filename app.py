@@ -65,9 +65,18 @@ try:
 except (FileNotFoundError, json.JSONDecodeError):
     pass
 
+WORDS_TAS9 = None
+try:
+    with open('words_tas9.json') as f:
+        WORDS_TAS9 = json.load(f)
+except (FileNotFoundError, json.JSONDecodeError):
+    pass
 
-def get_all_words():
+
+def get_all_words(source='bac'):
     # المصدر الأساسي: الرزمة النهائية النظيفة (4511 كلمة)
+    if source == 'tas9':
+        return WORDS_TAS9 or []
     if WORDS_FINAL:
         return WORDS_FINAL
     if not VOCAB_DATA:
@@ -84,9 +93,9 @@ def get_all_words():
     return w
 
 
-def get_important_words():
+def get_important_words(source='bac'):
     # الكلمات المهمة موجودة داخل words_final.json
-    if WORDS_FINAL:
+    if source == 'tas9' or WORDS_FINAL:
         return []
     if not REPEATED_DATA:
         return []
@@ -124,9 +133,10 @@ AUDIO_MAX_WORDS = 250  # حد توليد الصوت التلقائي (بدون �
 
 @app.route('/api/audio_status', methods=['GET'])
 def audio_status():
+    source = request.args.get('source') or 'bac'
     tts.load_library()
     return jsonify({
-        'total_words': len(get_all_words()) + len(get_important_words()),
+        'total_words': len(get_all_words(source)) + len(get_important_words(source)),
         'library_words': len(tts._lib),
         'audio_enabled_default': len(tts._lib) > 0,
         'max_generate_words': AUDIO_MAX_WORDS,
@@ -191,8 +201,10 @@ def serve_designs_100():
     return send_from_directory(app.static_folder, 'designs_100.js')
 
 
-def _build_note_fields(fields, w, tts_cfg, include_audio):
-    return tts.note_fields_for(fields, w, tts_cfg, extra_rows(w), include_audio)
+def _build_note_fields(fields, w, tts_cfg, include_audio, word_source='bac'):
+    # رزمة تاسع بدون قسم إضافات نهائياً — الحقل يبقى فارغاً
+    extra = '' if word_source == 'tas9' else extra_rows(w)
+    return tts.note_fields_for(fields, w, tts_cfg, extra, include_audio)
 
 
 def _write_deck(deck, safe_name):
@@ -227,7 +239,8 @@ def _settings_hash(config):
         'custom': [config.get('_templateType'), config.get('_customFront'),
                    config.get('_customBack'), config.get('_customCSS'),
                    config.get('_customFields'), config.get('_templateName')],
-        'words': len(get_all_words()) + len(get_important_words()),
+        'words': len(get_all_words(config.get('wordSource'))) + len(get_important_words(config.get('wordSource'))),
+        'wordSource': config.get('wordSource', 'bac'),
     }
     return hashlib.md5(json.dumps(key, sort_keys=True, ensure_ascii=False).encode('utf-8')).hexdigest()
 
@@ -272,9 +285,9 @@ def _unit_subdeck(deck_name, unit):
     return deck_name + '::' + u
 
 
-def _build_deck_apkg(deck_name, designs, tts_cfg, include_audio, progress=None):
+def _build_deck_apkg(deck_name, designs, tts_cfg, include_audio, progress=None, word_source='bac'):
     """يبني الرزمة (توزيع عادل للكلمات على التصاميم + رزم فرعية حسب الوحدة) ويعيد مسار ملف apkg"""
-    all_words = get_all_words() + get_important_words()
+    all_words = get_all_words(word_source) + get_important_words(word_source)
     if not all_words:
         raise ValueError('No word data found')
     decks = {deck_name: genanki.Deck(stable_id('MultiDeck_' + deck_name), deck_name)}
@@ -300,7 +313,7 @@ def _build_deck_apkg(deck_name, designs, tts_cfg, include_audio, progress=None):
 
     def make_fields(idx):
         model, fields = models[idx % n]
-        r = (model, _build_note_fields(fields, all_words[idx], tts_cfg, include_audio))
+        r = (model, _build_note_fields(fields, all_words[idx], tts_cfg, include_audio, word_source))
         with done_lock:
             done[0] += 1
             if progress:
@@ -328,11 +341,11 @@ def _build_deck_apkg(deck_name, designs, tts_cfg, include_audio, progress=None):
     return apkg_path
 
 
-def _should_job(tts_cfg, include_audio):
+def _should_job(tts_cfg, include_audio, word_source='bac'):
     """هل تحتاج الرزمة توليد صوت بالخلفية (كبيرة أو إعدادات غير افتراضية)؟"""
     if not include_audio:
         return False
-    all_words = get_all_words() + get_important_words()
+    all_words = get_all_words(word_source) + get_important_words(word_source)
     if len(all_words) <= AUDIO_MAX_WORDS:
         return False  # رزمة صغيرة: توليد فوري
     tts.load_library()
@@ -351,8 +364,8 @@ def _job_progress(jid, n):
             JOBS[jid]['done'] = n
 
 
-def _start_job(jid, h, deck_name, designs, tts_cfg, include_audio):
-    all_words = get_all_words() + get_important_words()
+def _start_job(jid, h, deck_name, designs, tts_cfg, include_audio, word_source='bac'):
+    all_words = get_all_words(word_source) + get_important_words(word_source)
     cached_n = 0
     try:
         cached_n = sum(1 for w in all_words if tts.word_cached(w.get('word', ''), w.get('arabe', ''), tts_cfg))
@@ -368,7 +381,7 @@ def _start_job(jid, h, deck_name, designs, tts_cfg, include_audio):
                 JOBS[jid]['status'] = 'running'
         with JOB_SEM:
             try:
-                path = _build_deck_apkg(deck_name, designs, tts_cfg, include_audio,
+                path = _build_deck_apkg(deck_name, designs, tts_cfg, include_audio, word_source=word_source,
                                         progress=lambda n: _job_progress(jid, n))
                 cached = _cache_put(h, path)
                 with JOBS_LOCK:
@@ -420,6 +433,7 @@ def generate():
         print(f"Generating: {config.get('deckName','?')}")
 
         deck_name = config.get('deckName', 'Français Bac')
+        word_source = 'tas9' if config.get('wordSource') == 'tas9' else 'bac'
         include_audio = config.get('includeAudio', True)
         tts_cfg = config.get('ttsConfig') or {}
         if not isinstance(tts_cfg, dict):
@@ -451,11 +465,11 @@ def generate():
             if cached:
                 print(f"Serving cached deck: {deck_name}")
                 return _send_apkg(cached, deck_name)
-            if _should_job(tts_cfg, include_audio):
+            if _should_job(tts_cfg, include_audio, word_source):
                 jid = uuid.uuid4().hex[:10]
-                _start_job(jid, h, deck_name, designs, tts_cfg, include_audio)
+                _start_job(jid, h, deck_name, designs, tts_cfg, include_audio, word_source)
                 return jsonify({'job': jid, 'status': 'started'}), 202
-            path = _build_deck_apkg(deck_name, designs, tts_cfg, include_audio)
+            path = _build_deck_apkg(deck_name, designs, tts_cfg, include_audio, word_source=word_source)
             cached = _cache_put(h, path)
             return _send_apkg(cached, deck_name)
 
