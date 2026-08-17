@@ -255,6 +255,10 @@ def serve_designs_premium():
 def serve_designs_100():
     return send_from_directory(app.static_folder, 'designs_100.js')
 
+@app.route('/template_colors.js', methods=['GET'])
+def serve_template_colors():
+    return send_from_directory(app.static_folder, 'template_colors.js')
+
 
 def _build_note_fields(fields, w, tts_cfg, include_audio, word_source='bac'):
     # رزم بدون قسم إضافات (تاسع + الإنجليزية) — الحقل يبقى فارغاً
