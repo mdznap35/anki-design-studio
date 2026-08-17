@@ -72,11 +72,38 @@ try:
 except (FileNotFoundError, json.JSONDecodeError):
     pass
 
+WORDS_EN9 = None
+try:
+    with open('words_en9.json') as f:
+        WORDS_EN9 = json.load(f)
+except (FileNotFoundError, json.JSONDecodeError):
+    pass
+
+WORDS_ENLIT = None
+try:
+    with open('words_enlit.json') as f:
+        WORDS_ENLIT = json.load(f)
+except (FileNotFoundError, json.JSONDecodeError):
+    pass
+
+WORDS_ENSCI = None
+try:
+    with open('words_ensci.json') as f:
+        WORDS_ENSCI = json.load(f)
+except (FileNotFoundError, json.JSONDecodeError):
+    pass
+
+ENGLISH_SOURCES = ('en9', 'enlit', 'ensci')
+def _split_imp(words):
+    return [w for w in (words or []) if not w.get('important')], [w for w in (words or []) if w.get('important')]
+
 
 def get_all_words(source='bac'):
     # المصدر الأساسي: الرزمة النهائية النظيفة (4511 كلمة)
     if source == 'tas9':
         return WORDS_TAS9 or []
+    if source in ENGLISH_SOURCES:
+        return _split_imp(globals().get('WORDS_' + source.upper()))[0]
     if WORDS_FINAL:
         return WORDS_FINAL
     if not VOCAB_DATA:
@@ -95,6 +122,8 @@ def get_all_words(source='bac'):
 
 def get_important_words(source='bac'):
     # الكلمات المهمة موجودة داخل words_final.json
+    if source in ENGLISH_SOURCES:
+        return _split_imp(globals().get('WORDS_' + source.upper()))[1]
     if source == 'tas9' or WORDS_FINAL:
         return []
     if not REPEATED_DATA:
@@ -116,8 +145,11 @@ def extra_rows(w):
     for label, key in [('الوحدة', 'unit'), ('النوع', 'type'), ('الجمع', 'pluriel'),
                        ('المرادف', 'synonyme'), ('الضد', 'contraire'), ('الصفحة', 'page')]:
         v = (w.get(key) or '').strip()
-        if key == 'unit' and v.startswith('الوحدة '):
-            v = v[len('الوحدة '):].strip()
+        if key == 'unit':
+            if v.startswith('كلمات مهمة - '):
+                v = v[len('كلمات مهمة - '):].strip()
+            if v.startswith('الوحدة '):
+                v = v[len('الوحدة '):].strip()
         if v:
             rows.append('<b>' + label + ':</b> ' + v)
     return '<br>'.join(rows)
@@ -135,9 +167,13 @@ AUDIO_MAX_WORDS = 250  # حد توليد الصوت التلقائي (بدون �
 def audio_status():
     source = request.args.get('source') or 'bac'
     tts.load_library()
+    allw = get_all_words(source) + get_important_words(source)
+    lib_words = sum(1 for w in allw if tts.library_lookup(w.get('word', '')))
+    if allw and lib_words < 0.8 * len(allw):
+        lib_words = 0  # تغطية ضعيفة: الرزمة تعتمد على التوليد التلقائي
     return jsonify({
-        'total_words': len(get_all_words(source)) + len(get_important_words(source)),
-        'library_words': len(tts._lib),
+        'total_words': len(allw),
+        'library_words': lib_words,
         'audio_enabled_default': len(tts._lib) > 0,
         'max_generate_words': AUDIO_MAX_WORDS,
     })
@@ -145,7 +181,10 @@ def audio_status():
 
 @app.route('/api/tts_voices', methods=['GET'])
 def tts_voices():
-    return jsonify(tts.voice_list())
+    lang = request.args.get('lang', 'fr')
+    if lang not in ('fr', 'en'):
+        lang = 'fr'
+    return jsonify(tts.voice_list(lang))
 
 
 @app.route('/api/tts_preview', methods=['POST'])
@@ -155,20 +194,36 @@ def tts_preview():
         cfg = data.get('ttsConfig') or {}
         if not isinstance(cfg, dict):
             cfg = {}
+        lang = data.get('lang', 'fr')
+        if lang not in ('fr', 'en'):
+            lang = 'fr'
         fr_a, ar_a, both_a = tts.preview(cfg, data.get('fr') or 'Bonjour',
-                                         data.get('ar') or 'مرحبا')
+                                         data.get('ar') or 'مرحبا', lang)
         return jsonify({'fr': fr_a, 'ar': ar_a, 'both': both_a})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
 
 @app.route('/', methods=['GET'])
+@app.route('/index.html', methods=['GET'])
 def index():
     return send_from_directory(app.static_folder, 'index.html')
 
 @app.route('/gallery-tas9.html', methods=['GET'])
 def serve_gallery_tas9():
     return send_from_directory(app.static_folder, 'gallery-tas9.html')
+
+@app.route('/gallery-en9.html', methods=['GET'])
+def serve_gallery_en9():
+    return send_from_directory(app.static_folder, 'gallery-en9.html')
+
+@app.route('/gallery-enlit.html', methods=['GET'])
+def serve_gallery_enlit():
+    return send_from_directory(app.static_folder, 'gallery-enlit.html')
+
+@app.route('/gallery-ensci.html', methods=['GET'])
+def serve_gallery_ensci():
+    return send_from_directory(app.static_folder, 'gallery-ensci.html')
 
 
 @app.route('/designs_20.json', methods=['GET'])
@@ -202,9 +257,10 @@ def serve_designs_100():
 
 
 def _build_note_fields(fields, w, tts_cfg, include_audio, word_source='bac'):
-    # رزمة تاسع بدون قسم إضافات نهائياً — الحقل يبقى فارغاً
-    extra = '' if word_source == 'tas9' else extra_rows(w)
-    return tts.note_fields_for(fields, w, tts_cfg, extra, include_audio)
+    # رزم بدون قسم إضافات (تاسع + الإنجليزية) — الحقل يبقى فارغاً
+    extra = '' if word_source in ('tas9', 'enlit', 'ensci') else extra_rows(w)
+    lang = 'en' if word_source in ENGLISH_SOURCES else 'fr'
+    return tts.note_fields_for(fields, w, tts_cfg, extra, include_audio, lang)
 
 
 def _write_deck(deck, safe_name):
@@ -278,10 +334,12 @@ def _unit_subdeck(deck_name, unit):
     u = (unit or '').strip()
     if not u:
         return None
-    if u.startswith('كلمات مهمة') or 'مهمة' in u:
-        return deck_name + '::كلمات مهمة'
-    if u.startswith('الوحدة '):
+    if u.startswith('كلمات مهمة - '):
+        return deck_name + '::كلمات مهمة::' + u[len('كلمات مهمة - '):]
+    if u.startswith('كلمات مهمة::'):
         return deck_name + '::' + u
+    if u.startswith('كلمات مهمة'):
+        return deck_name + '::كلمات مهمة'
     return deck_name + '::' + u
 
 
@@ -433,7 +491,8 @@ def generate():
         print(f"Generating: {config.get('deckName','?')}")
 
         deck_name = config.get('deckName', 'Français Bac')
-        word_source = 'tas9' if config.get('wordSource') == 'tas9' else 'bac'
+        _ws = config.get('wordSource', 'bac')
+        word_source = _ws if _ws in ('tas9', 'en9', 'enlit', 'ensci') else 'bac'
         include_audio = config.get('includeAudio', True)
         tts_cfg = config.get('ttsConfig') or {}
         if not isinstance(tts_cfg, dict):

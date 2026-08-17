@@ -64,8 +64,25 @@ AR_VOICES = [
     {"id": "ar-YE-MaryamNeural",   "label": "عربي (اليمن) — مريم",      "gender": "female"},
 ]
 
-VOICE_POOL = {"fr": FR_VOICES, "ar": AR_VOICES}
-DEFAULT_VOICES = {"fr": "fr-FR-HenriNeural", "ar": "ar-SA-HamedNeural"}
+
+EN_VOICES = [
+    {"id": "en-US-GuyNeural",          "label": "إنجليزي (أمريكا) — غاي",        "gender": "male"},
+    {"id": "en-US-ChristopherNeural",  "label": "إنجليزي (أمريكا) — كريستوفر",  "gender": "male"},
+    {"id": "en-US-EricNeural",         "label": "إنجليزي (أمريكا) — إريك",      "gender": "male"},
+    {"id": "en-US-RogerNeural",        "label": "إنجليزي (أمريكا) — روجر",      "gender": "male"},
+    {"id": "en-GB-RyanNeural",         "label": "إنجليزي (بريطانيا) — رايان",   "gender": "male"},
+    {"id": "en-GB-ThomasNeural",       "label": "إنجليزي (بريطانيا) — توماس",   "gender": "male"},
+    {"id": "en-AU-WilliamNeural",      "label": "إنجليزي (أستراليا) — ويليام",  "gender": "male"},
+    {"id": "en-IN-PrabhatNeural",      "label": "إنجليزي (الهند) — برابهات",    "gender": "male"},
+    {"id": "en-US-JennyNeural",        "label": "إنجليزي (أمريكا) — جيني",      "gender": "female"},
+    {"id": "en-US-AriaNeural",         "label": "إنجليزي (أمريكا) — أريا",      "gender": "female"},
+    {"id": "en-US-MichelleNeural",     "label": "إنجليزي (أمريكا) — ميشيل",     "gender": "female"},
+    {"id": "en-GB-SoniaNeural",        "label": "إنجليزي (بريطانيا) — سونيا",   "gender": "female"},
+    {"id": "en-GB-LibbyNeural",        "label": "إنجليزي (بريطانيا) — ليبي",    "gender": "female"},
+    {"id": "en-AU-NatashaNeural",      "label": "إنجليزي (أستراليا) — ناتاشا",  "gender": "female"},
+]
+VOICE_POOL = {"fr": FR_VOICES, "ar": AR_VOICES, "en": EN_VOICES}
+DEFAULT_VOICES = {"fr": "fr-FR-HenriNeural", "ar": "ar-SA-HamedNeural", "en": "en-US-GuyNeural"}
 
 _lib = {}
 _lib_loaded = False
@@ -195,9 +212,10 @@ def library_lookup(word):
     return _lib.get(_norm(word))
 
 
-def voice_list():
-    """قائمة الأصوات الكاملة للواجهة (فرنسي + عربي)"""
-    return {"fr": FR_VOICES, "ar": AR_VOICES}
+def voice_list(lang='fr'):
+    """قائمة الأصوات الكاملة للواجهة (فرنسي/إنجليزي + عربي)"""
+    pool = VOICE_POOL.get(lang, FR_VOICES)
+    return {"fr": pool, "ar": AR_VOICES}
 
 
 def resolve_voice(lang, vid):
@@ -210,7 +228,7 @@ def resolve_voice(lang, vid):
     return DEFAULT_VOICES.get(lang, "fr-FR-HenriNeural")
 
 
-def needs_regen(cfg, has_lib):
+def needs_regen(cfg, has_lib, lang='fr'):
     """هل يجب إعادة توليد الصوت عبر edge-tts (تغيير صوت/سرعة/نغمة) أم تكفي المكتبة؟"""
     if not has_lib:
         return True
@@ -221,7 +239,8 @@ def needs_regen(cfg, has_lib):
             return True
     except (TypeError, ValueError):
         return True
-    if cfg.get("frVoice") and cfg.get("frVoice") != DEFAULT_VOICES["fr"]:
+    dflt = DEFAULT_VOICES.get(lang, DEFAULT_VOICES["fr"])
+    if cfg.get("frVoice") and cfg.get("frVoice") != dflt:
         return True
     if cfg.get("arVoice") and cfg.get("arVoice") != DEFAULT_VOICES["ar"]:
         return True
@@ -397,7 +416,7 @@ def _raw_from_b64(b64):
         return b""
 
 
-def ensure_word_audio(word, arabic, cfg=None):
+def ensure_word_audio(word, arabic, cfg=None, lang='fr'):
     """يرجع (fr_b64, ar_b64, both_b64) حسب الإعدادات (أصوات + فاصل + سرعة + نغمة)"""
     cfg = cfg or {}
     word = (word or "").strip()
@@ -405,9 +424,9 @@ def ensure_word_audio(word, arabic, cfg=None):
     if not word:
         return ("", "", "")
 
-    lib = library_lookup(word)
+    lib = library_lookup(word) if lang != 'en' else None
     has_gaps = _gaps_active(cfg)
-    regen = needs_regen(cfg, bool(lib))
+    regen = needs_regen(cfg, bool(lib), lang)
 
     # مكتبة جاهزة + إعدادات افتراضية بدون فواصل: مسار سريع (تضمين مباشر)
     if lib and not has_gaps and not regen:
@@ -426,9 +445,9 @@ def ensure_word_audio(word, arabic, cfg=None):
 
     # توليد عبر edge-tts بالصوت المحدد لكل لغة
     rate_pct, pitch_hz = speed_pitch_to_params(cfg.get("speed", 1.0), cfg.get("pitch", 1.0))
-    fr_voice = resolve_voice("fr", cfg.get("frVoice"))
+    fr_voice = resolve_voice(lang, cfg.get("frVoice"))
     ar_voice = resolve_voice("ar", cfg.get("arVoice"))
-    fr_b64 = _synth_base64(word, "fr", rate_pct, pitch_hz, fr_voice)
+    fr_b64 = _synth_base64(word, lang, rate_pct, pitch_hz, fr_voice)
     ar_b64 = _synth_base64(arabic, "ar", rate_pct, pitch_hz, ar_voice) if arabic else ""
     if not fr_b64 and not ar_b64:
         return ("", "", "")
@@ -437,13 +456,13 @@ def ensure_word_audio(word, arabic, cfg=None):
     return _build_clips(fr_raw, ar_raw, cfg)
 
 
-def preview(cfg=None, fr_text="Bonjour", ar_text="مرحبا"):
+def preview(cfg=None, fr_text="Bonjour", ar_text="مرحبا", lang='fr'):
     """معاينة سريعة بإعدادات المستخدم الحالية"""
     cfg = dict(cfg or {})
-    return ensure_word_audio(fr_text, ar_text, cfg)
+    return ensure_word_audio(fr_text, ar_text, cfg, lang)
 
 
-def note_fields_for(fields, w, cfg=None, extra="", include_audio=True):
+def note_fields_for(fields, w, cfg=None, extra="", include_audio=True, lang='fr'):
     """يبني صف الحقول بالترتيب المطلوب من القالب (يدعم الحقول الدلالية + الصوت)"""
     if isinstance(w, dict):
         word = w.get('word', '') or ''
@@ -454,7 +473,7 @@ def note_fields_for(fields, w, cfg=None, extra="", include_audio=True):
     fr_a = ar_a = both_a = ""
     if include_audio:
         try:
-            fr_a, ar_a, both_a = ensure_word_audio(word, arabic, cfg)
+            fr_a, ar_a, both_a = ensure_word_audio(word, arabic, cfg, lang)
         except Exception:
             fr_a = ar_a = both_a = ""
     if isinstance(w, dict):

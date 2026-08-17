@@ -6,7 +6,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>Anki Design Studio</title>
+<title>Anki Design Studio — انكليزي تاسع (2343 كلمة)</title>
 <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Tajawal:wght@500;700&family=Noto+Sans+Arabic:wght@400;600;700;900&family=Inter:wght@400;500;600;700;900&family=Amiri:wght@400;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Tajawal:wght@500;700&family=Noto+Sans+Arabic:wght@400;600;700;900&family=Inter:wght@400;500;600;700;900&family=Amiri:wght@400;700&display=swap"></noscript>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -665,8 +665,8 @@ body.light #toast{background:linear-gradient(135deg,#ffffff,#f5f3ff);border-colo
 <p>معرض ضخم من التصاميم الجاهزة، معاينة كاملة، تحكم كامل بالألوان والخطوط والحركات والصوت — وكل شيء يتنزّل رزمة <b>.apkg</b> جاهزة للاستيراد.</p>
 <div class="hero-stats">
 <div class="hero-stat"><b id="statTpl">100</b><span>قالب احترافي</span></div>
-<div class="hero-stat"><b>3082</b><span>كلمة جاهزة</span></div>
-<div class="hero-stat"><b id="statAudio">3082</b><span>صوت مدمج</span></div>
+<div class="hero-stat"><b>2343</b><span>كلمة جاهزة</span></div>
+<div class="hero-stat"><b id="statAudio">2343</b><span>صوت تلقائي</span></div>
 </div>
 <div class="hero-cta">
 <button class="btn-hero primary" onclick="document.getElementById('galGridAnchor').scrollIntoView({behavior:'smooth'})">🎨 استعراض القوالب</button>
@@ -700,8 +700,8 @@ body.light #toast{background:linear-gradient(135deg,#ffffff,#f5f3ff);border-colo
 <div class="aa-b open" id="gAudioPanelBody" data-pid="audioPanelBody">
 <div style="display:flex;gap:8px;margin-bottom:8px">
 <div style="flex:1">
-<label for="gTtsFrVoice" class="aa-lb">🎤 الصوت الفرنسي</label>
-<select class="sl" aria-label="French voice" id="gTtsFrVoice" data-pid="ttsFrVoice" onchange="saveVoiceSel(this)"></select>
+<label for="gTtsFrVoice" class="aa-lb">🎤 الصوت الإنجليزي</label>
+<select class="sl" aria-label="English voice" id="gTtsFrVoice" data-pid="ttsFrVoice" onchange="saveVoiceSel(this)"></select>
 </div>
 <div style="flex:1">
 <label for="gTtsArVoice" class="aa-lb">🎤 الصوت العربي</label>
@@ -710,7 +710,7 @@ body.light #toast{background:linear-gradient(135deg,#ffffff,#f5f3ff);border-colo
 </div>
 <div class="aa-lb" style="margin-bottom:4px">⏱️ الفاصل الزمني بين المقاطع (ملي ثانية)</div>
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px">
-<div><label for="gTtsGapFrBefore" class="aa-lb">صمت قبل الفرنسي</label><input class="tx" aria-label="Gap before French" id="gTtsGapFrBefore" data-pid="ttsGapFrBefore" type="number" min="0" max="5000" step="50" value="0" onchange="saveVoiceSel(this)"></div>
+<div><label for="gTtsGapFrBefore" class="aa-lb">صمت قبل الإنجليزي</label><input class="tx" aria-label="Gap before English" id="gTtsGapFrBefore" data-pid="ttsGapFrBefore" type="number" min="0" max="5000" step="50" value="0" onchange="saveVoiceSel(this)"></div>
 <div><label for="gTtsGapFrAfter" class="aa-lb">الفاصل بين الكلمتين</label><input class="tx" aria-label="Gap between words" id="gTtsGapFrAfter" data-pid="ttsGapFrAfter" type="number" min="0" max="5000" step="50" value="0" onchange="saveVoiceSel(this)"></div>
 <div><label for="gTtsGapArBefore" class="aa-lb">صمت قبل العربي</label><input class="tx" aria-label="Gap before Arabic" id="gTtsGapArBefore" data-pid="ttsGapArBefore" type="number" min="0" max="5000" step="50" value="0" onchange="saveVoiceSel(this)"></div>
 <div><label for="gTtsGapArAfter" class="aa-lb">صمت بعد العربي</label><input class="tx" aria-label="Gap after Arabic" id="gTtsGapArAfter" data-pid="ttsGapArAfter" type="number" min="0" max="5000" step="50" value="0" onchange="saveVoiceSel(this)"></div>
@@ -774,15 +774,15 @@ body.light #toast{background:linear-gradient(135deg,#ffffff,#f5f3ff);border-colo
 <p style="font-size:.68em;color:var(--tx2);margin-bottom:10px">ملف .apkg جاهز للاستيراد</p>
 <div style="margin-bottom:10px">
 <label for="deckName" style="font-size:.68em;color:var(--tx2);display:block;margin-bottom:3px">اسم الرزمة</label>
-<input class="tx" aria-label="Text input" id="deckName" value="فرنسي بكالوريا — نهائي (3082 بطاقة)" style="text-align:center;font-weight:700">
+<input class="tx" aria-label="Text input" id="deckName" value="انكليزي تاسع — نهائي (2343 بطاقة)" style="text-align:center;font-weight:700">
 </div>
 <div class="aa" id="audioPanel">
 <div class="aa-t" onclick="toggleAudioPanel()"><span>🎙️ لوحة تحكم الصوت</span><span class="arr" id="aaArr" data-pid="aaArr">▾</span></div>
 <div class="aa-b open" id="audioPanelBody" data-pid="audioPanelBody">
 <div style="display:flex;gap:8px;margin-bottom:8px">
 <div style="flex:1">
-<label for="ttsFrVoice" class="aa-lb">🎤 الصوت الفرنسي</label>
-<select class="sl" aria-label="French voice" id="ttsFrVoice" data-pid="ttsFrVoice" onchange="saveVoiceSel(this)"></select>
+<label for="ttsFrVoice" class="aa-lb">🎤 الصوت الإنجليزي</label>
+<select class="sl" aria-label="English voice" id="ttsFrVoice" data-pid="ttsFrVoice" onchange="saveVoiceSel(this)"></select>
 </div>
 <div style="flex:1">
 <label for="ttsArVoice" class="aa-lb">🎤 الصوت العربي</label>
@@ -791,7 +791,7 @@ body.light #toast{background:linear-gradient(135deg,#ffffff,#f5f3ff);border-colo
 </div>
 <div class="aa-lb" style="margin-bottom:4px">⏱️ الفاصل الزمني بين المقاطع (ملي ثانية)</div>
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px">
-<div><label for="ttsGapFrBefore" class="aa-lb">صمت قبل الفرنسي</label><input class="tx" aria-label="Gap before French" id="ttsGapFrBefore" data-pid="ttsGapFrBefore" type="number" min="0" max="5000" step="50" value="0" onchange="saveVoiceSel(this)"></div>
+<div><label for="ttsGapFrBefore" class="aa-lb">صمت قبل الإنجليزي</label><input class="tx" aria-label="Gap before English" id="ttsGapFrBefore" data-pid="ttsGapFrBefore" type="number" min="0" max="5000" step="50" value="0" onchange="saveVoiceSel(this)"></div>
 <div><label for="ttsGapFrAfter" class="aa-lb">الفاصل بين الكلمتين</label><input class="tx" aria-label="Gap between words" id="ttsGapFrAfter" data-pid="ttsGapFrAfter" type="number" min="0" max="5000" step="50" value="0" onchange="saveVoiceSel(this)"></div>
 <div><label for="ttsGapArBefore" class="aa-lb">صمت قبل العربي</label><input class="tx" aria-label="Gap before Arabic" id="ttsGapArBefore" data-pid="ttsGapArBefore" type="number" min="0" max="5000" step="50" value="0" onchange="saveVoiceSel(this)"></div>
 <div><label for="ttsGapArAfter" class="aa-lb">صمت بعد العربي</label><input class="tx" aria-label="Gap after Arabic" id="ttsGapArAfter" data-pid="ttsGapArAfter" type="number" min="0" max="5000" step="50" value="0" onchange="saveVoiceSel(this)"></div>
@@ -865,7 +865,8 @@ var CUSTOM_TEMPLATES = [];
 var CUSTOM_TEMPLATES_LOADED = false;
 var PREMIUM_ADDED = false;
 var DESIGNS100_ADDED = false;
-const SAMP={f:'Un ami',a:'صديق',p:'Des amis',s:'Un copain',c:'Un ennemi',dossier:'الوحدة 1'};
+const SAMP={f:'Different',a:'مختلف',p:'',s:'',c:'',dossier:'Unit 1'};
+var GALLERY_LANG='en';
 window.SAMP=SAMP;
 const FMAP={"Inter":"'Inter',sans-serif","Noto Sans Arabic":"'Noto Sans Arabic',sans-serif","Poppins":"'Poppins',sans-serif","Playfair Display":"'Playfair Display',serif","Cairo":"'Cairo',sans-serif","Tajawal":"'Tajawal',sans-serif","Amiri":"'Amiri',serif","System":"system-ui,sans-serif"};
 
@@ -1414,8 +1415,8 @@ function fillSampleFields(front){
   front = front.split('{{FrFile}}').join('');
   front = front.split('{{ArFile}}').join('');
   front = front.split('{{BothFile}}').join('');
-  front = front.split('{{ExtraRows}}').join('<b>الوحدة:</b> 1<br><b>النوع:</b> الأسماء<br><b>الجمع:</b> Maisons');
-  front = front.split('{{Extras}}').join('<b>الوحدة:</b> 1<br><b>النوع:</b> الأسماء<br><b>الجمع:</b> Maisons');
+front = front.split('{{ExtraRows}}').join('<b>الوحدة:</b> Unit 1<br><b>النوع:</b> صفة');
+  front = front.split('{{Extras}}').join('<b>الوحدة:</b> Unit 1<br><b>النوع:</b> صفة');
   front = front.split('{{Plural}}').join('Maisons');
   front = front.split('{{Synonym}}').join(SAMP.s);
   front = front.split('{{Antonym}}').join(SAMP.c);
@@ -1653,7 +1654,7 @@ function downloadSingleTpl(id){
   var p=buildDesignPayload(t);
   if(!p){toast('لا يمكن تنزيل هذا القالب');return;}
   var deckName=((document.getElementById('deckName')&&document.getElementById('deckName').value)||'فرنسي بكالوريا')+' — قالب '+(t.nm||id);
-  var config={deckName:deckName,designs:[p],multi:true,ttsConfig:collectTTSConfig(),includeAudio:((document.getElementById('includeAudio')&&document.getElementById('includeAudio').checked)!==false)};
+  var config={deckName:deckName,designs:[p],multi:true,wordSource:'en9',ttsConfig:collectTTSConfig(),includeAudio:((document.getElementById('includeAudio')&&document.getElementById('includeAudio').checked)!==false)};
   var ld=document.getElementById('loading');if(ld)ld.style.display='block';
   var di=document.getElementById('dlInfo');if(di)di.textContent='';
   fetch(apiBase()+'/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config)}).then(function(resp){
@@ -1742,7 +1743,7 @@ function buildDesignPayload(t){
 // ============================================================
 // لوحة تحكم الصوت — أصوات + لهجات + فاصل + سرعة + نغمة + معاينة
 // ============================================================
-var TTS_VOICES_FALLBACK={"fr":[{"id":"fr-FR-HenriNeural","label":"فرنسي (فرنسا) — هنري","gender":"male"},{"id":"fr-FR-RemyMultilingualNeural","label":"فرنسي (فرنسا) — ريمي","gender":"male"},{"id":"fr-CA-AntoineNeural","label":"فرنسي (كندا) — أنطوان","gender":"male"},{"id":"fr-CA-JeanNeural","label":"فرنسي (كندا) — جان","gender":"male"},{"id":"fr-CA-ThierryNeural","label":"فرنسي (كندا) — تييري","gender":"male"},{"id":"fr-BE-GerardNeural","label":"فرنسي (بلجيكا) — جيرار","gender":"male"},{"id":"fr-CH-FabriceNeural","label":"فرنسي (سويسرا) — فابريس","gender":"male"},{"id":"fr-FR-DeniseNeural","label":"فرنسي (فرنسا) — دينيس","gender":"female"},{"id":"fr-FR-EloiseNeural","label":"فرنسي (فرنسا) — إلويز","gender":"female"},{"id":"fr-FR-VivienneMultilingualNeural","label":"فرنسي (فرنسا) — فيفيان","gender":"female"},{"id":"fr-CA-SylvieNeural","label":"فرنسي (كندا) — سيلفي","gender":"female"},{"id":"fr-BE-CharlineNeural","label":"فرنسي (بلجيكا) — شارلين","gender":"female"},{"id":"fr-CH-ArianeNeural","label":"فرنسي (سويسرا) — أريان","gender":"female"}],"ar":[{"id":"ar-SA-HamedNeural","label":"عربي (السعودية) — حامد","gender":"male"},{"id":"ar-SA-ZariyahNeural","label":"عربي (السعودية) — زريا","gender":"female"},{"id":"ar-AE-HamdanNeural","label":"عربي (الإمارات) — حمدان","gender":"male"},{"id":"ar-AE-FatimaNeural","label":"عربي (الإمارات) — فاطمة","gender":"female"},{"id":"ar-BH-AliNeural","label":"عربي (البحرين) — علي","gender":"male"},{"id":"ar-BH-LailaNeural","label":"عربي (البحرين) — ليلى","gender":"female"},{"id":"ar-DZ-IsmaelNeural","label":"عربي (الجزائر) — إسماعيل","gender":"male"},{"id":"ar-DZ-AminaNeural","label":"عربي (الجزائر) — أمينة","gender":"female"},{"id":"ar-EG-ShakirNeural","label":"عربي (مصر) — شاكر","gender":"male"},{"id":"ar-EG-SalmaNeural","label":"عربي (مصر) — سلمى","gender":"female"},{"id":"ar-IQ-BasselNeural","label":"عربي (العراق) — باسل","gender":"male"},{"id":"ar-IQ-RanaNeural","label":"عربي (العراق) — رنا","gender":"female"},{"id":"ar-JO-TaimNeural","label":"عربي (الأردن) — تيم","gender":"male"},{"id":"ar-JO-SanaNeural","label":"عربي (الأردن) — سناء","gender":"female"},{"id":"ar-KW-FahedNeural","label":"عربي (الكويت) — فهد","gender":"male"},{"id":"ar-KW-NouraNeural","label":"عربي (الكويت) — نورة","gender":"female"},{"id":"ar-LB-RamiNeural","label":"عربي (لبنان) — رامي","gender":"male"},{"id":"ar-LB-LaylaNeural","label":"عربي (لبنان) — ليلى","gender":"female"},{"id":"ar-LY-OmarNeural","label":"عربي (ليبيا) — عمر","gender":"male"},{"id":"ar-LY-ImanNeural","label":"عربي (ليبيا) — إيمان","gender":"female"},{"id":"ar-MA-JamalNeural","label":"عربي (المغرب) — جمال","gender":"male"},{"id":"ar-MA-MounaNeural","label":"عربي (المغرب) — منى","gender":"female"},{"id":"ar-OM-AbdullahNeural","label":"عربي (عُمان) — عبدالله","gender":"male"},{"id":"ar-OM-AyshaNeural","label":"عربي (عُمان) — عائشة","gender":"female"},{"id":"ar-QA-MoazNeural","label":"عربي (قطر) — معاذ","gender":"male"},{"id":"ar-QA-AmalNeural","label":"عربي (قطر) — أمل","gender":"female"},{"id":"ar-SY-LaithNeural","label":"عربي (سوريا) — ليث","gender":"male"},{"id":"ar-SY-AmanyNeural","label":"عربي (سوريا) — أماني","gender":"female"},{"id":"ar-TN-HediNeural","label":"عربي (تونس) — هادي","gender":"male"},{"id":"ar-TN-ReemNeural","label":"عربي (تونس) — ريم","gender":"female"},{"id":"ar-YE-SalehNeural","label":"عربي (اليمن) — صالح","gender":"male"},{"id":"ar-YE-MaryamNeural","label":"عربي (اليمن) — مريم","gender":"female"}]};
+var TTS_VOICES_FALLBACK={"fr":[{"id": "en-US-GuyNeural", "label": "إنجليزي (أمريكا) — غاي", "gender": "male"}, {"id": "en-US-ChristopherNeural", "label": "إنجليزي (أمريكا) — كريستوفر", "gender": "male"}, {"id": "en-US-EricNeural", "label": "إنجليزي (أمريكا) — إريك", "gender": "male"}, {"id": "en-US-RogerNeural", "label": "إنجليزي (أمريكا) — روجر", "gender": "male"}, {"id": "en-GB-RyanNeural", "label": "إنجليزي (بريطانيا) — رايان", "gender": "male"}, {"id": "en-GB-ThomasNeural", "label": "إنجليزي (بريطانيا) — توماس", "gender": "male"}, {"id": "en-AU-WilliamNeural", "label": "إنجليزي (أستراليا) — ويليام", "gender": "male"}, {"id": "en-IN-PrabhatNeural", "label": "إنجليزي (الهند) — برابهات", "gender": "male"}, {"id": "en-US-JennyNeural", "label": "إنجليزي (أمريكا) — جيني", "gender": "female"}, {"id": "en-US-AriaNeural", "label": "إنجليزي (أمريكا) — أريا", "gender": "female"}, {"id": "en-US-MichelleNeural", "label": "إنجليزي (أمريكا) — ميشيل", "gender": "female"}, {"id": "en-GB-SoniaNeural", "label": "إنجليزي (بريطانيا) — سونيا", "gender": "female"}, {"id": "en-GB-LibbyNeural", "label": "إنجليزي (بريطانيا) — ليبي", "gender": "female"}, {"id": "en-AU-NatashaNeural", "label": "إنجليزي (أستراليا) — ناتاشا", "gender": "female"}],"ar":[{"id":"ar-SA-HamedNeural","label":"عربي (السعودية) — حامد","gender":"male"},{"id":"ar-SA-ZariyahNeural","label":"عربي (السعودية) — زريا","gender":"female"},{"id":"ar-AE-HamdanNeural","label":"عربي (الإمارات) — حمدان","gender":"male"},{"id":"ar-AE-FatimaNeural","label":"عربي (الإمارات) — فاطمة","gender":"female"},{"id":"ar-BH-AliNeural","label":"عربي (البحرين) — علي","gender":"male"},{"id":"ar-BH-LailaNeural","label":"عربي (البحرين) — ليلى","gender":"female"},{"id":"ar-DZ-IsmaelNeural","label":"عربي (الجزائر) — إسماعيل","gender":"male"},{"id":"ar-DZ-AminaNeural","label":"عربي (الجزائر) — أمينة","gender":"female"},{"id":"ar-EG-ShakirNeural","label":"عربي (مصر) — شاكر","gender":"male"},{"id":"ar-EG-SalmaNeural","label":"عربي (مصر) — سلمى","gender":"female"},{"id":"ar-IQ-BasselNeural","label":"عربي (العراق) — باسل","gender":"male"},{"id":"ar-IQ-RanaNeural","label":"عربي (العراق) — رنا","gender":"female"},{"id":"ar-JO-TaimNeural","label":"عربي (الأردن) — تيم","gender":"male"},{"id":"ar-JO-SanaNeural","label":"عربي (الأردن) — سناء","gender":"female"},{"id":"ar-KW-FahedNeural","label":"عربي (الكويت) — فهد","gender":"male"},{"id":"ar-KW-NouraNeural","label":"عربي (الكويت) — نورة","gender":"female"},{"id":"ar-LB-RamiNeural","label":"عربي (لبنان) — رامي","gender":"male"},{"id":"ar-LB-LaylaNeural","label":"عربي (لبنان) — ليلى","gender":"female"},{"id":"ar-LY-OmarNeural","label":"عربي (ليبيا) — عمر","gender":"male"},{"id":"ar-LY-ImanNeural","label":"عربي (ليبيا) — إيمان","gender":"female"},{"id":"ar-MA-JamalNeural","label":"عربي (المغرب) — جمال","gender":"male"},{"id":"ar-MA-MounaNeural","label":"عربي (المغرب) — منى","gender":"female"},{"id":"ar-OM-AbdullahNeural","label":"عربي (عُمان) — عبدالله","gender":"male"},{"id":"ar-OM-AyshaNeural","label":"عربي (عُمان) — عائشة","gender":"female"},{"id":"ar-QA-MoazNeural","label":"عربي (قطر) — معاذ","gender":"male"},{"id":"ar-QA-AmalNeural","label":"عربي (قطر) — أمل","gender":"female"},{"id":"ar-SY-LaithNeural","label":"عربي (سوريا) — ليث","gender":"male"},{"id":"ar-SY-AmanyNeural","label":"عربي (سوريا) — أماني","gender":"female"},{"id":"ar-TN-HediNeural","label":"عربي (تونس) — هادي","gender":"male"},{"id":"ar-TN-ReemNeural","label":"عربي (تونس) — ريم","gender":"female"},{"id":"ar-YE-SalehNeural","label":"عربي (اليمن) — صالح","gender":"male"},{"id":"ar-YE-MaryamNeural","label":"عربي (اليمن) — مريم","gender":"female"}]};
 function ttsEls(pid){return Array.prototype.slice.call(document.querySelectorAll('[data-pid="'+pid+'"]'));}
 function ttsEl(pid){return ttsEls(pid)[0];}
 function _ttsNum(id,d){var el=ttsEl(id);var v=parseFloat(el?el.value:NaN);return isNaN(v)?d:v;}
@@ -1753,7 +1754,7 @@ function ttsValLabel(el){
 }
 function collectTTSConfig(){
   return {
-    frVoice:ttsEl('ttsFrVoice')?ttsEl('ttsFrVoice').value:'fr-FR-HenriNeural',
+    frVoice:ttsEl('ttsFrVoice')?ttsEl('ttsFrVoice').value:'en-US-GuyNeural',
     arVoice:ttsEl('ttsArVoice')?ttsEl('ttsArVoice').value:'ar-SA-HamedNeural',
     frGapBefore:_ttsNum('ttsGapFrBefore',0),
     frGapAfter:_ttsNum('ttsGapFrAfter',0),
@@ -1779,7 +1780,7 @@ function populateVoiceSelects(){
     arSels.forEach(function(sel){_fillVoiceSelect(sel,arList,'arVoice',saved);});
     applySavedTTS();
   }
-  fetch(apiBase()+'/api/tts_voices').then(function(r){return r.json();}).then(function(d){
+  fetch(apiBase()+'/api/tts_voices?lang=en').then(function(r){return r.json();}).then(function(d){
     if(d&&d.fr&&d.fr.length&&d.ar&&d.ar.length)fill(d.fr,d.ar);
     else fill(TTS_VOICES_FALLBACK.fr,TTS_VOICES_FALLBACK.ar);
   }).catch(function(){fill(TTS_VOICES_FALLBACK.fr,TTS_VOICES_FALLBACK.ar);});
@@ -1811,7 +1812,7 @@ function toggleAudioPanel(){
   try{localStorage.setItem('anki_tts_panel_open',open?'1':'0');}catch(e){}
 }
 function resetTTSConfig(){
-  ttsEls('ttsFrVoice').forEach(function(el){if(el)el.value='fr-FR-HenriNeural';});
+  ttsEls('ttsFrVoice').forEach(function(el){if(el)el.value='en-US-GuyNeural';});
   ttsEls('ttsArVoice').forEach(function(el){if(el)el.value='ar-SA-HamedNeural';});
   ['ttsGapFrBefore','ttsGapFrAfter','ttsGapArBefore','ttsGapArAfter'].forEach(function(pid){ttsEls(pid).forEach(function(el){if(el)el.value=0;});});
   ttsEls('ttsSpeed').forEach(function(el){if(el)el.value=1;});
@@ -1831,7 +1832,7 @@ async function previewTTS(){
   setNotes('⏳ جاري توليد المعاينة...');
   try{
     var cfg=collectTTSConfig();
-    var resp=await fetch(apiBase()+'/api/tts_preview',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fr:'Bonjour',ar:'مرحبا',ttsConfig:cfg})});
+    var resp=await fetch(apiBase()+'/api/tts_preview',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fr:'Hello',ar:'مرحبا',ttsConfig:cfg,lang:GALLERY_LANG})});
     if(!resp.ok){var em='Server error: '+resp.status;try{var ej=await resp.json();if(ej&&ej.error)em=ej.error;}catch(_e){}throw new Error(em);}
     var d=await resp.json();
     if(d&&d.both&&aus.length){
@@ -1863,7 +1864,7 @@ async function downloadMultiAPKG(){
     }
     if(designs.length===0){toast('اختر تصميماً واحداً على الأقل');if(ld)ld.style.display='none';return;}
     var deckName=(document.getElementById('deckName')?.value||'Anki Design')+' (متعدد التصاميم)';
-    var config={deckName:deckName, designs:designs, multi:true, ttsConfig:collectTTSConfig(), includeAudio:document.getElementById('includeAudio')?.checked!==false};
+    var config={deckName:deckName, designs:designs, multi:true, wordSource:'en9', ttsConfig:collectTTSConfig(), includeAudio:document.getElementById('includeAudio')?.checked!==false};
     var resp=await fetch(apiBase()+'/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config)});
     if(resp.status===202){
       var dj=await resp.json();
@@ -2848,7 +2849,7 @@ function initTTS(){
   // Populate voice selectors
   const frSel=document.getElementById('frVoiceSelect');
   const arSel=document.getElementById('arVoiceSelect');
-  const frV=voices.filter(v=>v.lang.startsWith('fr'));
+  const frV=voices.filter(v=>v.lang.startsWith(GALLERY_LANG));
   const arV=voices.filter(v=>v.lang.startsWith('ar'));
   // Sort: male first
   frV.sort((a,b)=>(isMaleVoice(b)?1:0)-(isMaleVoice(a)?1:0));
@@ -2860,7 +2861,7 @@ function initTTS(){
   ttsARVoice=arV.find(isMaleVoice)||arV[0]||null;
   // Debug
   const dbg=document.getElementById('ttsDebug');
-  if(dbg)dbg.innerHTML='<b>صوت فرنسي:</b> '+(ttsFRVoice?.name||'لا يوجد')+'<br><b>صوت عربي:</b> '+(ttsARVoice?.name||'لا يوجد')+'<br><b>إجمالي:</b> '+voices.length+' صوت';
+  if(dbg)dbg.innerHTML='<b>صوت إنجليزي:</b> '+(ttsFRVoice?.name||'لا يوجد')+'<br><b>صوت عربي:</b> '+(ttsARVoice?.name||'لا يوجد')+'<br><b>إجمالي:</b> '+voices.length+' صوت';
   const rateEl=document.getElementById('ttsRate');
   const pitchEl=document.getElementById('ttsPitch');
   if(rateEl)rateEl.oninput=function(){document.getElementById('ttsRateVal').textContent=this.value+'x';};
@@ -2876,14 +2877,14 @@ function speakWord(text,lang){
   if(!window.speechSynthesis){return;}
   speechSynthesis.cancel();
   var u=new SpeechSynthesisUtterance(text);
-  u.lang=lang==='fr'?'fr-FR':'ar-SA';
+  u.lang=lang==='fr'?(GALLERY_LANG==='en'?'en-US':'fr-FR'):'ar-SA';
   var rate=parseFloat(document.getElementById('ttsRate')?document.getElementById('ttsRate').value:1);
   var pitch=parseFloat(document.getElementById('ttsPitch')?document.getElementById('ttsPitch').value:1);
   u.rate=rate;
   u.pitch=pitch;
   // Find a male voice for this language
   var voices=speechSynthesis.getVoices();
-  var langPrefix=lang==='fr'?'fr':'ar';
+  var langPrefix=lang==='fr'?GALLERY_LANG:'ar';
   var candidates=voices.filter(function(v){return v.lang.indexOf(langPrefix)===0;});
   // Sort: male first
   candidates.sort(function(a,b){return (isMaleVoice(b)?1:0)-(isMaleVoice(a)?1:0);});
@@ -2945,7 +2946,7 @@ async function downloadAPKG(){
     const cardHTML=renderAnkiTemplate(S);
     // Also send preview version for backend reference
     const previewHTML=renderCardHTML(S);
-    const config={...S,deckName:(document.getElementById('deckName')?.value||'Anki Design'),cardFrontHTML:cardHTML,cardBackHTML:cardHTML,previewHTML:previewHTML,ttsConfig:collectTTSConfig(),includeAudio:document.getElementById('includeAudio')?.checked!==false};
+    const config={...S,deckName:(document.getElementById('deckName')?.value||'Anki Design'),cardFrontHTML:cardHTML,cardBackHTML:cardHTML,previewHTML:previewHTML,wordSource:'en9',ttsConfig:collectTTSConfig(),includeAudio:document.getElementById('includeAudio')?.checked!==false};
     const resp=await fetch(apiBase()+'/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config)});
     if(resp.status===202){
       const dj=await resp.json();
@@ -5813,10 +5814,12 @@ function deriveDesignTags(d){
     return tags;
   }catch(e){return ['professional'];}
 }
+
 function addDesigns(designs) {
   var startId = CUSTOM_TEMPLATES.length;
   for (var i = 0; i < designs.length; i++) {
     var d = designs[i];
+    d = Object.assign({}, d);
     CUSTOM_TEMPLATES.push({
       id: 'custom-' + (startId + i),
       nm: d.name,
@@ -5966,8 +5969,8 @@ function buildCustomCardHTML(tmpl, css) {
   h = h.split('{{FrFile}}').join('');
   h = h.split('{{ArFile}}').join('');
   h = h.split('{{BothFile}}').join('');
-  h = h.split('{{ExtraRows}}').join('<b>الوحدة:</b> 1<br><b>النوع:</b> الأسماء<br><b>الجمع:</b> Maisons');
-  h = h.split('{{Extras}}').join('<b>الوحدة:</b> 1<br><b>النوع:</b> الأسماء<br><b>الجمع:</b> Maisons');
+  h = h.split('{{ExtraRows}}').join('<b>الوحدة:</b> Unit 1<br><b>النوع:</b> صفة');
+  h = h.split('{{Extras}}').join('<b>الوحدة:</b> Unit 1<br><b>النوع:</b> صفة');
   h = h.split('{{Plural}}').join('Maisons');
   h = h.split('{{Synonym}}').join(SAMP.s);
   h = h.split('{{Antonym}}').join(SAMP.c);
@@ -6214,7 +6217,7 @@ try{
 }catch(e){}
 function initAudioStatus(){
   try{
-    fetch(apiBase()+'/api/audio_status').then(function(r){return r.json();}).then(function(d){
+    fetch(apiBase()+'/api/audio_status?source=en9').then(function(r){return r.json();}).then(function(d){
       var cb=document.getElementById('includeAudio');
       var lb=document.getElementById('audioNote');
       if(!cb)return;
