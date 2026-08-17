@@ -528,6 +528,7 @@ body.light .gc:hover{box-shadow:0 16px 40px rgba(40,30,120,.16)}
 .gc-thumb-loading{position:absolute;inset:0;background:linear-gradient(90deg,var(--s1) 25%,var(--s2) 50%,var(--s1) 75%);background-size:400px 100%;animation:shimmer 1.5s infinite}
 
 .gc-hover{position:absolute;inset:0;background:rgba(11,11,22,.88);backdrop-filter:blur(8px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;opacity:0;transition:all .3s ease;pointer-events:none;z-index:10;border-radius:16px;padding:12px}
+.gc:active .gc-hover{opacity:1;pointer-events:auto}
 .gc:hover .gc-hover{opacity:1}
 .gc-hover-btn{padding:8px 20px;border-radius:24px;font-size:.62em;font-weight:700;cursor:pointer;border:none;transition:all .25s ease;display:flex;align-items:center;gap:5px;min-width:120px;justify-content:center}
 .gc-hover-primary{background:linear-gradient(135deg,var(--ac),#6d28d9);color:#fff;box-shadow:0 4px 16px rgba(124,58,237,.35)}
@@ -1591,7 +1592,7 @@ function renderGrid(){
       var delay=Math.min(_cIdx*16,380);_cIdx++;
       var TAG_L={};TAGS.forEach(function(tg){TAG_L[tg.k]=tg.l;});
       var tags=(t.tags||[]).slice(0,3).map(function(tg){return '<span class="gc-tag">'+(TAG_L[tg]||tg)+'</span>';}).join('');
-      return '<div class="gc'+(sel?' sel':'')+(inMulti?' multi':'')+'" style="--d:'+delay+'ms" data-tpl-id=\''+t.id+'\'>'
+      return '<div class="gc'+(sel?' sel':'')+(inMulti?' multi':'')+'" style="--d:'+delay+'ms" onclick="previewFullTemplate(\''+t.id+'\')" data-tpl-id=\''+t.id+'\'">
         +'<button class="gc-pick'+(inMulti?' on':'')+'" onclick="event.stopPropagation();toggleMultiSelect(\''+t.id+'\')" title="تحديد">'+(inMulti?'✓':'+')+'</button>'
         +'<button class="gc-fav'+(isFav?' on':'')+'" onclick="event.stopPropagation();toggleFav(\''+t.id+'\')" title="مفضل">'+(isFav?'★':'☆')+'</button>'
         +(t.num&&!isCustom?'<div class="gc-num">#'+t.num+'</div>':'')
