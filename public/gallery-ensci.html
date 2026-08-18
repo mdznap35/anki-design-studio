@@ -315,7 +315,7 @@ body.light .hdr h1{background:none;-webkit-text-fill-color:#1a1a2e}
 .col-btn:hover{border-color:var(--ac);color:var(--ac)}
 .col-btn.on{background:rgba(124,58,237,.1);border-color:var(--ac);color:var(--ac2)}
 /* === GALLERY ENHANCED ===
-.gc{position:relative;transition:all .25s cubic-bezier(.4,0,.2,1)}
+
 .color-grid-item:hover{border-color:var(--ac)!important;transform:scale(1.02)!important;box-shadow:0 4px 12px rgba(124,58,237,.2)}
 .gc-action-b;font-weight:700;cursor:pointer;text-align:center;color:#fff;transition:all .2s;border:1px solid rgba(255,255,255,.2);backdrop-filter:blur(8px)}
 .gc-action-btn:hover{background:var(--ac2);transform:scale(1.05);border-color:var(--ac2);box-shadow:0 4px 12px rgba(124,58,237,.3)}
@@ -514,7 +514,7 @@ body.light .gal-toolbar{background:rgba(124,58,237,.04)}
 select.gt-sel{padding:9px 12px;border-radius:12px;border:1px solid var(--bd);background:var(--s2);color:var(--tx);font-size:.64em;font-family:inherit;cursor:pointer;outline:none}
 select.gt-sel:focus{border-color:var(--bd2)}
 /* ===== Gallery cards ===== */
-.gal-grid{grid-template-columns:repeat(auto-fill,minmax(172px,1fr));gap:12px var(--bd);border-radius:18px;padding:0;display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;cursor:pointer;transition:transform .25s cubic-bezier(.4,0,.2,1),box-shadow .25gba(34,197,94,.18)}
+
 .gc.multi{border-color:var(--ac);box-shadow:0 0 0 1.5px var(--ac),0 10px 28px rgba(124,58,237,.2)}
 @keyframes cardIn{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
 .gc-thumb{width:100%;height:160px;position:relative;background:radial-gradient(120px 80px at 50% 0%,rgba(124,58,237,.16),transparent 70%),#0d0d1c;overflow:hidden;border-bottom:1px solid var(--bd)}
@@ -611,9 +611,7 @@ body.light #toast{background:linear-gradient(135deg,#ffffff,#f5f3ff);border-colo
   .hdr-ac  .hero h1{font-size:1.32em;margin-top:10px}
   .hero p{font-size:.73em}
   .hero-badge{font-size:.58em;padding:5px 12px}
-  .hero-stat{padding:5px 9px;min-width:76px}
-  .hero-stat b{font-size:.92em}
-  .hero-stat span{font-size:.5em}
+  .hero-stat{padding:5p-size:.5em}
   .btn-hero{padding:9px 18px;font-size:.7em}
   .how{grid-template-columns:repeat(3,1fr);gap:6px;margin-top:12px}
   .how-ic{width:26px;height:26px;font-size:.85em;margin-bottom:4px}
@@ -644,9 +642,8 @@ body.light #toast{background:linear-gradient(135deg,#ffffff,#f5f3ff);border-colo
 @media(max-width:600px){.gal-grid{grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:12px;padding:0 6px}}
 .gal-epx}
 .gal-empty b{display:block;font-size:1.15em;margin-bottom:6px;color:var(--tx2)}
-.gal-empty span{font-size:.82em;display:block;ex-wrap:wrap;margin:20px 0}
-.hc-item{background:linear-gradient(160deg,rgba(124,58,237,.06),rgba(124,58,237,.02));border:1.5px solid var(--bd);border-radius:16px;padding:16px 26px;text-align:center;min-width:110px;transition:all .3s}
-.hc-item:hover{background:rgba(124,58,237,.1);transform:translateY(-3px);box-shadow:0 8px 24px rgba(124,58,237,.15)}
+.gal-empty span{font-size:.82em;display:block;ex-wrap:wrap;er:1.5px solid var(--bd);border-radius:16px;padding:16px 26px;text-align:center;min-width:110px;transition:all .3s}
+.hc-item:hover8,237,.15)}
 .hc-val{display:block;font-size:1.8em;font-weight:900;color:var(--ac);line-height:1.1}
 .hc-lbl{display:block;font-size:.62em;color:var(--tx3);margin-top:4px;font-weight:500}
 html{scroll-behavior:smooth}
@@ -890,7 +887,7 @@ html{scroll-behavior:smooth}
 
 <!-- القوالب القديمة محفوظة على جنب: designs_data.js (فاخرة 102 + إنجليزية 20) و designs_premium.js (احترافية) -->
 
-<script src="designs_100.js" defer onload="try{designs100Loaded()}catch(e){}"></script>
+<script src="designs_100.js" defer onload="try{designs100Loaded()}catch(_e){}"></script>
 <script src="template_colors.js" defer></script>
 <script>
 // Global state - MUST be declared before initApp() runs (see end of script)
@@ -902,15 +899,6 @@ const SAMP={f:'Strength',a:'القوة',p:'',s:'',c:'',dossier:'Unit 1'};
 var GALLERY_LANG='en';
 window.SAMP=SAMP;
 const FMAP={"Inter":"'Inter',sans-serif","Noto Sans Arabic":"'Noto Sans Arabic',sans-serif","Poppins":"'Poppins',sans-serif","Playfair Display":"'Playfair Display',serif","Cairo":"'Cairo',sans-serif","Tajawal":"'Tajawal',sans-serif","Amiri":"'Amiri',serif","System":"system-ui,sans-serif"};
-
-
-
-
-
-
-
-
-
 
 const FONTS=[
 {v:"Inter",l:"Inter"},{v:"Poppins",l:"Poppins"},{v:"Playfair Display",l:"Playfair Display"},
@@ -933,7 +921,6 @@ var curTag="all";
 // COLLECTIONS SYSTEM
 const COLLECTIONS=[{k:"all",l:"الكل",e:"📚"},{k:"favorites",l:"المفضلة",e:"⭐"},{k:"recent",l:"الأخيرة",e:"🕐"},{k:"official",l:"الرسمية",e:"✅"},{k:"custom",l:"المخصصة",e:"📝"}];
 var curCol="all";
-
 
 // Default config for each template
 function defCfg(overrides={}){
@@ -1174,7 +1161,6 @@ const QUICK_DESIGNS=[
   {n:'✨ مرصّع',desc:'بريق والوضء',apply:function(){S={...defCfg(),cardBg:'#0c0c1d',frenchColor:'#f0abfc',meaningColor:'#d946ef',meaningBg:'rgba(217,70,239,.05)',meaningBorder:'rgba(217,70,239,.2)',badgeNomBg:'rgba(217,70,239,.1)',badgeNomColor:'#e879f9',borderRadius:8,cardShadow:'0 0 40px rgba(217,70,239,.15)',effect:'glow'};}},
   {n:'💤 هادئ',desc:'ألوان هادئة',apply:function(){S={...defCfg(),cardBg:'#faf5ff',cardBg2:'#f3e8ff',frenchColor:'#581c87',meaningColor:'#7c3aed',meaningBg:'rgba(124,58,237,.03)',meaningBorder:'rgba(124,58,237,.12)',badgeNomBg:'#f3e8ff',badgeNomColor:'#7c3aed',borderRadius:20,cardShadow:'0 4px 20px rgba(124,58,237,.08)'};}}
 ];
-
 
 // STATE
 let S={...defCfg()};let hist=[JSON.parse(JSON.stringify(S))];let histIdx=0;let curTplIdx=0;let curCat='all';let selectedVEEl=null;
@@ -1466,7 +1452,7 @@ function fillSampleFields(front){
 }
 var FIT_SRC="(function(){function fitOne(el){var p=el.parentElement;if(!p)return;var cs=getComputedStyle(el);var base=parseFloat(cs.fontSize)||14;if(!(base>0))return;var min=parseFloat(el.getAttribute('data-min'))||7;if(min>9)min=9;var old=el.style.cssText;el.style.whiteSpace='nowrap';el.style.display='inline-block';el.style.maxWidth='none';el.style.fontSize=base+'px';var aw=p.clientWidth-8,ah=p.clientHeight;if(aw<=12){el.style.cssText=old;return}var tw=el.scrollWidth,th=el.scrollHeight;if(tw<=2||th<=2){el.style.cssText=old;return}var k=aw/tw;if(ah>12)k=Math.min(k,ah/th);if(k<1){el.style.fontSize=Math.max(min,Math.round(base*k*10)/10)+'px'}else{el.style.cssText=old}}function fitAll(){var sels='.fitme,.ds-word,.ds-trans,.word,.trans,.meaning,.subtitle,.board-txt,.cfit,[class*=\"-word\"],[class*=\"-trans\"],[class*=\"-sub\"],[class*=\"-txt\"]';var els=document.querySelectorAll(sels);for(var i=0;i<els.length;i++)fitOne(els[i])}function boot(){fitAll();setTimeout(fitAll,80);setTimeout(fitAll,300);setTimeout(fitAll,900);setTimeout(fitAll,1800)}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',boot)}else{boot()}window.addEventListener('load',boot);window.addEventListener('resize',boot)})();";
 var UNIVERSAL_FIT_SCRIPT='<script>'+FIT_SRC+'<\/script>';
-function applyUniversalFit(){try{(new Function(FIT_SRC))();}catch(e){}}
+function applyUniversalFit(){try{(new Function(FIT_SRC))();}catch(_e){}}
 function buildPreviewDoc(t){
   var css='', body='';
   if(t && (t.front || t.css)){
@@ -1485,10 +1471,10 @@ function buildPreviewDoc(t){
     +'.tts-preview>svg,.tts-preview>*{pointer-events:none}'
     +'.replay-button::before{content:url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' width=\'22\' height=\'22\'><path fill=\'%237c3aed\' d=\'M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05A4.5 4.5 0 0 0 16.5 12zM14 3.23v2.06a7 7 0 0 1 0 13.42v2.06a9 9 0 0 0 0-17.54z\'/></svg>");display:block;width:22px;height:22px;margin:auto}'
     +'</style><style>'+css+'</style></head><body>'+body
-    +UNIVERSAL_FIT_SCRIPT+'<script>var SAMP=parent.SAMP;var speakWord=function(w,l){try{parent.speakWord(w,l)}catch(e){}};var getTtsDelay=parent.getTtsDelay;var getTtsGap=parent.getTtsGap;var getTtsRemoveDelay=parent.getTtsRemoveDelay;'
+    +UNIVERSAL_FIT_SCRIPT+'<script>var SAMP=parent.SAMP;var speakWord=function(w,l){try{parent.speakWord(w,l)}catch(_e){}};var getTtsDelay=parent.getTtsDelay;var getTtsGap=parent.getTtsGap;var getTtsRemoveDelay=parent.getTtsRemoveDelay;'
     +'document.querySelectorAll(".tts-preview").forEach(function(el){el.addEventListener("click",function(){'
     +'var l=el.getAttribute("data-lang")||"fr";var fld=el.getAttribute("data-field")||"French";'
-    +'var txt=(l==="ar"?SAMP.a:SAMP.f);speakWord(txt,l);});});try{window.playFr=function(){speakWord(SAMP.f,"fr")};window.playAr=function(){speakWord(SAMP.a,"ar")};window.playBoth=function(){speakWord(SAMP.f,"fr");setTimeout(function(){speakWord(SAMP.a,"ar")},getTtsDelay())}}catch(e){}<\/script>'
+    +'var txt=(l==="ar"?SAMP.a:SAMP.f);speakWord(txt,l);});});try{window.playFr=function(){speakWord(SAMP.f,"fr")};window.playAr=function(){speakWord(SAMP.a,"ar")};window.playBoth=function(){speakWord(SAMP.f,"fr");setTimeout(function(){speakWord(SAMP.a,"ar")},getTtsDelay())}}catch(_e){}<\/script>'
     +'<script>
 (function(){
   var start=Date.now();
@@ -1518,7 +1504,7 @@ function addSpinKeyframes(){
     ss.id = 'spinKeyframes';
     ss.textContent = '@keyframes spin{to{transform:rotate(360deg)}}';
     document.head.appendChild(ss);
-  }catch(e){}
+  }catch(_e){}
 }
 function renderGrid(){
   // Hide loading message when grid renders
@@ -1540,7 +1526,7 @@ function renderGrid(){
   }
   // Apply collection filter
   if(curCol&&curCol!=='all'){
-    var favs=[];try{favs=JSON.parse(localStorage.getItem('anki_favorites')||'[]');}catch(e){}
+    var favs=[];try{favs=JSON.parse(localStorage.getItem('anki_favorites')||'[]');}catch(_e){}
     var favIds=favs.map(function(f){return f._templateId;});
     if(curCol==='favorites'){
       templates=templates.filter(function(t){return favIds.indexOf(t.id)>=0;});
@@ -1568,7 +1554,7 @@ function renderGrid(){
     function renderGalleryCard(t, isCustom){
       var sel=S._templateId===t.id;
       var isFav=false;
-      try{var favs=JSON.parse(localStorage.getItem('anki_favorites')||'[]');isFav=favs.some(function(f){return f._templateId===t.id;});}catch(e){}
+      try{var favs=JSON.parse(localStorage.getItem('anki_favorites')||'[]');isFav=favs.some(function(f){return f._templateId===t.id;});}catch(_e){}
       var inMulti=(MULTI_SELECT.indexOf(t.id)>=0);
       var delay=Math.min(_cIdx*16,380);_cIdx++;
       var TAG_L={};TAGS.forEach(function(tg){TAG_L[tg.k]=tg.l;});
@@ -1605,9 +1591,9 @@ function renderGrid(){
     document.getElementById('tplGrid').innerHTML=html;
     if(tc&&_totalCards>0)tc.textContent=_totalCards+' تصميم احترافي جاهز';
     renderMultiBar();
-    try{mountThumbs();}catch(e){}
-    try{updateHeroStats();}catch(e){}
-    try{renderTags();renderCollections();}catch(e){}
+    try{mountThumbs();}catch(_e){}
+    try{updateHeroStats();}catch(_e){}
+    try{renderTags();renderCollections();}catch(_e){}
 }
 
 // ============================================================
@@ -1652,7 +1638,7 @@ function mountThumb(box){
   var id=box.getAttribute('data-th');if(!id||box.dataset.done)return;
   box.dataset.done='1';
   var t=null;
-  try{t=findTemplate(id);}catch(e){}
+  try{t=findTemplate(id);}catch(_e){}
   if(!t){box.innerHTML='<div class="thumb-ph">🎴</div>';return;}
   var key='th_'+id;
   if(window.__THUMBS&&window.__THUMBS[key]){box.innerHTML=window.__THUMBS[key];return;}
@@ -1660,7 +1646,7 @@ function mountThumb(box){
   try{
     var h=(t.front||'').replace(/<script[\s\S]*?<\/script>/gi,'').replace(/@import[^;]+;/gi,'');
     doc=buildPreviewDoc(Object.assign({},t,{front:h,back:h}));
-  }catch(e){}
+  }catch(_e){}
   if(!doc){box.innerHTML='<div class="thumb-ph">🎴</div>';return;}
   var html='<iframe loading="lazy" scrolling="no" title="معاينة '+(t.nm||'قالب')+'" srcdoc="'+escAttr(doc)+'"></iframe>';
   if(!window.__THUMBS)window.__THUMBS={};
@@ -1674,11 +1660,11 @@ function updateHeroStats(){
     var aud=document.getElementById('statAudio');
     if(aud){
       var src='bac';
-      try{src=GALLERY_LANG==='en'?'en9':(typeof WORD_SOURCE!=='undefined'?WORD_SOURCE:'bac');}catch(e){}
+      try{src=GALLERY_LANG==='en'?'en9':(typeof WORD_SOURCE!=='undefined'?WORD_SOURCE:'bac');}catch(_e){}
       var counts={'bac':3082,'tas9':1475,'en9':2343,'enlit':3971,'ensci':4071};
       aud.textContent=counts[src]||'---';
     }
-  }catch(e){}
+  }catch(_e){}
 }
 // ===== الدليل الشامل =====
 function showHelp(){
@@ -1720,7 +1706,7 @@ function fsToggleSelect(){
 }
 function fsDownload(){var t=fsCurTemplate();if(!t)return;downloadSingleTpl(t.id);}
 function downloadSingleTpl(id){
-  var t=null;try{t=findTemplate(id);}catch(e){}
+  var t=null;try{t=findTemplate(id);}catch(_e){}
   if(!t){toast('تعذر العثور على القالب');return;}
   var p=buildDesignPayload(t);
   if(!p){toast('لا يمكن تنزيل هذا القالب');return;}
@@ -1752,7 +1738,7 @@ function toggleMultiSelect(id){
   var i=MULTI_SELECT.indexOf(id);
   if(i>=0){MULTI_SELECT.splice(i,1);}
   else{MULTI_SELECT.push(id);}
-  try{localStorage.setItem('anki_multi_selected',JSON.stringify(MULTI_SELECT));}catch(e){}
+  try{localStorage.setItem('anki_multi_selected',JSON.stringify(MULTI_SELECT));}catch(_e){}
   renderGrid();
 }
 
@@ -1760,7 +1746,7 @@ function apiBase(){
   try{
     var h=location.hostname||'';
     if(h.indexOf('onrender.com')>=0||h==='127.0.0.1'||h==='localhost')return '';
-  }catch(e){}
+  }catch(_e){}
   return 'https://anki-design-studio.onrender.com';
 }
 
@@ -1776,12 +1762,12 @@ function selectAllTemplates(){
     visible.forEach(function(id){if(MULTI_SELECT.indexOf(id)<0)MULTI_SELECT.push(id);});
     toast('تم تحديد الكل ('+visible.length+' تصميم)');
   }
-  try{localStorage.setItem('anki_multi_selected',JSON.stringify(MULTI_SELECT));}catch(e){}
+  try{localStorage.setItem('anki_multi_selected',JSON.stringify(MULTI_SELECT));}catch(_e){}
   renderGrid();
 }
 function clearMultiSelect(){
   MULTI_SELECT=[];
-  try{localStorage.setItem('anki_multi_selected','[]');}catch(e){}
+  try{localStorage.setItem('anki_multi_selected','[]');}catch(_e){}
   renderGrid();
 }
 function renderMultiBar(){
@@ -1845,7 +1831,7 @@ function populateVoiceSelects(){
   var frSels=ttsEls('ttsFrVoice');
   var arSels=ttsEls('ttsArVoice');
   if(!frSels.length||!arSels.length)return;
-  var saved=null;try{saved=JSON.parse(localStorage.getItem('anki_tts_panel')||'null');}catch(e){}
+  var saved=null;try{saved=JSON.parse(localStorage.getItem('anki_tts_panel')||'null');}catch(_e){}
   function fill(frList,arList){
     frSels.forEach(function(sel){_fillVoiceSelect(sel,frList,'frVoice',saved);});
     arSels.forEach(function(sel){_fillVoiceSelect(sel,arList,'arVoice',saved);});
@@ -1857,7 +1843,7 @@ function populateVoiceSelects(){
   }).catch(function(){fill(TTS_VOICES_FALLBACK.fr,TTS_VOICES_FALLBACK.ar);});
 }
 function applySavedTTS(){
-  var saved=null;try{saved=JSON.parse(localStorage.getItem('anki_tts_panel')||'null');}catch(e){}
+  var saved=null;try{saved=JSON.parse(localStorage.getItem('anki_tts_panel')||'null');}catch(_e){}
   if(!saved)return;
   var map={frVoice:'ttsFrVoice',arVoice:'ttsArVoice',frGapBefore:'ttsGapFrBefore',frGapAfter:'ttsGapFrAfter',arGapBefore:'ttsGapArBefore',arGapAfter:'ttsGapArAfter',speed:'ttsSpeed',pitch:'ttsPitch'};
   for(var k in map){
@@ -1873,14 +1859,14 @@ function saveVoiceSel(evEl){
     var v=evEl.value;
     ttsEls(evEl.dataset.pid).forEach(function(el){if(el&&el!==evEl)el.value=v;});
   }
-  try{localStorage.setItem('anki_tts_panel',JSON.stringify(collectTTSConfig()));}catch(e){}
+  try{localStorage.setItem('anki_tts_panel',JSON.stringify(collectTTSConfig()));}catch(_e){}
 }
 function toggleAudioPanel(){
   var bodies=ttsEls('audioPanelBody');if(!bodies.length)return;
   var open=bodies[0].classList.toggle('open');
   bodies.forEach(function(b,i){if(i>0){if(open)b.classList.add('open');else b.classList.remove('open');}});
   ttsEls('aaArr').forEach(function(arr){if(arr)arr.textContent=open?'▾':'▸';});
-  try{localStorage.setItem('anki_tts_panel_open',open?'1':'0');}catch(e){}
+  try{localStorage.setItem('anki_tts_panel_open',open?'1':'0');}catch(_e){}
 }
 function resetTTSConfig(){
   ttsEls('ttsFrVoice').forEach(function(el){if(el)el.value='en-US-GuyNeural';});
@@ -1979,7 +1965,6 @@ function renderFilt(){return;
   document.getElementById('filtBar').innerHTML='<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 0"><input style="flex:1;min-width:120px;padding:8px 12px;border-radius:8px;border:1px solid var(--bd);background:var(--s2);color:var(--tx);font-size:.75em" placeholder="\u{1F50D} \u0627\u0628\u062D\u062B \u0639\u0646 \u0642\u0627\u0644\u0628..." oninput="filterGallery(this.value)" value="'+gallerySearchQ+'"><select style="padding:8px 12px;border-radius:8px;border:1px solid var(--bd);background:var(--s2);color:var(--tx);font-size:.7em" onchange="gallerySort=this.value;renderGrid()"><option value="name"'+(gallerySort==='name'?' selected':'')+'>\u0627\u0644\u0627\u0633\u0645</option><option value="newest"'+(gallerySort==='newest'?' selected':'')+'>\u0627\u0644\u0623\u062D\u062F\u062B</option></select></div>';
 }
 
-
 function findTemplate(id){
   var t = TEMPLATES.find(function(x){return x.id===id;});
   if(t)return t;
@@ -2054,13 +2039,12 @@ function exportSingleTemplate(id){
   var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='template-'+t.nm+'.json';a.click();toast('تم التصدير');
 }
 function toggleFav(id){
-  var favs=[];try{favs=JSON.parse(localStorage.getItem('anki_favorites')||'[]');}catch(e){}
+  var favs=[];try{favs=JSON.parse(localStorage.getItem('anki_favorites')||'[]');}catch(_e){}
   var idx=favs.findIndex(function(f){return f._templateId===id;});
   if(idx>=0){favs.splice(idx,1);toast('تم إزالة من المفضلة');}
   else{var t=findTemplate(id);if(t){favs.push({cfg:t.config||t.cfg||{},_templateId:id,date:Date.now(),name:t.nm});toast('تمت الإضافة للمفضلة');}}
   localStorage.setItem('anki_favorites',JSON.stringify(favs));renderGrid();
 }
-
 
 // RENDER CARD HTML
 // Build CSS string from element config
@@ -2209,7 +2193,6 @@ const badges=sPos==='inline'?badgeN+unitB+speakerBtn:badgeN+unitB;
   return statesStyle+customCSS+'<div class="card" data-ve="card" style="background:'+bg+';'+base+'padding:'+pd+'px;min-height:'+mh+'px;max-width:'+(c.previewWidth||mw)+'px;margin-top:'+(c.cardMarginTop||0)+'px;margin-bottom:'+(c.cardMarginBottom||0)+'px;margin-left:'+(c.cardMarginLeft||0)+'px;margin-right:'+(c.cardMarginRight||0)+'px;'+((c.cardRotateX||c.cardRotateY)?'transform:perspective(800px) rotateX('+(c.cardRotateX||0)+'deg) rotateY('+(c.cardRotateY||0)+'deg);':'')+'flex-direction:'+(c.cardDirection||'column')+';align-items:'+(c.cardAlign||'center')+';justify-content:center;gap:'+cg+'px;'+fullBorder+fullShadow+clipCSS+hoverCSS+'position:relative">'+bgOverlay+'<div style="'+patternCSS+'position:absolute;inset:0;z-index:0;pointer-events:none"></div><div style="'+overlayCSS+'"></div>'+spkFloat+'<div style="position:relative;z-index:1;width:100%;display:flex;flex-direction:column;align-items:center;gap:'+cg+'px">'+ordered+'</div></div>';
 }
 
-
 function renderAnkiTemplate(c) {
   // Generate card HTML then replace sample text with Anki field placeholders
   var html = renderCardHTML(c);
@@ -2298,7 +2281,6 @@ h+=renderPropertySearch();
   TEMPLATES.forEach(function(t,i){if(isCustomTemplate(t.id))return;var c=t.cfg||{};var bg=(c.cardBg2&&c.cardBg2!==c.cardBg)?'linear-gradient(135deg,'+c.cardBg+','+c.cardBg2+')':(c.cardBg||'#888');var fg=c.frenchColor||'#fff';var on=S._templateId===t.id?' on':'';tplPr+='<div class="tpl-sw'+on+'" style="background:'+bg+';color:'+fg+'" title="'+t.nm+'" onclick="applyTemplateColors('+i+')"><span>M</span></div>';});
   tplPr+='</div>';
   h+=acc('\u{1F3A8} \u0627\u0644\u0623\u0644\u0648\u0622\u0646',renderColorGrid()+clrH+spkCtl+renderRecentColors()+cg+ch+cq+grp('\u0623\u0644\u0648\u0622\u0646 \u062C\u0627\u0647\u0638\u0629',pr)+grp('\u0642\u0648\u0627\u0644\u0628 \u0627\u0644\u0623\u0644\u0648\u0627\u0646 \u0627\u0644\u062C\u0627\u0647\u0638\u0629',tplPr),false);
-
 
   // 3. TYPOGRAPHY
   var ty=grp('\u0627\u0644\u062E\u0637\u0648\u0637',sel('fontFrench','\u0641\u0631\u0646\u0633\u064A',FONTS)+sel('fontArabic','\u0639\u0631\u0628\u064A',ARFONTS));
@@ -2572,7 +2554,6 @@ h+=renderPropertySearch();
   ]);
   h+=acc("📐 التباعد والتخطيط",spacingHtml,false);
 
-
   // === ESSENTIAL 12 SECTIONS ===
   
   // 22. ADVANCED CSS PROPERTIES
@@ -2629,8 +2610,6 @@ h+=renderPropertySearch();
 function toggleSection(s){if(!S.sectionVisibility)S.sectionVisibility={Pluriel:true,Synonyme:true,Contraire:true};S.sectionVisibility[s]=!S.sectionVisibility[s];pushHist();renderAll();syncSectionToggles();}
 function updateCtlPreview(){const e=document.getElementById('ctlPreviewCard');if(!e)return;if(S._templateType==='custom'&&S._customFront){e.innerHTML=buildCustomCardHTML(S._customFront,S._customCSS||'');}else{e.innerHTML=renderCardHTML(S);}applyUniversalFit();}
 
-
-
 // PRESETS
 function applyColorPreset(i){const p=PRESETS.colors[i];if(!p)return;S.cardBg=p.bg;S.frenchColor=p.fc;S.meaningColor=p.mc;S.meaningBg=p.mb;S.meaningBorder=p.mbd;pushHist();renderCtrls();renderAll();setTimeout(addDocTooltips,50);}
 
@@ -2652,7 +2631,7 @@ function resetDesign(){S={...defCfg()};pushHist();renderAll();toast('تم إعا
 function applyQuickDesign(i){QUICK_DESIGNS[i].apply();S._templateId='quick-'+i;pushHist();renderAll();toast(QUICK_DESIGNS[i].n);}
 
 // TEMPLATE MANAGEMENT
-function saveCustom(){const n=prompt('اسم القالب:');if(!n)return;let s=[];try{s=JSON.parse(localStorage.getItem('anki_custom')||'[]');}catch(e){}s.push({name:n,cfg:{...S},date:Date.now()});localStorage.setItem('anki_custom',JSON.stringify(s));toast('تم الحفظ: '+n);renderSavedList();}
+function saveCustom(){const n=prompt('اسم القالب:');if(!n)return;let s=[];try{s=JSON.parse(localStorage.getItem('anki_custom')||'[]');}catch(_e){}s.push({name:n,cfg:{...S},date:Date.now()});localStorage.setItem('anki_custom',JSON.stringify(s));toast('تم الحفظ: '+n);renderSavedList();}
 function loadCustom(i){const s=JSON.parse(localStorage.getItem('anki_custom')||'[]');if(!s[i])return;S={...s[i].cfg};pushHist();renderCtrls();renderAll();setTimeout(addDocTooltips,50);toast(s[i].name);}
 function deleteCustom(i){const s=JSON.parse(localStorage.getItem('anki_custom')||'[]');s.splice(i,1);localStorage.setItem('anki_custom',JSON.stringify(s));renderSavedList();toast('تم الحذف');}
 function renderSavedList(){const s=JSON.parse(localStorage.getItem('anki_custom')||'[]');const e=document.getElementById('savedTplList');if(!e)return;if(!s.length){e.innerHTML='<div style="font-size:.65em;color:var(--tx3)">لا يوجد</div>';return;}e.innerHTML=s.map((x,i)=>'<div style="display:flex;align-items:center;gap:5px;padding:5px 7px;background:var(--s2);border-radius:5px;margin-bottom:3px;font-size:.68em"><span style="flex:1;font-weight:600">'+x.name+'</span><button class="btn bo bs" onclick="loadCustom('+i+')">تحميل</button><button class="btn br bs" onclick="deleteCustom('+i+')">حذف</button></div>').join('');}
@@ -2985,7 +2964,7 @@ function getTtsDelay(){
       cfg.frGapAfter=c.frGapAfter||0;
       cfg.arGapBefore=c.arGapBefore||0;
     }
-  }catch(e){}
+  }catch(_e){}
   return cfg.frGapAfter+cfg.arGapBefore+200;
 }
 function getTtsRemoveDelay(){
@@ -3055,7 +3034,6 @@ async function downloadAPKG(){
     if(di)di.textContent='تم التنزيل ('+Math.round(blob.size/1024)+' KB)';
   }catch(e){if(di)di.textContent='خطأ: '+e.message;}finally{if(ld)ld.style.display='none';}
 }
-
 
 // ============================================================
 // 1. DOCUMENTATION TOOLTIPS
@@ -3861,7 +3839,7 @@ function restoreState() {
       if(tab) tab.click();
     }
 
-  } catch(e) {}
+  } catch(_e){}
 }
 
 // ============================================================
@@ -4036,13 +4014,12 @@ function initChatGPTFixes() {
   // Save state before unload
   window.addEventListener('beforeunload', saveState);
   
-  console.log('ChatGPT fixes initialized');
+  // LOG('ChatGPT fixes initialized');
 }
 // Dialog close handlers
 
 // INIT
 // MODE SYSTEM (removed)
-
 
 // SAVE INDICATOR
 var _modified=false;
@@ -4082,32 +4059,32 @@ function initApp(){
   try{
     if(!localStorage.getItem('anki_onboarded'))showOnboarding();
     else if(!localStorage.getItem('anki_whatsnew_v60'))showWhatsNew();
-  }catch(e){}
-  try{checkCrashRecovery();}catch(e){}
-  try{setupAutosave();}catch(e){}
+  }catch(_e){}
+  try{checkCrashRecovery();}catch(_e){}
+  try{setupAutosave();}catch(_e){}
   document.addEventListener('contextmenu',showContextMenu);
   if(window.speechSynthesis){speechSynthesis.onvoiceschanged=()=>initTTS();initTTS();}
   var lm=document.getElementById('loadingMsg');if(lm)lm.style.display='none';
   // Initialize immediately - don't wait for load event (fonts can block it for 10+ seconds)
   loadCustomDesigns();pushHist();renderGrid();
-  setTimeout(function(){try{populateVoiceSelects();}catch(e){}},400);
-  setTimeout(function(){try{startGalleryWatcher();}catch(e){}},1500);
+  setTimeout(function(){try{populateVoiceSelects();}catch(_e){}},400);
+  setTimeout(function(){try{startGalleryWatcher();}catch(_e){}},1500);
   setTimeout(function(){
-    try{renderVE();}catch(e){}
-    try{renderCtrls();}catch(e){}
-    try{updateCtlPreview();}catch(e){}
+    try{renderVE();}catch(_e){}
+    try{renderCtrls();}catch(_e){}
+    try{updateCtlPreview();}catch(_e){}
     setTimeout(function(){
-      try{addDocTooltips();}catch(e){}
-      try{initChatGPTFixes();}catch(e){}
+      try{addDocTooltips();}catch(_e){}
+      try{initChatGPTFixes();}catch(_e){}
     },50);
   },50);
 }
 // Also run on DOMContentLoaded as fallback
 if(document.readyState==='loading'){
-  document.addEventListener('DOMContentLoaded',function(){try{initApp();}catch(e){}});
+  document.addEventListener('DOMContentLoaded',function(){try{initApp();}catch(_e){}});
 }
 // Also run on window load as final fallback (in case some resource was blocking)
-window.addEventListener('load',function(){try{initApp();}catch(e){}});
+window.addEventListener('load',function(){try{initApp();}catch(_e){}});
 
 // ============================================================
 // COMMAND PALETTE (Ctrl+Shift+P)
@@ -4637,7 +4614,7 @@ function setupAutosave(){
       localStorage.setItem('anki_autosave_time',Date.now().toString());
       var dot=document.getElementById('autosaveDot');
       if(dot){dot.className='autosave-dot saving';setTimeout(function(){dot.className='autosave-dot saved';},1000);}
-    }catch(e){}
+    }catch(_e){}
   },30000);
 }
 
@@ -4757,7 +4734,6 @@ document.addEventListener('keydown',function(e){
     hideContextMenu();
   }
 });
-
 
 // ============================================================
 // LAYERS PANEL HELPERS
@@ -5843,11 +5819,11 @@ function startGalleryWatcher(){
   var tries = 0;
   var timer = setInterval(function(){
     tries++;
-    try{ ensureGalleryDesigns(); }catch(e){}
+    try{ ensureGalleryDesigns(); }catch(_e){}
     try{
       var tpl = document.getElementById('tplGrid');
       if (tpl && !tpl.querySelector('.gc') && tries > 2) renderGrid();
-    }catch(e){}
+    }catch(_e){}
     if (tries >= 20) clearInterval(timer);
   }, 1500);
 }
@@ -6283,9 +6259,6 @@ function restoreOriginalCSS() {
 
 // Override downloadAPKG for custom templates to properly embed CSS
 
-
-
-
 // Patch renderCardHTML
 (function() {
   var orig = renderCardHTML;
@@ -6316,7 +6289,7 @@ function restoreOriginalCSS() {
 try{
   var _apOpen=localStorage.getItem('anki_tts_panel_open');
   if(_apOpen==='0'){ttsEls('audioPanelBody').forEach(function(b){if(b)b.classList.remove('open');});ttsEls('aaArr').forEach(function(a){if(a)a.textContent='▸';});}
-}catch(e){}
+}catch(_e){}
 function initAudioStatus(){
   try{
     fetch(apiBase()+'/api/audio_status?source=ensci').then(function(r){return r.json();}).then(function(d){
@@ -6335,7 +6308,7 @@ function initAudioStatus(){
         setNote('\uD83D\uDCA1 بدون مكتبة: الرزمة الكبيرة بتنولد أول مرة بصوتك (بتاخد وقت وتظهر بشريط تقدّم)، وبعدها بتصير فورية. أرسل مكتبتك الصوتية للتوليد الفوري.');
       }
     }).catch(function(){});
-  }catch(e){}
+  }catch(_e){}
 }
 try{initApp();}catch(e){console.error('Init error:',e);}
 setTimeout(initAudioStatus,300);
