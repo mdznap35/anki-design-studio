@@ -897,24 +897,12 @@ html{scroll-behavior:smooth}
 <div id="statusBar" style="position:fixed;bottom:0;left:0;right:0;background:var(--s1);border-top:1px solid var(--bd);padding:4px 16px;display:flex;justify-content:space-between;font-size:.58em;color:var(--tx3);z-index:100"><span>Anki Design Studio v4.2</span><span style="color:var(--gn)">✓</span><span id="undoCount">0 / 0</span></div>
 
 <!-- القوالب القديمة محفوظة على جنب: designs_data.js (فاخرة 102 + إنجليزية 20) و designs_premium.js (احترافية) -->
-<script src="designs_chunk_1.js" defer onload="try{mergeChunks()}catch(e){}"></script>
-<script>if(window.requestIdleCallback){requestIdleCallback(function(){for(var i=2;i<=5;i++){var s=document.createElement('script');s.src='designs_chunk_'+i+'.js';s.onload=function(){try{mergeChunks()}catch(e){}};document.head.appendChild(s);}});}else{setTimeout(function(){for(var i=2;i<=5;i++){var s=document.createElement('script');s.src='designs_chunk_'+i+'.js';s.onload=function(){try{mergeChunks()}catch(e){}};document.head.appendChild(s);}},500);}}</script>
-<script>
-var _chunksLoaded=0;var _chunksNeeded=5;
-function mergeChunks(){
-  _chunksLoaded++;
-  var lb=document.getElementById('loadBar');
-  var lp=document.getElementById('loadPct');
-  var pct=Math.round(_chunksLoaded/_chunksNeeded*100);
-  if(lb)lb.style.width=pct+'%';
-  if(lp)lp.textContent=pct+'%';
-  if(_chunksLoaded>=_chunksNeeded){
-    window.EMBEDDED_DESIGNS_100=[];
-    for(var i=1;i<=5;i++){var ch=window['EMBEDDED_DESIGNS_CHUNK_'+i];if(ch)window.EMBEDDED_DESIGNS_100=window.EMBEDDED_DESIGNS_100.concat(ch);}
-    try{ensureGalleryDesigns();}catch(e){}
-  }
-}
-</script>
+<script src="designs_chunk_1.js"></script>
+<script src="designs_chunk_2.js"></script>
+<script src="designs_chunk_3.js"></script>
+<script src="designs_chunk_4.js"></script>
+<script src="designs_chunk_5.js"></script>
+<script>window.EMBEDDED_DESIGNS_100=[];for(var i=1;i<=5;i++){var ch=window['EMBEDDED_DESIGNS_CHUNK_'+i];if(ch)window.EMBEDDED_DESIGNS_100=window.EMBEDDED_DESIGNS_100.concat(ch);}</script>
 <script src="template_colors.js" defer></script>
 <script>
 // Global state - MUST be declared before initApp() runs (see end of script)
