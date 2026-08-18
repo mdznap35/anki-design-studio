@@ -7,6 +7,7 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <title>Anki Design Studio — انكليزي تاسع (2343 كلمة)</title>
+<link rel="preload" href="designs_100.js" as="script">
 <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Tajawal:wght@500;700&family=Noto+Sans+Arabic:wght@400;600;700;900&family=Inter:wght@400;500;600;700;900&family=Amiri:wght@400;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Tajawal:wght@500;700&family=Noto+Sans+Arabic:wght@400;600;700;900&family=Inter:wght@400;500;600;700;900&family=Amiri:wght@400;700&display=swap"></noscript>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -683,7 +684,13 @@ html{scroll-behavior:smooth}
 </div>
 </div>
 </div>
-<div id="loadingMsg">⏳ جاري تحميل التصاميم...</div>
+<div id="loadingMsg" style="text-align:center;padding:20px">
+<div style="font-size:.8em;color:var(--tx2);margin-bottom:8px">⏳ جاري تحميل التصاميم...</div>
+<div style="width:200px;height:4px;background:var(--s3);border-radius:4px;margin:0 auto;overflow:hidden">
+<div id="loadBar" style="width:0%;height:100%;background:linear-gradient(90deg,var(--ac),var(--ac2));border-radius:4px;transition:width .3s"></div>
+</div>
+<div id="loadPct" style="font-size:.55em;color:var(--tx3);margin-top:4px">0%</div>
+</div>
 </div>
 <div class="tabs">
 <button role="tab" class="tab on" data-t="gal">🎨 القوالب</button>
@@ -890,7 +897,7 @@ html{scroll-behavior:smooth}
 <div id="statusBar" style="position:fixed;bottom:0;left:0;right:0;background:var(--s1);border-top:1px solid var(--bd);padding:4px 16px;display:flex;justify-content:space-between;font-size:.58em;color:var(--tx3);z-index:100"><span>Anki Design Studio v4.2</span><span style="color:var(--gn)">✓</span><span id="undoCount">0 / 0</span></div>
 
 <!-- القوالب القديمة محفوظة على جنب: designs_data.js (فاخرة 102 + إنجليزية 20) و designs_premium.js (احترافية) -->
-<script src="designs_100.js" defer onload="try{designs100Loaded()}catch(e){}"></script>
+<script src="designs_100.js" defer onload="try{var lb=document.getElementById('loadBar');if(lb)lb.style.width='100%';var lp=document.getElementById('loadPct');if(lp)lp.textContent='100%';designs100Loaded()}catch(e){}"></script>
 <script src="template_colors.js" defer></script>
 <script>
 // Global state - MUST be declared before initApp() runs (see end of script)
@@ -1489,7 +1496,25 @@ function buildPreviewDoc(t){
     +'document.querySelectorAll(".tts-preview").forEach(function(el){el.addEventListener("click",function(){'
     +'var l=el.getAttribute("data-lang")||"fr";var fld=el.getAttribute("data-field")||"French";'
     +'var txt=(l==="ar"?SAMP.a:SAMP.f);speakWord(txt,l);});});try{window.playFr=function(){speakWord(SAMP.f,"fr")};window.playAr=function(){speakWord(SAMP.a,"ar")};window.playBoth=function(){speakWord(SAMP.f,"fr");setTimeout(function(){speakWord(SAMP.a,"ar")},getTtsDelay())}}catch(e){}<\/script>'
-    +'</body></html>';
+    +'<script>
+(function(){
+  var start=Date.now();
+  var bar=document.getElementById('loadBar');
+  var pct=document.getElementById('loadPct');
+  var timer=setInterval(function(){
+    var elapsed=Date.now()-start;
+    var p=Math.min(95,Math.round(elapsed/30));
+    if(bar)bar.style.width=p+'%';
+    if(pct)pct.textContent=p+'%';
+    if(p>=95||typeof EMBEDDED_DESIGNS_100!=='undefined'){
+      clearInterval(timer);
+      if(bar)bar.style.width='100%';
+      if(pct)pct.textContent='100%';
+    }
+  },200);
+})();
+</script>
+</body></html>';
 }
 
 function addSpinKeyframes(){
