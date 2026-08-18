@@ -939,7 +939,7 @@ function mergeChunks(){
   if(_chunksLoaded>=_chunksNeeded){
     window.EMBEDDED_DESIGNS_100=[];
     for(var i=1;i<=5;i++){var ch=window['EMBEDDED_DESIGNS_CHUNK_'+i];if(ch)window.EMBEDDED_DESIGNS_100=window.EMBEDDED_DESIGNS_100.concat(ch);}
-    try{designs100Loaded();}catch(e){}
+    try{ensureGalleryDesigns();}catch(e){}
   }
 }
 </script>
