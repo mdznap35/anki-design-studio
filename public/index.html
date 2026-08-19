@@ -7,7 +7,7 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <title>Anki Design Studio</title>
-<link rel="preload" href="designs_chunk_1.js" as="script">
+<link rel="preload" href="designs_100.js" as="script">
 <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Tajawal:wght@500;700&family=Noto+Sans+Arabic:wght@400;600;700;900&family=Inter:wght@400;500;600;700;900&family=Amiri:wght@400;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Tajawal:wght@500;700&family=Noto+Sans+Arabic:wght@400;600;700;900&family=Inter:wght@400;500;600;700;900&family=Amiri:wght@400;700&display=swap"></noscript>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -32,7 +32,7 @@ body{padding-bottom:48px;font-family:"Inter","Noto Sans Arabic",system-ui,sans-s
 .sec{display:none;padding:0 12px 30px;max-width:1400px;margin:0 auto}.sec.on{display:block;animation:fi .3s ease}
 @keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 
-@media(min-width:1200px){.gal-grid{grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px}}
+@media(min-width:1200px){.gal-grid{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}}
 
 .gc:hover{border-color:var(--ac);transform:translateY(-8px) scale(1.02);box-shadow:0 20px 50px rgba(124,58,237,.3),0 0 0 1px var(--ac)}
 .gc:active{transform:translateY(-2px) scale(.98)}
@@ -56,7 +56,7 @@ body{padding-bottom:48px;font-family:"Inter","Noto Sans Arabic",system-ui,sans-s
 .cp{position:sticky;top:14px;display:flex;flex-direction:column;align-items:center;gap:10px}
 .cp-t{font-size:.88em;font-weight:800;color:var(--ac2);text-align:center}
 .cp-c{width:100%;max-width:360px;border-radius:var(--br-md);overflow:hidden;border:1px solid var(--bd);background:var(--s1)}
-@media(max-width:800px){.cl{grid-template-columns:1fr}.cp{position:static}.tabs{flex-wrap:wrap;justify-content:center}.tab{padding:6px 10px;font-size:.65em}.hdr h1{font-size:1.2em}.gal-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}#statusBar{font-size:.5em;padding:3px 8px}#statusBar span:nth-child(3){display:none}.gc:hover .gc-hover{grid-template-columns:repeat(2,1fr);gap:8px}.hero h1{font-size:1.2em}}
+@media(max-width:800px){.cl{grid-template-columns:1fr}.cp{position:static}.tabs{flex-wrap:wrap;justify-content:center}.tab{padding:6px 10px;font-size:.65em}.hdr h1{font-size:1.2em}.gal-grid{grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:10px}#statusBar{font-size:.5em;padding:3px 8px}#statusBar span:nth-child(3){display:none}.gc:hover .gc-hover{grid-template-columns:repeat(2,1fr);gap:8px}.hero h1{font-size:1.2em}}
 .cw{background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:10px;margin-bottom:8px}
 .acc{margin:3px 0;background:var(--s2)}
 .acc-h{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;cursor:pointer;font-size:.8em;font-weight:700;color:var(--tx);background:var(--s1);transition:all .2s;user-select:none}
@@ -619,7 +619,7 @@ body.light #toast{background:linear-gradient(135deg,#ffffff,#f5f3ff);border-colo
 .gal-empty span{font-size:.72em;color:var(--tx3)}
 @media(max-width:520px){
 @media(max-width:520px){
-  .gal-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+  .gal-grid{grid-template-columns:repeat(auto-fill,minmax(142px,1fr));gap:9px}
 tions{justify-content:center}
   .hero{padding-top:20px;padding-bottom:12px}
   .hero h1{font-size:1.32em;margin-top:10px}
@@ -668,8 +668,8 @@ tions{justify-content:center}
 .gc-name{display:block;font-size:.7em;font-weight:700;color:var(--tx2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px}
 .gc-tags{display:flex;gap:3px;justify-content:center;flex-wrap:wrap}
 .gc-tag{font-size:.48em;padding:2px 8px;border-radius:10px;background:rgba(124,58,237,.08);color:var(--ac);font-weight:600}
-.gal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px}
-@media(max-width:600px){.gal-grid{grid-template-columns:repeat(2,1fr);gap:10px}}
+.gal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:18px;padding:0 12px}
+@media(max-width:600px){.gal-grid{grid-templateg:60px 20px;color:var(--tx3)}
 .gal-empty-ic{font-size:3.5em;margin-bottom:14px}
 .gal-empty b{display:block;font-size:1.15em;margin8px;line-height:1.6}
 .hc-row{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin:20px 0}
@@ -712,71 +712,99 @@ html{scroll-behavior:smooth}
 <div id="loadPct" style="font-size:.55em;color:var(--tx3);margin-top:4px">0%</div>
 </div>
 </div>
-
+<div class="tabs">
+<button role="tab" class="tab on" data-t="gal">🎨 القوالب</button>
+</div>
 
 <div id="sec-gal" class="sec on">
+<!-- ===== واجهة افتتاحية ===== -->
+<div class="hero">
+<div class="hero-badge"><span class="dot"></span> جاهز للاستخدام — 100 تصميم احترافي</div>
+<h1>صمّم بطاقات Anki الأجمل بلا أي كود</h1>
+<p>معرض ضخم من التصاميم الجاهزة، معاينة كاملة، تحكم كامل بالألوان والخطوط والحركات والصوت — وكل شيء يتنزّل رزمة <b>.apkg</b> جاهزة للاستيراد.</p>
+<div class="hc-row">
+<div class="hc-item"><b id="statTpl">100</b><span>قالب احترافي</span></div>
+<div class="hc-item"><b>3082</b><span>كلمة جاهزة</span></div>
+<div class="hc-item"><b id="statAudio">3082</b><span>صوت مدمج</span></div>
+</div>
+<div class="hero-cta">
+<button class="btn-hero primary" onclick="document.getElementById('galGridAnchor').scrollIntoView({behavior:'smooth'})">🎨 استعراض القوالب</button>
+<button class="btn-hero ghost" onclick="showOnboarding()">🚀 جولة سريعة</button>
+</div>
+<div class="how">
+<div class="how-card"><div class="how-ic">1️⃣</div><b>اختر قالباً</b><span>تصفّح المعرض، شاهد معاينة حقيقية لكل تصميم، وقلّب البطاقة لمشاهدة الخلف.</span></div>
+<div class="how-card"><div class="how-ic">2️⃣</div><b>خصّص صوتك</b><span>افتح لوحة تحكم الصوت: اختر الصوت الفرنسي والعربي، اضبط السرعة والنغمة والفاصل.</span></div>
+<div class="how-card"><div class="how-ic">3️⃣</div><b>نزّل الرزمة</b><span>اختر قالباً واحداً أو أكثر، واضغط تنزيل لتحصل على .apkg جاهزة بكل الأصوات.</span></div>
+</div>
+</div>
+<div style="text-align:center;margin:6px 0 12px" id="galGridAnchor">
+<div style="font-size:.9em;font-weight:900;font-family:var(--font-head);background:linear-gradient(135deg,#a78bfa,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent">🎨 القوالب الاحترافية</div>
+<div id="tplCount" style="font-size:.65em;color:var(--tx2);margin-top:3px">جاري تحميل التصاميم...</div>
+</div>
+<!-- ===== شريط أدوات المعرض ===== -->
+<div class="gal-toolbar">
+<div class="gt-row1">
+<div class="gt-search"><span class="ic">🔍</span><input id="gSearchInput" placeholder="ابحث فوراً..." aria-label="بحث في القوالب" oninput="filterGallery(this.value)" value="" style="transition:all .2s"><button id="searchClear" onclick="document.getElementById('gSearchInput').value='';filterGallery('')" style="display:none;width:20px;height:20px;border-radius:50%;border:none;background:var(--s3);color:var(--tx2);font-size:.6em;cursor:pointer;flex-shrink:0;align-items:center;justify-content:center" aria-label="مسح البحث">✕</button></div>
+<div class="gt-actions">
+<select class="gt-sel" aria-label="ترتيب القوالب" onchange="gallerySort=this.value;renderGrid()"><option value="default">ترتيب افتراضي</option><option value="name">الاسم</option><option value="newest">الأحدث</option></select>
+<button class="chip" onclick="selectAllTemplates()" title="تحديد أو إلغاء تحديد كل القوالب">☑ الكل</button>
+<button class="chip" onclick="toggleGalleryView()" title="تبديل عرض الشبكة/القائمة">▦ عرض</button>
+</div>
+</div>
+<div class="chip-row" id="colBar"><span class="lbl">المجموعات:</span></div>
+<div class="chip-row" id="tagBar"><span class="lbl">التصنيفات:</span></div>
+</div>
+<div class="aa">
+<div class="aa-t" onclick="toggleAudioPanel()"><span>🎙️ لوحة تحكم الصوت</span><span class="arr" id="gAaArr" data-pid="aaArr">▾</span></div>
+<div class="aa-b open" id="gAudioPanelBody" data-pid="audioPanelBody">
+<div style="display:flex;gap:8px;margin-bottom:8px">
+<div style="flex:1">
+<label for="gTtsFrVoice" class="aa-lb">🎤 الصوت الفرنسي</label>
+<select class="sl" aria-label="French voice" id="gTtsFrVoice" data-pid="ttsFrVoice" onchange="saveVoiceSel(this)"></select>
+</div>
+<div style="flex:1">
+<label for="gTtsArVoice" class="aa-lb">🎤 الصوت العربي</label>
+<select class="sl" aria-label="Arabic voice" id="gTtsArVoice" data-pid="ttsArVoice" onchange="saveVoiceSel(this)"></select>
+</div>
+</div>
+<div class="aa-lb" style="margin-bottom:4px">⏱️ الفاصل الزمني بين المقاطع (ملي ثانية)</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px">
+<div><label for="gTtsGapFrBefore" class="aa-lb">صمت قبل الفرنسي</label><input class="tx" aria-label="Gap before French" id="gTtsGapFrBefore" data-pid="ttsGapFrBefore" type="number" min="0" max="5000" step="50" value="0" onchange="saveVoiceSel(this)"></div>
+<div><label for="gTtsGapFrAfter" class="aa-lb">الفاصل بين الكلمتين</label><input class="tx" aria-label="Gap between words" id="gTtsGapFrAfter" data-pid="ttsGapFrAfter" type="number" min="0" max="5000" step="50" value="0" onchange="saveVoiceSel(this)"></div>
+<div><label for="gTtsGapArBefore" class="aa-lb">صمت قبل العربي</label><input class="tx" aria-label="Gap before Arabic" id="gTtsGapArBefore" data-pid="ttsGapArBefore" type="number" min="0" max="5000" step="50" value="0" onchange="saveVoiceSel(this)"></div>
+<div><label for="gTtsGapArAfter" class="aa-lb">صمت بعد العربي</label><input class="tx" aria-label="Gap after Arabic" id="gTtsGapArAfter" data-pid="ttsGapArAfter" type="number" min="0" max="5000" step="50" value="0" onchange="saveVoiceSel(this)"></div>
+</div>
+<div style="display:flex;gap:8px;margin-bottom:8px">
+<div style="flex:1">
+<label for="gTtsSpeed" class="aa-lb">⚡ السرعة (<span id="gTtsSpeedVal" data-pid="ttsSpeedVal">1.0</span>x)</label>
+<input class="tx" aria-label="TTS speed" id="gTtsSpeed" data-pid="ttsSpeed" type="number" min="0.5" max="2" step="0.1" value="1" oninput="ttsValLabel(this)" onchange="saveVoiceSel(this)" style="text-align:center">
+</div>
+<div style="flex:1">
+<label for="gTtsPitch" class="aa-lb">🎵 النغمة (<span id="gTtsPitchVal" data-pid="ttsPitchVal">1.0</span>)</label>
+<input class="tx" aria-label="TTS pitch" id="gTtsPitch" data-pid="ttsPitch" type="number" min="0.5" max="2" step="0.1" value="1" oninput="ttsValLabel(this)" onchange="saveVoiceSel(this)" style="text-align:center">
+</div>
+</div>
+<div style="display:flex;gap:6px;align-items:center;margin-bottom:8px">
+<button class="btn ba bs" id="gTtsPreviewBtn" data-pid="ttsPreviewBtn" style="flex:1" onclick="previewTTS()">🔊 معاينة الصوت <span id="gTtsPreviewLd" data-pid="ttsPreviewLd" style="display:none">⏳</span></button>
+<button class="btn bo bs" onclick="resetTTSConfig()">↺ افتراضي</button>
+</div>
+<audio id="gTtsPreviewAudio" data-pid="ttsPreviewAudio" controls preload="none" style="display:none;width:100%;height:34px;margin-bottom:6px;border-radius:8px"></audio>
+<div id="gTtsPanelNote" data-pid="ttsPanelNote" style="font-size:.6em;color:var(--tx3);text-align:right;line-height:1.7"></div>
+</div>
+</div>
 
-<!-- ===== شريط علوي نظيف ===== -->
-<div style="max-width:1400px;margin:0 auto;padding:18px 20px 0">
-  <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-    <div style="flex:1;min-width:200px;position:relative">
-      <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:.9em;opacity:.4">🔍</span>
-      <input id="gSearchInput" placeholder="ابحث عن قالب..." aria-label="بحث" oninput="filterGallery(this.value)" style="width:100%;padding:12px 38px 12px 14px;border-radius:14px;border:1px solid var(--bd);background:var(--s1);color:var(--tx);font-size:.9em;font-family:inherit;transition:all .2s;outline:none" onfocus="this.style.borderColor='var(--ac)'" onblur="this.style.borderColor='var(--bd)'">
-    </div>
-    <div style="display:flex;gap:8px;align-items:center">
-      <button onclick="selectAllTemplates()" style="padding:10px 18px;border-radius:12px;border:1px solid var(--bd);background:var(--s1);color:var(--tx2);font-size:.8em;font-family:inherit;cursor:pointer;transition:all .2s;white-space:nowrap" title="تحديد الكل">☑ الكل</button>
-      <button onclick="toggleAudioPanel()" style="padding:10px 18px;border-radius:12px;border:1px solid var(--bd);background:var(--s1);color:var(--tx2);font-size:.8em;font-family:inherit;cursor:pointer;transition:all .2s;white-space:nowrap" title="إعدادات الصوت">🎙️ الصوت</button>
-      <select style="padding:10px 14px;border-radius:12px;border:1px solid var(--bd);background:var(--s1);color:var(--tx2);font-size:.8em;font-family:inherit;cursor:pointer" onchange="gallerySort=this.value;renderGrid()" aria-label="ترتيب">
-        <option value="default">الترتيب</option>
-        <option value="name">الاسم</option>
-      </select>
-    </div>
+<div id="multiBar">
+  <span class="mb-count">🎯 <b id="mbCountNum">0</b> تصميم محدد</span>
+  <div style="display:flex;gap:6px;align-items:center">
+    <button class="btn ba bs" style="background:var(--grad)!important;color:#fff!important;font-weight:700;box-shadow:0 4px 16px rgba(124,58,237,.3)" onclick="downloadMultiAPKG()" style="padding:5px 12px;font-size:.68em">⬇ تنزيل الرزمة المتعددة</button>
+    <button class="btn bo bs" onclick="clearMultiSelect()" style="padding:5px 10px;font-size:.68em">✖ مسح</button>
   </div>
-  <div id="tplCount" style="font-size:.65em;color:var(--tx3);margin-top:6px;padding-right:2px">100 تصميم</div>
 </div>
 
-<!-- ===== لوحة الصوت (مخفية افتراضياً) ===== -->
-<div id="gAudioDropdown" style="display:none;max-width:1400px;margin:8px auto 0;padding:0 20px">
-  <div style="background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:16px">
-    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:end">
-      <div style="flex:1;min-width:140px">
-        <label style="display:block;font-size:.65em;color:var(--tx3);margin-bottom:4px">🎤 صوت فرنسي</label>
-        <select class="sl" aria-label="French voice" id="gTtsFrVoice" data-pid="ttsFrVoice" onchange="saveVoiceSel(this)" style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--bd);background:var(--s2);color:var(--tx);font-size:.82em"></select>
-      </div>
-      <div style="flex:1;min-width:140px">
-        <label style="display:block;font-size:.65em;color:var(--tx3);margin-bottom:4px">🎤 صوت عربي</label>
-        <select class="sl" aria-label="Arabic voice" id="gTtsArVoice" data-pid="ttsArVoice" onchange="saveVoiceSel(this)" style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--bd);background:var(--s2);color:var(--tx);font-size:.82em"></select>
-      </div>
-      <div style="flex:1;min-width:100px">
-        <label style="display:block;font-size:.65em;color:var(--tx3);margin-bottom:4px">⚡ السرعة</label>
-        <input id="gTtsSpeed" data-pid="ttsSpeed" type="number" min="0.5" max="2" step="0.1" value="1" oninput="ttsValLabel(this)" onchange="saveVoiceSel(this)" style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--bd);background:var(--s2);color:var(--tx);font-size:.82em;text-align:center">
-      </div>
-      <div style="flex:1;min-width:100px">
-        <label style="display:block;font-size:.65em;color:var(--tx3);margin-bottom:4px">🎵 النغمة</label>
-        <input id="gTtsPitch" data-pid="ttsPitch" type="number" min="0.5" max="2" step="0.1" value="1" oninput="ttsValLabel(this)" onchange="saveVoiceSel(this)" style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--bd);background:var(--s2);color:var(--tx);font-size:.82em;text-align:center">
-      </div>
-      <button class="btn ba bs" onclick="previewTTS()" style="padding:8px 16px;border-radius:8px;font-size:.8em">🔊 معاينة</button>
-    </div>
-  </div>
+<div class="gal-grid" id="tplGrid"></div>
+<div class="maker-quick"><a href="#" onclick="switchTab('maker');return false" title="تحكم كامل وتنزيل">✏️ محرر بسيط — تحكم كامل وتنزيل</a></div>
 </div>
 
-<!-- ===== شريط التحديد (يظهر لما يختار قالب) ===== -->
-<div id="multiBar" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:50;background:rgba(15,15,26,.95);backdrop-filter:blur(16px);border-top:1px solid var(--bd);padding:10px 20px">
-  <div style="max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:10px">
-    <span style="font-size:.82em;color:var(--ac2)">🎯 <b id="mbCountNum">0</b> محدد</span>
-    <div style="display:flex;gap:8px">
-      <button class="btn ba bs" onclick="downloadMultiAPKG()" style="padding:8px 18px;font-size:.82em;font-weight:700;background:linear-gradient(135deg,var(--ac),#6d28d9);color:#fff;border:none;border-radius:10px;cursor:pointer">⬇ تنزيل</button>
-      <button onclick="clearMultiSelect()" style="padding:8px 14px;font-size:.82em;background:var(--s2);color:var(--tx2);border:1px solid var(--bd);border-radius:10px;cursor:pointer">✖ مسح</button>
-    </div>
-  </div>
-</div>
-
-<!-- ===== شبكة القوالب — عرض كامل ===== -->
-<div style="max-width:1400px;margin:0 auto;padding:12px 20px 60px">
-  <div class="gal-grid" id="tplGrid"></div>
-</div>
-
-</div>
 <div id="sec-maker" class="sec">
 <div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:14px">
   <button class="btn bo bs" onclick="undo()" id="undoBtn" disabled>↩ تراجع</button>
@@ -890,8 +918,7 @@ html{scroll-behavior:smooth}
 
 <!-- القوالب القديمة محفوظة على جنب: designs_data.js (فاخرة 102 + إنجليزية 20) و designs_premium.js (احترافية) -->
 
-<script src="designs_chunk_1.js" defer onload="try{loadChunk(1)}catch(_e){}"></script>
-<script>function loadChunk(n){var scripts=document.querySelectorAll('script[data-chunk]');if(scripts.length>=n)return;var s=document.createElement('script');s.src='designs_chunk_'+n+'.js';s.setAttribute('data-chunk',n);s.onload=function(){mergeChunk(n);if(n<5)loadChunk(n+1);else{DESIGNS100_ADDED=true;if(typeof renderGrid==='function')renderGrid();}};document.head.appendChild(s);}function mergeChunk(n){var v=window['DESIGNS_CHUNK_'+n];if(!v)return;if(!window._allDesigns)window._allDesigns=[];for(var i=0;i<v.length;i++)window._allDesigns.push(v[i]);if(typeof EMBEDDED_DESIGNS_100==='undefined')window.EMBEDDED_DESIGNS_100=[];EMBEDDED_DESIGNS_100.push.apply(EMBEDDED_DESIGNS_100,v);}</script>
+<script src="designs_100.js" defer onload="try{designs100Loaded()}catch(_e){}"></script>
 <script src="template_colors.js" defer></script>
 <script>
 // Global state - MUST be declared before initApp() runs (see end of script)
