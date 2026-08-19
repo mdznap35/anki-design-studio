@@ -8,3 +8,5 @@ __pycache__/
 public/index.html.bak*
 *.bak*
 public/index_backup_*.html
+public/index_new.html
+public/index_original_backup.html
