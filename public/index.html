@@ -238,6 +238,14 @@ function loadChunk(n){
   s.onload=function(){
     mergeChunk(n);
     _chunksLoaded++;
+    // Update progress bar
+    try{
+      var pct=Math.round((_chunksLoaded/5)*100);
+      var fill=document.getElementById('loadFill');
+      var txt=document.getElementById('loadText');
+      if(fill)fill.style.width=pct+'%';
+      if(txt)txt.textContent='جاري تحميل التصاميم... '+pct+'%';
+    }catch(_e){}
     if(n<5){loadChunk(n+1);}
     else{
       try{addDesigns(EMBEDDED_DESIGNS_100);}catch(_e){}
@@ -256,7 +264,6 @@ function mergeChunk(n){
 }
 </script>
 
-<script src="template_colors.js" defer></script>
 
 <script>
 // Global state - MUST be declared before initApp() runs (see end of script)
@@ -856,10 +863,12 @@ function addSpinKeyframes(){
   }catch(_e){}
 }
 function renderGrid(){
-  // Hide loading message when grid renders
-  var lm=document.getElementById('loadingBar');if(lm)lm.style.display='none';var tb=document.getElementById('gToolbar');if(tb)tb.style.display='flex';
-  
   var templates=getFilteredTemplates();
+  // Only hide loading bar if we have templates to show
+  if(templates.length > 0){
+    var lm=document.getElementById('loadingBar');if(lm)lm.style.display='none';
+    var tb=document.getElementById('gToolbar');if(tb)tb.style.display='flex';
+  }
   // Apply search filter
   if(gallerySearchQ){
     var q=gallerySearchQ.toLowerCase();
@@ -5185,7 +5194,7 @@ function startGalleryWatcher(){
     try{ ensureGalleryDesigns(); }catch(_e){}
     try{
       var tpl = document.getElementById('tplGrid');
-      if (tpl && !tpl.querySelector('.gc') && tries > 2) renderGrid();
+      if (tpl && !tpl.querySelector('.g-card') && tries > 2) renderGrid();
     }catch(_e){}
     if (tries >= 20) clearInterval(timer);
   }, 1500);

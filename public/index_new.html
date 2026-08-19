@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<title>Anki Design Studio — إنكليزي أدبي</title>
+<title>Anki Design Studio — فرنسي بكالوريا</title>
 <link rel="preload" href="designs_chunk_1.js" as="script">
 <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+Arabic:wght@400;600;700;900&family=Cairo:wght@600;700;800;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
 <link rel="stylesheet" href="gallery-style.css">
@@ -117,10 +117,10 @@
     </div>
   </a>
   <nav class="g-nav" id="gNav">
-    <a href="index.html">🇫🇷 بكالوريا</a>
+    <a href="index.html" class="active">🇫🇷 بكالوريا</a>
     <a href="gallery-tas9.html">🇫🇷 تاسع</a>
     <a href="gallery-en9.html">🇬🇧 تاسع</a>
-    <a href="gallery-enlit.html" class="active">🇬🇧 أدبي</a>
+    <a href="gallery-enlit.html">🇬🇧 أدبي</a>
     <a href="gallery-ensci.html">🇬🇧 علمي</a>
   </nav>
   <div class="g-actions">
@@ -856,11 +856,10 @@ function addSpinKeyframes(){
   }catch(_e){}
 }
 function renderGrid(){
+  // Hide loading message when grid renders
+  var lm=document.getElementById('loadingBar');if(lm)lm.style.display='none';var tb=document.getElementById('gToolbar');if(tb)tb.style.display='flex';
+  
   var templates=getFilteredTemplates();
-  if(templates.length > 0){
-    var lm=document.getElementById('loadingBar');if(lm)lm.style.display='none';
-    var tb=document.getElementById('gToolbar');if(tb)tb.style.display='flex';
-  }
   // Apply search filter
   if(gallerySearchQ){
     var q=gallerySearchQ.toLowerCase();
@@ -889,7 +888,7 @@ function renderGrid(){
   // Apply sort
   templates=sortTemplates(templates,gallerySort);
   // Render grid
-  var gridClass=galleryView==='list'?'g-gallery';
+  var gridClass=galleryView==='list'?'gal-grid list-view':'gal-grid';
   document.getElementById('tplGrid').className=gridClass;
   var tc=document.getElementById('tplCount');if(tc)tc.textContent='🎨 '+templates.length+' تصميم احترافي جاهز';
     var _totalCards=0;
@@ -908,7 +907,7 @@ function renderGrid(){
       var inMulti=(MULTI_SELECT.indexOf(t.id)>=0);
       var delay=Math.min(_cIdx*16,380);_cIdx++;
       var TAG_L={};TAGS.forEach(function(tg){TAG_L[tg.k]=tg.l;});
-      var tags=(t.tags||[]).slice(0,3).map(function(tg){return '<span class="g-tag">'+(TAG_L[tg]||tg)+'</span>';}).join('');
+      var tags=(t.tags||[]).slice(0,3).map(function(tg){return '<span class="gc-tag">'+(TAG_L[tg]||tg)+'</span>';}).join('');
       return '<div class="g-card'+(sel?' sel':'')+(inMulti?' multi':'')+'" onclick="previewFullTemplate(\''+t.id+'\')" data-tpl-id=\''+t.id+'\'">
         +'<div class="g-card-preview" id="thumb-'+t.id+'">'
         +'<div class="g-loading"><span></span></div>'
@@ -936,7 +935,7 @@ function renderGrid(){
     if(html===''){
       var hasFilter=!!(gallerySearchQ||(curTag&&curTag!=='all')||(curCol&&curCol!=='all'));
       if(hasFilter){
-        html='<div class="g-empty"><div class="g-empty-icon">🔍</div><b>لا توجد نتائج</b><span>جرّب كلمة بحث أخرى</span></div>';
+        html='<div class="gal-empty"><div class="gal-empty-ic">🔍</div><b>لا توجد نتائج مطابقة</b><span>جرّب كلمة بحث أخرى أو غيّر التصنيف</span><button class="btn-hero ghost" onclick="gallerySearchQ=\'\';document.getElementById(\'gSearchInput\').value=\'\';curTag=\'all\';curCol=\'all\';renderGrid()">مسح الفلاتر</button></div>';
       }else{
         html = '<div class="g-empty"><div class="g-empty-icon" style="font-size:1.5em;animation:spin 1s linear infinite">⏳</div><b>جاري التحميل...</b></div>';
         
@@ -4915,7 +4914,7 @@ function renderFullImportExport(){
 function exportAsJSON(){exportConfig();}
 
 function exportAsHTML(){
-  var html='<!DOCTYPE html>\n<html lang="ar" dir="rtl">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>Anki Design Studio — إنكليزي أدبي</title>\n<style>\n';
+  var html='<!DOCTYPE html>\n<html lang="ar" dir="rtl">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>Anki Card</title>\n<style>\n';
   html+=generateCardCSS(S);
   html+='\n/* === EXTRACTED INLINE STYLES === */.hdr-actions{display:flex;justify-content:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}.hdr-info{display:flex;justify-content:center;gap:8px;font-size:.55em;color:var(--tx3);align-items:center}.layer-item-inner{display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:var(--br-sm);cursor:pointer;font-size:var(--fs-sm);transition:background .15s}.shadow-layer-controls{flex:1;display:flex;gap:3px;align-items:center;flex-wrap:wrap}/* === CHATGPT FIXES CSS === */:root {  --z-dropdown: 100;  --z-modal: 200;  --z-tooltip: 300;  --z-toast: 400;  --z-overlay: 500;  --transition-fast: 0.15s;  --transition-normal: 0.25s;  --transition-slow: 0.4s;}.ctx-menu { z-index: var(--z-dropdown); }.cmd-palette { z-index: var(--z-modal); }.tip::after { z-index: var(--z-tooltip); }#toast { z-index: var(--z-toast); }.onboard-overlay, .whatsnew-overlay { z-index: var(--z-overlay); }.score-panel { z-index: var(--z-modal); }.acc-b { transition: max-height var(--transition-normal) ease, opacity var(--transition-normal) ease; }.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}</style>\n</head>\n<body>\n';
   html+=renderCardHTML(S);
@@ -5186,7 +5185,7 @@ function startGalleryWatcher(){
     try{ ensureGalleryDesigns(); }catch(_e){}
     try{
       var tpl = document.getElementById('tplGrid');
-      if (tpl && !tpl.querySelector('.g-card') && tries > 2) renderGrid();
+      if (tpl && !tpl.querySelector('.gc') && tries > 2) renderGrid();
     }catch(_e){}
     if (tries >= 20) clearInterval(timer);
   }, 1500);

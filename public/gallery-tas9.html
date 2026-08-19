@@ -856,10 +856,11 @@ function addSpinKeyframes(){
   }catch(_e){}
 }
 function renderGrid(){
-  // Hide loading message when grid renders
-  var lm=document.getElementById('loadingBar');if(lm)lm.style.display='none';var tb=document.getElementById('gToolbar');if(tb)tb.style.display='flex';
-  
   var templates=getFilteredTemplates();
+  if(templates.length > 0){
+    var lm=document.getElementById('loadingBar');if(lm)lm.style.display='none';
+    var tb=document.getElementById('gToolbar');if(tb)tb.style.display='flex';
+  }
   // Apply search filter
   if(gallerySearchQ){
     var q=gallerySearchQ.toLowerCase();
@@ -5185,7 +5186,7 @@ function startGalleryWatcher(){
     try{ ensureGalleryDesigns(); }catch(_e){}
     try{
       var tpl = document.getElementById('tplGrid');
-      if (tpl && !tpl.querySelector('.gc') && tries > 2) renderGrid();
+      if (tpl && !tpl.querySelector('.g-card') && tries > 2) renderGrid();
     }catch(_e){}
     if (tries >= 20) clearInterval(timer);
   }, 1500);
