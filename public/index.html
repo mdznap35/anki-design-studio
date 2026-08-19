@@ -897,7 +897,7 @@ function renderGrid(){
   // Apply sort
   templates=sortTemplates(templates,gallerySort);
   // Render grid
-  var gridClass=galleryView==='list'?'g-gallery';
+  var gridClass='g-gallery';
   document.getElementById('tplGrid').className=gridClass;
   var tc=document.getElementById('tplCount');if(tc)tc.textContent='🎨 '+templates.length+' تصميم احترافي جاهز';
     var _totalCards=0;
