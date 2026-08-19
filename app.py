@@ -260,6 +260,20 @@ def serve_template_colors():
     return send_from_directory(app.static_folder, 'template_colors.js')
 
 
+
+
+@app.route('/<path:filename>', methods=['GET'])
+def serve_static(filename):
+    """Serve any static file from public/ directory"""
+    import os
+    safe = os.path.normpath(filename)
+    if '..' in safe or safe.startswith('/'):
+        return 'Not found', 404
+    full = os.path.join(app.static_folder, safe)
+    if os.path.isfile(full):
+        return send_from_directory(app.static_folder, filename)
+    return 'Not found', 404
+
 def _build_note_fields(fields, w, tts_cfg, include_audio, word_source='bac'):
     # رزم بدون قسم إضافات (تاسع + الإنجليزية) — الحقل يبقى فارغاً
     extra = '' if word_source in ('tas9', 'enlit', 'ensci') else extra_rows(w)
