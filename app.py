@@ -4,7 +4,15 @@ from concurrent.futures import ThreadPoolExecutor
 from flask import Flask, request, jsonify, send_file, send_from_directory
 import tts
 
-app = Flask(__name__, static_folder='public')  # nosec S4502
+app = Flask(__name__, static_folder='public')
+@app.after_request
+def no_cache(response):  # nosec SXXX
+    if request.path.endswith('.html'):
+        response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '0'
+    return response
+  # nosec S4502
 
 @app.after_request
 def add_cors_headers(response):  # nosec SXXX
