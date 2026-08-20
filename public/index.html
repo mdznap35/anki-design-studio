@@ -183,7 +183,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--tx);min-height:100
   </nav>
   <div class="hdr-acts">
     <button class="hdr-btn" onclick="toggleFavPanel()">⭐</button>
-    <button class="hdr-btn" onclick="toggleAcc()">🎙️</button>
+    <button class="hdr-btn" onclick="toggleAcc()" title="إعدادات الصوت">🎙️</button>
     <button class="hdr-btn" onclick="selectAllTemplates()">☑</button>
     <button class="hdr-btn pri" id="dlBtn" onclick="downloadMultiAPKG()" style="display:none">⬇</button>
   </div>
@@ -205,15 +205,15 @@ body{font-family:var(--font);background:var(--bg);color:var(--tx);min-height:100
 <!-- AUDIO ACCORDION -->
 <div class="acc">
   <div class="acc-h" onclick="toggleAcc()"><span>🎙️ إعدادات الصوت</span><span class="arr" id="accArr">▾</span></div>
-  <div class="acc-b" id="accBody">
+  <div class="acc-b open" id="accBody">
     <div class="acc-body">
       <div style="display:flex;gap:8px;margin-bottom:8px">
-        <div style="flex:1"><label class="aa-lb">🎤 صوت فرنسي</label><select class="sl" id="gTtsFrVoice" onchange="saveVoiceSel(this)"></select></div>
-        <div style="flex:1"><label class="aa-lb">🎤 صوت عربي</label><select class="sl" id="gTtsArVoice" onchange="saveVoiceSel(this)"></select></div>
+        <div style="flex:1"><label class="aa-lb">🎤 صوت فرنسي</label><select class="sl" id="gTtsFrVoice" data-pid="ttsFrVoice" onchange="saveVoiceSel(this)"></select></div>
+        <div style="flex:1"><label class="aa-lb">🎤 صوت عربي</label><select class="sl" id="gTtsArVoice" data-pid="ttsArVoice" onchange="saveVoiceSel(this)"></select></div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px">
-        <div><label class="aa-lb">⚡ السرعة</label><input class="tx" id="gTtsSpeed" type="number" min="0.5" max="2" step="0.1" value="1" onchange="saveVoiceSel(this)"></div>
-        <div><label class="aa-lb">🎵 النغمة</label><input class="tx" id="gTtsPitch" type="number" min="0.5" max="2" step="0.1" value="1" onchange="saveVoiceSel(this)"></div>
+        <div><label class="aa-lb">⚡ السرعة</label><input class="tx" id="gTtsSpeed" data-pid="ttsSpeed" type="number" min="0.5" max="2" step="0.1" value="1" onchange="saveVoiceSel(this)"></div>
+        <div><label class="aa-lb">🎵 النغمة</label><input class="tx" id="gTtsPitch" data-pid="ttsPitch" type="number" min="0.5" max="2" step="0.1" value="1" onchange="saveVoiceSel(this)"></div>
       </div>
       <div style="display:flex;gap:6px">
         <button class="btn ba bs" onclick="previewTTS()" style="flex:1;justify-content:center">🔊 معاينة</button>
@@ -862,7 +862,7 @@ function buildPreviewDoc(t){
     +UNIVERSAL_FIT_SCRIPT+'<script>var SAMP=parent.SAMP;var speakWord=function(w,l){try{parent.speakWord(w,l)}catch(_e){}};var getTtsDelay=parent.getTtsDelay;var getTtsGap=parent.getTtsGap;var getTtsRemoveDelay=parent.getTtsRemoveDelay;'
     +'document.querySelectorAll(".tts-preview").forEach(function(el){el.addEventListener("click",function(){'
     +'var l=el.getAttribute("data-lang")||"fr";var fld=el.getAttribute("data-field")||"French";'
-    +'var txt=(l==="ar"?SAMP.a:SAMP.f);speakWord(txt,l);});});try{window.playFr=function(){speakWord(SAMP.f,"fr")};window.playAr=function(){speakWord(SAMP.a,"ar")};window.playBoth=function(){speakWord(SAMP.f,"fr");setTimeout(function(){speakWord(SAMP.a,"ar")},getTtsDelay())}}catch(_e){}<\/script>'
+    +'var txt=(l==="ar"?SAMP.a:SAMP.f);speakWord(txt,l);});});try{window.playFr=function(){speakWord(SAMP.f,"fr")};window.playAr=function(){speakWord(SAMP.a,"ar")};window.playBoth=function(){speakWord(SAMP.f,"fr");setTimeout(function(){speakWord(SAMP.a,"ar")},getTtsDelay())}try{setTimeout(function(){try{speakWord(SAMP.f,"fr")}catch(_e){}},600)}catch(_e){}}catch(_e){}<\/script>'
     +'\n</body></html>';
 }
 
@@ -5717,12 +5717,7 @@ function jumpToTemplate(n){
     openFullscreen();
   }
 }
-function toggleAcc(){
-  var b=document.getElementById('accBody');
-  var a=document.getElementById('accArr');
-  if(b)b.classList.toggle('open');
-  if(a)a.textContent=b&&b.classList.contains('open')?'▴':'▾';
-}
+// toggleAcc moved to new gallery functions
 // Fix renderGrid to use new card classes
 var _origRenderGrid=renderGrid;
 renderGrid=function(){
