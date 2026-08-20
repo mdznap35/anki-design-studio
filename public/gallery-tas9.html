@@ -1450,7 +1450,7 @@ function fillSampleFields(front){
   return front;
 }
 var FIT_SRC="(function(){function fitOne(el){var p=el.parentElement;if(!p)return;var cs=getComputedStyle(el);var base=parseFloat(cs.fontSize)||14;if(!(base>0))return;var min=parseFloat(el.getAttribute('data-min'))||7;if(min>9)min=9;var old=el.style.cssText;el.style.whiteSpace='nowrap';el.style.display='inline-block';el.style.maxWidth='none';el.style.fontSize=base+'px';var aw=p.clientWidth-8,ah=p.clientHeight;if(aw<=12){el.style.cssText=old;return}var tw=el.scrollWidth,th=el.scrollHeight;if(tw<=2||th<=2){el.style.cssText=old;return}var k=aw/tw;if(ah>12)k=Math.min(k,ah/th);if(k<1){el.style.fontSize=Math.max(min,Math.round(base*k*10)/10)+'px'}else{el.style.cssText=old}}function fitAll(){var sels='.fitme,.ds-word,.ds-trans,.word,.trans,.meaning,.subtitle,.board-txt,.cfit,[class*=\"-word\"],[class*=\"-trans\"],[class*=\"-sub\"],[class*=\"-txt\"]';var els=document.querySelectorAll(sels);for(var i=0;i<els.length;i++)fitOne(els[i])}function boot(){fitAll();setTimeout(fitAll,80);setTimeout(fitAll,300);setTimeout(fitAll,900);setTimeout(fitAll,1800)}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',boot)}else{boot()}window.addEventListener('load',boot);window.addEventListener('resize',boot)})();";
-var UNIVERSAL_FIT_SCRIPT="<scr"+"ipt>"+FIT_SRC+"</scr"+"ipt>";
+var UNIVERSAL_FIT_SCRIPT='<script>'+FIT_SRC+'<\/script>';
 function applyUniversalFit(){try{(new Function(FIT_SRC))();}catch(_e){}}
 function buildPreviewDoc(t){
   var css='', body='';
@@ -1470,11 +1470,11 @@ function buildPreviewDoc(t){
     +'.tts-preview>svg,.tts-preview>*{pointer-events:none}'
     +'.replay-button::before{content:url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' width=\'22\' height=\'22\'><path fill=\'%237c3aed\' d=\'M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05A4.5 4.5 0 0 0 16.5 12zM14 3.23v2.06a7 7 0 0 1 0 13.42v2.06a9 9 0 0 0 0-17.54z\'/></svg>");display:block;width:22px;height:22px;margin:auto}'
     +'</style><style>'+css+'</style></head><body>'+body
-    +UNIVERSAL_FIT_SCRIPT+'<scr'+'ipt>var SAMP=parent.SAMP;var speakWord=function(w,l){try{parent.speakWord(w,l)}catch(_e){}};var getTtsDelay=parent.getTtsDelay;var getTtsGap=parent.getTtsGap;var getTtsRemoveDelay=parent.getTtsRemoveDelay;'
+    +UNIVERSAL_FIT_SCRIPT+'<script>var SAMP=parent.SAMP;var speakWord=function(w,l){try{parent.speakWord(w,l)}catch(_e){}};var getTtsDelay=parent.getTtsDelay;var getTtsGap=parent.getTtsGap;var getTtsRemoveDelay=parent.getTtsRemoveDelay;'
     +'document.querySelectorAll(".tts-preview").forEach(function(el){el.addEventListener("click",function(){'
     +'var l=el.getAttribute("data-lang")||"fr";var fld=el.getAttribute("data-field")||"French";'
     +'var txt=(l==="ar"?SAMP.a:SAMP.f);speakWord(txt,l);});});try{window.playFr=function(){speakWord(SAMP.f,"fr")};window.playAr=function(){speakWord(SAMP.a,"ar")};window.playBoth=function(){speakWord(SAMP.f,"fr");setTimeout(function(){speakWord(SAMP.a,"ar")},getTtsDelay())}}catch(_e){}<\/script>'
-    </body></html>';
+    +'\n</body></html>';
 }
 
 function addSpinKeyframes(){
