@@ -159,11 +159,11 @@ body{font-family:var(--font);background:var(--bg);color:var(--tx);min-height:100
 <div class="welcome" id="welcomeScreen">
   <div class="welcome-logo">✦</div>
   <h1>Anki Design Studio</h1>
-  <p>اختر قالباً من معرضنا الاحترافي، شاهد المعاينة، ونزّله مباشرة كملف جاهز للاستيراد.</p>
+  <p>معرض احترافي من التصاميم الجاهزة — تصفّح، شاهد المعاينة، ونزّل رزمة Anki مباشرة.</p>
   <div class="welcome-steps">
-    <div class="welcome-step"><div class="num">1</div><b>تصفح القوالب</b><span>100 تصميم احترافي</span></div>
-    <div class="welcome-step"><div class="num">2</div><b>شاهد المعاينة</b><span>معاينة كاملة لكل تصميم</span></div>
-    <div class="welcome-step"><div class="num">3</div><b>نزّل الرزمة</b><span>.apkg جاهز للاستيراد</span></div>
+    <div class="welcome-step"><div class="num">1</div><b>تصفّح</b><span>100 تصميم جاهز</span></div>
+    <div class="welcome-step"><div class="num">2</div><b>عاين</b><span>معاينة حية لكل تصميم</span></div>
+    <div class="welcome-step"><div class="num">3</div><b>نزّل</b><span>ملف .apkg جاهز</span></div>
   </div>
   <button class="welcome-btn" onclick="closeWelcome()">ابدأ التصفح ←</button>
 </div>
@@ -278,6 +278,18 @@ body{font-family:var(--font);background:var(--bg);color:var(--tx);min-height:100
 
 <script src="designs_100.js" defer onload="try{designs100Loaded()}catch(_e){}"></script>
 <script src="template_colors.js" defer></script>
+
+<script>
+function closeWelcome(){
+  var w=document.getElementById('welcomeScreen');
+  if(w){w.style.opacity='0';w.style.transform='scale(.95)';w.style.pointerEvents='none';setTimeout(function(){w.style.display='none'},500);}
+  try{localStorage.setItem('anki_welcomed','1');}catch(e){}
+}
+function checkWelcome(){
+  try{if(localStorage.getItem('anki_welcomed'))closeWelcome();}catch(e){}
+}
+checkWelcome();
+</script>
 <script>
 // Global state - MUST be declared before initApp() runs (see end of script)
 var CUSTOM_TEMPLATES = [];
