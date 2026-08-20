@@ -159,11 +159,11 @@ body{font-family:var(--font);background:var(--bg);color:var(--tx);min-height:100
 <div class="welcome" id="welcomeScreen">
   <div class="welcome-logo">✦</div>
   <h1>Anki Design Studio</h1>
-  <p>صمّم بطاقاتك بسهولة — اختر قالباً من معرضنا الاحترافي، خصّصه كما تحب، ونزّله مباشرة.</p>
+  <p>اختر قالباً من معرضنا الاحترافي، شاهد المعاينة، ونزّله مباشرة كملف جاهز للاستيراد.</p>
   <div class="welcome-steps">
-    <div class="welcome-step"><div class="num">1</div><b>اختر قالباً</b><span>تصفح 100 تصميم احترافي</span></div>
-    <div class="welcome-step"><div class="num">2</div><b>شاهد المعاينة</b><span>معاينة حقيقية لكل تصميم</span></div>
-    <div class="welcome-step"><div class="num">3</div><b>نزّل الرزمة</b><span>ملف .apkg جاهز للاستيراد</span></div>
+    <div class="welcome-step"><div class="num">1</div><b>تصفح القوالب</b><span>100 تصميم احترافي</span></div>
+    <div class="welcome-step"><div class="num">2</div><b>شاهد المعاينة</b><span>معاينة كاملة لكل تصميم</span></div>
+    <div class="welcome-step"><div class="num">3</div><b>نزّل الرزمة</b><span>.apkg جاهز للاستيراد</span></div>
   </div>
   <button class="welcome-btn" onclick="closeWelcome()">ابدأ التصفح ←</button>
 </div>
@@ -863,10 +863,10 @@ function buildPreviewDoc(t){
     +'document.querySelectorAll(".tts-preview").forEach(function(el){el.addEventListener("click",function(){'
     +'var l=el.getAttribute("data-lang")||"fr";var fld=el.getAttribute("data-field")||"French";'
     +'var txt=(l==="ar"?SAMP.a:SAMP.f);speakWord(txt,l);});});try{window.playFr=function(){speakWord(SAMP.f,"fr")};window.playAr=function(){speakWord(SAMP.a,"ar")};window.playBoth=function(){speakWord(SAMP.f,"fr");setTimeout(function(){speakWord(SAMP.a,"ar")},getTtsDelay())}try{setTimeout(function(){try{speakWord(SAMP.f,"fr")}catch(_e){}},600)}catch(_e){}}catch(_e){}<\/script>'
-    +'\n</body></html>';
+
 }
 
-function addSpinKeyframes(){
+
   try{
     var st = document.getElementById('spinKeyframes');
     if (st) return;
@@ -4925,8 +4925,8 @@ function exportAsHTML(){
   html+=generateCardCSS(S);
   html+='\n/* === EXTRACTED INLINE STYLES === */.hdr-actions{display:flex;justify-content:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}.hdr-info{display:flex;justify-content:center;gap:8px;font-size:.55em;color:var(--tx3);align-items:center}.layer-item-inner{display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:var(--br-sm);cursor:pointer;font-size:var(--fs-sm);transition:background .15s}.shadow-layer-controls{flex:1;display:flex;gap:3px;align-items:center;flex-wrap:wrap}/* === CHATGPT FIXES CSS === */:root {  --z-dropdown: 100;  --z-modal: 200;  --z-tooltip: 300;  --z-toast: 400;  --z-overlay: 500;  --transition-fast: 0.15s;  --transition-normal: 0.25s;  --transition-slow: 0.4s;}.ctx-menu { z-index: var(--z-dropdown); }.cmd-palette { z-index: var(--z-modal); }.tip::after { z-index: var(--z-tooltip); }#toast { z-index: var(--z-toast); }.onboard-overlay, .whatsnew-overlay { z-index: var(--z-overlay); }.score-panel { z-index: var(--z-modal); }.acc-b { transition: max-height var(--transition-normal) ease, opacity var(--transition-normal) ease; }.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}</style>\n</head>\n<body>\n';
   html+=renderCardHTML(S);
-  html+='\n</body>\n</html>';
-  downloadFile(html,'anki-card.html','text/html');
+
+
   toast('تم تصدير HTML');
 }
 
@@ -5805,32 +5805,5 @@ renderMultiBar=function(){
 checkWelcome();
 
 </script>
-
-<!-- Help overlay -->
-<div class="help-overlay" id="helpOverlay" role="dialog" aria-label="الدليل الشامل" onclick="if(event.target===this)closeHelp()"></div>
-<!-- Fullscreen template preview -->
-<div id="fsModal" class="fs-overlay" role="dialog" aria-label="معاينة القالب" aria-modal="true">
-  <div class="fs-box">
-    <div class="fs-head">
-      <div class="fs-title" id="fsInfo"></div>
-      <div class="fs-count" id="fsCounter"></div>
-      <button class="fs-close" onclick="closeFullscreen()" aria-label="إغلاق">✕</button>
-    </div>
-    <div class="fsw">
-      <button class="fsn n" onclick="nextTpl()" aria-label="التالي">❮</button>
-      <iframe class="fsc" id="fsFrame" title="معاينة القالب"></iframe>
-      <button class="fsn p" onclick="prevTpl()" aria-label="السابق">❯</button>
-    </div>
-    <div class="fs-actions">
-      <button class="fs-act primary" id="fsSelBtn" onclick="fsToggleSelect()" aria-label="تحديد القالب">＋ تحديد</button>
-      <button class="fs-flip" id="fsFlipBtn" onclick="flipCard()" aria-label="اقلب البطاقة">🔄 اقلب البطاقة</button>
-      <button class="fs-act" onclick="fsDownload()" aria-label="تنزيل هذا القالب">⬇ تنزيل</button>
-    </div>
-    <div class="fsi">استخدم الأسهم أو مفاتيح ← → للتنقل بين القوالب • اضغط "اقلب البطاقة" لمشاهدة الخلف</div>
-  </div>
-</div>
-</body>
-</html>
-
 </body>
 </html>
