@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<title>Anki Design Studio</title>
+<title>Anki Studio — فرنسي بكالوريا</title>
 <link rel="preload" href="designs_100.js" as="script">
 <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+Arabic:wght@400;600;700;900&family=Cairo:wght@600;700;800;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
 <style>
@@ -183,7 +183,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--tx);min-height:100
   </nav>
   <div class="hdr-acts">
     <button class="hdr-btn" onclick="toggleFavPanel()">⭐</button>
-    <button class="hdr-btn" onclick="toggleAcc()" title="إعدادات الصوت">🎙️</button>
+    <button class="hdr-btn" onclick="toggleAcc()">🎙️</button>
     <button class="hdr-btn" onclick="selectAllTemplates()">☑</button>
     <button class="hdr-btn pri" id="dlBtn" onclick="downloadMultiAPKG()" style="display:none">⬇</button>
   </div>
@@ -1035,7 +1035,7 @@ function mountThumb(box){
   if(Object.keys(window.__THUMBS).length<170)window.__THUMBS[key]=html;
   box.innerHTML=html;
 }
-function updateHeroStats(){try{
+function updateHeroStats(){
   try{
     var tpl=document.getElementById('statTpl');
     if(tpl){var n=getFilteredTemplates?getFilteredTemplates().length:TEMPLATES.length;tpl.textContent=n;}
@@ -5817,5 +5817,31 @@ renderMultiBar=function(){
 checkWelcome();
 
 </script>
-</body>
+
+<!-- Help overlay -->
+<div class="help-overlay" id="helpOverlay" role="dialog" aria-label="الدليل الشامل" onclick="if(event.target===this)closeHelp()"></div>
+<!-- Fullscreen template preview -->
+<div id="fsModal" class="fs-overlay" role="dialog" aria-label="معاينة القالب" aria-modal="true">
+  <div class="fs-box">
+    <div class="fs-head">
+      <div class="fs-title" id="fsInfo"></div>
+      <div class="fs-count" id="fsCounter"></div>
+      <button class="fs-close" onclick="closeFullscreen()" aria-label="إغلاق">✕</button>
+    </div>
+    <div class="fsw">
+      <button class="fsn n" onclick="nextTpl()" aria-label="التالي">❮</button>
+      <iframe class="fsc" id="fsFrame" title="معاينة القالب"></iframe>
+      <button class="fsn p" onclick="prevTpl()" aria-label="السابق">❯</button>
+    </div>
+    <div class="fs-actions">
+      <button class="fs-act primary" id="fsSelBtn" onclick="fsToggleSelect()" aria-label="تحديد القالب">＋ تحديد</button>
+      <button class="fs-flip" id="fsFlipBtn" onclick="flipCard()" aria-label="اقلب البطاقة">🔄 اقلب البطاقة</button>
+      <button class="fs-act" onclick="fsDownload()" aria-label="تنزيل هذا القالب">⬇ تنزيل</button>
+    </div>
+    <div class="fsi">استخدم الأسهم أو مفاتيح ← → للتنقل بين القوالب • اضغط "اقلب البطاقة" لمشاهدة الخلف</div>
+  </div>
+</div>
+
 </html>
+
+</body>
