@@ -4,267 +4,287 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<title>Anki Design Studio — فرنسي بكالوريا</title>
-<link rel="preload" href="designs_chunk_1.js" as="script">
+<title>Anki Design Studio</title>
+<link rel="preload" href="designs_100.js" as="script">
 <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+Arabic:wght@400;600;700;900&family=Cairo:wght@600;700;800;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<link rel="stylesheet" href="gallery-style.css">
 <style>
-#toast{background:linear-gradient(135deg,#232346,#2c2c56);border:1px solid var(--bd2);color:var(--tx);border-radius:14px;padding:11px 20px;box-shadow:0 12px 40px rgba(0,0,0,.5);font-size:.74em;font-weight:700;z-index:10050}
-.onboard-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg,rgba(15,15,26,.95),rgba(26,26,46,.95));z-index:10000;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(12px)}
-.onboard-box{background:transparent;border:none;border-radius:0;padding:40px 24px;max-width:100%;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;animation:fi .5s ease}
-.onboard-step{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8em;font-weight:700;border:2px solid var(--bd);color:var(--tx3);transition:all .3s}
-.whatsnew-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.6);z-index:10001;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
-.whatsnew-box{background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:24px;max-width:500px;width:90%;max-height:70vh;overflow-y:auto;animation:fi .3s ease}
-.whatsnew-box h2{font-size:1em;font-weight:900;color:var(--ac2);margin-bottom:12px;text-align:center}
-.whatsnew-item{display:flex;gap:10px;padding:10px;background:var(--s2);border-radius:8px;margin-bottom:6px;font-size:.72em}
-.whatsnew-item span:first-child{font-size:1.2em}
-.whatsnew-overlay { z-index: var(--z-overlay); }
-.whatsnew-box, .onboard-box, .cmd-box {
-        max-height: 80vh;
-        overflow-y: auto;
-      }
-.whatsnew-box, .onboard-box, .cmd-box {
-        max-width: 95vw;
-        padding: 12px;
-      }
-.whatsnew-overlay { z-index: var(--z-overlay); }
-.help-overlay{position:fixed;inset:0;background:rgba(7,7,18,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);z-index:10001;display:none;align-items:center;justify-content:center;padding:14px}
-.help-overlay.open{display:flex}
-.help-box{background:var(--s1);border:1px solid var(--bd2);border-radius:26px;width:100%;max-width:640px;max-height:88vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 30px 90px rgba(0,0,0,.6);animation:fsIn .35s cubic-bezier(.22,.8,.3,1)}
-.help-head{display:flex;align-items:center;gap:10px;padding:16px 20px;border-bottom:1px solid var(--bd);background:rgba(255,255,255,.04)}
-.help-head h2{font-family:var(--font-head);font-size:.95em;font-weight:900;color:var(--tx);flex:1;text-align:right}
-.help-body{padding:16px 20px;overflow-y:auto;line-height:1.9}
-.help-sec{margin-bottom:18px}
-.help-sec h3{font-family:var(--font-head);font-size:.78em;font-weight:900;color:var(--ac2);margin-bottom:8px;display:flex;align-items:center;gap:7px}
-.help-sec h3 .h-ic{width:28px;height:28px;border-radius:9px;background:linear-gradient(135deg,rgba(139,92,246,.28),rgba(217,70,239,.18));display:flex;align-items:center;justify-content:center;font-size:.95em;flex-shrink:0}
-.help-sec p,.help-sec li{font-size:.68em;color:var(--tx2)}
-.help-sec ul{padding-right:16px;margin-top:4px}
-.help-sec li{margin-bottom:5px}
-.help-tip{background:rgba(124,58,237,.09);border:1px solid rgba(167,139,250,.25);border-radius:12px;padding:9px 12px;font-size:.62em;color:var(--ac2);margin-top:8px}
-.help-kbd{display:inline-block;background:var(--s2);border:1px solid var(--bd);border-bottom-width:2px;border-radius:6px;padding:1px 7px;font-size:.85em;font-family:var(--font-head);color:var(--tx);margin:0 2px}
-.autosave-dot{position:fixed;top:8px;left:8px;width:8px;height:8px;border-radius:50%;background:var(--gn);z-index:100;transition:all .3s;opacity:0}
-.autosave-dot.saving{background:#f59e0b;opacity:1}
-.autosave-dot.saved{background:var(--gn);opacity:1}
-.autosave-dot{box-shadow:0 0 0 0 rgba(34,197,94,.5)}
-.ctx-menu{position:fixed;background:var(--s1);border:1px solid var(--bd);border-radius:10px;padding:4px;min-width:200px;box-shadow:0 8px 32px rgba(0,0,0,.4);z-index:9998;display:none}
-.ctx-menu.show{display:block}
-.ctx-menu { z-index: var(--z-dropdown); }
-.ctx-menu{background:var(--s1);border:1px solid var(--bd2);border-radius:14px;box-shadow:var(--shadow-lg)}
-.ctx-menu { z-index: var(--z-dropdown); }
-.ctx-item{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:6px;cursor:pointer;font-size:.72em;color:var(--tx);transition:background .15s}
-.ctx-item:hover{background:var(--ac);color:#fff}
-.cmd-palette{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.6);z-index:9999;display:none;align-items:flex-start;justify-content:center;padding-top:15vh;backdrop-filter:blur(4px)}
-.cmd-palette.show{display:flex}
-.cmd-box{background:var(--s1);border:1px solid var(--bd);border-radius:12px;width:90%;max-width:520px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.5);animation:fi .2s ease}
-.cmd-search{width:100%;padding:14px 16px;border:none;border-bottom:1px solid var(--bd);background:none;color:var(--tx);font-size:.9em;font-family:inherit;outline:none}
-.cmd-search::placeholder{color:var(--tx3)}
-.cmd-results{max-height:300px;overflow-y:auto;padding:4px}
-.cmd-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:8px;cursor:pointer;transition:all .15s;font-size:.78em}
-.cmd-item:hover,.cmd-item.sel{background:var(--ac);color:#fff}
-.cmd-item span:first-child{font-size:1.1em;width:24px;text-align:center}
-.cmd-item kbd{background:rgba(255,255,255,.15);color:rgba(255,255,255,.7);margin-left:auto}
-.cmd-palette { z-index: var(--z-modal); }
-.cmd-box{background:var(--s1);border:1px solid var(--bd2);border-radius:22px;box-shadow:0 30px 90px rgba(0,0,0,.6)}
-.cmd-box {
-        max-height: 80vh;
-        overflow-y: auto;
-      }
-.cmd-box {
-        max-width: 95vw;
-        padding: 12px;
-      }
-.cmd-item').forEach(function(el,i){
-    el.classList.toggle('sel',i===cmdIdx);
-  }
-.cmd-item');
-  if(e.key==='Escape'){closeCmdPalette();return;}
-.cmd-palette { z-index: var(--z-modal); }
-.score-panel{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:12px}
-.score-ring{width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.4em;font-weight:900;margin:0 auto 8px}
-.score-items{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-.score-item{display:flex;align-items:center;gap:6px;padding:6px 8px;background:var(--s2);border-radius:6px;font-size:.65em}
-.score-bar{flex:1;height:4px;background:var(--s3);border-radius:2px;overflow:hidden}
-.score-bar-fill{height:100%;border-radius:2px;transition:width .5s ease}
-.score-panel { z-index: var(--z-modal); }
-.score-panel, .whatsnew-box, .onboard-box, .cmd-box {
-        max-height: 80vh;
-        overflow-y: auto;
-      }
-.score-panel, .whatsnew-box, .onboard-box, .cmd-box {
-        max-width: 95vw;
-        padding: 12px;
-      }
-.score-panel { z-index: var(--z-modal); }
-.prop-search{position:relative;margin-bottom:8px}
-.prop-search input{width:100%;padding:8px 12px 8px 32px;border:1px solid var(--bd);border-radius:8px;background:var(--s2);color:var(--tx);font-size:.72em;font-family:inherit;outline:none}
-.prop-search input:focus{border-color:var(--ac)}
-.prop-search::before{content:"🔍";position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:.8em}
-.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0a14;--s1:#13131f;--s2:#1a1a28;--s3:#222234;--bd:rgba(255,255,255,.06);--bd2:rgba(255,255,255,.12);--tx:#e4e4ed;--tx2:#8888a8;--tx3:#555570;--ac:#7c3aed;--ac2:#a78bfa;--ac3:#c4b5fd;--ac-bg:rgba(124,58,237,.08);--gn:#22c55e;--gn-bg:rgba(34,197,94,.08);--rd:#ef4444;--warn:#f59e0b;--r:14px;--font:'Inter','Noto Sans Arabic',system-ui,sans-serif}
+body{font-family:var(--font);background:var(--bg);color:var(--tx);min-height:100vh;overflow-x:hidden}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--s1)}::-webkit-scrollbar-thumb{background:var(--s3);border-radius:3px}
 
-:root{--bg:#0c0c14;--s1:#16161f;--s2:#1e1e2a;--s3:#262636;--bd:rgba(255,255,255,.06);--bd2:rgba(255,255,255,.12);--tx:#e4e4ed;--tx2:#8b8ba8;--tx3:#555570;--ac:#7c3aed;--ac2:#a78bfa;--ac3:#c4b5fd;--ac-bg:rgba(124,58,237,.08);--gn:#22c55e;--gn-bg:rgba(34,197,94,.08);--rd:#ef4444;--rd-bg:rgba(239,68,68,.1);--warn:#f59e0b;--r:16px;--br-sm:10px;--br-md:12px;--br-lg:16px;--br-xl:24px;--fs-xs:.62em;--fs-sm:.72em;--fs-md:.8em;--fs-lg:.88em;--fs-xl:1.02em;--shadow:0 4px 24px rgba(0,0,0,.3);--font-head:'Inter','Noto Sans Arabic',system-ui,sans-serif}
+/* === WELCOME SCREEN === */
+.welcome{position:fixed;inset:0;z-index:500;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;transition:opacity .5s,transform .5s}
+.welcome.hidden{opacity:0;transform:scale(.95);pointer-events:none}
+.welcome-logo{width:72px;height:72px;border-radius:20px;background:linear-gradient(135deg,#8b5cf6,#7c3aed);display:flex;align-items:center;justify-content:center;font-size:32px;color:#fff;box-shadow:0 8px 32px rgba(124,58,237,.4);margin-bottom:24px}
+.welcome h1{font-size:1.8em;font-weight:900;margin-bottom:8px;background:linear-gradient(135deg,#c4b5fd,#8b5cf6,#e879f9);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.welcome p{color:var(--tx2);font-size:.9em;max-width:480px;line-height:1.8;margin-bottom:32px}
+.welcome-steps{display:flex;gap:16px;margin-bottom:36px;flex-wrap:wrap;justify-content:center}
+.welcome-step{background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:20px 16px;width:140px;text-align:center}
+.welcome-step .num{width:36px;height:36px;border-radius:50%;background:var(--ac-bg);color:var(--ac2);display:flex;align-items:center;justify-content:center;font-size:1em;font-weight:800;margin:0 auto 10px}
+.welcome-step b{display:block;font-size:.82em;margin-bottom:4px}
+.welcome-step span{font-size:.7em;color:var(--tx3);line-height:1.6}
+.welcome-btn{padding:14px 40px;border-radius:14px;background:linear-gradient(135deg,#8b5cf6,#7c3aed);color:#fff;font-size:1em;font-weight:800;border:none;cursor:pointer;box-shadow:0 8px 28px rgba(124,58,237,.4);transition:all .25s;font-family:var(--font)}
+.welcome-btn:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(124,58,237,.5)}
+
+/* === HEADER === */
+.hdr{position:sticky;top:0;z-index:100;background:rgba(10,10,20,.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.hdr-brand{display:flex;align-items:center;gap:10px}
+.hdr-logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#8b5cf6,#7c3aed);display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff}
+.hdr h1{font-size:1em;font-weight:800}
+.hdr-nav{display:flex;gap:4px;background:var(--s1);border:1px solid var(--bd);border-radius:10px;padding:3px}
+.hdr-nav a{padding:7px 14px;border-radius:7px;color:var(--tx2);font-size:.75em;font-weight:600;text-decoration:none;transition:all .2s;white-space:nowrap}
+.hdr-nav a:hover{color:var(--tx);background:var(--s2)}
+.hdr-nav a.on{color:#fff;background:linear-gradient(135deg,var(--ac),#6d28d9)}
+.hdr-acts{display:flex;gap:6px}
+.hdr-btn{padding:7px 14px;border-radius:8px;border:1px solid var(--bd);background:var(--s1);color:var(--tx2);font-size:.75em;font-weight:600;cursor:pointer;transition:all .2s;font-family:var(--font);display:inline-flex;align-items:center;gap:5px}
+.hdr-btn:hover{color:var(--tx);border-color:var(--bd2)}
+.hdr-btn.pri{background:linear-gradient(135deg,var(--ac),#6d28d9);color:#fff;border:none}
+
+/* === TOOLBAR === */
+.tb{max-width:1200px;margin:0 auto;padding:16px 20px 0;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.tb-search{flex:1;min-width:160px;position:relative}
+.tb-search input{width:100%;padding:10px 14px 10px 36px;border-radius:10px;border:1px solid var(--bd);background:var(--s1);color:var(--tx);font-size:.85em;font-family:var(--font);outline:none;transition:border .2s}
+.tb-search input:focus{border-color:var(--ac)}
+.tb-search .icon{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--tx3);font-size:.85em;pointer-events:none}
+.tb-info{font-size:.72em;color:var(--tx3);font-weight:600}
+.tb-sort{padding:8px 12px;border-radius:8px;border:1px solid var(--bd);background:var(--s1);color:var(--tx2);font-size:.75em;font-family:var(--font);cursor:pointer}
+
+/* === GRID === */
+.grid{max-width:1200px;margin:0 auto;padding:12px 20px 80px;display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+.card{position:relative;border-radius:var(--r);overflow:hidden;background:var(--s1);border:1.5px solid var(--bd);cursor:pointer;transition:all .25s cubic-bezier(.4,0,.2,1)}
+.card:hover{border-color:var(--ac);transform:translateY(-4px);box-shadow:0 12px 36px rgba(124,58,237,.15)}
+.card-preview{position:relative;width:100%;height:160px;overflow:hidden;background:var(--bg)}
+.card-preview iframe{position:absolute;top:0;left:0;width:200%;height:200%;transform:scale(.5);transform-origin:top left;border:0;pointer-events:none}
+.card-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.card-loading span{width:24px;height:24px;border:2.5px solid var(--s3);border-top-color:var(--ac);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.card-num{position:absolute;top:6px;right:6px;z-index:2;background:rgba(10,10,20,.7);backdrop-filter:blur(6px);color:var(--ac2);font-size:.6em;font-weight:700;padding:2px 8px;border-radius:16px;border:1px solid rgba(167,139,250,.2)}
+.card-sel{position:absolute;top:6px;left:6px;z-index:2;width:24px;height:24px;border-radius:50%;background:rgba(10,10,20,.6);backdrop-filter:blur(6px);border:1.5px solid var(--bd2);color:var(--tx3);display:flex;align-items:center;justify-content:center;font-size:.65em;cursor:pointer;transition:all .2s}
+.card-sel:hover,.card-sel.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.card-overlay{position:absolute;inset:0;background:rgba(10,10,20,.65);backdrop-filter:blur(4px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;opacity:0;transition:opacity .2s;z-index:3}
+.card:hover .card-overlay{opacity:1}
+.card-over-btn{padding:7px 20px;border-radius:20px;font-size:.68em;font-weight:700;border:none;cursor:pointer;transition:all .2s;font-family:var(--font);display:flex;align-items:center;gap:5px}
+.card-over-pri{background:linear-gradient(135deg,var(--ac),#6d28d9);color:#fff;box-shadow:0 4px 14px rgba(124,58,237,.3)}
+.card-over-pri:hover{transform:scale(1.05)}
+.card-over-sec{background:rgba(255,255,255,.08);color:var(--tx);border:1px solid rgba(255,255,255,.12)}
+.card-over-sec:hover{background:rgba(255,255,255,.14)}
+.card-over-sec.on{background:var(--ac);border-color:var(--ac);color:#fff}
+
+/* === FULLSCREEN VIEWER === */
+.fs{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.88);backdrop-filter:blur(10px);display:none;flex-direction:column;align-items:center;justify-content:center;padding:16px}
+.fs.open{display:flex}
+.fs-top{width:100%;max-width:600px;display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.fs-title{font-size:.85em;font-weight:700;color:var(--tx)}
+.fs-counter{font-size:.7em;color:var(--tx2);background:var(--s2);padding:4px 12px;border-radius:16px}
+.fs-close{width:32px;height:32px;border-radius:8px;border:none;background:var(--s2);color:var(--tx2);font-size:.9em;cursor:pointer;transition:all .2s}
+.fs-close:hover{background:var(--rd);color:#fff}
+.fs-body{position:relative;width:100%;max-width:500px;flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.fs-body iframe{width:200%;height:200%;transform:scale(.5);transform-origin:center center;border:0;pointer-events:none}
+.fs-nav{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;background:rgba(10,10,20,.75);backdrop-filter:blur(6px);border:1px solid var(--bd2);color:var(--tx);font-size:1em;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;z-index:5}
+.fs-nav:hover{background:var(--ac);border-color:var(--ac);color:#fff}
+.fs-nav.prev{right:8px}.fs-nav.next{left:8px}
+.fs-actions{width:100%;max-width:600px;display:flex;gap:8px;padding:12px 0;flex-wrap:wrap;justify-content:center}
+.fs-act{padding:8px 20px;border-radius:10px;font-size:.78em;font-weight:700;border:none;cursor:pointer;transition:all .2s;font-family:var(--font);display:flex;align-items:center;gap:5px}
+.fs-act.pri{background:linear-gradient(135deg,var(--ac),#6d28d9);color:#fff}
+.fs-act.pri:hover{box-shadow:0 4px 16px rgba(124,58,237,.4)}
+.fs-act{background:var(--s2);color:var(--tx2);border:1px solid var(--bd)}
+.fs-act:hover{color:var(--tx);border-color:var(--bd2)}
+.fs-jump{display:flex;align-items:center;gap:6px;margin-top:8px}
+.fs-jump input{width:60px;padding:6px 8px;border-radius:8px;border:1px solid var(--bd);background:var(--s2);color:var(--tx);font-size:.8em;text-align:center;font-family:var(--font);outline:none}
+.fs-jump input:focus{border-color:var(--ac)}
+.fs-jump span{font-size:.7em;color:var(--tx3)}
+.fs-hint{text-align:center;font-size:.65em;color:var(--tx3);padding:4px}
+
+/* === MULTI BAR === */
+.mb{display:none;position:fixed;bottom:0;left:0;right:0;z-index:80;background:rgba(10,10,20,.92);backdrop-filter:blur(16px);border-top:1px solid var(--bd);padding:10px 20px}
+.mb.show{display:block}
+.mb-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.mb .count{font-size:.82em;color:var(--ac2);font-weight:700}
+.mb .acts{display:flex;gap:6px}
+
+/* === TOAST === */
+.toast{position:fixed;bottom:70px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--s2);border:1px solid var(--bd2);color:var(--tx);padding:8px 18px;border-radius:10px;font-size:.78em;font-weight:600;z-index:300;opacity:0;pointer-events:none;transition:all .3s}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* === EMPTY === */
+.empty{grid-column:1/-1;text-align:center;padding:50px 20px;color:var(--tx2)}
+.empty b{display:block;font-size:1em;margin-bottom:4px;color:var(--tx)}
+.empty span{font-size:.82em;color:var(--tx3)}
+
+/* === FAVORITES PANEL === */
+.fav-panel{display:none;position:fixed;top:0;right:0;bottom:0;width:300px;background:var(--s1);border-left:1px solid var(--bd);z-index:150;padding:16px;overflow-y:auto;transform:translateX(100%);transition:transform .3s}
+.fav-panel.open{display:block;transform:translateX(0)}
+.fav-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.fav-header h3{font-size:.9em;font-weight:800}
+.fav-close{width:28px;height:28px;border-radius:6px;border:none;background:var(--s2);color:var(--tx2);cursor:pointer;font-size:.8em}
+.fav-item{display:flex;align-items:center;gap:8px;padding:8px;border-radius:8px;cursor:pointer;transition:background .15s;margin-bottom:4px}
+.fav-item:hover{background:var(--s2)}
+.fav-item .num{font-size:.7em;color:var(--ac2);font-weight:700;min-width:28px}
+.fav-item .name{font-size:.75em;color:var(--tx);flex:1}
+.fav-item .remove{font-size:.65em;color:var(--rd);cursor:pointer;opacity:.6}
+.fav-item .remove:hover{opacity:1}
+
+/* === RESPONSIVE === */
+@media(max-width:768px){
+  .hdr-nav{display:none}
+  .hdr-nav.mob-open{display:flex;flex-direction:column;position:fixed;top:0;right:0;bottom:0;width:240px;background:var(--s1);border-left:1px solid var(--bd);z-index:200;padding:56px 12px 12px;border-radius:0}
+  .grid{padding:10px 10px 80px;gap:10px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+  .card-preview{height:130px}
+  .fs-body{max-width:100%}
+  .fav-panel{width:100%}
+}
+
+/* === ACCORDION (audio) === */
+.acc{margin:8px auto;max-width:1200px;padding:0 20px}
+.acc-h{cursor:pointer;padding:10px 14px;background:var(--s1);border:1px solid var(--bd);border-radius:10px;display:flex;align-items:center;justify-content:space-between;font-size:.8em;font-weight:700;color:var(--tx);transition:all .2s}
+.acc-h:hover{border-color:var(--ac)}
+.acc-h .arr{transition:transform .2s;font-size:.7em;color:var(--tx3)}
+.acc-b{overflow:hidden;max-height:0;opacity:0;transition:max-height .3s,opacity .3s}
+.acc-b.open{max-height:600px;opacity:1}
+.acc-body{padding:12px;background:var(--s1);border:1px solid var(--bd);border-top:0;border-radius:0 0 10px 10px}
+.sl{width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--bd);background:var(--s2);color:var(--tx);font-size:.8em;font-family:var(--font)}
+.tx{width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--bd);background:var(--s2);color:var(--tx);font-size:.8em;font-family:var(--font);text-align:center}
+.btn{padding:6px 14px;border-radius:8px;border:1px solid var(--bd);background:var(--s2);color:var(--tx2);font-size:.72em;font-weight:600;cursor:pointer;transition:all .2s;font-family:var(--font);display:inline-flex;align-items:center;gap:4px}
+.btn:hover{border-color:var(--ac);color:var(--tx)}
+.btn.ba{background:linear-gradient(135deg,var(--ac),#6d28d9);color:#fff;border:none}
+.btn.bs{font-size:.62em;padding:5px 10px;border-radius:6px}
+.tip{position:relative}.tip::after{content:attr(data-tip);position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:var(--s3);color:var(--tx);padding:4px 8px;border-radius:6px;font-size:.6em;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .2s;z-index:999}.tip:hover::after{opacity:1}
+.aa-lb{display:block;font-size:.65em;color:var(--tx3);margin-bottom:3px;font-weight:600}
 </style>
 </head>
 <body>
 
+<!-- WELCOME SCREEN -->
+<div class="welcome" id="welcomeScreen">
+  <div class="welcome-logo">✦</div>
+  <h1>Anki Design Studio</h1>
+  <p>صمّم بطاقاتك بسهولة — اختر قالباً من معرضنا الاحترافي، خصّصه كما تحب، ونزّله مباشرة.</p>
+  <div class="welcome-steps">
+    <div class="welcome-step"><div class="num">1</div><b>اختر قالباً</b><span>تصفح 100 تصميم احترافي</span></div>
+    <div class="welcome-step"><div class="num">2</div><b>شاهد المعاينة</b><span>معاينة حقيقية لكل تصميم</span></div>
+    <div class="welcome-step"><div class="num">3</div><b>نزّل الرزمة</b><span>ملف .apkg جاهز للاستيراد</span></div>
+  </div>
+  <button class="welcome-btn" onclick="closeWelcome()">ابدأ التصفح ←</button>
+</div>
+
 <!-- HEADER -->
-<div class="g-header">
-<div class="g-header-inner">
-  <a class="g-brand" href="index.html">
-    <div class="g-brand-icon">✦</div>
-    <div class="g-brand-text">
-      <h1>Anki Studio</h1>
-      <p>مصمم بطاقات احترافي</p>
-    </div>
-  </a>
-  <nav class="g-nav" id="gNav">
-    <a href="index.html" class="active">🇫🇷 بكالوريا</a>
+<div class="hdr">
+  <div class="hdr-brand">
+    <div class="hdr-logo">✦</div>
+    <h1>Anki Studio</h1>
+  </div>
+  <nav class="hdr-nav" id="hdrNav">
+    <a href="index.html" class="on">🇫🇷 بكالوريا</a>
     <a href="gallery-tas9.html">🇫🇷 تاسع</a>
     <a href="gallery-en9.html">🇬🇧 تاسع</a>
     <a href="gallery-enlit.html">🇬🇧 أدبي</a>
     <a href="gallery-ensci.html">🇬🇧 علمي</a>
   </nav>
-  <div class="g-actions">
-    <button class="g-btn" onclick="toggleAudioPanel()">🎙️ <span class="hide-mobile">الصوت</span></button>
-    <button class="g-btn" onclick="selectAllTemplates()">☑ الكل</button>
-    <button class="g-btn primary" id="gDownloadBtn" onclick="downloadMultiAPKG()" style="display:none">⬇ تنزيل</button>
-  </div>
-</div>
-</div>
-
-<!-- LOADING -->
-<div id="loadingBar">
-  <div class="g-loading-bar">
-    <div class="bar"><div class="bar-fill" id="loadFill"></div></div>
-    <div class="text" id="loadText">جاري تحميل التصاميم...</div>
+  <div class="hdr-acts">
+    <button class="hdr-btn" onclick="toggleFavPanel()">⭐</button>
+    <button class="hdr-btn" onclick="toggleAcc()">🎙️</button>
+    <button class="hdr-btn" onclick="selectAllTemplates()">☑</button>
+    <button class="hdr-btn pri" id="dlBtn" onclick="downloadMultiAPKG()" style="display:none">⬇</button>
   </div>
 </div>
 
 <!-- TOOLBAR -->
-<div class="g-toolbar" id="gToolbar" style="display:none">
-  <div class="g-search">
-    <span class="g-search-icon">🔍</span>
-    <input id="gSearchInput" placeholder="ابحث عن قالب..." oninput="filterGallery(this.value)">
+<div class="tb" id="toolbar">
+  <div class="tb-search">
+    <span class="icon">🔍</span>
+    <input id="gSearchInput" placeholder="ابحث بالاسم أو الرقم..." oninput="filterGallery(this.value)">
   </div>
-  <div class="g-tb">
-    <select onchange="gallerySort=this.value;renderGrid()" style="padding:10px 14px;border-radius:10px;border:1px solid var(--bd);background:var(--s1);color:var(--tx2);font-size:.78em;font-family:inherit" aria-label="ترتيب">
-      <option value="default">الترتيب</option>
-      <option value="name">الاسم</option>
-    </select>
-    <span class="g-counter" id="tplCount">—</span>
+  <select class="tb-sort" onchange="gallerySort=this.value;renderGrid()" aria-label="ترتيب">
+    <option value="default">الترتيب</option>
+    <option value="name">الاسم</option>
+  </select>
+  <span class="tb-info" id="tplCount">—</span>
+</div>
+
+<!-- AUDIO ACCORDION -->
+<div class="acc">
+  <div class="acc-h" onclick="toggleAcc()"><span>🎙️ إعدادات الصوت</span><span class="arr" id="accArr">▾</span></div>
+  <div class="acc-b" id="accBody">
+    <div class="acc-body">
+      <div style="display:flex;gap:8px;margin-bottom:8px">
+        <div style="flex:1"><label class="aa-lb">🎤 صوت فرنسي</label><select class="sl" id="gTtsFrVoice" onchange="saveVoiceSel(this)"></select></div>
+        <div style="flex:1"><label class="aa-lb">🎤 صوت عربي</label><select class="sl" id="gTtsArVoice" onchange="saveVoiceSel(this)"></select></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px">
+        <div><label class="aa-lb">⚡ السرعة</label><input class="tx" id="gTtsSpeed" type="number" min="0.5" max="2" step="0.1" value="1" onchange="saveVoiceSel(this)"></div>
+        <div><label class="aa-lb">🎵 النغمة</label><input class="tx" id="gTtsPitch" type="number" min="0.5" max="2" step="0.1" value="1" onchange="saveVoiceSel(this)"></div>
+      </div>
+      <div style="display:flex;gap:6px">
+        <button class="btn ba bs" onclick="previewTTS()" style="flex:1;justify-content:center">🔊 معاينة</button>
+        <button class="btn bs" onclick="resetTTSConfig()">↺</button>
+      </div>
+    </div>
   </div>
 </div>
 
-<!-- AUDIO PANEL -->
-<div class="g-audio-panel" id="gAudioPanel">
-  <div class="g-audio-box">
-    <div class="g-audio-field">
-      <label>🎤 صوت فرنسي</label>
-      <select class="sl" id="gTtsFrVoice" onchange="saveVoiceSel(this)"></select>
-    </div>
-    <div class="g-audio-field">
-      <label>🎤 صوت عربي</label>
-      <select class="sl" id="gTtsArVoice" onchange="saveVoiceSel(this)"></select>
-    </div>
-    <div class="g-audio-field">
-      <label>⚡ السرعة</label>
-      <input id="gTtsSpeed" type="number" min="0.5" max="2" step="0.1" value="1" onchange="saveVoiceSel(this)" style="padding:10px 12px;border-radius:8px;border:1px solid var(--bd);background:var(--s2);color:var(--tx);font-size:.82em;text-align:center">
-    </div>
-    <div class="g-audio-field">
-      <label>🎵 النغمة</label>
-      <input id="gTtsPitch" type="number" min="0.5" max="2" step="0.1" value="1" onchange="saveVoiceSel(this)" style="padding:10px 12px;border-radius:8px;border:1px solid var(--bd);background:var(--s2);color:var(--tx);font-size:.82em;text-align:center">
-    </div>
-    <div class="g-audio-field" style="display:flex;align-items:end">
-      <button class="g-btn primary" onclick="previewTTS()" style="width:100%;justify-content:center">🔊 معاينة</button>
+<!-- MULTI-SELECT BAR -->
+<div class="mb" id="multiBar">
+  <div class="mb-inner">
+    <span class="count">🎯 <b id="mbCountNum">0</b> محدد</span>
+    <div class="acts">
+      <button class="btn ba bs" onclick="downloadMultiAPKG()">⬇ تنزيل</button>
+      <button class="btn bs" onclick="clearMultiSelect()">✖</button>
     </div>
   </div>
 </div>
 
 <!-- GALLERY GRID -->
-<div class="g-gallery" id="tplGrid"></div>
+<div class="grid" id="tplGrid"></div>
 
-<!-- MULTI-SELECT BAR -->
-<div class="g-multi-bar" id="multiBar">
-  <div class="g-multi-bar-inner">
-    <span class="count">🎯 <b id="mbCountNum">0</b> محدد</span>
-    <div class="actions">
-      <button class="g-btn primary" onclick="downloadMultiAPKG()">⬇ تنزيل الرزمة</button>
-      <button class="g-btn" onclick="clearMultiSelect()">✖ مسح</button>
-    </div>
+<!-- FULLSCREEN VIEWER -->
+<div class="fs" id="fsModal">
+  <div class="fs-top">
+    <div class="fs-title" id="fsInfo"></div>
+    <div class="fs-counter" id="fsCounter"></div>
+    <button class="fs-close" onclick="closeFullscreen()">✕</button>
   </div>
+  <div class="fs-body">
+    <button class="fs-nav next" onclick="nextTpl()">❯</button>
+    <iframe id="fsFrame" title="معاينة"></iframe>
+    <button class="fs-nav prev" onclick="prevTpl()">❮</button>
+  </div>
+  <div class="fs-actions">
+    <button class="fs-act pri" id="fsSelBtn" onclick="fsToggleSelect()">＋ تحديد</button>
+    <button class="fs-act" onclick="flipCard()">🔄 اقلب</button>
+    <button class="fs-act" onclick="fsDownload()">⬇ تنزيل</button>
+  </div>
+  <div class="fs-jump">
+    <input type="number" id="fsJumpInput" min="1" max="100" placeholder="#" onkeydown="if(event.key==='Enter'){var n=parseInt(this.value);if(n>=1&&n<=100)jumpToTemplate(n-1)}">
+    <span>→ انتقل لرقم</span>
+  </div>
+  <div class="fs-hint">اسهم ← → للتنقل • Esc للإغلاق</div>
 </div>
 
-<!-- FULLSCREEN PREVIEW -->
-<div class="g-fs-overlay" id="fsModal">
-  <div class="g-fs-box">
-    <div class="g-fs-header">
-      <div class="g-fs-title" id="fsInfo"></div>
-      <div class="g-fs-counter" id="fsCounter"></div>
-      <button class="g-fs-close" onclick="closeFullscreen()">✕</button>
-    </div>
-    <div class="g-fs-body">
-      <button class="g-fs-nav next" onclick="nextTpl()">❯</button>
-      <iframe class="fsc" id="fsFrame" title="معاينة القالب"></iframe>
-      <button class="g-fs-nav prev" onclick="prevTpl()">❮</button>
-    </div>
-    <div class="g-fs-actions">
-      <button class="g-btn primary" id="fsSelBtn" onclick="fsToggleSelect()">＋ تحديد</button>
-      <button class="g-btn" onclick="flipCard()">🔄 اقلب</button>
-      <button class="g-btn" onclick="fsDownload()">⬇ تنزيل</button>
-    </div>
-    <div class="g-fs-hint">اسهم ← → للتنقل • Esc للإغلاق</div>
+<!-- FAVORITES PANEL -->
+<div class="fav-panel" id="favPanel">
+  <div class="fav-header">
+    <h3>⭐ المفضلة</h3>
+    <button class="fav-close" onclick="toggleFavPanel()">✕</button>
   </div>
+  <div id="favList"></div>
 </div>
 
 <!-- TOAST -->
-<div class="g-toast" id="toast"></div>
+<div class="toast" id="toast"></div>
 
-<!-- STATUS BAR -->
-<div style="position:fixed;bottom:0;left:0;right:0;background:var(--s1);border-top:1px solid var(--bd);padding:4px 16px;display:flex;justify-content:space-between;font-size:.58em;color:var(--tx3);z-index:100"><span>Anki Design Studio v6.0</span><span style="color:var(--gn)">✓</span><span id="undoCount">0 / 0</span></div>
+<!-- STATUS -->
+<div style="position:fixed;bottom:0;left:0;right:0;background:var(--s1);border-top:1px solid var(--bd);padding:3px 12px;display:flex;justify-content:space-between;font-size:.55em;color:var(--tx3);z-index:90"><span>Anki Studio v6.0</span><span style="color:var(--gn)">✓</span><span id="undoCount"></span></div>
 
-<!-- AUTOSAVE DOT -->
-<div class="autosave-dot" id="autosaveDot"></div>
-
-
+<script src="designs_100.js" defer onload="try{designs100Loaded()}catch(_e){}"></script>
 <script src="template_colors.js" defer></script>
-<script src="designs_chunk_1.js" defer onload="try{loadChunk(1)}catch(_e){}"></script>
-
-<script>
-var _chunksLoaded=0;
-function loadChunk(n){
-  if(n>1){var old=document.querySelector('script[data-chunk="'+(n-1)+'"]');if(old)old.remove();}
-  var s=document.createElement('script');
-  s.src='designs_chunk_'+n+'.js';
-  s.setAttribute('data-chunk',n);
-  s.onload=function(){
-    mergeChunk(n);
-    _chunksLoaded++;
-    if(n<5){loadChunk(n+1);}
-    else{
-      try{addDesigns(EMBEDDED_DESIGNS_100);}catch(_e){}
-      DESIGNS100_ADDED=true;
-      CUSTOM_TEMPLATES_LOADED=true;
-      if(typeof renderGrid==='function')renderGrid();
-    }
-  };
-  document.head.appendChild(s);
-}
-function mergeChunk(n){
-  var v=window['DESIGNS_CHUNK_'+n];
-  if(!v)return;
-  if(typeof EMBEDDED_DESIGNS_100==='undefined')window.EMBEDDED_DESIGNS_100=[];
-  for(var i=0;i<v.length;i++)EMBEDDED_DESIGNS_100.push(v[i]);
-}
-</script>
-
-<script src="template_colors.js" defer></script>
-
 <script>
 // Global state - MUST be declared before initApp() runs (see end of script)
 var CUSTOM_TEMPLATES = [];
 var CUSTOM_TEMPLATES_LOADED = false;
 var PREMIUM_ADDED = false;
 var DESIGNS100_ADDED = false;
-const SAMP={f:'Un ami',a:'صديق',p:'Des amis',s:'Un copain',c:'Un ennemi',dossier:'الوحدة 1'};
+const SAMP={f:'La scène',a:'مشهد',p:'',s:'',c:'',dossier:''};
 window.SAMP=SAMP;
 const FMAP={"Inter":"'Inter',sans-serif","Noto Sans Arabic":"'Noto Sans Arabic',sans-serif","Poppins":"'Poppins',sans-serif","Playfair Display":"'Playfair Display',serif","Cairo":"'Cairo',sans-serif","Tajawal":"'Tajawal',sans-serif","Amiri":"'Amiri',serif","System":"system-ui,sans-serif"};
 
@@ -802,8 +822,8 @@ function fillSampleFields(front){
   front = front.split('{{FrFile}}').join('');
   front = front.split('{{ArFile}}').join('');
   front = front.split('{{BothFile}}').join('');
-  front = front.split('{{ExtraRows}}').join('<b>الوحدة:</b> 1<br><b>النوع:</b> الأسماء<br><b>الجمع:</b> Maisons');
-  front = front.split('{{Extras}}').join('<b>الوحدة:</b> 1<br><b>النوع:</b> الأسماء<br><b>الجمع:</b> Maisons');
+  front = front.split('{{ExtraRows}}').join('');
+  front = front.split('{{Extras}}').join('');
   front = front.split('{{Plural}}').join('Maisons');
   front = front.split('{{Synonym}}').join(SAMP.s);
   front = front.split('{{Antonym}}').join(SAMP.c);
@@ -819,7 +839,7 @@ function fillSampleFields(front){
   return front;
 }
 var FIT_SRC="(function(){function fitOne(el){var p=el.parentElement;if(!p)return;var cs=getComputedStyle(el);var base=parseFloat(cs.fontSize)||14;if(!(base>0))return;var min=parseFloat(el.getAttribute('data-min'))||7;if(min>9)min=9;var old=el.style.cssText;el.style.whiteSpace='nowrap';el.style.display='inline-block';el.style.maxWidth='none';el.style.fontSize=base+'px';var aw=p.clientWidth-8,ah=p.clientHeight;if(aw<=12){el.style.cssText=old;return}var tw=el.scrollWidth,th=el.scrollHeight;if(tw<=2||th<=2){el.style.cssText=old;return}var k=aw/tw;if(ah>12)k=Math.min(k,ah/th);if(k<1){el.style.fontSize=Math.max(min,Math.round(base*k*10)/10)+'px'}else{el.style.cssText=old}}function fitAll(){var sels='.fitme,.ds-word,.ds-trans,.word,.trans,.meaning,.subtitle,.board-txt,.cfit,[class*=\"-word\"],[class*=\"-trans\"],[class*=\"-sub\"],[class*=\"-txt\"]';var els=document.querySelectorAll(sels);for(var i=0;i<els.length;i++)fitOne(els[i])}function boot(){fitAll();setTimeout(fitAll,80);setTimeout(fitAll,300);setTimeout(fitAll,900);setTimeout(fitAll,1800)}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',boot)}else{boot()}window.addEventListener('load',boot);window.addEventListener('resize',boot)})();";
-var UNIVERSAL_FIT_SCRIPT="<scr"+"ipt>"+FIT_SRC+"</scr"+"ipt>";
+var UNIVERSAL_FIT_SCRIPT='<script>'+FIT_SRC+'<\/script>';
 function applyUniversalFit(){try{(new Function(FIT_SRC))();}catch(_e){}}
 function buildPreviewDoc(t){
   var css='', body='';
@@ -839,11 +859,12 @@ function buildPreviewDoc(t){
     +'.tts-preview>svg,.tts-preview>*{pointer-events:none}'
     +'.replay-button::before{content:url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' width=\'22\' height=\'22\'><path fill=\'%237c3aed\' d=\'M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05A4.5 4.5 0 0 0 16.5 12zM14 3.23v2.06a7 7 0 0 1 0 13.42v2.06a9 9 0 0 0 0-17.54z\'/></svg>");display:block;width:22px;height:22px;margin:auto}'
     +'</style><style>'+css+'</style></head><body>'+body
-    +UNIVERSAL_FIT_SCRIPT+'<scr'+"ipt>var SAMP=parent.SAMP;var speakWord=function(w,l){try{parent.speakWord(w,l)}catch(_e){}};var getTtsDelay=parent.getTtsDelay;var getTtsGap=parent.getTtsGap;var getTtsRemoveDelay=parent.getTtsRemoveDelay;'
+    +UNIVERSAL_FIT_SCRIPT+'<script>var SAMP=parent.SAMP;var speakWord=function(w,l){try{parent.speakWord(w,l)}catch(_e){}};var getTtsDelay=parent.getTtsDelay;var getTtsGap=parent.getTtsGap;var getTtsRemoveDelay=parent.getTtsRemoveDelay;'
     +'document.querySelectorAll(".tts-preview").forEach(function(el){el.addEventListener("click",function(){'
     +'var l=el.getAttribute("data-lang")||"fr";var fld=el.getAttribute("data-field")||"French";'
     +'var txt=(l==="ar"?SAMP.a:SAMP.f);speakWord(txt,l);});});try{window.playFr=function(){speakWord(SAMP.f,"fr")};window.playAr=function(){speakWord(SAMP.a,"ar")};window.playBoth=function(){speakWord(SAMP.f,"fr");setTimeout(function(){speakWord(SAMP.a,"ar")},getTtsDelay())}}catch(_e){}<\/script>'
     +'\n</body></html>';
+}
 
 function addSpinKeyframes(){
   try{
@@ -857,7 +878,7 @@ function addSpinKeyframes(){
 }
 function renderGrid(){
   // Hide loading message when grid renders
-  var lm=document.getElementById('loadingBar');if(lm)lm.style.display='none';var tb=document.getElementById('gToolbar');if(tb)tb.style.display='flex';
+  var lm=document.getElementById('loadingMsg');if(lm)lm.remove();
   
   var templates=getFilteredTemplates();
   // Apply search filter
@@ -888,7 +909,7 @@ function renderGrid(){
   // Apply sort
   templates=sortTemplates(templates,gallerySort);
   // Render grid
-  var gridClass=galleryView==='list'?'gal-grid list-view':'gal-grid';
+  var gridClass='grid';
   document.getElementById('tplGrid').className=gridClass;
   var tc=document.getElementById('tplCount');if(tc)tc.textContent='🎨 '+templates.length+' تصميم احترافي جاهز';
     var _totalCards=0;
@@ -908,17 +929,13 @@ function renderGrid(){
       var delay=Math.min(_cIdx*16,380);_cIdx++;
       var TAG_L={};TAGS.forEach(function(tg){TAG_L[tg.k]=tg.l;});
       var tags=(t.tags||[]).slice(0,3).map(function(tg){return '<span class="gc-tag">'+(TAG_L[tg]||tg)+'</span>';}).join('');
-      return '<div class="g-card'+(sel?' sel':'')+(inMulti?' multi':'')+'" onclick="previewFullTemplate(\''+t.id+'\')" data-tpl-id=\''+t.id+'\'">
-        +'<div class="g-card-preview" id="thumb-'+t.id+'">'
-        +'<div class="g-loading"><span></span></div>'
-        +'</div>'
-        +'<div class="g-card-select'+(inMulti?' on':'')+'" onclick="event.stopPropagation();toggleMultiSelect(\''+t.id+'\')">'+(inMulti?'✓':'+')+'</div>'
-        +(t.num?'<div class="g-card-num">#'+t.num+'</div>':'')
-        +'<div class="g-card-overlay" onclick="event.stopPropagation()">'
-        +'<button class="g-preview-btn" onclick="event.stopPropagation();previewFullTemplate(\''+t.id+'\')">👁️ معاينة كاملة</button>'
-        +'<button class="g-select-btn'+(inMulti?' on':'')+'" onclick="event.stopPropagation();toggleMultiSelect(\''+t.id+'\')">'+(inMulti?'✓ محدد':'＋ تحديد للرزمة')+'</button>'
-        +'</div>'
-        +'<div class="g-card-info"><span class="g-card-name">'+t.nm+'</span></div>'
+      return '<div class="gc'+(sel?' sel':'')+(inMulti?' multi':'')+'" style="--d:'+delay+'ms" data-tpl-id=\''+t.id+'\'>'
+        +'<button class="gc-pick'+(inMulti?' on':'')+'" onclick="event.stopPropagation();toggleMultiSelect(\''+t.id+'\')" title="تحديد للرزمة المتعددة">'+(inMulti?'✓':'+')+'</button>'
+        +'<button class="gc-fav'+(isFav?' on':'')+'" onclick="event.stopPropagation();toggleFav(\''+t.id+'\')" title="مفضل">'+(isFav?'★':'☆')+'</button>'
+        +(t.num&&!isCustom?'<div class="gc-num">#'+t.num+'</div>':'')
+        +(t.pack?'<div class="gc-cat">'+t.pack+'</div>':'')
+        +buildThumbHTML(t)
+        +'<div class="gc-meta"><span class="gc-name">'+t.nm+'</span><span class="gc-tags">'+tags+'</span></div>'
         +'</div>';
     }
     var html = '';
@@ -927,7 +944,7 @@ function renderGrid(){
     // Old color-only templates are available as color options in the control panel.
     if(customNew.length>0){
       html += customNew.map(function(t){return renderGalleryCard(t,true);}).join('');
-      
+      html += '<div class="gc gc-new" onclick="switchTab(\'maker\')" title="محرر بسيط: تحكم كامل وتنزيل"><div class="gc-new-ic">✏️</div><div class="gnm"><span>محرر بسيط</span></div><div class="gc-new-sub">تحكم كامل وتنزيل</div></div>';
     }
     if(customNew.length===0 && builtIn.length>0){
       html += builtIn.map(function(t){return renderGalleryCard(t,false);}).join('');
@@ -935,18 +952,18 @@ function renderGrid(){
     if(html===''){
       var hasFilter=!!(gallerySearchQ||(curTag&&curTag!=='all')||(curCol&&curCol!=='all'));
       if(hasFilter){
-        html='<div class="gal-empty"><div class="gal-empty-ic">🔍</div><b>لا توجد نتائج مطابقة</b><span>جرّب كلمة بحث أخرى أو غيّر التصنيف</span><button class="btn-hero ghost" onclick="gallerySearchQ=\'\';document.getElementById(\'gSearchInput\').value=\'\';curTag=\'all\';curCol=\'all\';renderGrid()">مسح الفلاتر</button></div>';
+        html='<div class="empty"><b><b>لا توجد نتائج مطابقة</b><span>جرّب كلمة بحث أخرى أو غيّر التصنيف</span><button class="btn-hero ghost" onclick="gallerySearchQ=\'\';document.getElementById(\'gSearchInput\').value=\'\';curTag=\'all\';curCol=\'all\';renderTags();renderCollections();renderGrid()">مسح الفلاتر</button></div>';
       }else{
-        html = '<div class="g-empty"><div class="g-empty-icon" style="font-size:1.5em;animation:spin 1s linear infinite">⏳</div><b>جاري التحميل...</b></div>';
-        
+        html = '<div style="text-align:center;padding:30px;color:var(--tx3);font-size:.75em"><span style="display:inline-block;width:14px;height:14px;border:2px solid var(--ac3);border-top-color:transparent;border-radius:50%;animation:spin 1s linear infinite;vertical-align:middle;margin-left:6px"></span>جاري تحميل التصاميم الاحترافية...</div>';
+        if (typeof addSpinKeyframes === 'function') addSpinKeyframes();
       }
     }
     document.getElementById('tplGrid').innerHTML=html;
     if(tc&&_totalCards>0)tc.textContent=_totalCards+' تصميم احترافي جاهز';
     renderMultiBar();
     try{mountThumbs();}catch(_e){}
-    try{}catch(_e){}
-    try{}catch(_e){}
+    try{updateHeroStats();}catch(_e){}
+    try{renderTags();renderCollections();}catch(_e){}
 }
 
 // ============================================================
@@ -954,10 +971,23 @@ function renderGrid(){
 // ============================================================
 function escAttr(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function buildThumbHTML(t){
-  return '<div class="g-card-preview" id="thumb-'+(t.id||'')+'"><div class="g-loading"><span></span></div></div>';
+  var num=(t.nm||'').replace(/^0+/,'')||'?';
+  var c=window.TEMPLATE_COLORS&&TEMPLATE_COLORS[t.nm]||null;
+  var bg=c?c.bg:'#1a1a2e';var ac=c?c.accent:'#7c3aed';var tx=c?c.textColor:'#fff';
+  var hexes=(c&&c.hexes)||[];
+  var palette=hexes.map(function(h){return '<div style="width:8px;height:8px;border-radius:50%;background:'+h+';flex-shrink:0"></div>';}).join('');
+  var grad='linear-gradient(135deg,'+bg+','+ac+'44)';
+  return '<div class="gc-thumb" data-th="'+(t.id||'')+'" style="background:'+grad+'">'
+    +'<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px">'
+    +'<div style="font-size:1.8em;font-weight:900;color:'+tx+';opacity:.9;font-family:Inter,sans-serif;letter-spacing:-1px">'+num+'</div>'
+    +'<div style="width:60%;height:3px;border-radius:2px;background:'+ac+';opacity:.6"></div>'
+    +'<div style="width:40%;height:2px;border-radius:2px;background:'+tx+';opacity:.3"></div>'
+    +'</div>'
+    +'<div style="position:absolute;bottom:6px;left:50%;transform:translateX(-50%);display:flex;gap:3px">'+palette+'</div>'
+    +'</div>';
 }
 function mountThumbs(){
-  var boxes=document.querySelectorAll('.g-card-preview[id^="thumb-"]');
+  var boxes=document.querySelectorAll('.gc-thumb[data-th]');
   if(!boxes.length)return;
   var io=window.__thumbIO;
   if(!io && 'IntersectionObserver' in window){
@@ -975,28 +1005,11 @@ function mountThumbs(){
   });
 }
 function mountThumb(box){
-  var id=box.id.replace('thumb-','');
-  if(!id||box.dataset.done)return;
+  var id=box.getAttribute('data-th');if(!id||box.dataset.done)return;
   box.dataset.done='1';
   var t=null;
   try{t=findTemplate(id);}catch(_e){}
-  if(!t)return;
-  try{
-    var doc=buildPreviewDoc(t);
-    var iframe=document.createElement('iframe');
-    iframe.style.cssText='position:absolute;top:0;left:0;width:200%;height:200%;transform:scale(0.5);transform-origin:top left;border:0;pointer-events:none';
-    iframe.srcdoc=doc;
-    iframe.loading='lazy';
-    iframe.onload=function(){
-      var loading=box.querySelector('.g-loading');
-      if(loading)loading.remove();
-    };
-    box.appendChild(iframe);
-  }catch(_e){
-    var loading=box.querySelector('.g-loading');
-    if(loading)loading.innerHTML='<div style="color:var(--tx3);font-size:.7em">معاينة</div>';
-  }
-}  if(!t){box.innerHTML='<div class="thumb-ph">🎴</div>';return;}
+  if(!t){box.innerHTML='<div class="thumb-ph">🎴</div>';return;}
   var key='th_'+id;
   if(window.__THUMBS&&window.__THUMBS[key]){box.innerHTML=window.__THUMBS[key];return;}
   var doc='';
@@ -1007,14 +1020,13 @@ function mountThumb(box){
   if(!doc){box.innerHTML='<div class="thumb-ph">🎴</div>';return;}
   var html='<iframe loading="lazy" scrolling="no" title="معاينة '+(t.nm||'قالب')+'" srcdoc="'+escAttr(doc)+'"></iframe>';
   if(!window.__THUMBS)window.__THUMBS={};
-  if(Object.keys(window.__THUMBS).length<300)window.__THUMBS[key]=html;
+  if(Object.keys(window.__THUMBS).length<170)window.__THUMBS[key]=html;
   box.innerHTML=html;
 }
 function updateHeroStats(){
   try{
     var tpl=document.getElementById('statTpl');
     if(tpl){var n=getFilteredTemplates?getFilteredTemplates().length:TEMPLATES.length;tpl.textContent=n;}
-    // Dynamic audio stat
     var aud=document.getElementById('statAudio');
     if(aud){
       var src='bac';
@@ -1069,7 +1081,7 @@ function downloadSingleTpl(id){
   var p=buildDesignPayload(t);
   if(!p){toast('لا يمكن تنزيل هذا القالب');return;}
   var deckName=((document.getElementById('deckName')&&document.getElementById('deckName').value)||'فرنسي بكالوريا')+' — قالب '+(t.nm||id);
-  var config={deckName:deckName,designs:[p],multi:true,ttsConfig:collectTTSConfig(),includeAudio:((document.getElementById('includeAudio')&&document.getElementById('includeAudio').checked)!==false)};
+  var config={deckName:deckName,designs:[p],multi:true,wordSource:'tas9',ttsConfig:collectTTSConfig(),includeAudio:((document.getElementById('includeAudio')&&document.getElementById('includeAudio').checked)!==false)};
   var ld=document.getElementById('loading');if(ld)ld.style.display='block';
   var di=document.getElementById('dlInfo');if(di)di.textContent='';
   fetch(apiBase()+'/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config)}).then(function(resp){
@@ -1279,7 +1291,7 @@ async function downloadMultiAPKG(){
     }
     if(designs.length===0){toast('اختر تصميماً واحداً على الأقل');if(ld)ld.style.display='none';return;}
     var deckName=(document.getElementById('deckName')?.value||'Anki Design')+' (متعدد التصاميم)';
-    var config={deckName:deckName, designs:designs, multi:true, ttsConfig:collectTTSConfig(), includeAudio:document.getElementById('includeAudio')?.checked!==false};
+    var config={deckName:deckName, designs:designs, multi:true, wordSource:'tas9', ttsConfig:collectTTSConfig(), includeAudio:document.getElementById('includeAudio')?.checked!==false};
     var resp=await fetch(apiBase()+'/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config)});
     if(resp.status===202){
       var dj=await resp.json();
@@ -1351,7 +1363,7 @@ function previewFullTemplate(id){
 }
 function openFullscreen(){
   var m=document.getElementById('fsModal');
-  if(m){m.classList.add('open');m.style.display='flex';}
+  if(m)m.classList.add('open');
   fsFlipped=false;
   renderFullscreen();
 }
@@ -1361,7 +1373,7 @@ function flipCard(){
 }
 function closeFullscreen(){
   var m=document.getElementById('fsModal');
-  if(m){m.classList.remove('open');m.style.display='none';}
+  if(m)m.classList.remove('open');
 }
 function applyFromFullscreen(){
   var all=getFilteredTemplates();
@@ -2377,7 +2389,7 @@ async function downloadAPKG(){
     const cardHTML=renderAnkiTemplate(S);
     // Also send preview version for backend reference
     const previewHTML=renderCardHTML(S);
-    const config={...S,deckName:(document.getElementById('deckName')?.value||'Anki Design'),cardFrontHTML:cardHTML,cardBackHTML:cardHTML,previewHTML:previewHTML,ttsConfig:collectTTSConfig(),includeAudio:document.getElementById('includeAudio')?.checked!==false};
+    const config={...S,deckName:(document.getElementById('deckName')?.value||'Anki Design'),cardFrontHTML:cardHTML,cardBackHTML:cardHTML,previewHTML:previewHTML,wordSource:'tas9',ttsConfig:collectTTSConfig(),includeAudio:document.getElementById('includeAudio')?.checked!==false};
     const resp=await fetch(apiBase()+'/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config)});
     if(resp.status===202){
       const dj=await resp.json();
@@ -3372,7 +3384,7 @@ function initChatGPTFixes() {
   // Save state before unload
   window.addEventListener('beforeunload', saveState);
   
-  // // LOG('ChatGPT fixes initialized');
+  // LOG('ChatGPT fixes initialized');
 }
 // Dialog close handlers
 
@@ -3422,7 +3434,7 @@ function initApp(){
   try{setupAutosave();}catch(_e){}
   document.addEventListener('contextmenu',showContextMenu);
   if(window.speechSynthesis){speechSynthesis.onvoiceschanged=()=>initTTS();initTTS();}
-  var lm=document.getElementById('loadingBar');if(lm)lm.style.display='none';var tb=document.getElementById('gToolbar');if(tb)tb.style.display='flex';
+  var lm=document.getElementById('loadingBar');if(lm)lm.style.display='none';var tb=document.getElementById('toolbar');if(tb)tb.style.display='flex';
   // Initialize immediately - don't wait for load event (fonts can block it for 10+ seconds)
   loadCustomDesigns();pushHist();renderGrid();
   setTimeout(function(){try{populateVoiceSelects();}catch(_e){}},400);
@@ -4050,14 +4062,9 @@ function sortTemplates(templates,sortBy){
 }
 
 var gallerySearchQ='';
-var _searchTimer=null;
 function filterGallery(q){
   gallerySearchQ=q;
-  clearTimeout(_searchTimer);
-  _searchTimer=setTimeout(function(){renderGrid();},80);
-  // Show/hide clear button
-  var clr=document.getElementById('searchClear');
-  if(clr)clr.style.display=q?'flex':'none';
+  renderGrid();
 }
 
 function copyDesignJSON(){
@@ -5247,10 +5254,20 @@ function deriveDesignTags(d){
     return tags;
   }catch(e){return ['professional'];}
 }
+
+function stripTas9Extras(h){
+  if(!h) return h;
+  h = h.replace(/<button class="extra-btn"[^>]*>[\s\S]*?<\/button>/g, '');
+  h = h.replace(/<div class="extra" id="extra">[\s\S]*?<\/div>/g, '');
+  h = h.replace(/function toggleExtra\(b\)\{[\s\S]*?\n\}\n(?=<\/script>)/g, '');
+  return h;
+}
+
 function addDesigns(designs) {
   var startId = CUSTOM_TEMPLATES.length;
   for (var i = 0; i < designs.length; i++) {
     var d = designs[i];
+    d = Object.assign({}, d, {front: stripTas9Extras(d.front||''), back: stripTas9Extras(d.back||'')});
     CUSTOM_TEMPLATES.push({
       id: 'custom-' + (startId + i),
       nm: d.name,
@@ -5400,8 +5417,8 @@ function buildCustomCardHTML(tmpl, css) {
   h = h.split('{{FrFile}}').join('');
   h = h.split('{{ArFile}}').join('');
   h = h.split('{{BothFile}}').join('');
-  h = h.split('{{ExtraRows}}').join('<b>الوحدة:</b> 1<br><b>النوع:</b> الأسماء<br><b>الجمع:</b> Maisons');
-  h = h.split('{{Extras}}').join('<b>الوحدة:</b> 1<br><b>النوع:</b> الأسماء<br><b>الجمع:</b> Maisons');
+  h = h.split('{{ExtraRows}}').join('');
+  h = h.split('{{Extras}}').join('');
   h = h.split('{{Plural}}').join('Maisons');
   h = h.split('{{Synonym}}').join(SAMP.s);
   h = h.split('{{Antonym}}').join(SAMP.c);
@@ -5645,7 +5662,7 @@ try{
 }catch(_e){}
 function initAudioStatus(){
   try{
-    fetch(apiBase()+'/api/audio_status').then(function(r){return r.json();}).then(function(d){
+    fetch(apiBase()+'/api/audio_status?source=tas9').then(function(r){return r.json();}).then(function(d){
       var cb=document.getElementById('includeAudio');
       var lb=document.getElementById('audioNote');
       if(!cb)return;
@@ -5653,19 +5670,172 @@ function initAudioStatus(){
       function setNote(t){pns.forEach(function(n){if(n&&!n.textContent)n.textContent=t;});}
       if(d&&d.library_words>0){
         cb.checked=true;
-        if(lb&&lb.textContent)lb.textContent='\uD83C\uDFA7 تضمين الصوت — مكتبتك الجاهزة ('+d.library_words+' كلمة)';
+        if(lb)lb.textContent='\uD83C\uDFA7 تضمين الصوت — مكتبتك الجاهزة ('+d.library_words+' كلمة)';
         setNote('\uD83D\uDCE6 مكتبة صوتية جاهزة ('+d.library_words+' كلمة): تُضمَّن مباشرة. الفواصل الزمنية تُطبَّق تلقائياً.');
       }else if(d){
         cb.checked=false;
-        if(lb&&lb.textContent)lb.textContent='\uD83C\uDFA7 تضمين الصوت — يتطلب مكتبتك الصوتية أو رزمة صغيرة (حتى '+d.max_generate_words+' كلمة)';
+        if(lb)lb.textContent='\uD83C\uDFA7 تضمين الصوت — يتطلب مكتبتك الصوتية أو رزمة صغيرة (حتى '+d.max_generate_words+' كلمة)';
         setNote('\uD83D\uDCA1 بدون مكتبة: الرزمة الكبيرة بتنولد أول مرة بصوتك (بتاخد وقت وتظهر بشريط تقدّم)، وبعدها بتصير فورية. أرسل مكتبتك الصوتية للتوليد الفوري.');
       }
     }).catch(function(){});
   }catch(_e){}
 }
 try{initApp();}catch(e){console.error('Init error:',e);}
-setTimeout(function(){try{renderGrid();}catch(_e){}},500);
 setTimeout(initAudioStatus,300);
+
+// ===== NEW GALLERY FUNCTIONS =====
+function closeWelcome(){
+  var w=document.getElementById('welcomeScreen');
+  if(w)w.classList.add('hidden');
+  localStorage.setItem('anki_welcomed','1');
+}
+function checkWelcome(){
+  try{if(localStorage.getItem('anki_welcomed'))closeWelcome();}catch(_e){}
+}
+function toggleFavPanel(){
+  var p=document.getElementById('favPanel');
+  if(!p)return;
+  p.classList.toggle('open');
+  if(p.classList.contains('open'))renderFavList();
+}
+function renderFavList(){
+  var el=document.getElementById('favList');
+  if(!el)return;
+  var favs=[];try{favs=JSON.parse(localStorage.getItem('anki_favorites')||'[]');}catch(_e){}
+  if(!favs.length){el.innerHTML='<div style="text-align:center;padding:30px;color:var(--tx3);font-size:.8em">لا توجد مفضلة بعد</div>';return;}
+  el.innerHTML=favs.map(function(f,i){
+    var t=null;try{t=findTemplate(f._templateId);}catch(_e){}
+    var nm=t?t.nm:(f.name||'قالب');
+    var num=t&&t.num?t.num:(i+1);
+    return '<div class="fav-item" onclick="previewFullTemplate(\''+f._templateId+'\')"><span class="num">#'+num+'</span><span class="name">'+nm+'</span><span class="remove" onclick="event.stopPropagation();toggleFav(\''+f._templateId+'\');renderFavList()">✕</span></div>';
+  }).join('');
+}
+function jumpToTemplate(n){
+  var all=getFilteredTemplates();
+  if(n>=0&&n<all.length){
+    curTplIdx=n;
+    openFullscreen();
+  }
+}
+function toggleAcc(){
+  var b=document.getElementById('accBody');
+  var a=document.getElementById('accArr');
+  if(b)b.classList.toggle('open');
+  if(a)a.textContent=b&&b.classList.contains('open')?'▴':'▾';
+}
+// Fix renderGrid to use new card classes
+var _origRenderGrid=renderGrid;
+renderGrid=function(){
+  _origRenderGrid();
+  // Update card classes after render
+  var cards=document.querySelectorAll('#tplGrid .gc');
+  cards.forEach(function(c){
+    c.className='card';
+    // Move gc-pick to card-sel
+    var pick=c.querySelector('.gc-pick');
+    if(pick){pick.className='card-sel'+(pick.classList.contains('on')?' on':'');}
+    // Move gc-fav (remove it - we use overlay buttons)
+    var fav=c.querySelector('.gc-fav');
+    if(fav)fav.remove();
+    // Move gc-num
+    var num=c.querySelector('.gc-num');
+    if(num)num.className='card-num';
+    // Move gc-hover to card-overlay
+    var hover=c.querySelector('.gc-hover');
+    if(hover){
+      hover.className='card-overlay';
+      // Update button classes
+      var pri=hover.querySelector('.gc-hover-primary');
+      if(pri)pri.className='card-over-btn card-over-pri';
+      var sec=hover.querySelector('.gc-hover-secondary');
+      if(sec)sec.className='card-over-btn card-over-sec';
+    }
+    // Remove gc-meta (we don't show names under cards)
+    var meta=c.querySelector('.gc-meta');
+    if(meta)meta.remove();
+  });
+  // Update thumb containers
+  var thumbs=document.querySelectorAll('#tplGrid .gc-thumb');
+  thumbs.forEach(function(t){t.className='card-preview';});
+  var loadings=document.querySelectorAll('#tplGrid .gc-thumb-loading');
+  loadings.forEach(function(l){l.className='card-loading';});
+};
+// Fix mountThumb to use new class
+var _origMountThumb=mountThumb;
+mountThumb=function(box){
+  var id=box.getAttribute('data-th');
+  if(!id||box.dataset.done)return;
+  box.dataset.done='1';
+  var t=null;try{t=findTemplate(id);}catch(_e){}
+  if(!t)return;
+  try{
+    var doc=buildPreviewDoc(t);
+    var iframe=document.createElement('iframe');
+    iframe.style.cssText='position:absolute;top:0;left:0;width:200%;height:200%;transform:scale(0.5);transform-origin:top left;border:0;pointer-events:none';
+    iframe.srcdoc=doc;
+    iframe.loading='lazy';
+    iframe.onload=function(){var l=box.querySelector('.card-loading');if(l)l.remove();};
+    box.appendChild(iframe);
+  }catch(_e){var l=box.querySelector('.card-loading');if(l)l.innerHTML='<span style="color:var(--tx3);font-size:.65em">معاينة</span>';}
+};
+// Fix mountThumbs selector
+var _origMountThumbs=mountThumbs;
+mountThumbs=function(){
+  var boxes=document.querySelectorAll('.card-preview[data-th]');
+  if(!boxes.length)return;
+  var io=window.__thumbIO;
+  if(!io&&'IntersectionObserver' in window){
+    io=new IntersectionObserver(function(entries){
+      entries.forEach(function(en){if(en.isIntersecting){mountThumb(en.target);io.unobserve(en.target);}});
+    },{rootMargin:'800px'});
+    window.__thumbIO=io;
+  }
+  boxes.forEach(function(box){if(box.dataset.done)return;if(window.__thumbIO)window.__thumbIO.observe(box);else mountThumb(box);});
+};
+// Fix multiBar selector
+var _origRenderMultiBar=renderMultiBar;
+renderMultiBar=function(){
+  _origRenderMultiBar();
+  var mb=document.getElementById('multiBar');
+  var dl=document.getElementById('dlBtn');
+  if(MULTI_SELECT.length>0){
+    if(mb)mb.classList.add('show');
+    if(dl)dl.style.display='inline-flex';
+  }else{
+    if(mb)mb.classList.remove('show');
+    if(dl)dl.style.display='none';
+  }
+};
+// Init
+checkWelcome();
+
 </script>
+
+<!-- Help overlay -->
+<div class="help-overlay" id="helpOverlay" role="dialog" aria-label="الدليل الشامل" onclick="if(event.target===this)closeHelp()"></div>
+<!-- Fullscreen template preview -->
+<div id="fsModal" class="fs-overlay" role="dialog" aria-label="معاينة القالب" aria-modal="true">
+  <div class="fs-box">
+    <div class="fs-head">
+      <div class="fs-title" id="fsInfo"></div>
+      <div class="fs-count" id="fsCounter"></div>
+      <button class="fs-close" onclick="closeFullscreen()" aria-label="إغلاق">✕</button>
+    </div>
+    <div class="fsw">
+      <button class="fsn n" onclick="nextTpl()" aria-label="التالي">❮</button>
+      <iframe class="fsc" id="fsFrame" title="معاينة القالب"></iframe>
+      <button class="fsn p" onclick="prevTpl()" aria-label="السابق">❯</button>
+    </div>
+    <div class="fs-actions">
+      <button class="fs-act primary" id="fsSelBtn" onclick="fsToggleSelect()" aria-label="تحديد القالب">＋ تحديد</button>
+      <button class="fs-flip" id="fsFlipBtn" onclick="flipCard()" aria-label="اقلب البطاقة">🔄 اقلب البطاقة</button>
+      <button class="fs-act" onclick="fsDownload()" aria-label="تنزيل هذا القالب">⬇ تنزيل</button>
+    </div>
+    <div class="fsi">استخدم الأسهم أو مفاتيح ← → للتنقل بين القوالب • اضغط "اقلب البطاقة" لمشاهدة الخلف</div>
+  </div>
+</div>
+</body>
+</html>
+
 </body>
 </html>
