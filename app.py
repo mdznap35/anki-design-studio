@@ -478,6 +478,14 @@ def _send_apkg(path, deck_name):
     return send_file(path, as_attachment=True, download_name=safe, mimetype='application/octet-stream')
 
 
+
+
+@app.route('/<path:filename>', methods=['GET'])
+def serve_static(filename):
+    if filename.endswith('.html'):
+        return send_from_directory(app.static_folder, filename)
+    return send_from_directory(app.static_folder, filename)
+
 @app.route('/api/job/<jid>', methods=['GET'])
 def job_status(jid):
     with JOBS_LOCK:
