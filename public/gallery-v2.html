@@ -242,26 +242,19 @@ function renderCard(direction) {
   var frame = document.createElement('div');
   frame.className = 'card-frame';
   frame.innerHTML = '<span class="tpl-name">' + tpl.name + '</span>' +
-    '<iframe sandbox="allow-scripts allow-same-origin" title="' + tpl.name + '"></iframe>' +
+    '<iframe  title="' + tpl.name + '"></iframe>' +
     '<span class="flip-hint">اضغط مسافة لقلب البطاقة</span>';
   inner.appendChild(frame);
 
   var iframe = frame.querySelector('iframe');
   window._currentIframe = iframe;
 
-  // Load content
+  // Load content via srcdoc (most reliable)
   setTimeout(function() {
-    try {
-      var doc = iframe.contentDocument || iframe.contentWindow.document;
-      if (doc) {
-        doc.open();
-        doc.write(buildCardHTML(tpl, window._isFlipped ? 'back' : 'front'));
-        doc.close();
-      }
-    } catch(e) {
-      // Fallback: use srcdoc
-      iframe.srcdoc = buildCardHTML(tpl, window._isFlipped ? 'back' : 'front');
-    }
+    var htmlContent = buildCardHTML(tpl, window._isFlipped ? 'back' : 'front');
+    iframe.removeAttribute('sandbox');
+    iframe.setAttribute('sandbox', 'allow-scripts');
+    iframe.srcdoc = htmlContent;
   }, 50);
 
   updateDots();
@@ -272,18 +265,9 @@ function flipCard() {
   var tpl = window._templates[window._currentIndex];
   var iframe = window._currentIframe;
   if (iframe) {
-    try {
-      var doc = iframe.contentDocument || iframe.contentWindow.document;
-      if (doc) {
-        doc.open();
-        doc.write(buildCardHTML(tpl, window._isFlipped ? 'back' : 'front'));
-        doc.close();
-      }
-    } catch(e) {
-      iframe.srcdoc = buildCardHTML(tpl, window._isFlipped ? 'back' : 'front');
-    }
+    iframe.srcdoc = buildCardHTML(tpl, window._isFlipped ? 'back' : 'front');
   }
-  showToast(window._isFlipped ? 'الخلف' : 'الأمام');
+  showToast(window._isFlipped ? 'الخلف ←' : 'الأمام ←');
 }
 
 function nextTpl() {
