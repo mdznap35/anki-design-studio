@@ -233,6 +233,10 @@ def serve_gallery_enlit():
 def serve_gallery_ensci():
     return send_from_directory(app.static_folder, 'gallery-ensci.html')
 
+@app.route('/gallery-v2.html', methods=['GET'])
+def serve_gallery_v2():
+    return send_from_directory(app.static_folder, 'gallery-v2.html')
+
 
 @app.route('/designs_20.json', methods=['GET'])
 def serve_designs():
