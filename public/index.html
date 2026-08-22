@@ -191,10 +191,19 @@ function show() {
 
   badge.textContent = tpl.name;
 
-  // Set content via srcdoc
-  frame.srcdoc = cardHTML(tpl);
+  // Use Blob URL — most reliable way to render HTML in iframe
+  var html = cardHTML(tpl);
+  var blob = new Blob([html], {type: 'text/html;charset=utf-8'});
+  var url = URL.createObjectURL(blob);
 
-  // Update dots and thumbs
+  // Revoke old URL to prevent memory leak
+  if (frame._blobUrl) {
+    URL.revokeObjectURL(frame._blobUrl);
+  }
+  frame._blobUrl = url;
+  frame.src = url;
+
+  // Update dots
   updateDots();
 }
 
