@@ -608,9 +608,8 @@ body,body *{transition:background-color .25s ease,color .25s ease,border-color .
 .btn-primary{background:linear-gradient(135deg,var(--ac),var(--ac3));border:0;color:#fff;box-shadow:0 10px 28px rgba(139,92,246,.35)}
 .btn-primary:hover{box-shadow:0 16px 40px rgba(139,92,246,.5);transform:translateY(-2px)}
 /* 8) تسطير متحرك لعناوين الأقسام */
-.sb-title{position:relative;display:inline-block;padding-bottom:10px}
-.sb-title::after{content:"";position:absolute;right:0;bottom:0;width:0;height:3px;border-radius:3px;background:linear-gradient(90deg,var(--ac),var(--ac3));transition:width .35s ease}
-.sb-title:hover::after{width:100%}
+.sb-title{position:relative;display:block;text-align:center;padding-bottom:12px}
+.sb-title::after{content:"";position:absolute;left:50%;transform:translateX(-50%);bottom:0;width:64px;height:3px;border-radius:2px;background:linear-gradient(90deg,var(--ac),transparent)}
 /* 9) توهّج لطيف عند المرور على بطاقات الأسئلة */
 .faq-item{border:1px solid var(--bd);border-radius:14px;margin-bottom:10px;overflow:hidden;transition:border-color .2s ease,box-shadow .2s ease}
 .faq-item:hover{border-color:var(--ac);box-shadow:0 10px 30px rgba(139,92,246,.16)}
@@ -804,6 +803,7 @@ a:not(.btn):hover{color:var(--ac)}
         <button class="btn bo bs" onclick="resetTTSConfig()">↺ استعادة الافتراضي</button>
       </div>
       <audio id="gTtsPreviewAudio" data-pid="ttsPreviewAudio" controls preload="none" style="display:none;width:100%;height:36px;margin-top:10px;border-radius:8px"></audio>
+      <div data-pid="ttsPreviewProg" style="display:none;height:6px;border-radius:4px;margin-top:8px;background:linear-gradient(100deg,#16131f 30%,#7c3aed 55%,#16131f 70%);background-size:200% 100%;animation:gbSk 1.1s linear infinite"></div>
       <div id="gTtsPanelNote" data-pid="ttsPanelNote" class="studio-note"></div>
     </div>
   </div>
@@ -829,7 +829,7 @@ a:not(.btn):hover{color:var(--ac)}
     <div class="dl-sound-note">🎙️ إعدادات الصوت مُعرّفة من <b>استوديو الصوت</b> أعلاه، وتُضمَّن تلقائياً في الرزمة عند التنزيل.</div>
 
     <label style="display:flex;align-items:center;gap:6px;font-size:.8em;color:var(--tx2);margin-bottom:8px;cursor:pointer">
-      <input type="checkbox" id="includeAudio" checked style="width:16px;height:16px;accent-color:var(--ac)"> <span id="audioNote">🎧 تضمين الصوت</span>
+      <input type="checkbox" id="includeAudio" checked onchange="updateDlEst()" style="width:16px;height:16px;accent-color:var(--ac)"> <span id="audioNote">🎧 تضمين الصوت</span>
     </label>
     <label style="display:flex;align-items:center;gap:6px;font-size:.8em;color:var(--tx2);margin-bottom:8px;cursor:pointer">
       <input type="checkbox" id="autoPlay" checked style="width:16px;height:16px;accent-color:var(--ac)"> <span>🔁 <b>تشغيل تلقائي</b> عند فتح البطاقة <i style="opacity:.8">(ألغِ التحديد = الصوت عند الزر فقط)</i></span>
@@ -840,6 +840,17 @@ a:not(.btn):hover{color:var(--ac)}
     <label style="display:flex;align-items:center;gap:6px;font-size:.8em;color:var(--tx2);margin-bottom:12px;cursor:pointer">
       <input type="checkbox" id="reverseDeck" style="width:16px;height:16px;accent-color:var(--ac)"> <span>🔁 <b>رزمة معكوسة</b> — الوجه عربي، والخلف: عربي فوق + فرنسي تحته <i style="opacity:.8">(تُستورد كنوع ملاحظات مستقل فلا تتعارض مع الأصلية)</i></span>
     </label>
+    <label style="display:flex;align-items:center;gap:6px;font-size:.8em;color:var(--tx2);margin-bottom:8px;cursor:pointer">
+      <input type="checkbox" id="quickDl" onchange="toggleQuickDl()" style="width:16px;height:16px;accent-color:var(--ac)"> <span>⚡ <b>تنزيل سريع</b> — صوت مخزّن فقط من الأصوات المحمّلة من قبل، بدون توليد جديد <i style="opacity:.8">(أسرع وبأقل إنترنت)</i></span>
+    </label>
+    <div id="quickVoices" style="display:none;margin:0 0 12px;padding:10px 12px;border:1px dashed var(--bd);border-radius:10px;background:rgba(255,255,255,.02)">
+      <div style="font-size:.78em;color:var(--tx2);margin-bottom:8px">🎙️ اختر من الأصوات المحمّلة من قبل:</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <label style="font-size:.75em;color:var(--tx2)">فرنسي <select class="sl" id="quickFrVoice" style="min-width:150px"></select></label>
+        <label style="font-size:.75em;color:var(--tx2)">عربي <select class="sl" id="quickArVoice" style="min-width:150px"></select></label>
+      </div>
+      <div id="quickNote" style="font-size:.72em;color:var(--tx2);margin-top:6px;opacity:.85"></div>
+    </div>
     <div class="gv-sel-bar" id="gvSelBar" role="status" aria-live="polite">
       <div class="gv-sel-info">✓ تم اختيار <b id="gvSelCount">0</b> قالب — تُرتَّب البطاقات متسلسلة (قالب يكرّر عند الانتهاء)</div>
       <div class="gv-sel-chips" id="gvSelChips"></div>
@@ -851,7 +862,9 @@ a:not(.btn):hover{color:var(--ac)}
     </div>
     <button class="btn ba dl-btn" onclick="downloadAPKG()">⬇ تنزيل القالب الحالي <span class="dl-badge dl-badge--inline">.apkg</span></button>
     <div id="dlInfo" style="margin-top:10px;font-size:.8em;color:var(--tx2);text-align:center"></div>
-    <div id="loading" style="display:none;margin-top:8px;text-align:center"><span style="font-size:.8em;color:var(--tx2)">جاري التوليد...</span></div>
+    <div id="loading" style="display:none;margin-top:8px;text-align:center"><span style="font-size:.8em;color:var(--tx2)">جاري التوليد...</span><div style="height:7px;border-radius:4px;margin:8px auto 0;max-width:280px;background:linear-gradient(100deg,rgba(255,255,255,.06) 30%,var(--ac) 55%,rgba(255,255,255,.06) 70%);background-size:200% 100%;animation:gbSk 1.1s linear infinite"></div></div>
+    <div id="dlEst" style="margin-top:8px;font-size:.75em;color:var(--tx2);text-align:center;opacity:.9"></div>
+    <div style="text-align:center"><button id="dlCancel" class="btn bo" style="display:none;margin-top:8px" onclick="dlCancel()">✕ إيقاف التحميل</button></div>
     <div id="jobProg" style="display:none;margin-top:12px">
       <div style="font-size:.72em;color:var(--tx2);margin-bottom:6px;line-height:1.6" id="jobProgTxt">جاري توليد الصوت...</div>
       <div style="height:9px;background:var(--s2);border-radius:7px;overflow:hidden;border:1px solid var(--bd)"><div id="jobProgBar" style="height:100%;width:0%;background:var(--grad);transition:width .5s ease"></div></div>
@@ -1804,8 +1817,9 @@ function downloadSelected(){
     reversed:rev,
     editionId:edId,
     autoPlay:auto,
-    ttsConfig:collectTTSConfig(),
-    includeAudio:inc
+    ttsConfig:dlTTS(),
+    includeAudio:inc,
+    quick:dlQuick()
   };
   trackEvent('download',{deckName:dn,reversed:rev,unique:!!edId,count:designs.length});
   if(typeof toast==='function')toast('جاري تجهيز الرزمة بـ '+designs.length+' قالب (متسلسلة بالدورة)…');
@@ -1969,27 +1983,56 @@ function fsToggleFav(){
   if(b){var isF=false;try{var fa=JSON.parse(localStorage.getItem('anki_favorites')||'[]');isF=fa.some(function(x){return x._templateId===t.id;});}catch(_e){}b.textContent=isF?'♥ المفضلة':'♡ المفضلة';b.classList.toggle('on',isF);}
 }
 function fsDownload(){var t=fsCurTemplate();if(!t)return;downloadSingleTpl(t.id);}
+// ---- إلغاء التحميل: زر ✕ يوقف الطلب الجاري وحلقة الانتظار ----
+var DL_ABORT={ctrl:null,cancelled:false};
+function dlSignal(){try{return DL_ABORT.ctrl?DL_ABORT.ctrl.signal:undefined;}catch(e){return undefined;}}
+function dlBegin(){
+  DL_ABORT.cancelled=false;
+  try{DL_ABORT.ctrl=(typeof AbortController!=='undefined')?new AbortController():null;}catch(e){DL_ABORT.ctrl=null;}
+  var ld=document.getElementById('loading');if(ld)ld.style.display='block';
+  var c=document.getElementById('dlCancel');if(c)c.style.display='inline-block';
+  return dlSignal();
+}
+function dlEnd(){
+  DL_ABORT.cancelled=false;
+  try{if(DL_ABORT.ctrl)DL_ABORT.ctrl.abort();}catch(e){}
+  DL_ABORT.ctrl=null;
+  var ld=document.getElementById('loading');if(ld)ld.style.display='none';
+  var c=document.getElementById('dlCancel');if(c)c.style.display='none';
+  var jp=document.getElementById('jobProg');if(jp)jp.style.display='none';
+}
+function dlCancel(){
+  DL_ABORT.cancelled=true;
+  try{if(DL_ABORT.ctrl)DL_ABORT.ctrl.abort();}catch(e){}
+  dlEnd();
+  var di=document.getElementById('dlInfo');if(di)di.textContent='تم إيقاف التحميل ✕';
+  if(typeof toast==='function')toast('تم إيقاف التحميل');
+}
  function runGenerate(config){
+  var _sig=dlBegin();
   var ld=document.getElementById('loading');if(ld)ld.style.display='block';
   var di=document.getElementById('dlInfo');if(di)di.textContent='';
   var veDi=document.getElementById('veDlInfo');if(veDi)veDi.textContent='';
   var dbtns=[document.querySelector('#download .dl-btn'),document.getElementById('gvSelDl')].filter(Boolean);
   dbtns.forEach(function(b){b.disabled=true;if(!b.dataset.lbl)b.dataset.lbl=b.textContent;b.textContent='⏳ جارٍ…';});
-  fetch(apiBase()+'/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config)}).then(function(resp){
+  fetch(apiBase()+'/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config),signal:_sig}).then(function(resp){
     if(resp.status===202){return resp.json().then(function(dj){return pollJobDownload(dj.job,config.deckName+'.apkg',di);});}
     if(!resp.ok){throw new Error('Server error: '+resp.status);}
     return resp.blob().then(function(blob){
       if(blob.size<1000)throw new Error('ملف فارغ');
       triggerBlobDownload(blob,config.deckName+'.apkg');
-      var msg='✅ تم التنزيل ('+Math.round(blob.size/1024)+' KB)';
+      var msg='✅ تم التنزيل — الحجم: '+fmtSize(blob.size)+' (نت ≈ '+fmtSize(blob.size)+')';
       if(di)di.textContent=msg;if(veDi)veDi.textContent=msg;
       toast(msg);
     });
   }).catch(function(e){
+    if(DL_ABORT.cancelled)return;
+    if(e&&e.name==='AbortError')return;
+    if(e&&/أُلغي/.test(e.message||''))return;
     var em='خطأ: '+e.message;
     if(di)di.textContent=em;if(veDi)veDi.textContent=em;
     toast(em);
-  }).finally(function(){if(ld)ld.style.display='none';dbtns.forEach(function(b){b.disabled=false;if(b.dataset.lbl)b.textContent=b.dataset.lbl;});});
+  }).finally(function(){dlEnd();if(ld)ld.style.display='none';dbtns.forEach(function(b){b.disabled=false;if(b.dataset.lbl)b.textContent=b.dataset.lbl;});});
  }
 function downloadSingleTpl(id){
   var t=null;try{t=findTemplate(id);}catch(_e){}
@@ -2000,26 +2043,29 @@ function downloadSingleTpl(id){
   var p=buildDesignPayload(t, rev, edId);
   if(!p){toast('لا يمكن تنزيل هذا القالب');return;}
   var deckName=((document.getElementById('deckName')&&document.getElementById('deckName').value)||'Français 12')+' — قالب '+(t.nm||id)+(rev?' — معكوسة':'')+(edId?' — '+edId:'');
-  var config={deckName:deckName,designs:[p],multi:true,reversed:rev,editionId:edId,autoPlay:auto,ttsConfig:collectTTSConfig(),includeAudio:((document.getElementById('includeAudio')&&document.getElementById('includeAudio').checked)!==false)};
+  var config={deckName:deckName,designs:[p],multi:true,reversed:rev,editionId:edId,autoPlay:auto,ttsConfig:dlTTS(),includeAudio:((document.getElementById('includeAudio')&&document.getElementById('includeAudio').checked)!==false),quick:dlQuick()};
   trackEvent('download',{deckName:deckName,reversed:rev,unique:!!edId,count:1});
   if(typeof toast==='function')toast('جاري تجهيز الرزمة…');
+  var _sig2=dlBegin();
   var ld=document.getElementById('loading');if(ld)ld.style.display='block';
   var di=document.getElementById('dlInfo');if(di)di.textContent='';
-  fetch(apiBase()+'/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config)}).then(function(resp){
+  fetch(apiBase()+'/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config),signal:_sig2}).then(function(resp){
     if(resp.status===202){return resp.json().then(function(dj){return pollJobDownload(dj.job,config.deckName+'.apkg',di);});}
     if(!resp.ok){throw new Error('Server error: '+resp.status);}
     return resp.blob().then(function(blob){
       if(blob.size<1000)throw new Error('ملف فارغ');
       triggerBlobDownload(blob,config.deckName+'.apkg');
-      var msg='✅ تم التنزيل ('+Math.round(blob.size/1024)+' KB)';
+      var msg='✅ تم التنزيل — الحجم: '+fmtSize(blob.size)+' (نت ≈ '+fmtSize(blob.size)+')';
       if(di)di.textContent=msg;
       toast(msg);
     });
   }).catch(function(e){
+    if(DL_ABORT.cancelled)return;
+    if(e&&e.name==='AbortError')return;
     var em='خطأ: '+e.message;
     if(di)di.textContent=em;
     toast(em);
-  }).finally(function(){if(ld)ld.style.display='none';});
+  }).finally(function(){dlEnd();if(ld)ld.style.display='none';});
 }
 
 // ---- Multi-select state ----
@@ -2141,6 +2187,59 @@ function genEdition(){
   // short unique-ish code per download (timestamp+random) so every deck is a distinct note type
   return 'C'+(Date.now().toString(36)+Math.random().toString(36).slice(2,7)).toUpperCase().slice(-7);
 }
+// ---- الحجم الدقيق + تقدير الإنترنت ----
+function fmtSize(b){b=Math.max(0,Math.round(b||0));if(b>=1048576)return (b/1048576).toFixed(1)+' MB';if(b>=1024)return Math.round(b/1024)+' KB';return b+' B';}
+function b64Bytes(s){if(!s)return 0;try{var c=String(s).split(',');c=c.length>1?c[1]:c[0];return Math.floor(c.length*3/4);}catch(e){return 0;}}
+var _deckWords=0;
+function updateDlEst(){
+  var el=document.getElementById('dlEst');if(!el)return;
+  if(!_deckWords){el.textContent='';return;}
+  var inc=true;try{var c=document.getElementById('includeAudio');if(c)inc=c.checked;}catch(e){}
+  var bytes=inc?_deckWords*12*1024:_deckWords*512;
+  bytes+=200*1024;
+  el.textContent='الحجم التقريبي للرزمة: ~'+fmtSize(bytes)+' (إنترنت مطلوب ≈ نفس الحجم عند التنزيل)';
+}
+// ---- التنزيل السريع: صوت مخزّن فقط (بدون توليد جديد) ----
+var _cachedVoicesLoaded=false;
+function dlQuick(){try{var q=document.getElementById('quickDl');return !!(q&&q.checked);}catch(e){return false;}}
+function dlTTS(){
+  var cfg=collectTTSConfig();
+  if(!dlQuick())return cfg;
+  try{
+    var f=document.getElementById('quickFrVoice'),a=document.getElementById('quickArVoice');
+    if(f&&f.value)cfg.frVoice=f.value;
+    if(a&&a.value)cfg.arVoice=a.value;
+  }catch(e){}
+  return cfg;
+}
+function toggleQuickDl(){
+  var on=dlQuick();
+  var box=document.getElementById('quickVoices');if(box)box.style.display=on?'block':'none';
+  if(on&&!_cachedVoicesLoaded)loadCachedVoices();
+  var note=document.getElementById('quickNote');
+  if(note&&on)note.textContent='الرزمة تُبنى فوراً بالصوت المخزّن — أي كلمة بلا صوت مخزّن تبقى صامتة.';
+}
+function loadCachedVoices(){
+  var note=document.getElementById('quickNote');
+  if(note)note.textContent='⏳ جاري جلب الأصوات المحمّلة…';
+  fetch(apiBase()+'/api/cached_voices').then(function(r){return r.json();}).then(function(d){
+    _cachedVoicesLoaded=true;
+    var frS=document.getElementById('quickFrVoice'),arS=document.getElementById('quickArVoice');
+    function fill(sel,list,cur){
+      if(!sel)return;
+      var html=(list||[]).map(function(v){
+        var lbl=v.id+(v.lib?' (مكتبة)':(v.n>0?' ('+v.n+')':''));
+        return '<option value="'+v.id+'">'+lbl+'</option>';
+      }).join('');
+      sel.innerHTML=html||'<option value="">— لا أصوات مخزّنة —</option>';
+      if(cur){for(var i=0;i<sel.options.length;i++){if(sel.options[i].value===cur){sel.selectedIndex=i;break;}}}
+    }
+    var curF='',curA='';
+    try{var c=collectTTSConfig();curF=c.frVoice;curA=c.arVoice;}catch(e){}
+    fill(frS,d&&d.fr,curF);fill(arS,d&&d.ar,curA);
+    if(note)note.textContent='الرزمة تُبنى فوراً بالصوت المخزّن — أي كلمة بلا صوت مخزّن تبقى صامتة.';
+  }).catch(function(){if(note)note.textContent='⚠️ تعذّر جلب الأصوات — تحقق من الاتصال.';});
+}
 function collectTTSConfig(){
   return {
     frVoice:ttsEl('ttsFrVoice')?ttsEl('ttsFrVoice').value:'fr-FR-HenriNeural',
@@ -2216,15 +2315,18 @@ function resetTTSConfig(){
   ttsEls('ttsPitchVal').forEach(function(s){if(s)s.textContent='1.0';});
   saveVoiceSel();toast('تمت إعادة ضبط الصوت للافتراضي');previewTTS();
 }
+function shortVoice(v){try{return String(v||'').split('-').slice(0,2).join('-');}catch(e){return '';}}
 async function previewTTS(){
   var btns=ttsEls('ttsPreviewBtn');
   var lds=ttsEls('ttsPreviewLd');
+  var bars=ttsEls('ttsPreviewProg');
   var aus=ttsEls('ttsPreviewAudio');
   var notes=ttsEls('ttsPanelNote');
   function setNotes(t){notes.forEach(function(n){if(n)n.textContent=t;});}
   btns.forEach(function(b){if(b)b.disabled=true;});
   lds.forEach(function(l){if(l)l.style.display='inline-block';});
-  setNotes('⏳ جاري توليد المعاينة...');
+  bars.forEach(function(p){if(p)p.style.display='block';});
+  setNotes('⏳ جاري توليد المعاينة (3 ثواني)...');
   try{
     var cfg=collectTTSConfig();
     var pwf='Un ami',pwa='صديق';
@@ -2234,7 +2336,10 @@ async function previewTTS(){
     var d=await resp.json();
     if(d&&d.both&&aus.length){
       aus.forEach(function(a){if(a){a.src=d.both;a.style.display='block';a.play().catch(function(){});}});
-      setNotes('✓ تم توليد المعاينة: صوت '+cfg.frVoice.split('-').slice(0,2).join('-')+' ثم صوت '+cfg.arVoice.split('-').slice(0,2).join('-')+' مع الفواصل المحددة');
+      var fb='';
+      if(d.frVoiceUsed&&d.frVoiceUsed!==cfg.frVoice)fb+=' ⚠️ الصوت الفرنسي المطلوب ('+shortVoice(cfg.frVoice)+') غير متاح — سمعت '+shortVoice(d.frVoiceUsed)+'.';
+      if(d.arVoiceUsed&&d.arVoiceUsed!==cfg.arVoice)fb+=' ⚠️ الصوت العربي المطلوب ('+shortVoice(cfg.arVoice)+') غير متاح — سمعت '+shortVoice(d.arVoiceUsed)+'.';
+      setNotes('✓ المعاينة: "'+pwf+'" + "'+pwa+'" ('+shortVoice(cfg.frVoice)+' ← '+shortVoice(cfg.arVoice)+' • 3 ثواني • الحجم: '+fmtSize(b64Bytes(d.both))+').'+fb);
     }else{
       setNotes('⚠️ فشل توليد المعاينة — تحقق من الإنترنت وأعد المحاولة');
       aus.forEach(function(a){if(a)a.style.display='none';});
@@ -2244,6 +2349,7 @@ async function previewTTS(){
   }finally{
     btns.forEach(function(b){if(b)b.disabled=false;});
     lds.forEach(function(l){if(l)l.style.display='none';});
+    bars.forEach(function(p){if(p)p.style.display='none';});
   }
 }
 
@@ -2252,6 +2358,7 @@ async function downloadMultiAPKG(){
   var veDi=document.getElementById('veDlInfo');
   var ld=document.getElementById('loading');
   if(di)di.textContent='';if(veDi)veDi.textContent='';if(ld)ld.style.display='block';
+  var _sigM=dlBegin();
   try{
     var designs=[];
     var auto=true;try{var a=document.getElementById('autoPlay');if(a)auto=a.checked;}catch(e){}
@@ -2263,10 +2370,10 @@ async function downloadMultiAPKG(){
     }
     if(designs.length===0){toast('اختر تصميماً واحداً على الأقل');if(ld)ld.style.display='none';return;}
     var deckName=(document.getElementById('deckName')?.value||'Anki Design')+' (متعدد التصاميم)'+(edId?' — '+edId:'');
-    var config={deckName:deckName, designs:designs, multi:true, editionId:edId, autoPlay:auto, ttsConfig:collectTTSConfig(), includeAudio:document.getElementById('includeAudio')?.checked!==false};
+    var config={deckName:deckName, designs:designs, multi:true, editionId:edId, autoPlay:auto, ttsConfig:dlTTS(), includeAudio:document.getElementById('includeAudio')?.checked!==false, quick:dlQuick()};
     trackEvent('download',{deckName:deckName,reversed:false,unique:!!edId,count:designs.length});
     toast('جاري تجهيز الرزمة بـ '+designs.length+' تصميم…');
-    var resp=await fetch(apiBase()+'/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config)});
+    var resp=await fetch(apiBase()+'/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config),signal:_sigM});
     if(resp.status===202){
       var dj=await resp.json();
       try{await pollJobDownload(dj.job, config.deckName+'.apkg', di);if(veDi)veDi.textContent=di.textContent;}catch(e){if(veDi)veDi.textContent='خطأ: '+e.message;}
@@ -2275,15 +2382,17 @@ async function downloadMultiAPKG(){
     if(!resp.ok){var em='Server error: '+resp.status;try{var ej=await resp.json();if(ej&&ej.error)em=ej.error;}catch(_e){}throw new Error(em);}
     var blob=await resp.blob();if(blob.size<1000)throw new Error('ملف فارغ');
     triggerBlobDownload(blob, config.deckName+'.apkg');
-    var msg='تم التنزيل ('+designs.length+' تصميم • '+Math.round(blob.size/1024)+' KB)';
+    var msg='تم التنزيل ('+designs.length+' تصميم • الحجم: '+fmtSize(blob.size)+' • نت ≈ '+fmtSize(blob.size)+')';
     if(di)di.textContent=msg;
     if(veDi)veDi.textContent=msg;
     toast('✅ تم تنزيل الرزمة بـ '+designs.length+' تصميم');
   }catch(e){
+    if(DL_ABORT.cancelled||(e&&e.name==='AbortError')||(e&&/أُلغي/.test(e.message||''))){dlEnd();return;}
     var em='خطأ: '+e.message;
     if(di)di.textContent=em;
     if(veDi)veDi.textContent=em;
   }finally{
+    dlEnd();
     if(ld)ld.style.display='none';
   }
 }
@@ -3327,9 +3436,11 @@ async function pollJobDownload(jobId, fileName, statusEl){
   if(jp)jp.style.display='block';
   var lastPct=-1;
   while(true){
+    if(DL_ABORT.cancelled)throw new Error('أُلغي التحميل');
     await new Promise(function(r){setTimeout(r,4000);});
+    if(DL_ABORT.cancelled)throw new Error('أُلغي التحميل');
     try{
-      var r=await fetch(apiBase()+'/api/job/'+jobId);
+      var r=await fetch(apiBase()+'/api/job/'+jobId,{signal:dlSignal()});
       var d=await r.json();
       var pct=d.total?Math.min(99,Math.round((d.done||0)/d.total*100)):0;
       if(pct!==lastPct){
@@ -3340,10 +3451,10 @@ async function pollJobDownload(jobId, fileName, statusEl){
         if(jb)jb.style.width=pct+'%';
       }
       if(d.status==='done'){
-        var blob=await (await fetch(apiBase()+'/api/download/'+jobId)).blob();
+        var blob=await (await fetch(apiBase()+'/api/download/'+jobId,{signal:dlSignal()})).blob();
         if(jp)jp.style.display='none';
         triggerBlobDownload(blob, fileName);
-        if(statusEl)statusEl.textContent='تم التنزيل ('+Math.round(blob.size/1024)+' KB)';
+        if(statusEl)statusEl.textContent='تم التنزيل — الحجم: '+fmtSize(blob.size)+' (نت ≈ '+fmtSize(blob.size)+')';
         toast('✅ تم تنزيل الرزمة');
         return;
       }
@@ -3362,6 +3473,7 @@ async function downloadAPKG(){
   if(!t){if(typeof toast==='function')toast('اختر قالباً من المعرض أولاً');return;}
   const di=document.getElementById('dlInfo');const ld=document.getElementById('loading');
   if(di)di.textContent='';if(ld)ld.style.display='block';
+  var _sigA=dlBegin();
   try{
     var rev=false;try{var r0=document.getElementById('reverseDeck');if(r0)rev=r0.checked;}catch(_e){}
     var edId='';try{if(document.getElementById('uniqueEditions')&&document.getElementById('uniqueEditions').checked)edId=genEdition();}catch(_e){}
@@ -3369,9 +3481,9 @@ async function downloadAPKG(){
     if(!p){if(typeof toast==='function')toast('لا يمكن تنزيل هذا القالب');if(ld)ld.style.display='none';return;}
     var deckName=((document.getElementById('deckName')&&document.getElementById('deckName').value)||'Français 12')+' — قالب '+(t.nm||t.id)+(rev?' — معكوسة':'')+(edId?' — '+edId:'');
     if(typeof toast==='function')toast('جاري تجهيز الرزمة بالقالب الحالي…');
-    const config={deckName:deckName,designs:[p],multi:true,reversed:rev,editionId:edId,ttsConfig:collectTTSConfig(),includeAudio:document.getElementById('includeAudio')?.checked!==false,autoPlay:(document.getElementById('autoPlay')?.checked!==false)};
-    trackEvent('download',{deckName:config.deckName,reversed:!!S.reversed,unique:!!edId,count:1});
-    const resp=await fetch(apiBase()+'/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config)});
+    const config={deckName:deckName,designs:[p],multi:true,reversed:rev,editionId:edId,ttsConfig:dlTTS(),includeAudio:document.getElementById('includeAudio')?.checked!==false,autoPlay:(document.getElementById('autoPlay')?.checked!==false),quick:dlQuick()};
+    trackEvent('download',{deckName:config.deckName,reversed:rev,unique:!!edId,count:1});
+    const resp=await fetch(apiBase()+'/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config),signal:_sigA});
     if(resp.status===202){
       const dj=await resp.json();
       var jt0=document.getElementById('jobProgTxt');
@@ -3382,8 +3494,11 @@ async function downloadAPKG(){
     if(!resp.ok){let em='Server error: '+resp.status;try{const ej=await resp.json();if(ej&&ej.error)em=ej.error;}catch(_e){}throw new Error(em);}
     const blob=await resp.blob();if(blob.size<1000)throw new Error('ملف فارغ');
     triggerBlobDownload(blob, config.deckName+'.apkg');
-    if(di)di.textContent='تم التنزيل ('+Math.round(blob.size/1024)+' KB)';
-  }catch(e){if(di)di.textContent='خطأ: '+e.message;}finally{if(ld)ld.style.display='none';}
+    if(di)di.textContent='تم التنزيل — الحجم: '+fmtSize(blob.size)+' (نت ≈ '+fmtSize(blob.size)+')';
+  }catch(e){
+    if(DL_ABORT.cancelled||(e&&e.name==='AbortError')||(e&&/أُلغي/.test(e.message||''))){dlEnd();if(ld)ld.style.display='none';return;}
+    if(di)di.textContent='خطأ: '+e.message;
+  }finally{dlEnd();if(ld)ld.style.display='none';}
 }
 
 // ============================================================
@@ -6529,6 +6644,8 @@ function initAudioStatus(){
         if(lb)lb.textContent='\uD83C\uDFA7 تضمين الصوت — يتطلب مكتبتك الصوتية أو رزمة صغيرة (حتى '+d.max_generate_words+' كلمة)';
         setNote('\uD83D\uDCA1 بدون مكتبة: الرزمة الكبيرة بتنولد أول مرة بصوتك (بتاخد وقت وتظهر بشريط تقدّم)، وبعدها بتصير فورية. أرسل مكتبتك الصوتية للتوليد الفوري.');
       }
+      if(d&&d.total_words)_deckWords=d.total_words;
+      updateDlEst();
     }).catch(function(){});
   }catch(_e){}
 }

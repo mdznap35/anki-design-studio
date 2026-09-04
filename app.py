@@ -195,6 +195,24 @@ def tts_voices():
     return jsonify(tts.voice_list(lang))
 
 
+@app.route('/api/cached_voices', methods=['GET'])
+def cached_voices():
+    """الأصوات المولّدة من قبل (صوت مخزّن) + الافتراضية — للوضع السريع"""
+    try:
+        used = tts.used_voices()
+    except Exception:
+        used = {"fr": [], "ar": []}
+    used_ids = set([v["id"] for v in used.get("fr", [])] + [v["id"] for v in used.get("ar", [])])
+    dflt = [
+        {"id": tts.DEFAULT_VOICES["fr"], "n": -1, "lib": True},
+        {"id": tts.DEFAULT_VOICES["ar"], "n": -1, "lib": True},
+    ]
+    for d in dflt:
+        if d["id"] not in used_ids:
+            (used["fr"] if d["id"].startswith("fr-") or d["id"].startswith("en-") else used["ar"]).append(d)
+    return jsonify(used)
+
+
 @app.route('/api/tts_preview', methods=['POST'])
 def tts_preview():
     try:
@@ -205,9 +223,10 @@ def tts_preview():
         lang = data.get('lang', 'fr')
         if lang not in ('fr', 'en'):
             lang = 'fr'
-        fr_a, ar_a, both_a = tts.preview(cfg, data.get('fr') or 'Bonjour',
+        fr_a, ar_a, both_a, fr_used, ar_used = tts.preview(cfg, data.get('fr') or 'Bonjour',
                                          data.get('ar') or 'مرحبا', lang)
-        return jsonify({'fr': fr_a, 'ar': ar_a, 'both': both_a})
+        return jsonify({'fr': fr_a, 'ar': ar_a, 'both': both_a,
+                        'frVoiceUsed': fr_used, 'arVoiceUsed': ar_used})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -272,11 +291,12 @@ def serve_template_colors():
     return send_from_directory(app.static_folder, 'template_colors.js')
 
 
-def _build_note_fields(fields, w, tts_cfg, include_audio, word_source='bac'):
+def _build_note_fields(fields, w, tts_cfg, include_audio, word_source='bac', quick=False):
     # رزم بدون قسم إضافات (تاسع + الإنجليزية) — الحقل يبقى فارغاً
     extra = '' if word_source in ('tas9', 'enlit', 'ensci') else extra_rows(w)
     lang = 'en' if word_source in ENGLISH_SOURCES else 'fr'
-    return tts.note_fields_for(fields, w, tts_cfg, extra, include_audio, lang)
+    return tts.note_fields_for(fields, w, tts_cfg, extra, include_audio, lang,
+                               audio_mode='cached' if quick else 'full')
 
 
 def _write_deck(deck, safe_name):
@@ -308,6 +328,7 @@ def _settings_hash(config):
         'designs': config.get('designs'),
         'tts': config.get('ttsConfig'),
         'audio': config.get('includeAudio', True),
+        'quick': bool(config.get('quick')),
         'custom': [config.get('_templateType'), config.get('_customFront'),
                    config.get('_customBack'), config.get('_customCSS'),
                    config.get('_customFields'), config.get('_templateName')],
@@ -359,8 +380,9 @@ def _unit_subdeck(deck_name, unit):
     return deck_name + '::' + u
 
 
-def _build_deck_apkg(deck_name, designs, tts_cfg, include_audio, progress=None, word_source='bac'):
-    """يبني الرزمة (توزيع عادل للكلمات على التصاميم + رزم فرعية حسب الوحدة) ويعيد مسار ملف apkg"""
+def _build_deck_apkg(deck_name, designs, tts_cfg, include_audio, progress=None, word_source='bac', quick=False):
+    """يبني الرزمة (توزيع عادل للكلمات على التصاميم + رزم فرعية حسب الوحدة) ويعيد مسار ملف apkg
+    quick=True: صوت مخزّن فقط بدون توليد (سريع، بأقل إنترنت)"""
     all_words = get_all_words(word_source) + get_important_words(word_source)
     if not all_words:
         raise ValueError('No word data found')
@@ -387,7 +409,7 @@ def _build_deck_apkg(deck_name, designs, tts_cfg, include_audio, progress=None, 
 
     def make_fields(idx):
         model, fields = models[idx % n]
-        r = (model, _build_note_fields(fields, all_words[idx], tts_cfg, include_audio, word_source))
+        r = (model, _build_note_fields(fields, all_words[idx], tts_cfg, include_audio, word_source, quick))
         with done_lock:
             done[0] += 1
             if progress:
@@ -415,8 +437,10 @@ def _build_deck_apkg(deck_name, designs, tts_cfg, include_audio, progress=None, 
     return apkg_path
 
 
-def _should_job(tts_cfg, include_audio, word_source='bac'):
+def _should_job(tts_cfg, include_audio, word_source='bac', quick=False):
     """هل تحتاج الرزمة توليد صوت بالخلفية (كبيرة أو إعدادات غير افتراضية)؟"""
+    if quick:
+        return False  # الوضع السريع: بناء فوري بدون مهام
     if not include_audio:
         return False
     all_words = get_all_words(word_source) + get_important_words(word_source)
@@ -518,6 +542,7 @@ def generate():
         _ws = config.get('wordSource', 'bac')
         word_source = _ws if _ws in ('tas9', 'en9', 'enlit', 'ensci') else 'bac'
         include_audio = config.get('includeAudio', True)
+        quick = bool(config.get('quick'))
         tts_cfg = config.get('ttsConfig') or {}
         if not isinstance(tts_cfg, dict):
             tts_cfg = {}
@@ -548,11 +573,11 @@ def generate():
             if cached:
                 print(f"Serving cached deck: {deck_name}")
                 return _send_apkg(cached, deck_name)
-            if _should_job(tts_cfg, include_audio, word_source):
+            if _should_job(tts_cfg, include_audio, word_source, quick):
                 jid = uuid.uuid4().hex[:10]
                 _start_job(jid, h, deck_name, designs, tts_cfg, include_audio, word_source)
                 return jsonify({'job': jid, 'status': 'started'}), 202
-            path = _build_deck_apkg(deck_name, designs, tts_cfg, include_audio, word_source=word_source)
+            path = _build_deck_apkg(deck_name, designs, tts_cfg, include_audio, word_source=word_source, quick=quick)
             cached = _cache_put(h, path)
             return _send_apkg(cached, deck_name)
 
