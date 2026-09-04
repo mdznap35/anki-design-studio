@@ -835,7 +835,7 @@ a:not(.btn):hover{color:var(--ac)}
       <input type="checkbox" id="autoPlay" checked style="width:16px;height:16px;accent-color:var(--ac)"> <span>🔁 <b>تشغيل تلقائي</b> عند فتح البطاقة <i style="opacity:.8">(ألغِ التحديد = الصوت عند الزر فقط)</i></span>
     </label>
     <label style="display:flex;align-items:center;gap:6px;font-size:.8em;color:var(--tx2);margin-bottom:12px;cursor:pointer">
-      <input type="checkbox" id="uniqueEditions" checked style="width:16px;height:16px;accent-color:var(--ac)"> <span>🔁 <b>رزم متعددة فريدة</b> <i style="opacity:.8">(كل تنزيل = نسخة مستقلة برقم تلقائي، فما تتكرر أبداً عند الاستيراد — ألغِ التحديد لنسخة أساسية واحدة قابلة للمشاركة)</i></span>
+      <input type="checkbox" id="uniqueEditions" checked style="width:16px;height:16px;accent-color:var(--ac)"> <span>🔁 <b>رزم متعددة فريدة</b> <i style="opacity:.8">(كل تنزيل = نسخة مستقلة برقم طبيعي (2)، (3)... فتنزل أكثر من رزمة بنفس التطبيق بلا تعارض — ألغِ التحديد لنسخة أساسية واحدة قابلة للمشاركة)</i></span>
     </label>
     <label style="display:flex;align-items:center;gap:6px;font-size:.8em;color:var(--tx2);margin-bottom:12px;cursor:pointer">
       <input type="checkbox" id="reverseDeck" style="width:16px;height:16px;accent-color:var(--ac)"> <span>🔁 <b>رزمة معكوسة</b> — الوجه عربي، والخلف: عربي فوق + فرنسي تحته <i style="opacity:.8">(تُستورد كنوع ملاحظات مستقل فلا تتعارض مع الأصلية)</i></span>
@@ -1797,17 +1797,18 @@ function downloadSelected(){
   var inc=true;try{var c=document.getElementById('includeAudio');if(c)inc=c.checked;}catch(e){}
   var auto=true;try{var a=document.getElementById('autoPlay');if(a)auto=a.checked;}catch(e){}
   var rev=false;try{var r=document.getElementById('reverseDeck');if(r)rev=r.checked;}catch(e){}
-  var edId='';try{if(document.getElementById('uniqueEditions')&&document.getElementById('uniqueEditions').checked)edId=genEdition();}catch(e){}
-  var designs=[];
-  for(var i=0;i<gvSel.length;i++){
-    var t=findTemplate(gvSel[i]);
-    if(t){var p=buildDesignPayload(t, rev, edId);if(p)designs.push(p);}
-  }
-  if(!designs.length){if(typeof toast==='function')toast('لا توجد قوالب صالحة للتنزيل');return;}
+  var uniq=false;try{uniq=uniqOn();}catch(e){}
   var dn='';try{var el=document.getElementById('deckName');if(el)dn=el.value;}catch(e){}
   if(!dn)dn='Français 12';
   if(rev)dn=dn+' — معكوسة';
-  if(edId)dn=dn+' — '+edId;
+  var edSuf='';if(uniq){try{edSuf=nextEdition(dn);}catch(e){}}
+  var designs=[];
+  for(var i=0;i<gvSel.length;i++){
+    var t=findTemplate(gvSel[i]);
+    if(t){var p=buildDesignPayload(t, rev, edSuf);if(p)designs.push(p);}
+  }
+  if(!designs.length){if(typeof toast==='function')toast('لا توجد قوالب صالحة للتنزيل');return;}
+  dn=dn+edSuf;
   var config={
     deckName:dn,
     designs:designs,
@@ -1815,13 +1816,13 @@ function downloadSelected(){
     cycleTemplates:true,
     multi:true,
     reversed:rev,
-    editionId:edId,
+    editionId:edSuf,
     autoPlay:auto,
     ttsConfig:dlTTS(),
     includeAudio:inc,
     quick:dlQuick()
   };
-  trackEvent('download',{deckName:dn,reversed:rev,unique:!!edId,count:designs.length});
+  trackEvent('download',{deckName:dn,reversed:rev,unique:uniq,count:designs.length});
   if(typeof toast==='function')toast('جاري تجهيز الرزمة بـ '+designs.length+' قالب (متسلسلة بالدورة)…');
   runGenerate(config);
 }
@@ -2018,7 +2019,7 @@ function dlCancel(){
   fetch(apiBase()+'/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config),signal:_sig}).then(function(resp){
     if(resp.status===202){return resp.json().then(function(dj){return pollJobDownload(dj.job,config.deckName+'.apkg',di);});}
     if(!resp.ok){throw new Error('Server error: '+resp.status);}
-    return resp.blob().then(function(blob){
+    return blobPct(resp,function(p){dlShowProg('⬇ جاري تنزيل ملف الرزمة... '+p+'%',p);}).then(function(blob){
       if(blob.size<1000)throw new Error('ملف فارغ');
       triggerBlobDownload(blob,config.deckName+'.apkg');
       var msg='✅ تم التنزيل — الحجم: '+fmtSize(blob.size)+' (نت ≈ '+fmtSize(blob.size)+')';
@@ -2039,12 +2040,14 @@ function downloadSingleTpl(id){
   if(!t){toast('تعذر العثور على القالب');return;}
   var rev=false;try{var r=document.getElementById('reverseDeck');if(r)rev=r.checked;}catch(_e){}
   var auto=true;try{var a=document.getElementById('autoPlay');if(a)auto=a.checked;}catch(_e){}
-  var edId='';try{if(document.getElementById('uniqueEditions')&&document.getElementById('uniqueEditions').checked)edId=genEdition();}catch(_e){}
-  var p=buildDesignPayload(t, rev, edId);
+  var uniq=false;try{uniq=uniqOn();}catch(_e){}
+  var _base=((document.getElementById('deckName')&&document.getElementById('deckName').value)||'Français 12')+(rev?' — معكوسة':'');
+  var edSuf='';if(uniq){try{edSuf=nextEdition(_base);}catch(_e){}}
+  var p=buildDesignPayload(t, rev, edSuf);
   if(!p){toast('لا يمكن تنزيل هذا القالب');return;}
-  var deckName=((document.getElementById('deckName')&&document.getElementById('deckName').value)||'Français 12')+' — قالب '+(t.nm||id)+(rev?' — معكوسة':'')+(edId?' — '+edId:'');
-  var config={deckName:deckName,designs:[p],multi:true,reversed:rev,editionId:edId,autoPlay:auto,ttsConfig:dlTTS(),includeAudio:((document.getElementById('includeAudio')&&document.getElementById('includeAudio').checked)!==false),quick:dlQuick()};
-  trackEvent('download',{deckName:deckName,reversed:rev,unique:!!edId,count:1});
+  var deckName=_base+edSuf;
+  var config={deckName:deckName,designs:[p],multi:true,reversed:rev,editionId:edSuf,autoPlay:auto,ttsConfig:dlTTS(),includeAudio:((document.getElementById('includeAudio')&&document.getElementById('includeAudio').checked)!==false),quick:dlQuick()};
+  trackEvent('download',{deckName:deckName,reversed:rev,unique:uniq,count:1});
   if(typeof toast==='function')toast('جاري تجهيز الرزمة…');
   var _sig2=dlBegin();
   var ld=document.getElementById('loading');if(ld)ld.style.display='block';
@@ -2052,7 +2055,7 @@ function downloadSingleTpl(id){
   fetch(apiBase()+'/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config),signal:_sig2}).then(function(resp){
     if(resp.status===202){return resp.json().then(function(dj){return pollJobDownload(dj.job,config.deckName+'.apkg',di);});}
     if(!resp.ok){throw new Error('Server error: '+resp.status);}
-    return resp.blob().then(function(blob){
+    return blobPct(resp,function(p){dlShowProg('⬇ جاري تنزيل ملف الرزمة... '+p+'%',p);}).then(function(blob){
       if(blob.size<1000)throw new Error('ملف فارغ');
       triggerBlobDownload(blob,config.deckName+'.apkg');
       var msg='✅ تم التنزيل — الحجم: '+fmtSize(blob.size)+' (نت ≈ '+fmtSize(blob.size)+')';
@@ -2119,7 +2122,7 @@ function buildDesignPayload(t, reversed, editionId){
   if(t && (t.front || t.css)){
     var fwd=t.front||'', bwd=t.back||t.front||'';
     var baseName=t.nm||'تصميم';
-    var ed=editionId?(' — '+editionId):'';
+    var ed=editionId||'';
     return {
       name: (reversed?baseName+' — معكوسة':baseName)+ed,
       modelName: (reversed?baseName+' (Reversed)':baseName)+ed,
@@ -2135,7 +2138,7 @@ function buildDesignPayload(t, reversed, editionId){
     var cfg=Object.assign({}, JSON.parse(JSON.stringify(t.config || t.cfg)), {_templateType:'config'});
     var h=renderAnkiTemplate(cfg);
     var baseName2=t.nm||'تصميم';
-    var ed2=editionId?(' — '+editionId):'';
+    var ed2=editionId||'';
     return {name:(reversed?baseName2+' — معكوسة':baseName2)+ed2, modelName:(reversed?baseName2+' (Reversed)':baseName2)+ed2, frontHTML: reversed?reverseTemplate(h):h, backHTML: reversed?reverseTemplate(h):h, css:'', type:'config', reversed:!!reversed};
   }
   return null;
@@ -2183,9 +2186,13 @@ function ttsValLabel(el){
   var v=parseFloat(el.value);if(isNaN(v))v=0;
   ttsEls(el.dataset.pid+'Val').forEach(function(s){if(s)s.textContent=v.toFixed(1);});
 }
-function genEdition(){
-  // short unique-ish code per download (timestamp+random) so every deck is a distinct note type
-  return 'C'+(Date.now().toString(36)+Math.random().toString(36).slice(2,7)).toUpperCase().slice(-7);
+function uniqOn(){try{var q=document.getElementById('uniqueEditions');return !!(q&&q.checked);}catch(e){return false;}}
+function nextEdition(base){
+  // رقم تسلسلي طبيعي لكل اسم رزمة: أول تنزيل بلا لاحقة، ثم (2)، (3)... — منفصلة بنفس التطبيق بلا رموز غريبة
+  var key='anki_ed_'+String(base||'').slice(0,60);
+  var n=0;try{n=parseInt(localStorage.getItem(key)||'0',10)||0;}catch(e){}
+  n+=1;try{localStorage.setItem(key,String(n));}catch(e){}
+  return n<=1?'':' ('+n+')';
 }
 // ---- الحجم الدقيق + تقدير الإنترنت ----
 function fmtSize(b){b=Math.max(0,Math.round(b||0));if(b>=1048576)return (b/1048576).toFixed(1)+' MB';if(b>=1024)return Math.round(b/1024)+' KB';return b+' B';}
@@ -2217,7 +2224,7 @@ function toggleQuickDl(){
   var box=document.getElementById('quickVoices');if(box)box.style.display=on?'block':'none';
   if(on&&!_cachedVoicesLoaded)loadCachedVoices();
   var note=document.getElementById('quickNote');
-  if(note&&on)note.textContent='الرزمة تُبنى فوراً بالصوت المخزّن — أي كلمة بلا صوت مخزّن تبقى صامتة.';
+  if(note&&on)note.textContent='الرزمة تُبنى فوراً بالصوت المخزّن — أي كلمة بلا صوت مخزّن تبقى صامتة. (التوفير بالوقت لا بالحجم: الملف نفسه يُنزَّل كاملاً)';
 }
 function loadCachedVoices(){
   var note=document.getElementById('quickNote');
@@ -2237,7 +2244,7 @@ function loadCachedVoices(){
     var curF='',curA='';
     try{var c=collectTTSConfig();curF=c.frVoice;curA=c.arVoice;}catch(e){}
     fill(frS,d&&d.fr,curF);fill(arS,d&&d.ar,curA);
-    if(note)note.textContent='الرزمة تُبنى فوراً بالصوت المخزّن — أي كلمة بلا صوت مخزّن تبقى صامتة.';
+    if(note)note.textContent='الرزمة تُبنى فوراً بالصوت المخزّن — أي كلمة بلا صوت مخزّن تبقى صامتة. (التوفير بالوقت لا بالحجم: الملف نفسه يُنزَّل كاملاً)';
   }).catch(function(){if(note)note.textContent='⚠️ تعذّر جلب الأصوات — تحقق من الاتصال.';});
 }
 function collectTTSConfig(){
@@ -2336,17 +2343,14 @@ async function previewTTS(){
     var d=await resp.json();
     if(d&&d.both&&aus.length){
       var baseNote='✓ المعاينة: "'+pwf+'" + "'+pwa+'" ('+shortVoice(cfg.frVoice)+' ← '+shortVoice(cfg.arVoice)+' • الحجم: '+fmtSize(b64Bytes(d.both))+')';
-      var fb='';
-      if(d.frVoiceUsed&&d.frVoiceUsed!==cfg.frVoice)fb+=' ⚠️ الصوت الفرنسي المطلوب ('+shortVoice(cfg.frVoice)+') غير متاح — سمعت '+shortVoice(d.frVoiceUsed)+'.';
-      if(d.arVoiceUsed&&d.arVoiceUsed!==cfg.arVoice)fb+=' ⚠️ الصوت العربي المطلوب ('+shortVoice(cfg.arVoice)+') غير متاح — سمعت '+shortVoice(d.arVoiceUsed)+'.';
-      setNotes(baseNote+' • المدة: …'+fb);
+      setNotes(baseNote+' • المدة: …');
       aus.forEach(function(a){
         if(!a)return;
         a.src=d.both;a.style.display='block';
         try{
           a.onloadedmetadata=function(){
             var sec=null;try{if(a.duration&&isFinite(a.duration))sec=a.duration;}catch(e){}
-            if(sec!==null)setNotes(baseNote+' • المدة: '+sec.toFixed(1)+' ث (حسب الفواصل)'+fb);
+            if(sec!==null)setNotes(baseNote+' • المدة: '+sec.toFixed(1)+' ث (حسب الفواصل)');
           };
         }catch(e){}
         a.play().catch(function(){});
@@ -2373,16 +2377,18 @@ async function downloadMultiAPKG(){
   try{
     var designs=[];
     var auto=true;try{var a=document.getElementById('autoPlay');if(a)auto=a.checked;}catch(e){}
-    var edId='';try{if(document.getElementById('uniqueEditions')&&document.getElementById('uniqueEditions').checked)edId=genEdition();}catch(e){}
+    var uniq=false;try{uniq=uniqOn();}catch(e){}
+    var _base=(document.getElementById('deckName')?.value||'Anki Design')+' (متعدد التصاميم)';
+    var edSuf='';if(uniq){try{edSuf=nextEdition(_base);}catch(e){}}
     for(var i=0;i<MULTI_SELECT.length;i++){
       var t=findTemplate(MULTI_SELECT[i]);
-      var p=buildDesignPayload(t, false, edId);
+      var p=buildDesignPayload(t, false, edSuf);
       if(p)designs.push(p);
     }
     if(designs.length===0){toast('اختر تصميماً واحداً على الأقل');if(ld)ld.style.display='none';return;}
-    var deckName=(document.getElementById('deckName')?.value||'Anki Design')+' (متعدد التصاميم)'+(edId?' — '+edId:'');
-    var config={deckName:deckName, designs:designs, multi:true, editionId:edId, autoPlay:auto, ttsConfig:dlTTS(), includeAudio:document.getElementById('includeAudio')?.checked!==false, quick:dlQuick()};
-    trackEvent('download',{deckName:deckName,reversed:false,unique:!!edId,count:designs.length});
+    var deckName=_base+edSuf;
+    var config={deckName:deckName, designs:designs, multi:true, editionId:edSuf, autoPlay:auto, ttsConfig:dlTTS(), includeAudio:document.getElementById('includeAudio')?.checked!==false, quick:dlQuick()};
+  trackEvent('download',{deckName:deckName,reversed:false,unique:uniq,count:designs.length});
     toast('جاري تجهيز الرزمة بـ '+designs.length+' تصميم…');
     var resp=await fetch(apiBase()+'/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config),signal:_sigM});
     if(resp.status===202){
@@ -2391,7 +2397,7 @@ async function downloadMultiAPKG(){
       return;
     }
     if(!resp.ok){var em='Server error: '+resp.status;try{var ej=await resp.json();if(ej&&ej.error)em=ej.error;}catch(_e){}throw new Error(em);}
-    var blob=await resp.blob();if(blob.size<1000)throw new Error('ملف فارغ');
+    var blob=await blobPct(resp,function(p){dlShowProg('⬇ جاري تنزيل ملف الرزمة... '+p+'%',p);});if(blob.size<1000)throw new Error('ملف فارغ');
     triggerBlobDownload(blob, config.deckName+'.apkg');
     var msg='تم التنزيل ('+designs.length+' تصميم • الحجم: '+fmtSize(blob.size)+' • نت ≈ '+fmtSize(blob.size)+')';
     if(di)di.textContent=msg;
@@ -3442,6 +3448,27 @@ function triggerBlobDownload(blob, name){
   a.href=url;a.download=name||'deck.apkg';document.body.appendChild(a);a.click();
   setTimeout(function(){URL.revokeObjectURL(url);a.remove();},4000);
 }
+// تنزيل الملف مع نسبة مئوية حقيقية (من content-length) — يظهر بشريط التقدم
+async function blobPct(resp,onPct){
+  try{
+    var total=0;try{total=parseInt(resp.headers.get('content-length')||'0',10)||0;}catch(e){}
+    if(!total||!resp.body||typeof resp.body.getReader!=='function')return await resp.blob();
+    var rd=resp.body.getReader();var chunks=[];var got=0;
+    for(;;){
+      var s=await rd.read();if(s.done)break;
+      chunks.push(s.value);got+=s.value.length;
+      try{onPct(Math.min(99,Math.round(got/total*100)),got,total);}catch(e){}
+    }
+    try{onPct(100,got,total);}catch(e){}
+    return new Blob(chunks,{type:'application/octet-stream'});
+  }catch(e){return await resp.blob();}
+}
+function dlShowProg(txt,pct){
+  var jp=document.getElementById('jobProg'),jt=document.getElementById('jobProgTxt'),jb=document.getElementById('jobProgBar');
+  if(jp)jp.style.display='block';
+  if(jt&&txt!==undefined&&txt!==null)jt.textContent=txt;
+  if(jb&&pct!==undefined&&pct!==null)jb.style.width=pct+'%';
+}
 async function pollJobDownload(jobId, fileName, statusEl){
   var jp=document.getElementById('jobProg'),jt=document.getElementById('jobProgTxt'),jb=document.getElementById('jobProgBar');
   if(jp)jp.style.display='block';
@@ -3462,7 +3489,8 @@ async function pollJobDownload(jobId, fileName, statusEl){
         if(jb)jb.style.width=pct+'%';
       }
       if(d.status==='done'){
-        var blob=await (await fetch(apiBase()+'/api/download/'+jobId,{signal:dlSignal()})).blob();
+        var _dr=await fetch(apiBase()+'/api/download/'+jobId,{signal:dlSignal()});
+        var blob=await blobPct(_dr,function(p){dlShowProg('⬇ جاري تنزيل ملف الرزمة... '+p+'%',p);});
         if(jp)jp.style.display='none';
         triggerBlobDownload(blob, fileName);
         if(statusEl)statusEl.textContent='تم التنزيل — الحجم: '+fmtSize(blob.size)+' (نت ≈ '+fmtSize(blob.size)+')';
@@ -3487,13 +3515,15 @@ async function downloadAPKG(){
   var _sigA=dlBegin();
   try{
     var rev=false;try{var r0=document.getElementById('reverseDeck');if(r0)rev=r0.checked;}catch(_e){}
-    var edId='';try{if(document.getElementById('uniqueEditions')&&document.getElementById('uniqueEditions').checked)edId=genEdition();}catch(_e){}
-    var p=buildDesignPayload(t, rev, edId);
+    var uniq=false;try{uniq=uniqOn();}catch(_e){}
+    var _base=((document.getElementById('deckName')&&document.getElementById('deckName').value)||'Français 12')+(rev?' — معكوسة':'');
+    var edSuf='';if(uniq){try{edSuf=nextEdition(_base);}catch(_e){}}
+    var p=buildDesignPayload(t, rev, edSuf);
     if(!p){if(typeof toast==='function')toast('لا يمكن تنزيل هذا القالب');if(ld)ld.style.display='none';return;}
-    var deckName=((document.getElementById('deckName')&&document.getElementById('deckName').value)||'Français 12')+' — قالب '+(t.nm||t.id)+(rev?' — معكوسة':'')+(edId?' — '+edId:'');
+    var deckName=_base+edSuf;
     if(typeof toast==='function')toast('جاري تجهيز الرزمة بالقالب الحالي…');
-    const config={deckName:deckName,designs:[p],multi:true,reversed:rev,editionId:edId,ttsConfig:dlTTS(),includeAudio:document.getElementById('includeAudio')?.checked!==false,autoPlay:(document.getElementById('autoPlay')?.checked!==false),quick:dlQuick()};
-    trackEvent('download',{deckName:config.deckName,reversed:rev,unique:!!edId,count:1});
+    const config={deckName:deckName,designs:[p],multi:true,reversed:rev,editionId:edSuf,ttsConfig:dlTTS(),includeAudio:document.getElementById('includeAudio')?.checked!==false,autoPlay:(document.getElementById('autoPlay')?.checked!==false),quick:dlQuick()};
+  trackEvent('download',{deckName:config.deckName,reversed:rev,unique:uniq,count:1});
     const resp=await fetch(apiBase()+'/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config),signal:_sigA});
     if(resp.status===202){
       const dj=await resp.json();
@@ -3503,7 +3533,7 @@ async function downloadAPKG(){
       return;
     }
     if(!resp.ok){let em='Server error: '+resp.status;try{const ej=await resp.json();if(ej&&ej.error)em=ej.error;}catch(_e){}throw new Error(em);}
-    const blob=await resp.blob();if(blob.size<1000)throw new Error('ملف فارغ');
+    const blob=await blobPct(resp,function(p){dlShowProg('⬇ جاري تنزيل ملف الرزمة... '+p+'%',p);});if(blob.size<1000)throw new Error('ملف فارغ');
     triggerBlobDownload(blob, config.deckName+'.apkg');
     if(di)di.textContent='تم التنزيل — الحجم: '+fmtSize(blob.size)+' (نت ≈ '+fmtSize(blob.size)+')';
   }catch(e){

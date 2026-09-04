@@ -223,10 +223,9 @@ def tts_preview():
         lang = data.get('lang', 'fr')
         if lang not in ('fr', 'en'):
             lang = 'fr'
-        fr_a, ar_a, both_a, fr_used, ar_used = tts.preview(cfg, data.get('fr') or 'Bonjour',
+        fr_a, ar_a, both_a = tts.preview(cfg, data.get('fr') or 'Bonjour',
                                          data.get('ar') or 'مرحبا', lang)
-        return jsonify({'fr': fr_a, 'ar': ar_a, 'both': both_a,
-                        'frVoiceUsed': fr_used, 'arVoiceUsed': ar_used})
+        return jsonify({'fr': fr_a, 'ar': ar_a, 'both': both_a})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 

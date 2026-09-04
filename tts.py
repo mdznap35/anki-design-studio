@@ -499,13 +499,12 @@ def _raw_from_b64(b64):
 
 
 def ensure_word_audio(word, arabic, cfg=None, lang='fr'):
-    """يرجع (fr_b64, ar_b64, both_b64, fr_used, ar_used) حسب الإعدادات
-    (أصوات + فاصل + سرعة + نغمة) — المدة تتبع الفواصل، والصوت المتعطل يُستبدل بالافتراضي"""
+    """يرجع (fr_b64, ar_b64, both_b64) حسب الإعدادات (أصوات + فاصل + سرعة + نغمة)"""
     cfg = cfg or {}
     word = (word or "").strip()
     arabic = (arabic or "").strip()
     if not word:
-        return ("", "", "", "", "")
+        return ("", "", "")
 
     lib = library_lookup(word) if lang != 'en' else None
     has_gaps = _gaps_active(cfg)
@@ -518,43 +517,29 @@ def ensure_word_audio(word, arabic, cfg=None, lang='fr'):
         both_a = lib.get("both", "")
         if not both_a and fr_a and ar_a:
             both_a = _b64_mp3(_raw_from_b64(fr_a) + _raw_from_b64(ar_a))
-        return (fr_a, ar_a, both_a,
-                DEFAULT_VOICES.get(lang, ""), DEFAULT_VOICES.get("ar", ""))
+        return (fr_a, ar_a, both_a)
 
     # مكتبة جاهزة + إعدادات افتراضية مع فواصل: نبني المقاطع من المكتبة مع الصمت
     if lib and has_gaps and not regen:
         fr_raw = _raw_from_b64(lib.get("fr", ""))
         ar_raw = _raw_from_b64(lib.get("ar", ""))
-        f3, a3, b3 = _build_clips(fr_raw, ar_raw, cfg)
-        return (f3, a3, b3,
-                DEFAULT_VOICES.get(lang, ""), DEFAULT_VOICES.get("ar", ""))
+        return _build_clips(fr_raw, ar_raw, cfg)
 
-    # توليد عبر edge-tts بالصوت المحدد لكل لغة (مع بديل افتراضي عند التعطل)
+    # توليد عبر edge-tts بالصوت المحدد لكل لغة
     rate_pct, pitch_hz = speed_pitch_to_params(cfg.get("speed", 1.0), cfg.get("pitch", 1.0))
     fr_voice = resolve_voice(lang, cfg.get("frVoice"))
     ar_voice = resolve_voice("ar", cfg.get("arVoice"))
     fr_b64 = _synth_base64(word, lang, rate_pct, pitch_hz, fr_voice)
-    if not fr_b64:
-        fb = resolve_voice(lang, None)
-        if fb != fr_voice:
-            fr_voice = fb
-            fr_b64 = _synth_base64(word, lang, rate_pct, pitch_hz, fr_voice)
     ar_b64 = _synth_base64(arabic, "ar", rate_pct, pitch_hz, ar_voice) if arabic else ""
-    if not ar_b64 and arabic:
-        ab = resolve_voice("ar", None)
-        if ab != ar_voice:
-            ar_voice = ab
-            ar_b64 = _synth_base64(arabic, "ar", rate_pct, pitch_hz, ar_voice)
     if not fr_b64 and not ar_b64:
-        return ("", "", "", "", "")
+        return ("", "", "")
     fr_raw = _raw_from_b64(fr_b64)
     ar_raw = _raw_from_b64(ar_b64)
-    f3, a3, b3 = _build_clips(fr_raw, ar_raw, cfg)
-    return (f3, a3, b3, fr_voice if fr_b64 else "", ar_voice if ar_b64 else "")
+    return _build_clips(fr_raw, ar_raw, cfg)
 
 
 def preview(cfg=None, fr_text="Bonjour", ar_text="مرحبا", lang='fr'):
-    """معاينة سريعة بإعدادات المستخدم الحالية — المدة تتبع الفواصل"""
+    """معاينة سريعة بإعدادات المستخدم الحالية"""
     cfg = dict(cfg or {})
     return ensure_word_audio(fr_text, ar_text, cfg, lang)
 
@@ -574,7 +559,7 @@ def note_fields_for(fields, w, cfg=None, extra="", include_audio=True, lang='fr'
             if audio_mode == 'cached':
                 fr_a, ar_a, both_a = cached_word_audio(word, arabic, cfg, lang)
             else:
-                fr_a, ar_a, both_a, _fu, _au = ensure_word_audio(word, arabic, cfg, lang)
+                fr_a, ar_a, both_a = ensure_word_audio(word, arabic, cfg, lang)
         except Exception:
             fr_a = ar_a = both_a = ""
     if isinstance(w, dict):
