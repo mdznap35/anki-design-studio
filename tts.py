@@ -457,42 +457,16 @@ def _b64_mp3(raw):
     return "data:audio/mpeg;base64," + base64.b64encode(raw).decode("ascii") if raw else ""
 
 
-def _est_speech_ms(fr_text, ar_text):
-    """تقدير مدة الكلام بالميللي ثانية من طول النص (بدون ffmpeg — سريع ودقيق كفاية للميزانية)"""
-    try:
-        n = len(fr_text or "") + len(ar_text or "")
-    except Exception:
-        n = 10
-    return max(400, min(8000, 400 + int(n * 70)))
-
-
-def _build_clips(fr_raw, ar_raw, cfg, speech_ms=None, pad_to=None):
-    """تطبيق الفواصل الزمنية ويرجع (fr_b64, ar_b64, both_b64)
+def _build_clips(fr_raw, ar_raw, cfg):
+    """تطبيق الفواصل الزمنية كما هي (بالميللي ثانية) ويرجع (fr_b64, ar_b64, both_b64)
     - قبل الفرنسي / بعد الفرنسي (= الفاصل بين الكلمتين في المقطع المدمج)
     - قبل العربي / بعد العربي
-    - المجموع الكلي لا يتجاوز 3 ثواني: الفواصل تُصغَّر نسبياً لتناسب الميزانية
-    - pad_to=ms (للمعاينة فقط): إكمال المقطع المدمج بالصمت حتى المدة المطلوبة
+    - المدة النهائية = مدة الكلام + الفواصل (تتبع الفاصل الذي يضعه المستخدم)
     """
-    TARGET = 3000
-    try:
-        speech_ms = int(speech_ms) if speech_ms else 1500
-    except Exception:
-        speech_ms = 1500
-    budget = max(0, TARGET - speech_ms)
-    gaps = []
-    for k in ("frGapBefore", "frGapAfter", "arGapBefore", "arGapAfter"):
-        try:
-            gaps.append(max(0, int(cfg.get(k, 0) or 0)))
-        except (TypeError, ValueError):
-            gaps.append(0)
-    total_gap = sum(gaps)
-    if total_gap > budget and total_gap > 0:
-        f = budget / float(total_gap)
-        gaps = [int(g * f) for g in gaps]
-    fr_before = _silence(gaps[0])
-    fr_after = _silence(gaps[1])
-    ar_before = _silence(gaps[2])
-    ar_after = _silence(gaps[3])
+    fr_before = _silence(cfg.get("frGapBefore", 0))
+    fr_after = _silence(cfg.get("frGapAfter", 0))
+    ar_before = _silence(cfg.get("arGapBefore", 0))
+    ar_after = _silence(cfg.get("arGapAfter", 0))
 
     fr_clip = _concat_mp3([fr_before, fr_raw, fr_after]) if fr_raw else b""
     ar_clip = _concat_mp3([ar_before, ar_raw, ar_after]) if ar_raw else b""
@@ -502,13 +476,6 @@ def _build_clips(fr_raw, ar_raw, cfg, speech_ms=None, pad_to=None):
         both_raw = fr_clip
     else:
         both_raw = b""
-    if pad_to and both_raw:
-        try:
-            rest = int(pad_to) - (speech_ms + sum(gaps))
-            if rest > 80:
-                both_raw = _concat_mp3([both_raw, _silence(rest)])
-        except Exception:
-            pass
     return _b64_mp3(fr_clip), _b64_mp3(ar_clip), _b64_mp3(both_raw)
 
 
@@ -531,15 +498,14 @@ def _raw_from_b64(b64):
         return b""
 
 
-def ensure_word_audio(word, arabic, cfg=None, lang='fr', pad_to=None):
+def ensure_word_audio(word, arabic, cfg=None, lang='fr'):
     """يرجع (fr_b64, ar_b64, both_b64, fr_used, ar_used) حسب الإعدادات
-    (أصوات + فاصل + سرعة + نغمة) — المجموع ≤ 3 ثواني، والصوت المتعطل يُستبدل بالافتراضي"""
+    (أصوات + فاصل + سرعة + نغمة) — المدة تتبع الفواصل، والصوت المتعطل يُستبدل بالافتراضي"""
     cfg = cfg or {}
     word = (word or "").strip()
     arabic = (arabic or "").strip()
     if not word:
         return ("", "", "", "", "")
-    est = _est_speech_ms(word, arabic)
 
     lib = library_lookup(word) if lang != 'en' else None
     has_gaps = _gaps_active(cfg)
@@ -559,7 +525,7 @@ def ensure_word_audio(word, arabic, cfg=None, lang='fr', pad_to=None):
     if lib and has_gaps and not regen:
         fr_raw = _raw_from_b64(lib.get("fr", ""))
         ar_raw = _raw_from_b64(lib.get("ar", ""))
-        f3, a3, b3 = _build_clips(fr_raw, ar_raw, cfg, speech_ms=est, pad_to=pad_to)
+        f3, a3, b3 = _build_clips(fr_raw, ar_raw, cfg)
         return (f3, a3, b3,
                 DEFAULT_VOICES.get(lang, ""), DEFAULT_VOICES.get("ar", ""))
 
@@ -583,14 +549,14 @@ def ensure_word_audio(word, arabic, cfg=None, lang='fr', pad_to=None):
         return ("", "", "", "", "")
     fr_raw = _raw_from_b64(fr_b64)
     ar_raw = _raw_from_b64(ar_b64)
-    f3, a3, b3 = _build_clips(fr_raw, ar_raw, cfg, speech_ms=est, pad_to=pad_to)
+    f3, a3, b3 = _build_clips(fr_raw, ar_raw, cfg)
     return (f3, a3, b3, fr_voice if fr_b64 else "", ar_voice if ar_b64 else "")
 
 
 def preview(cfg=None, fr_text="Bonjour", ar_text="مرحبا", lang='fr'):
-    """معاينة سريعة بإعدادات المستخدم الحالية — المقطع 3 ثواني دائماً"""
+    """معاينة سريعة بإعدادات المستخدم الحالية — المدة تتبع الفواصل"""
     cfg = dict(cfg or {})
-    return ensure_word_audio(fr_text, ar_text, cfg, lang, pad_to=3000)
+    return ensure_word_audio(fr_text, ar_text, cfg, lang)
 
 
 def note_fields_for(fields, w, cfg=None, extra="", include_audio=True, lang='fr', audio_mode='full'):

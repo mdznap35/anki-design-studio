@@ -2326,7 +2326,7 @@ async function previewTTS(){
   btns.forEach(function(b){if(b)b.disabled=true;});
   lds.forEach(function(l){if(l)l.style.display='inline-block';});
   bars.forEach(function(p){if(p)p.style.display='block';});
-  setNotes('⏳ جاري توليد المعاينة (3 ثواني)...');
+  setNotes('⏳ جاري توليد المعاينة...');
   try{
     var cfg=collectTTSConfig();
     var pwf='Un ami',pwa='صديق';
@@ -2335,11 +2335,22 @@ async function previewTTS(){
     if(!resp.ok){var em='Server error: '+resp.status;try{var ej=await resp.json();if(ej&&ej.error)em=ej.error;}catch(_e){}throw new Error(em);}
     var d=await resp.json();
     if(d&&d.both&&aus.length){
-      aus.forEach(function(a){if(a){a.src=d.both;a.style.display='block';a.play().catch(function(){});}});
+      var baseNote='✓ المعاينة: "'+pwf+'" + "'+pwa+'" ('+shortVoice(cfg.frVoice)+' ← '+shortVoice(cfg.arVoice)+' • الحجم: '+fmtSize(b64Bytes(d.both))+')';
       var fb='';
       if(d.frVoiceUsed&&d.frVoiceUsed!==cfg.frVoice)fb+=' ⚠️ الصوت الفرنسي المطلوب ('+shortVoice(cfg.frVoice)+') غير متاح — سمعت '+shortVoice(d.frVoiceUsed)+'.';
       if(d.arVoiceUsed&&d.arVoiceUsed!==cfg.arVoice)fb+=' ⚠️ الصوت العربي المطلوب ('+shortVoice(cfg.arVoice)+') غير متاح — سمعت '+shortVoice(d.arVoiceUsed)+'.';
-      setNotes('✓ المعاينة: "'+pwf+'" + "'+pwa+'" ('+shortVoice(cfg.frVoice)+' ← '+shortVoice(cfg.arVoice)+' • 3 ثواني • الحجم: '+fmtSize(b64Bytes(d.both))+').'+fb);
+      setNotes(baseNote+' • المدة: …'+fb);
+      aus.forEach(function(a){
+        if(!a)return;
+        a.src=d.both;a.style.display='block';
+        try{
+          a.onloadedmetadata=function(){
+            var sec=null;try{if(a.duration&&isFinite(a.duration))sec=a.duration;}catch(e){}
+            if(sec!==null)setNotes(baseNote+' • المدة: '+sec.toFixed(1)+' ث (حسب الفواصل)'+fb);
+          };
+        }catch(e){}
+        a.play().catch(function(){});
+      });
     }else{
       setNotes('⚠️ فشل توليد المعاينة — تحقق من الإنترنت وأعد المحاولة');
       aus.forEach(function(a){if(a)a.style.display='none';});
