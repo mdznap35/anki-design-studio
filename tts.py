@@ -489,11 +489,29 @@ def _gaps_active(cfg):
     return False
 
 
+def _as_data_uri(s):
+    """توحيد صيغة الصوت: base64 خام أو data-URI → دائماً data:audio/mpeg;base64,..."""
+    if not s:
+        return ""
+    try:
+        t = str(s).strip()
+    except Exception:
+        return ""
+    if not t:
+        return ""
+    if t.startswith("data:"):
+        return t
+    return "data:audio/mpeg;base64," + t
+
+
 def _raw_from_b64(b64):
     if not b64:
         return b""
     try:
-        return base64.b64decode(str(b64).split(",", 1)[1])
+        s = str(b64)
+        if "," in s:
+            s = s.split(",", 1)[1]
+        return base64.b64decode(s)
     except Exception:
         return b""
 
@@ -512,9 +530,9 @@ def ensure_word_audio(word, arabic, cfg=None, lang='fr'):
 
     # مكتبة جاهزة + إعدادات افتراضية بدون فواصل: مسار سريع (تضمين مباشر)
     if lib and not has_gaps and not regen:
-        fr_a = lib.get("fr", "")
-        ar_a = lib.get("ar", "")
-        both_a = lib.get("both", "")
+        fr_a = _as_data_uri(lib.get("fr", ""))
+        ar_a = _as_data_uri(lib.get("ar", ""))
+        both_a = _as_data_uri(lib.get("both", ""))
         if not both_a and fr_a and ar_a:
             both_a = _b64_mp3(_raw_from_b64(fr_a) + _raw_from_b64(ar_a))
         return (fr_a, ar_a, both_a)
