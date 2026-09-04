@@ -1010,8 +1010,8 @@ a:not(.btn):hover{color:var(--ac)}
       it.setAttribute('role','button');it.setAttribute('tabindex','0');
       var num=(t.nm||'').replace(/^0+/,'')||(i+1);
       var ac=gbAccentOf(i);if(ac)it.style.setProperty('--card-ac',ac);
-      var img='gallery_imgs/'+('000'+(i+1)).slice(-3)+'.png';
-      it.innerHTML='<span class="gb-sk"></span><span class="gb-num">'+num+'</span><img class="gb-img" data-loading="1" src="'+img+'" alt="تصميم '+num+'"><span class="gb-ov"><span class="gb-ov-t">تصميم '+num+'</span><span class="gb-ov-b">اختيار ←</span></span>';
+      var img='gallery_imgs/'+('000'+(i+1)).slice(-3)+'.jpg';
+      it.innerHTML='<span class="gb-sk"></span><span class="gb-num">'+num+'</span><img class="gb-img" data-loading="1" loading="lazy" decoding="async" src="'+img+'" alt="تصميم '+num+'"><span class="gb-ov"><span class="gb-ov-t">تصميم '+num+'</span><span class="gb-ov-b">اختيار ←</span></span>';
       if(i===gbCur)it.classList.add('gc');
       if(i===gvIdx)it.classList.add('on');
       it.style.animationDelay=Math.min(i,18)*0.02+'s';
@@ -1775,7 +1775,12 @@ function gvSelect(){
 }
 function gvDownload(){var t=gvCurrent();if(!t)return;downloadSingleTpl(t.id);}
 function downloadSelected(){
-  if(!gvSel.length){if(typeof toast==='function')toast('اختر قالباً واحداً على الأقل أولاً');return;}
+  if(!gvSel.length){
+    // بدون تحديد: نزّل القالب الحالي مباشرة بدل التوقف برسالة
+    var ct=null;try{ct=gvCurrent();}catch(_e){}
+    if(ct){if(typeof downloadSingleTpl==='function'){downloadSingleTpl(ct.id);return;}}
+    if(typeof toast==='function')toast('اختر قالباً واحداً على الأقل أولاً');return;
+  }
   var inc=true;try{var c=document.getElementById('includeAudio');if(c)inc=c.checked;}catch(e){}
   var auto=true;try{var a=document.getElementById('autoPlay');if(a)auto=a.checked;}catch(e){}
   var rev=false;try{var r=document.getElementById('reverseDeck');if(r)rev=r.checked;}catch(e){}
@@ -1997,6 +2002,7 @@ function downloadSingleTpl(id){
   var deckName=((document.getElementById('deckName')&&document.getElementById('deckName').value)||'Français 12')+' — قالب '+(t.nm||id)+(rev?' — معكوسة':'')+(edId?' — '+edId:'');
   var config={deckName:deckName,designs:[p],multi:true,reversed:rev,editionId:edId,autoPlay:auto,ttsConfig:collectTTSConfig(),includeAudio:((document.getElementById('includeAudio')&&document.getElementById('includeAudio').checked)!==false)};
   trackEvent('download',{deckName:deckName,reversed:rev,unique:!!edId,count:1});
+  if(typeof toast==='function')toast('جاري تجهيز الرزمة…');
   var ld=document.getElementById('loading');if(ld)ld.style.display='block';
   var di=document.getElementById('dlInfo');if(di)di.textContent='';
   fetch(apiBase()+'/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config)}).then(function(resp){
@@ -2180,10 +2186,16 @@ function applySavedTTS(){
   var pv=ttsEl('ttsPitch');
   ttsEls('ttsPitchVal').forEach(function(s){if(s)s.textContent=parseFloat(pv?pv.value:1).toFixed(1);});
 }
+var _voicePrevT=null;
 function saveVoiceSel(evEl){
   if(evEl&&evEl.dataset&&evEl.dataset.pid){
     var v=evEl.value;
     ttsEls(evEl.dataset.pid).forEach(function(el){if(el&&el!==evEl)el.value=v;});
+    // سماع فوري عند تغيير الصوت نفسه (وليس عند حفظ الإعدادات فقط)
+    if(evEl.dataset.pid==='ttsFrVoice'||evEl.dataset.pid==='ttsArVoice'){
+      try{if(_voicePrevT)clearTimeout(_voicePrevT);}catch(_e){}
+      _voicePrevT=setTimeout(function(){try{if(typeof previewTTS==='function')previewTTS();}catch(_e){}},700);
+    }
   }
   try{localStorage.setItem('anki_tts_panel',JSON.stringify(collectTTSConfig()));}catch(_e){}
 }
@@ -2215,7 +2227,9 @@ async function previewTTS(){
   setNotes('⏳ جاري توليد المعاينة...');
   try{
     var cfg=collectTTSConfig();
-    var resp=await fetch(apiBase()+'/api/tts_preview',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fr:'Bonjour',ar:'مرحبا',ttsConfig:cfg})});
+    var pwf='Un ami',pwa='صديق';
+    try{if(typeof SAMP!=='undefined'&&SAMP){if(SAMP.f)pwf=SAMP.f;if(SAMP.a)pwa=SAMP.a;}}catch(_e){}
+    var resp=await fetch(apiBase()+'/api/tts_preview',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fr:pwf,ar:pwa,ttsConfig:cfg})});
     if(!resp.ok){var em='Server error: '+resp.status;try{var ej=await resp.json();if(ej&&ej.error)em=ej.error;}catch(_e){}throw new Error(em);}
     var d=await resp.json();
     if(d&&d.both&&aus.length){
@@ -2251,6 +2265,7 @@ async function downloadMultiAPKG(){
     var deckName=(document.getElementById('deckName')?.value||'Anki Design')+' (متعدد التصاميم)'+(edId?' — '+edId:'');
     var config={deckName:deckName, designs:designs, multi:true, editionId:edId, autoPlay:auto, ttsConfig:collectTTSConfig(), includeAudio:document.getElementById('includeAudio')?.checked!==false};
     trackEvent('download',{deckName:deckName,reversed:false,unique:!!edId,count:designs.length});
+    toast('جاري تجهيز الرزمة بـ '+designs.length+' تصميم…');
     var resp=await fetch(apiBase()+'/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config)});
     if(resp.status===202){
       var dj=await resp.json();
@@ -3342,14 +3357,19 @@ async function pollJobDownload(jobId, fileName, statusEl){
   }
 }
 async function downloadAPKG(){
+  // الزر الرئيسي: ينزّل القالب الحالي من المعرض عبر مسار التصاميم (نفس القالب والصوت والإعدادات الظاهرة)
+  var t=null;try{t=gvCurrent();}catch(_e){}
+  if(!t){if(typeof toast==='function')toast('اختر قالباً من المعرض أولاً');return;}
   const di=document.getElementById('dlInfo');const ld=document.getElementById('loading');
   if(di)di.textContent='';if(ld)ld.style.display='block';
   try{
-    const cardHTML=renderAnkiTemplate(S);
-    // Also send preview version for backend reference
-    const previewHTML=renderCardHTML(S);
+    var rev=false;try{var r0=document.getElementById('reverseDeck');if(r0)rev=r0.checked;}catch(_e){}
     var edId='';try{if(document.getElementById('uniqueEditions')&&document.getElementById('uniqueEditions').checked)edId=genEdition();}catch(_e){}
-    const config={...S,deckName:(document.getElementById('deckName')?.value||'Anki Design')+(edId?' — '+edId:''),cardFrontHTML:cardHTML,cardBackHTML:cardHTML,previewHTML:previewHTML,ttsConfig:collectTTSConfig(),includeAudio:document.getElementById('includeAudio')?.checked!==false,autoPlay:(document.getElementById('autoPlay')?.checked!==false),editionId:edId};
+    var p=buildDesignPayload(t, rev, edId);
+    if(!p){if(typeof toast==='function')toast('لا يمكن تنزيل هذا القالب');if(ld)ld.style.display='none';return;}
+    var deckName=((document.getElementById('deckName')&&document.getElementById('deckName').value)||'Français 12')+' — قالب '+(t.nm||t.id)+(rev?' — معكوسة':'')+(edId?' — '+edId:'');
+    if(typeof toast==='function')toast('جاري تجهيز الرزمة بالقالب الحالي…');
+    const config={deckName:deckName,designs:[p],multi:true,reversed:rev,editionId:edId,ttsConfig:collectTTSConfig(),includeAudio:document.getElementById('includeAudio')?.checked!==false,autoPlay:(document.getElementById('autoPlay')?.checked!==false)};
     trackEvent('download',{deckName:config.deckName,reversed:!!S.reversed,unique:!!edId,count:1});
     const resp=await fetch(apiBase()+'/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config)});
     if(resp.status===202){
