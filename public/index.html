@@ -913,7 +913,7 @@ a:not(.btn):hover{color:var(--ac)}
 </dialog>
 <div class="autosave-dot" id="autosaveDot"></div>
 <div id="toast"></div>
-<div id="statusBar" style="position:fixed;bottom:0;left:0;right:0;background:var(--s1);border-top:1px solid var(--bd);padding:4px 16px;display:flex;justify-content:space-between;font-size:.58em;color:var(--tx3);z-index:100"><span>Anki Design Studio v4.2</span><span style="color:var(--gn)">✓</span><span id="undoCount">0 / 0</span></div>
+<div id="statusBar" style="position:fixed;bottom:0;left:0;right:0;background:var(--s1);border-top:1px solid var(--bd);padding:4px 16px;display:flex;justify-content:space-between;font-size:.58em;color:var(--tx3);z-index:100"><span>Anki Design Studio v4.2</span><span id="appBuild" style="opacity:.65"></span><span style="color:var(--gn)">✓</span><span id="undoCount">0 / 0</span></div>
 
  <section class="site-bottom reveal">
 
@@ -2295,6 +2295,7 @@ function populateVoiceSelects(){
     frSels.forEach(function(sel){_fillVoiceSelect(sel,frList,'frVoice',saved);});
     arSels.forEach(function(sel){_fillVoiceSelect(sel,arList,'arVoice',saved);});
     applySavedTTS();
+    _voicesReady=true;
   }
   fetch(apiBase()+'/api/tts_voices').then(function(r){return r.json();}).then(function(d){
     if(d&&d.fr&&d.fr.length&&d.ar&&d.ar.length)fill(d.fr,d.ar);
@@ -2314,6 +2315,7 @@ function applySavedTTS(){
   ttsEls('ttsPitchVal').forEach(function(s){if(s)s.textContent=parseFloat(pv?pv.value:1).toFixed(1);});
 }
 var _voicePrevT=null;
+var _voicesReady=false;
 function saveVoiceSel(evEl){
   if(evEl&&evEl.dataset&&evEl.dataset.pid){
     var v=evEl.value;
@@ -2354,12 +2356,17 @@ async function previewTTS(){
   btns.forEach(function(b){if(b)b.disabled=true;});
   lds.forEach(function(l){if(l)l.style.display='inline-block';});
   bars.forEach(function(p){if(p)p.style.display='block';});
+  if(!_voicesReady){setNotes('⏳ قائمة الأصوات تُحمَّل من السيرفر... انتظر ثواني ثم أعد الضغط');btns.forEach(function(b){if(b)b.disabled=false;});lds.forEach(function(l){if(l)l.style.display='none';});bars.forEach(function(p){if(p)p.style.display='none';});return;}
   setNotes('⏳ جاري توليد المعاينة...');
+  var _pctl=null,_ptimer=null;
+  try{_pctl=(typeof AbortController!=='undefined')?new AbortController():null;}catch(e){_pctl=null;}
   try{
-    var cfg=collectTTSConfig();
+    var cfg=dlTTS();
     var pwf='Un ami',pwa='صديق';
     try{if(typeof SAMP!=='undefined'&&SAMP){if(SAMP.f)pwf=SAMP.f;if(SAMP.a)pwa=SAMP.a;}}catch(_e){}
-    var resp=await fetch(apiBase()+'/api/tts_preview',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fr:pwf,ar:pwa,ttsConfig:cfg})});
+    _ptimer=setTimeout(function(){try{if(_pctl)_pctl.abort();}catch(e){}},120000);
+    var resp=await fetch(apiBase()+'/api/tts_preview',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fr:pwf,ar:pwa,ttsConfig:cfg}),signal:_pctl?_pctl.signal:undefined});
+    try{if(_ptimer)clearTimeout(_ptimer);}catch(e){}
     if(!resp.ok){var em='Server error: '+resp.status;try{var ej=await resp.json();if(ej&&ej.error)em=ej.error;}catch(_e){}throw new Error(em);}
     var d=await resp.json();
     if(d&&d.both&&aus.length){
@@ -2381,7 +2388,9 @@ async function previewTTS(){
       aus.forEach(function(a){if(a)a.style.display='none';});
     }
   }catch(e){
-    setNotes('⚠️ خطأ: '+e.message);
+    try{if(_ptimer)clearTimeout(_ptimer);}catch(_e2){}
+    if(e&&e.name==='AbortError')setNotes('⏳ السيرفر يستيقظ من السكون (أول تشغيل قد يأخذ دقيقة) — أعد الضغط على المعاينة');
+    else setNotes('⚠️ خطأ: '+e.message);
   }finally{
     btns.forEach(function(b){if(b)b.disabled=false;});
     lds.forEach(function(l){if(l)l.style.display='none';});
@@ -6709,6 +6718,11 @@ function initAudioStatus(){
       if(d&&d.total_words)_deckWords=d.total_words;
       updateDlEst();
     }).catch(function(){});
+    try{
+      fetch(apiBase()+'/api/health').then(function(r){return r.json();}).then(function(h){
+        if(h&&h.build){var b=document.getElementById('appBuild');if(b)b.textContent='• إصدار '+h.build;}
+      }).catch(function(){});
+    }catch(_e2){}
   }catch(_e){}
 }
 try{initApp();}catch(e){console.error('Init error:',e);}

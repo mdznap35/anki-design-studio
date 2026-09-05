@@ -163,9 +163,12 @@ def extra_rows(w):
     return '<br>'.join(rows)
 
 
+APP_BUILD = '2026-09-04-e'
+
+
 @app.route('/api/health', methods=['GET'])
 def health():
-    return jsonify({'status': 'ok', 'words': len(get_all_words())})
+    return jsonify({'status': 'ok', 'words': len(get_all_words()), 'build': APP_BUILD})
 
 
 AUDIO_MAX_WORDS = 250  # حد توليد الصوت التلقائي (بدون مكتبة) — الرزمة الكاملة تحتاج المكتبة
