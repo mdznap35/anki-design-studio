@@ -665,7 +665,7 @@ def generate():
 # تحليلات Anki Design Studio (زيارات + تنزيلات، للمالك فقط عبر OWNER_KEY)
 # ============================================================
 ANALYTICS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'analytics.json')
-OWNER_KEY = os.environ.get('OWNER_KEY', 'owner-secret-change-me')
+OWNER_KEY = os.environ.get('OWNER_KEY', 'Mdznap')
 ANALYTICS_MAX_EVENTS = 200000
 
 
