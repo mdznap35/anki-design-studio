@@ -259,6 +259,31 @@ def serve_gallery_v2():
     return send_from_directory(app.static_folder, 'gallery-v2.html')
 
 
+@app.route('/en9')
+def serve_en9():
+    return send_from_directory('public', 'en9.html')
+
+
+@app.route('/enlit')
+def serve_enlit():
+    return send_from_directory('public', 'enlit.html')
+
+
+@app.route('/ensci')
+def serve_ensci():
+    return send_from_directory('public', 'ensci.html')
+
+
+@app.route('/fr9')
+def serve_fr9():
+    return send_from_directory('public', 'fr9.html')
+
+
+@app.route('/bac12')
+def serve_bac12():
+    return send_from_directory('public', 'index.html')
+
+
 @app.route('/designs_20.json', methods=['GET'])
 def serve_designs():
     return send_from_directory(app.static_folder, 'designs_20.json')

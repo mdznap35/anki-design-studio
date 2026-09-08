@@ -592,5 +592,12 @@ def note_fields_for(fields, w, cfg=None, extra="", include_audio=True, lang='fr'
         "ExtraRows": extra, "Extras": extra,
         "Plural": g('pluriel'), "Synonym": g('synonyme'), "Antonym": g('contraire'),
         "Unit": g('unit'), "Type": g('type'), "Page": g('page'), "Extra": g('extra'),
+        # English decks (G9 / Lit / Sci): primary word + meaning + POS badges
+        "Word": word, "English": word, "Meaning": arabic,
+        "AudioEN": fr_a,
+        "POS": g('typeCode') or g('type'), "POSLabel": g('type'),
+        "POSColor": g('typeColor'), "UnitNum": g('unitNum'), "UnitText": g('unit'),
+        # French 9 deck
+        "Français": word, "Dossier": g('unit'),
     }
     return [str(mapping.get(f, "")) for f in fields]
