@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>إحصائيات المشروع</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:'Segoe UI',Tahoma,sans-serif;color:#efe9ff;background:radial-gradient(130% 120% at 50% -10%,rgba(139,92,246,.18),transparent 55%),linear-gradient(180deg,#16131f,#0c0b13);padding:20px}
+.box{width:100%;max-width:520px;border:1px solid rgba(139,92,246,.35);border-radius:20px;padding:34px 30px;background:rgba(18,16,26,.8);box-shadow:0 24px 60px rgba(0,0,0,.5);text-align:center}
+h1{font-size:1.3rem;margin-bottom:6px}
+p.sub{color:#8f8aa3;font-size:.85rem;margin-bottom:22px}
+input{width:100%;padding:13px 16px;border-radius:12px;border:1px solid rgba(139,92,246,.35);background:rgba(255,255,255,.04);color:#fff;font-size:1rem;text-align:center;margin-bottom:12px;outline:none}
+input:focus{border-color:#8b5cf6;box-shadow:0 0 0 3px rgba(139,92,246,.2)}
+button{width:100%;padding:13px;border:none;border-radius:12px;font-size:1rem;font-weight:800;color:#fff;cursor:pointer;background:linear-gradient(135deg,#7c3aed,#8b5cf6 45%,#0ea5e9)}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:22px;text-align:center}
+.card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:20px 10px}
+.card b{display:block;font-size:1.9rem;color:#a78bfa}
+.card span{font-size:.82rem;color:#8f8aa3}
+.err{color:#f87171;margin-top:14px;font-size:.9rem}
+.hide{display:none}
+</style>
+</head>
+<body>
+<div class="box">
+  <h1>إحصائيات المشروع</h1>
+  <p class="sub">صفحة خاصة بالمالك فقط — غير مرتبطة من الموقع</p>
+  <div id="login">
+    <input type="password" id="k" placeholder="المفتاح السري" autocomplete="off">
+    <button onclick="load()">عرض الإحصائيات</button>
+    <div class="err hide" id="e"></div>
+  </div>
+  <div class="grid hide" id="g"></div>
+</div>
+<script>
+function load(){
+  var k=document.getElementById('k').value||'';
+  var e=document.getElementById('e');e.classList.add('hide');
+  fetch('/api/stats?key='+encodeURIComponent(k)).then(function(r){return r.json();}).then(function(d){
+    if(!d||d.error){e.textContent='المفتاح غير صحيح أو الخدمة غير مفعّلة.';e.classList.remove('hide');return;}
+    document.getElementById('login').classList.add('hide');
+    var g=document.getElementById('g');g.classList.remove('hide');
+    var items=[[d.visits||0,'مشاهدات الصفحة'],[d.uniqueVisitors||0,'زوار فريدون'],[d.downloads||0,'تنزيلات'],[d.uniqueDownloaders||0,'مستخدمون نزّلوا']];
+    g.innerHTML=items.map(function(x){return '<div class="card"><b>'+x[0]+'</b><span>'+x[1]+'</span></div>';}).join('');
+  }).catch(function(){e.textContent='تعذّر الاتصال بالسيرفر.';e.classList.remove('hide');});
+}
+document.getElementById('k').addEventListener('keydown',function(ev){if(ev.key==='Enter')load();});
+</script>
+</body>
+</html>
