@@ -801,10 +801,9 @@ a:not(.btn):hover{color:var(--ac)}
       <div class="gv-cardwrap" id="gvCardWrap" ondblclick="gvFlip()">
         <iframe id="gvFrame" class="gv-frame" title="معاينة القالب" onload="if(typeof gvFitFrame==='function')gvFitFrame()"></iframe>
       </div>
-      <button class="gv-arrow gv-prev" onclick="gvStep(-1)" aria-label="السابق">‹</button>
-      <button class="gv-fab gv-flip" onclick="gvFlip()" title="قلب البطاقة" aria-label="قلب البطاقة"><svg width="1.1em" height="1.1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg></button>
-      <div class="gv-info" id="gvInfo" aria-live="polite"></div>
-    </div>
+       <button class="gv-arrow gv-prev" onclick="gvStep(-1)" aria-label="السابق">‹</button>
+       <div class="gv-info" id="gvInfo" aria-live="polite"></div>
+     </div>
     <button id="gvShowAns" class="gv-showans" onclick="gvFlip()" aria-label="قلب البطاقة">قلب البطاقة</button>
     <div class="gv-progress"><div class="gv-progress-bar" id="gvProg"></div></div>
     <div class="gv-actions">
@@ -1085,7 +1084,14 @@ a:not(.btn):hover{color:var(--ac)}
       it.style.animationDelay=Math.min(i,18)*0.02+'s';
       var im=it.querySelector('.gb-img');
       im.addEventListener('load',function(){this.removeAttribute('data-loading');var sk=this.parentNode.querySelector('.gb-sk');if(sk)sk.style.display='none';});
-      im.addEventListener('error',function(){this.removeAttribute('data-loading');var sk=this.parentNode.querySelector('.gb-sk');if(sk)sk.style.display='none';});
+       im.addEventListener('error',function(){
+         this.style.display='none';
+         var sk=this.parentNode.querySelector('.gb-sk');if(sk)sk.style.display='none';
+         var fb=document.createElement('div');
+         fb.style.cssText='position:absolute;inset:0;display:grid;place-items:center;background:linear-gradient(135deg,var(--s2),var(--s3));font-weight:800;font-size:1.1rem;color:var(--ac);padding:10px;text-align:center;border-radius:inherit;';
+         fb.textContent='تصميم '+num;
+         this.parentNode.insertBefore(fb,this);
+       });
       it.addEventListener('click',function(){gbApply(i);});
       it.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();gbApply(i);}});
       grid.appendChild(it);

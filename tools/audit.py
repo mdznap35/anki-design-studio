@@ -4,8 +4,9 @@ FORBID = {
  'enlit': ['French Bac','بكلوريا','French 9','فرنسي 9','Henri','Dossier','Science 12'],
  'ensci': ['French Bac','بكلوريا','French 9','فرنسي 9','Henri','Dossier','Literature 12'],
  'fr9':   ['English 9','English Literature','English Science','French Bac','بكلوريا','GuyNeural','Unit 01'],
+ 'bac12': ['English 9','English Literature','English Science','GuyNeural','Unit 01','English Literature 12'],
 }
-FILES = {'en9':'en9','enlit':'enlit','ensci':'ensci','fr9':'fr9'}
+FILES = {'en9':'en9','enlit':'enlit','ensci':'ensci','fr9':'fr9','bac12':'bac12'}
 ok=True
 for did, terms in FORBID.items():
     h=open('/workspace/out/%s.html'%FILES[did],encoding='utf-8').read()
@@ -19,8 +20,8 @@ for did, terms in FORBID.items():
     fw=len(re.findall(r'(?<![A-Za-z])French(?![A-Za-z])',h2))
     fr2=h2.count('Français')
     bad = dict(hits)
-    if did!='fr9' and fr2: bad['Français']=fr2
-    if did!='fr9' and fw: bad['French-word']=fw
+    if did not in ('fr9', 'bac12') and fr2: bad['Français']=fr2
+    if did not in ('fr9', 'bac12') and fw: bad['French-word']=fw
     st='CLEAN' if not bad else 'DIRTY'
     if bad: ok=False
     print(did,st,bad if bad else '-')
