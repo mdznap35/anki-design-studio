@@ -792,6 +792,16 @@ a:not(.btn):hover{color:var(--ac)}
 
   </div>
 
+  <div style="max-width:var(--maxw);margin:0 auto 16px;padding:12px 18px;background:var(--bg-1);border:1px solid var(--bd-strong);border-radius:4px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;justify-content:space-between">
+    <div style="font-family:var(--font-head);font-weight:700;font-size:.9rem;color:var(--tx)">خيارات التصدير السريعة:</div>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:center">
+      <label style="display:inline-flex;align-items:center;gap:6px;font-size:.8rem;cursor:pointer"><input type="checkbox" id="includeAudioTop" checked onchange="var c=document.getElementById('includeAudio');if(c){c.checked=this.checked;updateDlEst();}" style="accent-color:var(--ac)"> تضمين الصوت</label>
+      <label style="display:inline-flex;align-items:center;gap:6px;font-size:.8rem;cursor:pointer"><input type="checkbox" id="reverseDeckTop" onchange="var c=document.getElementById('reverseDeck');if(c)c.checked=this.checked;" style="accent-color:var(--ac)"> رزمة معكوسة</label>
+      <label style="display:inline-flex;align-items:center;gap:6px;font-size:.8rem;cursor:pointer"><input type="checkbox" id="uniqueEditionsTop" checked onchange="var c=document.getElementById('uniqueEditions');if(c)c.checked=this.checked;" style="accent-color:var(--ac)"> رزمة فريدة</label>
+      <label style="display:inline-flex;align-items:center;gap:6px;font-size:.8rem;cursor:pointer"><input type="checkbox" id="quickDlTop" onchange="var c=document.getElementById('quickDl');if(c){c.checked=this.checked;toggleQuickDl();}" style="accent-color:var(--ac)"> تنزيل سريع</label>
+    </div>
+  </div>
+
   <div id="gv" class="gv reveal">
     <div class="gv-bar">
       <div class="gv-counter"><span id="gvCur">١</span><span class="gv-sep">/</span><span id="gvTot">٠</span></div></div>
