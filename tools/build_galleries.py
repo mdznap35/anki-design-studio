@@ -263,10 +263,17 @@ def build_one(did, spec, base):
     assert n >= 20, t + 'storage count %d' % n
     h = h2
     h = rep(h, "'anki_ed_'", "'anki_" + did + "_ed_'", 1, t + 'edkey')
-    # Shared gallery root keeps the 100 real preview images for every deck.
-    # Per-deck subfolders do not exist in the repository; reusing the same gallery root
-    # avoids broken 404s and preserves the real template previews.
+
+    # Real repository fact: only /gallery_imgs exists; no per-deck gallery folders are shipped.
+    # Normalize any stale deck-specific thumbnails to the shared root so the generated pages
+    # never request non-existent directories like /gallery_imgs_en9/ or /gallery_imgs_fr9/.
+    for alias in ["gallery_imgs_en9", "gallery_imgs_enlit", "gallery_imgs_ensci", "gallery_imgs_fr9", "gallery_imgs_bac12"]:
+        h = h.replace("'" + alias + "/'", "'gallery_imgs/'")
+        h = h.replace('"' + alias + '/"', '"gallery_imgs/"')
+        h = h.replace('"' + alias + '"', '"gallery_imgs"')
+        h = h.replace("'" + alias + "'", "'gallery_imgs'")
     h = rep(h, "'gallery_imgs/'", "'gallery_imgs/'", 1, t + 'imgdir')
+
     h = rep(h, "var p={type:type, deviceId:DEVICE_ID, ts:Date.now(), url:location.href};",
             "var p={type:type, deviceId:DEVICE_ID, deck:DECK_ID, ts:Date.now(), url:location.href};", 1, t + 'track deck')
     h = rep(h, "var DEVICE_ID=(function(){try{var d=localStorage.getItem('anki_" + did + "_device_id');",
@@ -278,6 +285,8 @@ if __name__ == '__main__':
     base = open(BASE, encoding='utf-8').read()
     os.makedirs(OUTDIR, exist_ok=True)
     for did, spec in DECKS.items():
+        if did == 'bac12':
+            continue
         h, _ = build_one(did, spec, base)
         open(os.path.join(OUTDIR, spec['ffile']), 'w', encoding='utf-8').write(h)
         print(did, 'written', os.path.getsize(os.path.join(OUTDIR, spec['ffile'])))
