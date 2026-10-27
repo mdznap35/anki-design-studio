@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Build 4 independent gallery files + bac nav update from the French Bac base.
+"""Build 4 gallery pages for the target decks without touching the protected bac12 files.
+
 Reads: /workspace/index.html + /workspace/tools/decks/<id>/templates.json
 Writes: /workspace/out/<file>.html
-Every replacement is asserted by exact count. Fails loudly on mismatch.
 """
-import json, os, re, sys
+import json, os, re
 
 BASE = '/workspace/index.html'
 DECKDIR = '/workspace/tools/decks'
@@ -27,11 +27,13 @@ EN_POOL = [
   {"id":"en-AU-NatashaNeural","label":"إنجليزي (أستراليا) — ناتاشا","gender":"female"},
 ]
 
-NAV = ('      <a class="hdr-link" href="/en9">English 9</a>\n'
-       '      <a class="hdr-link" href="/enlit">English Literature 12</a>\n'
-       '      <a class="hdr-link" href="/ensci">English Science 12</a>\n'
-       '      <a class="hdr-link" href="/fr9">French 9</a>\n'
-       '      <a class="hdr-link" href="/bac12">French Bac 12</a>')
+NAV = (
+  '      <a class="hdr-link" href="/en9">English 9</a>\n'
+  '      <a class="hdr-link" href="/enlit">English Literature 12</a>\n'
+  '      <a class="hdr-link" href="/ensci">English Science 12</a>\n'
+  '      <a class="hdr-link" href="/fr9">French 9</a>\n'
+  '      <a class="hdr-link" href="/bac12">French Bac 12</a>'
+)
 NAV_OLD_RE = re.compile(r'(      <a class="hdr-link" href="(?:index\.html|gallery-[a-z0-9]+\.html)">.*?</a>\n?)+')
 
 SAMPS = {
@@ -86,36 +88,45 @@ DECKS = {
 }
 
 FR2EN_TEXTS = [
- ('اختر الصوت الفرنسي والصوت العربي، واضبط السرعة والنغمة والفواصل الزمنية بما يناسبك. يمكنك الاستماع إلى معاينة قبل إنشاء الرزمة، وتُستخدم هذه الإعدادات نفسها عند التصدير.',
-  'اختر الصوت الإنجليزي والصوت العربي، واضبط السرعة والنغمة والفواصل الزمنية بما يناسبك. يمكنك الاستماع إلى معاينة قبل إنشاء الرزمة، وتُستخدم هذه الإعدادات نفسها عند التصدير.'),
- ('<label for="gTtsFrVoice" class="aa-lb">الصوت الفرنسي</label>',
-  '<label for="gTtsFrVoice" class="aa-lb">الصوت الإنجليزي</label>'),
- ('>فرنسي <select class="sl" id="quickFrVoice"',
-  '>إنجليزي <select class="sl" id="quickFrVoice"'),
- ("sec('03','اضبط الصوت','اختر الصوت الفرنسي والصوت العربي، ثم عدّل السرعة",
-  "sec('03','اضبط الصوت','اختر الصوت الإنجليزي والصوت العربي، ثم عدّل السرعة"),
+  ('اختر الصوت الفرنسي والصوت العربي، واضبط السرعة والنغمة والفواصل الزمنية بما يناسبك. يمكنك الاستماع إلى معاينة قبل إنشاء الرزمة، وتُستخدم هذه الإعدادات نفسها عند التصدير.',
+   'اختر الصوت الإنجليزي والصوت العربي، واضبط السرعة والنغمة والفواصل الزمنية بما يناسبك. يمكنك الاستماع إلى معاينة قبل إنشاء الرزمة، وتُستخدم هذه الإعدادات نفسها عند التصدير.'),
+  ('<label for="gTtsFrVoice" class="aa-lb">الصوت الفرنسي</label>',
+   '<label for="gTtsFrVoice" class="aa-lb">الصوت الإنجليزي</label>'),
+  ('>فرنسي <select class="sl" id="quickFrVoice"',
+   '>إنجليزي <select class="sl" id="quickFrVoice"'),
+  ("sec('03','اضبط الصوت','اختر الصوت الفرنسي والصوت العربي، ثم عدّل السرعة",
+   "sec('03','اضبط الصوت','اختر الصوت الإنجليزي والصوت العربي، ثم عدّل السرعة"),
   ("{title:'اضبط الصوت',text:'اختر الصوت الفرنسي والعربي، واضبط السرعة والنغمة والفواصل الزمنية، ثم استمع إلى المعاينة قبل إنشاء الرزمة.'}",
    "{title:'اضبط الصوت',text:'اختر الصوت الإنجليزي والعربي، واضبط السرعة والنغمة والفواصل الزمنية، ثم استمع إلى المعاينة قبل إنشاء الرزمة.'}"),
- ('تحصل على رزمة Anki بصيغة APKG تحتوي على البطاقات بالقوالب التي اخترتها، مع الصوت الفرنسي والعربي وفق إعداداتك.',
-  'تحصل على رزمة Anki بصيغة APKG تحتوي على البطاقات بالقوالب التي اخترتها، مع الصوت الإنجليزي والعربي وفق إعداداتك.'),
+  ('تحصل على رزمة Anki بصيغة APKG تحتوي على البطاقات بالقوالب التي اخترتها، مع الصوت الفرنسي والعربي وفق إعداداتك.',
+   'تحصل على رزمة Anki بصيغة APKG تحتوي على البطاقات بالقوالب التي اخترتها، مع الصوت الإنجليزي والعربي وفق إعداداتك.'),
 ]
 
 
 def bmatch(s, i, o='[', c=']'):
     assert s[i] == o, s[i:i+20]
-    depth = 0; instr = False; esc = False; j = i
+    depth = 0
+    instr = False
+    esc = False
+    j = i
     while True:
         ch = s[j]
         if instr:
-            if esc: esc = False
-            elif ch == '\\': esc = True
-            elif ch == '"': instr = False
+            if esc:
+                esc = False
+            elif ch == '\\':
+                esc = True
+            elif ch == '"':
+                instr = False
         else:
-            if ch == '"': instr = True
-            elif ch == o: depth += 1
+            if ch == '"':
+                instr = True
+            elif ch == o:
+                depth += 1
             elif ch == c:
                 depth -= 1
-                if depth == 0: return j
+                if depth == 0:
+                    return j
         j += 1
 
 
@@ -146,19 +157,28 @@ def replace_embedded(h, entries):
 def replace_fallback_fr(h, new_fr_json):
     i = h.index('var TTS_VOICES_FALLBACK={')
     bj = h.index('{', i)
-    depth = 0; instr = False; esc = False; j = bj
+    depth = 0
+    instr = False
+    esc = False
+    j = bj
     while True:
         ch = h[j]
         if instr:
-            if esc: esc = False
-            elif ch == '\\': esc = True
-            elif ch == '"': instr = False
+            if esc:
+                esc = False
+            elif ch == '\\':
+                esc = True
+            elif ch == '"':
+                instr = False
         else:
-            if ch == '"': instr = True
-            elif ch == '{': depth += 1
+            if ch == '"':
+                instr = True
+            elif ch == '{':
+                depth += 1
             elif ch == '}':
                 depth -= 1
-                if depth == 0: break
+                if depth == 0:
+                    break
         j += 1
     stmt = h[i:j + 2]
     assert stmt.rstrip().endswith('};'), stmt[-20:]
@@ -174,7 +194,6 @@ def build_one(did, spec, base):
     h = base
     if did != 'bac12':
         h = replace_embedded(h, build_entries(did))
-        print(t + 'designs ok')
         s = SAMPS[did]
         samp = ("const SAMP={f:'%s',a:'%s',p:'%s',s:'%s',c:'%s',dossier:'%s',page:'%s',pos:'%s',poslabel:'%s',unit:'%s',unitnum:'%s'};"
                 % (s['f'], s['a'], s['p'], s['s'], s['c'], s['dossier'], s['page'], s['pos'], s['poslabel'], s['unit'], s['unitnum']))
@@ -203,15 +222,10 @@ def build_one(did, spec, base):
                 "var pwf='" + s['f'] + "',pwa='" + s['a'] + "';", 1, t + 'preview words')
         if spec['lang'] == 'en':
             h = replace_fallback_fr(h, json.dumps(EN_POOL, ensure_ascii=False))
-            print(t + 'fallback ok')
         h = rep(h, "'fr-FR-HenriNeural'", "'" + spec['frdef'] + "'", 2, t + 'voice defaults')
         if spec['lang'] == 'en':
             for item in FR2EN_TEXTS:
                 a, b = item[0], item[1]
-                opt = len(item) > 2 and item[2] == 'optional'
-                c = h.count(a)
-                if c == 0 and opt:
-                    continue
                 h = rep(h, a, b, 1, t + 'txt')
             h = rep(h, "u.lang=lang==='fr'?'fr-FR':'ar-SA';",
                     "u.lang=lang==='en'?'en-US':(lang==='fr'?'fr-FR':'ar-SA');", 1, t + 'speak lang')
@@ -241,6 +255,7 @@ def build_one(did, spec, base):
         h = rep(h, "if(!dn)dn='Français 12';", "if(!dn)dn='" + spec['deck'] + "';", 1, t + 'deck dn')
         h = rep(h, "deckName:'Français 12'", "deckName:'" + spec['deck'] + "'", 1, t + 'deck cfg')
         h = rep(h, "||'Anki Design'", "||'" + spec['deck'] + "'", 1, t + 'deck multi')
+
     h = rep(h, '<title>Anki Template Gallery — معرض قوالب Anki</title>',
             '<title>' + spec['title'] + '</title>', 1, t + 'title')
     h = rep(h, '<meta name="description" content="قوالب Anki لمفردات French Bac 12 مع الصوت الفرنسي والعربي.">',
@@ -251,27 +266,31 @@ def build_one(did, spec, base):
             '<meta property="og:description" content="' + spec['meta'] + '">', 1, t + 'ogdesc')
     h = rep(h, '<link rel="canonical" href="https://anki-design-studio.onrender.com/">',
             '<link rel="canonical" href="https://anki-design-studio.onrender.com' + spec['route'] + '">', 1, t + 'canonical')
+
     h2, n = NAV_OLD_RE.subn(NAV, h)
     if n == 0:
         assert h.count('href="/en9"') >= 1 and h.count('href="/bac12"') >= 1, t + 'nav missing'
     else:
         assert n == 1, t + 'nav count %d' % n
         h = h2
+
     h = rep(h, '<a class="brand" href="index.html" aria-label="الصفحة الرئيسية">',
             '<a class="brand" href="' + spec['route'] + '" aria-label="الصفحة الرئيسية">', 1, t + 'brand')
+
     h2, n = re.subn(r"localStorage\.(getItem|setItem|removeItem)\('anki_", r"localStorage.\1('anki_" + did + "_", h)
     assert n >= 20, t + 'storage count %d' % n
     h = h2
     h = rep(h, "'anki_ed_'", "'anki_" + did + "_ed_'", 1, t + 'edkey')
 
-    # Real repository fact: only /gallery_imgs exists; no per-deck gallery folders are shipped.
-    # Normalize any stale deck-specific thumbnails to the shared root so the generated pages
-    # never request non-existent directories like /gallery_imgs_en9/ or /gallery_imgs_fr9/.
+    # The repository ships only one real gallery root: /gallery_imgs
+    # Per-deck subfolders are not present and must not be requested.
     for alias in ["gallery_imgs_en9", "gallery_imgs_enlit", "gallery_imgs_ensci", "gallery_imgs_fr9", "gallery_imgs_bac12"]:
         h = h.replace("'" + alias + "/'", "'gallery_imgs/'")
         h = h.replace('"' + alias + '/"', '"gallery_imgs/"')
         h = h.replace('"' + alias + '"', '"gallery_imgs"')
         h = h.replace("'" + alias + "'", "'gallery_imgs'")
+
+    # No deck-specific thumbnail directory change is allowed here.
     h = rep(h, "'gallery_imgs/'", "'gallery_imgs/'", 1, t + 'imgdir')
 
     h = rep(h, "var p={type:type, deviceId:DEVICE_ID, ts:Date.now(), url:location.href};",
@@ -288,5 +307,7 @@ if __name__ == '__main__':
         if did == 'bac12':
             continue
         h, _ = build_one(did, spec, base)
-        open(os.path.join(OUTDIR, spec['ffile']), 'w', encoding='utf-8').write(h)
-        print(did, 'written', os.path.getsize(os.path.join(OUTDIR, spec['ffile'])))
+        out_path = os.path.join(OUTDIR, spec['ffile'])
+        with open(out_path, 'w', encoding='utf-8') as f:
+            f.write(h)
+        print(did, 'written', os.path.getsize(out_path))
