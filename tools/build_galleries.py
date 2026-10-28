@@ -5,10 +5,12 @@ Reads: /workspace/index.html + /workspace/tools/decks/<id>/templates.json
 Writes: /workspace/out/<file>.html
 """
 import json, os, re
+from pathlib import Path
 
-BASE = '/workspace/index.html'
-DECKDIR = '/workspace/tools/decks'
-OUTDIR = '/workspace/out'
+ROOT = Path(os.environ.get('WORKSPACE_ROOT') or Path(__file__).resolve().parents[1])
+BASE = str(ROOT / 'index.html')
+DECKDIR = str(ROOT / 'tools' / 'decks')
+OUTDIR = str(ROOT / 'out')
 
 EN_POOL = [
   {"id":"en-US-GuyNeural","label":"إنجليزي (أمريكا) — غاي","gender":"male"},
@@ -66,40 +68,40 @@ NAMES = {
 
 DECKS = {
   'en9': dict(route='/en9', ffile='en9.html', lang='en', ws='en9', deck='English 9',
-     title='English 9 — Anki Template Gallery',
-     meta='قوالب Anki لمفردات English 9 مع الصوت الإنجليزي والعربي.',
-     frdef='en-US-GuyNeural', img='gallery_imgs'),
+      title='English 9 — Anki Template Gallery',
+      meta='قوالب Anki لمفردات English 9 مع الصوت الإنجليزي والعربي.',
+      frdef='en-US-GuyNeural', img='gallery_imgs'),
   'enlit': dict(route='/enlit', ffile='enlit.html', lang='en', ws='enlit', deck='English Literature 12',
-     title='English Literature 12 — Anki Template Gallery',
-     meta='قوالب Anki لمفردات English Literature 12 مع الصوت الإنجليزي والعربي.',
-     frdef='en-US-GuyNeural', img='gallery_imgs'),
+      title='English Literature 12 — Anki Template Gallery',
+      meta='قوالب Anki لمفردات English Literature 12 مع الصوت الإنجليزي والعربي.',
+      frdef='en-US-GuyNeural', img='gallery_imgs'),
   'ensci': dict(route='/ensci', ffile='ensci.html', lang='en', ws='ensci', deck='English Science 12',
-     title='English Science 12 — Anki Template Gallery',
-     meta='قوالب Anki لمفردات English Science 12 مع الصوت الإنجليزي والعربي.',
-     frdef='en-US-GuyNeural', img='gallery_imgs'),
+      title='English Science 12 — Anki Template Gallery',
+      meta='قوالب Anki لمفردات English Science 12 مع الصوت الإنجليزي والعربي.',
+      frdef='en-US-GuyNeural', img='gallery_imgs'),
   'fr9': dict(route='/fr9', ffile='fr9.html', lang='fr', ws='tas9', deck='French 9',
-     title='French 9 — Anki Template Gallery',
-     meta='قوالب Anki لمفردات French 9 مع الصوت الفرنسي والعربي.',
-     frdef='fr-FR-HenriNeural', img='gallery_imgs'),
+      title='French 9 — Anki Template Gallery',
+      meta='قوالب Anki لمفردات French 9 مع الصوت الفرنسي والعربي.',
+      frdef='fr-FR-HenriNeural', img='gallery_imgs'),
   'bac12': dict(route='/bac12', ffile='bac12.html', lang='fr', ws='bac12', deck='French Bac 12',
-     title='French Bac 12 — Anki Template Gallery',
-     meta='قوالب Anki لمفردات French Bac 12 مع الصوت الفرنسي والعربي.',
-     frdef='fr-FR-HenriNeural', img='gallery_imgs'),
+      title='French Bac 12 — Anki Template Gallery',
+      meta='قوالب Anki لمفردات French Bac 12 مع الصوت الفرنسي والعربي.',
+      frdef='fr-FR-HenriNeural', img='gallery_imgs'),
 }
 
 FR2EN_TEXTS = [
-  ('اختر الصوت الفرنسي والصوت العربي، واضبط السرعة والنغمة والفواصل الزمنية بما يناسبك. يمكنك الاستماع إلى معاينة قبل إنشاء الرزمة، وتُستخدم هذه الإعدادات نفسها عند التصدير.',
-   'اختر الصوت الإنجليزي والصوت العربي، واضبط السرعة والنغمة والفواصل الزمنية بما يناسبك. يمكنك الاستماع إلى معاينة قبل إنشاء الرزمة، وتُستخدم هذه الإعدادات نفسها عند التصدير.'),
-  ('<label for="gTtsFrVoice" class="aa-lb">الصوت الفرنسي</label>',
-   '<label for="gTtsFrVoice" class="aa-lb">الصوت الإنجليزي</label>'),
-  ('>فرنسي <select class="sl" id="quickFrVoice"',
-   '>إنجليزي <select class="sl" id="quickFrVoice"'),
-  ("sec('03','اضبط الصوت','اختر الصوت الفرنسي والصوت العربي، ثم عدّل السرعة",
-   "sec('03','اضبط الصوت','اختر الصوت الإنجليزي والصوت العربي، ثم عدّل السرعة"),
-  ("{title:'اضبط الصوت',text:'اختر الصوت الفرنسي والعربي، واضبط السرعة والنغمة والفواصل الزمنية، ثم استمع إلى المعاينة قبل إنشاء الرزمة.'}",
-   "{title:'اضبط الصوت',text:'اختر الصوت الإنجليزي والعربي، واضبط السرعة والنغمة والفواصل الزمنية، ثم استمع إلى المعاينة قبل إنشاء الرزمة.'}"),
-  ('تحصل على رزمة Anki بصيغة APKG تحتوي على البطاقات بالقوالب التي اخترتها، مع الصوت الفرنسي والعربي وفق إعداداتك.',
-   'تحصل على رزمة Anki بصيغة APKG تحتوي على البطاقات بالقوالب التي اخترتها، مع الصوت الإنجليزي والعربي وفق إعداداتك.'),
+ ('اختر الصوت الفرنسي والصوت العربي، واضبط السرعة والنغمة والفواصل الزمنية بما يناسبك. يمكنك الاستماع إلى معاينة قبل إنشاء الرزمة، وتُستخدم هذه الإعدادات نفسها عند التصدير.',
+  'اختر الصوت الإنجليزي والصوت العربي، واضبط السرعة والنغمة والفواصل الزمنية بما يناسبك. يمكنك الاستماع إلى معاينة قبل إنشاء الرزمة، وتُستخدم هذه الإعدادات نفسها عند التصدير.'),
+ ('<label for="gTtsFrVoice" class="aa-lb">الصوت الفرنسي</label>',
+  '<label for="gTtsFrVoice" class="aa-lb">الصوت الإنجليزي</label>'),
+ ('>فرنسي <select class="sl" id="quickFrVoice"',
+  '>إنجليزي <select class="sl" id="quickFrVoice"'),
+ ("sec('03','اضبط الصوت','اختر الصوت الفرنسي والصوت العربي، ثم عدّل السرعة",
+  "sec('03','اضبط الصوت','اختر الصوت الإنجليزي والصوت العربي، ثم عدّل السرعة"),
+ ("{title:'اضبط الصوت',text:'اختر الصوت الفرنسي والعربي، واضبط السرعة والنغمة والفواصل الزمنية، ثم استمع إلى المعاينة.'}",
+  "{title:'اضبط الصوت',text:'اختر الصوت الإنجليزي والعربي، واضبط السرعة والنغمة والفواصل الزمنية، ثم استمع إلى المعاينة.'}"),
+ ('تحصل على رزمة Anki بصيغة APKG تحتوي على البطاقات بالقوالب التي اخترتها، مع الصوت الفرنسي والعربي وفق إعداداتك.',
+  'تحصل على رزمة Anki بصيغة APKG تحتوي على البطاقات بالقوالب التي اخترتها، مع الصوت الإنجليزي والعربي وفق إعداداتك.'),
 ]
 
 
@@ -245,7 +247,7 @@ def build_one(did, spec, base):
         h = rep(h, "    includeAudio:inc,\n    quick:dlQuick()\n  };",
                 "    includeAudio:inc,\n    quick:dlQuick(),\n    wordSource:'" + spec['ws'] + "'\n  };", 1, t + 'ws selected')
         h = rep(h, "includeAudio:((document.getElementById('includeAudio')&&document.getElementById('includeAudio').checked)!==false),quick:dlQuick()};",
-                "includeAudio:((document.getElementById('includeAudio')&&document.getElementById('includeAudio').checked)!==false),quick:dlQuick(),wordSource:'" + spec['ws'] + "'};", 1, t + 'ws selection')
+                "includeAudio:((document.getElementById('includeAudio')&&document.getElementById('includeAudio').checked)!==false),quick:dlQuick(),wordSource:'" + spec['ws'] + "'};", 1, t + 'ws selected2')
         h = rep(h, "includeAudio:document.getElementById('includeAudio')?.checked!==false, quick:dlQuick()};",
                 "includeAudio:document.getElementById('includeAudio')?.checked!==false, quick:dlQuick(),wordSource:'" + spec['ws'] + "'};", 1, t + 'ws multi')
         h = rep(h, 'value="Français 12"', 'value="' + spec['deck'] + '"', 1, t + 'deck input')
@@ -282,15 +284,12 @@ def build_one(did, spec, base):
     h = h2
     h = rep(h, "'anki_ed_'", "'anki_" + did + "_ed_'", 1, t + 'edkey')
 
-    # The repository ships only one real gallery root: /gallery_imgs
-    # Per-deck subfolders are not present and must not be requested.
     for alias in ["gallery_imgs_en9", "gallery_imgs_enlit", "gallery_imgs_ensci", "gallery_imgs_fr9", "gallery_imgs_bac12"]:
         h = h.replace("'" + alias + "/'", "'gallery_imgs/'")
         h = h.replace('"' + alias + '/"', '"gallery_imgs/"')
         h = h.replace('"' + alias + '"', '"gallery_imgs"')
         h = h.replace("'" + alias + "'", "'gallery_imgs'")
 
-    # No deck-specific thumbnail directory change is allowed here.
     h = rep(h, "'gallery_imgs/'", "'gallery_imgs/'", 1, t + 'imgdir')
 
     h = rep(h, "var p={type:type, deviceId:DEVICE_ID, ts:Date.now(), url:location.href};",
