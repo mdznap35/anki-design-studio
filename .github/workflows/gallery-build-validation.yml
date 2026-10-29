@@ -23,3 +23,5 @@ jobs:
           python-version: "3.12"
       - name: Build and test galleries
         run: python tools/test_build_galleries.py
+      - name: Audit generated gallery copy
+        run: python tools/audit.py
