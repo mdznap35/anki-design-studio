@@ -60,10 +60,10 @@ SWAPS = {
 }
 
 FIELD_ALIASES = {
-  'en9': {'French':'Word','Français':'Word','English':'Word','Word':'Word','Arabic':'Meaning','Arabe':'Meaning','Meaning':'Meaning','AudioFR':'AudioEN','FrSound':'AudioEN','FrFile':'AudioEN','AudioEN':'AudioEN','AudioAR':'AudioAR','ArSound':'AudioAR','ArFile':'AudioAR','AudioBOTH':'AudioBOTH','BothSound':'AudioBOTH','BothFile':'AudioBOTH','ExtraRows':'UnitText','Extras':'UnitText','Extra':'UnitText','Unit':'Unit','UnitText':'UnitText','Dossier':'UnitText','POS':'POS','POSLabel':'POSLabel','POSColor':'POSColor','UnitNum':'UnitNum'},
-  'enlit': {'French':'English','Français':'English','English':'English','Word':'English','Arabic':'Arabic','Arabe':'Arabic','Meaning':'Arabic','AudioFR':'AudioEN','FrSound':'AudioEN','FrFile':'AudioEN','AudioEN':'AudioEN','AudioAR':'AudioAR','ArSound':'AudioAR','ArFile':'AudioAR','AudioBOTH':'AudioBOTH','BothSound':'AudioBOTH','BothFile':'AudioBOTH','ExtraRows':'UnitText','Extras':'UnitText','Extra':'UnitText','Unit':'UnitText','UnitText':'UnitText','Dossier':'UnitText'},
-  'ensci': {'French':'English','Français':'English','English':'English','Arabic':'Arabic','Arabe':'Arabic','AudioFR':'AudioEN','FrSound':'AudioEN','FrFile':'AudioEN','AudioEN':'AudioEN','AudioAR':'AudioAR','ArSound':'AudioAR','ArFile':'AudioAR','AudioBOTH':'AudioBOTH','BothSound':'AudioBOTH','BothFile':'AudioBOTH','ExtraRows':'UnitText','Extras':'UnitText','Extra':'UnitText','Unit':'UnitText','UnitText':'UnitText','Dossier':'UnitText'},
-  'fr9': {'French':'Français','Français':'Français','English':'Français','Arabic':'Arabic','Arabe':'Arabic','AudioFR':'AudioFR','FrSound':'AudioFR','FrFile':'AudioFR','AudioEN':'AudioFR','AudioAR':'AudioAR','ArSound':'AudioAR','ArFile':'AudioAR','AudioBOTH':'AudioBOTH','BothSound':'AudioBOTH','BothFile':'AudioBOTH','ExtraRows':'Dossier','Extras':'Dossier','Extra':'Dossier','Unit':'Dossier','UnitText':'Dossier','Dossier':'Dossier'},
+  'en9': {'French':'Word','Français':'Word','English':'Word','Word':'Word','Arabic':'Meaning','Arabe':'Meaning','Meaning':'Meaning','AudioFR':'AudioEN','FrSound':'AudioEN','FrFile':'AudioEN','AudioEN':'AudioEN','AudioAR':'AudioAR','ArSound':'AudioAR','ArFile':'AudioAR','AudioBOTH':'AudioBOTH','BothSound':'AudioBOTH','BothFile':'AudioBOTH','ExtraRows':'UnitText','Extras':'UnitText','Extra':'UnitText','Unit':'Unit','UnitNum':'UnitNum','UnitText':'UnitText','Dossier':'UnitText','POS':'POS','POSLabel':'POSLabel','POSColor':'POSColor'},
+  'enlit': {'French':'English','Français':'English','English':'English','Word':'English','Arabic':'Arabic','Arabe':'Arabic','Meaning':'Arabic','AudioFR':'AudioEN','FrSound':'AudioEN','FrFile':'AudioEN','AudioEN':'AudioEN','AudioAR':'AudioAR','ArSound':'AudioAR','ArFile':'AudioAR','AudioBOTH':'AudioBOTH','BothSound':'AudioBOTH','BothFile':'AudioBOTH','ExtraRows':'UnitText','Extras':'UnitText','Extra':'UnitText','Unit':'UnitText','UnitNum':'UnitText','UnitText':'UnitText','Dossier':'UnitText','POS':'UnitText','POSLabel':'UnitText','POSColor':'UnitText'},
+  'ensci': {'French':'English','Français':'English','English':'English','Word':'English','Arabic':'Arabic','Arabe':'Arabic','Meaning':'Arabic','AudioFR':'AudioEN','FrSound':'AudioEN','FrFile':'AudioEN','AudioEN':'AudioEN','AudioAR':'AudioAR','ArSound':'AudioAR','ArFile':'AudioAR','AudioBOTH':'AudioBOTH','BothSound':'AudioBOTH','BothFile':'AudioBOTH','ExtraRows':'UnitText','Extras':'UnitText','Extra':'UnitText','Unit':'UnitText','UnitNum':'UnitText','UnitText':'UnitText','Dossier':'UnitText','POS':'UnitText','POSLabel':'UnitText','POSColor':'UnitText'},
+  'fr9': {'French':'Français','Français':'Français','English':'Français','Word':'Français','Arabic':'Arabic','Arabe':'Arabic','Meaning':'Arabic','AudioFR':'AudioFR','FrSound':'AudioFR','FrFile':'AudioFR','AudioEN':'AudioFR','AudioAR':'AudioAR','ArSound':'AudioAR','ArFile':'AudioAR','AudioBOTH':'AudioBOTH','BothSound':'AudioBOTH','BothFile':'AudioBOTH','ExtraRows':'Dossier','Extras':'Dossier','Extra':'Dossier','Unit':'Dossier','UnitNum':'Dossier','UnitText':'Dossier','Dossier':'Dossier','POS':'Dossier','POSLabel':'Dossier','POSColor':'Dossier'},
 }
 
 DECKS = {
@@ -188,6 +188,9 @@ def build_entries(did, base):
                                  (did, number, key, ', '.join(unknown_fields)))
             item[key] = template_html
         item['fields'] = model_fields
+        # The source catalog comes from the French Bac page; make deck routing
+        # explicit so export code never inherits the source page's pack ID.
+        item['pack'] = did
         if not item.get('name'):
             item['name'] = '%02d' % number
         out.append(item)
