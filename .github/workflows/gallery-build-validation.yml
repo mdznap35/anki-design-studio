@@ -1,0 +1,27 @@
+name: Gallery build validation
+
+on:
+  pull_request:
+    paths:
+      - "index.html"
+      - "render.yaml"
+      - "tools/**"
+      - ".github/workflows/gallery-build-validation.yml"
+  push:
+    branches:
+      - "fix/restore-100-gallery-designs-20261029"
+
+jobs:
+  validate-galleries:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build and test galleries
+        run: python tools/test_build_galleries.py
+      - name: Audit generated gallery copy
+        run: python tools/audit.py

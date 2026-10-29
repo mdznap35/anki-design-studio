@@ -2,7 +2,7 @@ services:
   - type: web
     name: anki-design-studio
     env: static
-    buildCommand: python3 tools/build_galleries.py && cp out/*.html ./
+    buildCommand: python3 tools/build_galleries.py && cp out/en9.html out/enlit.html out/ensci.html out/fr9.html ./
     staticPublishPath: .
     routes:
       - type: rewrite

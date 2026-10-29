@@ -1,4 +1,7 @@
 import re, sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
 FORBID = {
  'en9':   ['French Bac','بكلوريا','Literature','Science','French 9','فرنسي 9','Henri','Dossier'],
  'enlit': ['French Bac','بكلوريا','French 9','فرنسي 9','Henri','Dossier','Science 12'],
@@ -9,7 +12,7 @@ FORBID = {
 FILES = {'en9':'en9','enlit':'enlit','ensci':'ensci','fr9':'fr9','bac12':'bac12'}
 ok=True
 for did, terms in FORBID.items():
-    h=open('/workspace/out/%s.html'%FILES[did],encoding='utf-8').read()
+    h=(ROOT / 'out' / ('%s.html' % FILES[did])).read_text(encoding='utf-8')
     # remove scripts and header links for content check
     h_text = re.sub(r'<script.*?</script>', '', h, flags=re.DOTALL)
     h2=re.sub(r'<a class="hdr-link" href="/[a-z0-9]+">.*?</a>','',h_text)

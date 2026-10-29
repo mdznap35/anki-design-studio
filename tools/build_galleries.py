@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Build 4 gallery pages for the target decks without touching the protected bac12 files.
+"""Build four deck-specific gallery pages while preserving all 100 visual designs.
 
-Reads: /workspace/index.html + /workspace/tools/decks/<id>/templates.json
-Writes: /workspace/out/<file>.html
+Reads the repository-root index.html and each deck's templates.json.
+Writes only the four public gallery files under out/. The bac12 files are protected.
 """
 import json, os, re
 from pathlib import Path
@@ -39,10 +39,10 @@ NAV = (
 NAV_OLD_RE = re.compile(r'(      <a class="hdr-link" href="(?:index\.html|gallery-[a-z0-9]+\.html)">.*?</a>\n?)+')
 
 SAMPS = {
-  'en9':   dict(f='Different', a='مختلف', p='', s='', c='', dossier='', page='', pos='ADJ', poslabel='صفة', unit='Unit 01', unitnum='01'),
-  'enlit': dict(f='Future', a='المستقبل', p='', s='', c='', dossier='', page='', pos='', poslabel='', unit='Unit 01 - Future Careers', unitnum=''),
-  'ensci': dict(f='Future', a='المستقبل', p='', s='', c='', dossier='', page='', pos='', poslabel='', unit='Unit 01 - A Learned Lesson is a Good Lesson', unitnum=''),
-  'fr9':   dict(f='Un entourage', a='محيط', p='', s='', c='', dossier='Dossier 1', page='', pos='', poslabel='', unit='', unitnum=''),
+  'en9':   dict(f='Student', a='طالب', p='', s='', c='', dossier='', page='', pos='NOUN', poslabel='اسم', unit='Unit 01', unitnum='01'),
+  'enlit': dict(f='Novel', a='رواية', p='', s='', c='', dossier='', page='', pos='', poslabel='', unit='Unit 01', unitnum=''),
+  'ensci': dict(f='Atom', a='ذرة', p='', s='', c='', dossier='', page='', pos='', poslabel='', unit='Unit 01', unitnum=''),
+  'fr9':   dict(f='Leçon', a='درس', p='', s='', c='', dossier='Dossier 1', page='', pos='', poslabel='', unit='', unitnum=''),
 }
 
 FILLS = {
@@ -59,11 +59,11 @@ SWAPS = {
   'fr9': [('{{Français}}','{{Arabic}}'),('{{AudioFR}}','{{AudioAR}}')],
 }
 
-NAMES = {
-  'en9': ['English 9'],
-  'enlit': ['English Literature 12', 'English Literature 12 (Important Words)'],
-  'ensci': ['English Science 12', 'English Science 12 (Important Words)'],
-  'fr9': ['French 9'],
+FIELD_ALIASES = {
+  'en9': {'French':'Word','Français':'Word','English':'Word','Word':'Word','Arabic':'Meaning','Arabe':'Meaning','Meaning':'Meaning','AudioFR':'AudioEN','FrSound':'AudioEN','FrFile':'AudioEN','AudioEN':'AudioEN','AudioAR':'AudioAR','ArSound':'AudioAR','ArFile':'AudioAR','AudioBOTH':'AudioBOTH','BothSound':'AudioBOTH','BothFile':'AudioBOTH','ExtraRows':'UnitText','Extras':'UnitText','Extra':'UnitText','Unit':'Unit','UnitNum':'UnitNum','UnitText':'UnitText','Dossier':'UnitText','POS':'POS','POSLabel':'POSLabel','POSColor':'POSColor'},
+  'enlit': {'French':'English','Français':'English','English':'English','Word':'English','Arabic':'Arabic','Arabe':'Arabic','Meaning':'Arabic','AudioFR':'AudioEN','FrSound':'AudioEN','FrFile':'AudioEN','AudioEN':'AudioEN','AudioAR':'AudioAR','ArSound':'AudioAR','ArFile':'AudioAR','AudioBOTH':'AudioBOTH','BothSound':'AudioBOTH','BothFile':'AudioBOTH','ExtraRows':'UnitText','Extras':'UnitText','Extra':'UnitText','Unit':'UnitText','UnitNum':'UnitText','UnitText':'UnitText','Dossier':'UnitText','POS':'UnitText','POSLabel':'UnitText','POSColor':'UnitText'},
+  'ensci': {'French':'English','Français':'English','English':'English','Word':'English','Arabic':'Arabic','Arabe':'Arabic','Meaning':'Arabic','AudioFR':'AudioEN','FrSound':'AudioEN','FrFile':'AudioEN','AudioEN':'AudioEN','AudioAR':'AudioAR','ArSound':'AudioAR','ArFile':'AudioAR','AudioBOTH':'AudioBOTH','BothSound':'AudioBOTH','BothFile':'AudioBOTH','ExtraRows':'UnitText','Extras':'UnitText','Extra':'UnitText','Unit':'UnitText','UnitNum':'UnitText','UnitText':'UnitText','Dossier':'UnitText','POS':'UnitText','POSLabel':'UnitText','POSColor':'UnitText'},
+  'fr9': {'French':'Français','Français':'Français','English':'Français','Word':'Français','Arabic':'Arabic','Arabe':'Arabic','Meaning':'Arabic','AudioFR':'AudioFR','FrSound':'AudioFR','FrFile':'AudioFR','AudioEN':'AudioFR','AudioAR':'AudioAR','ArSound':'AudioAR','ArFile':'AudioAR','AudioBOTH':'AudioBOTH','BothSound':'AudioBOTH','BothFile':'AudioBOTH','ExtraRows':'Dossier','Extras':'Dossier','Extra':'Dossier','Unit':'Dossier','UnitNum':'Dossier','UnitText':'Dossier','Dossier':'Dossier','POS':'Dossier','POSLabel':'Dossier','POSColor':'Dossier'},
 }
 
 DECKS = {
@@ -98,10 +98,10 @@ FR2EN_TEXTS = [
   '>إنجليزي <select class="sl" id="quickFrVoice"'),
  ("sec('03','اضبط الصوت','اختر الصوت الفرنسي والصوت العربي، ثم عدّل السرعة",
   "sec('03','اضبط الصوت','اختر الصوت الإنجليزي والصوت العربي، ثم عدّل السرعة"),
- ("{title:'اضبط الصوت',text:'اختر الصوت الفرنسي والعربي، واضبط السرعة والنغمة والفواصل الزمنية، ثم استمع إلى المعاينة.'}",
-  "{title:'اضبط الصوت',text:'اختر الصوت الإنجليزي والعربي، واضبط السرعة والنغمة والفواصل الزمنية، ثم استمع إلى المعاينة.'}"),
- ('تحصل على رزمة Anki بصيغة APKG تحتوي على البطاقات بالقوالب التي اخترتها، مع الصوت الفرنسي والعربي وفق إعداداتك.',
-  'تحصل على رزمة Anki بصيغة APKG تحتوي على البطاقات بالقوالب التي اخترتها، مع الصوت الإنجليزي والعربي وفق إعداداتك.'),
+ ("{title:'اضبط الصوت',text:'اختر الصوت الفرنسي والعربي، واضبط السرعة والنغمة والفواصل الزمنية، ثم استمع إلى المعاينة قبل التصدير.'}",
+  "{title:'اضبط الصوت',text:'اختر الصوت الإنجليزي والعربي، واضبط السرعة والنغمة والفواصل الزمنية، ثم استمع إلى المعاينة قبل التصدير.'}"),
+ ('تحصل على رزمة Anki بصيغة APKG تحتوي على البطاقات بالقوالب التي اخترتها، مع الصوت الفرنسي والعربي وفق إعداداتك، عند تفعيل تضمين الصوت.',
+  'تحصل على رزمة Anki بصيغة APKG تحتوي على البطاقات بالقوالب التي اخترتها، مع الصوت الإنجليزي والعربي وفق إعداداتك، عند تفعيل تضمين الصوت.', 'optional'),
 ]
 
 
@@ -139,12 +139,61 @@ def rep(h, old, new, cnt, desc):
     return h.replace(old, new)
 
 
-def build_entries(did):
-    data = json.load(open(os.path.join(DECKDIR, did, 'templates.json'), encoding='utf-8'))
+def build_entries(did, base):
+    """Keep all 100 visual designs, adapting their placeholders to the deck schema."""
+    source_path = os.path.join(DECKDIR, did, 'templates.json')
+    with open(source_path, encoding='utf-8') as source_file:
+        data = json.load(source_file)
+    models = data.get('models') if isinstance(data, dict) else None
+    if not isinstance(models, list) or not models:
+        raise SystemExit('INVALID MODELS: %s must contain a non-empty models list' % source_path)
+    field_lists = [m.get('fields') for m in models if isinstance(m, dict)]
+    if len(field_lists) != len(models) or any(not isinstance(f, list) or not f for f in field_lists):
+        raise SystemExit('INVALID FIELDS: %s must give every model a non-empty fields list' % source_path)
+    model_fields = field_lists[0]
+    model_field_set = set(model_fields)
+    if any(set(fields) != model_field_set for fields in field_lists[1:]):
+        raise SystemExit('INCOMPATIBLE MODEL SCHEMAS: %s' % did)
+
+    marker = 'var EMBEDDED_DESIGNS_100 = ['
+    marker_index = base.find(marker)
+    if marker_index < 0:
+        raise SystemExit('MISSING DESIGN CATALOG: EMBEDDED_DESIGNS_100 was not found in index.html')
+    array_start = base.find('[', marker_index)
+    array_end = bmatch(base, array_start)
+    designs = json.loads(base[array_start:array_end + 1])
+    if not isinstance(designs, list) or len(designs) != 100:
+        raise SystemExit('INVALID DESIGN CATALOG: expected 100 designs, found %s' %
+                         (len(designs) if isinstance(designs, list) else type(designs).__name__))
+
     out = []
-    for k, m in enumerate(data['models']):
-        out.append({'name': NAMES[did][k], 'fields': m['fields'], 'front': m['qfmt'],
-                    'back': m['afmt'], 'css': m['css'], 'pack': did})
+    aliases = FIELD_ALIASES[did]
+    for number, design in enumerate(designs, 1):
+        if not isinstance(design, dict):
+            raise SystemExit('INVALID DESIGN: item %d is not an object' % number)
+        item = dict(design)
+        for key in ('front', 'back'):
+            template_html = item.get(key)
+            if not isinstance(template_html, str):
+                raise SystemExit('INVALID DESIGN: item %d has no string %s HTML' % (number, key))
+            def map_field(match):
+                prefix, field_name = match.groups()
+                return '{{%s%s}}' % (prefix, aliases.get(field_name, field_name))
+            template_html = re.sub(r'\{\{([#\^/]?)([^{}]+)\}\}', map_field, template_html)
+            used_fields = {field_name for _, field_name in re.findall(r'\{\{([#\^/]?)([^{}]+)\}\}', template_html)}
+            reserved_fields = {'FrontSide', 'Tags', 'Type', 'Deck', 'Subdeck', 'Card', 'c1', 'c2', 'c3', 'c4', 'c5', 'c6'}
+            unknown_fields = sorted(used_fields - model_field_set - reserved_fields)
+            if unknown_fields:
+                raise SystemExit('UNMAPPED FIELDS: %s design %02d %s uses %s' %
+                                 (did, number, key, ', '.join(unknown_fields)))
+            item[key] = template_html
+        item['fields'] = model_fields
+        # The source catalog comes from the French Bac page; make deck routing
+        # explicit so export code never inherits the source page's pack ID.
+        item['pack'] = did
+        if not item.get('name'):
+            item['name'] = '%02d' % number
+        out.append(item)
     return out
 
 
@@ -195,7 +244,7 @@ def build_one(did, spec, base):
     t = '[' + did + '] '
     h = base
     if did != 'bac12':
-        h = replace_embedded(h, build_entries(did))
+        h = replace_embedded(h, build_entries(did, h))
         s = SAMPS[did]
         samp = ("const SAMP={f:'%s',a:'%s',p:'%s',s:'%s',c:'%s',dossier:'%s',page:'%s',pos:'%s',poslabel:'%s',unit:'%s',unitnum:'%s'};"
                 % (s['f'], s['a'], s['p'], s['s'], s['c'], s['dossier'], s['page'], s['pos'], s['poslabel'], s['unit'], s['unitnum']))
@@ -228,7 +277,14 @@ def build_one(did, spec, base):
         if spec['lang'] == 'en':
             for item in FR2EN_TEXTS:
                 a, b = item[0], item[1]
-                h = rep(h, a, b, 1, t + 'txt')
+                optional = len(item) > 2 and item[2] == 'optional'
+                occurrences = h.count(a)
+                if optional and occurrences == 0:
+                    continue
+                if occurrences != 1:
+                    raise SystemExit('ASSERT %s txt: found %d expected %d :: %.80s' %
+                                     (did, occurrences, 1, a))
+                h = h.replace(a, b)
             h = rep(h, "u.lang=lang==='fr'?'fr-FR':'ar-SA';",
                     "u.lang=lang==='en'?'en-US':(lang==='fr'?'fr-FR':'ar-SA');", 1, t + 'speak lang')
             h = rep(h, "var langPrefix=lang==='fr'?'fr':'ar';",
