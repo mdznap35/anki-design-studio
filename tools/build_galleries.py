@@ -101,7 +101,7 @@ FR2EN_TEXTS = [
  ("{title:'اضبط الصوت',text:'اختر الصوت الفرنسي والعربي، واضبط السرعة والنغمة والفواصل الزمنية، ثم استمع إلى المعاينة قبل التصدير.'}",
   "{title:'اضبط الصوت',text:'اختر الصوت الإنجليزي والعربي، واضبط السرعة والنغمة والفواصل الزمنية، ثم استمع إلى المعاينة قبل التصدير.'}"),
  ('تحصل على رزمة Anki بصيغة APKG تحتوي على البطاقات بالقوالب التي اخترتها، مع الصوت الفرنسي والعربي وفق إعداداتك، عند تفعيل تضمين الصوت.',
-  'تحصل على رزمة Anki بصيغة APKG تحتوي على البطاقات بالقوالب التي اخترتها، مع الصوت الإنجليزي والعربي وفق إعداداتك، عند تفعيل تضمين الصوت.'),
+  'تحصل على رزمة Anki بصيغة APKG تحتوي على البطاقات بالقوالب التي اخترتها، مع الصوت الإنجليزي والعربي وفق إعداداتك، عند تفعيل تضمين الصوت.', 'optional'),
 ]
 
 
@@ -277,7 +277,14 @@ def build_one(did, spec, base):
         if spec['lang'] == 'en':
             for item in FR2EN_TEXTS:
                 a, b = item[0], item[1]
-                h = rep(h, a, b, 1, t + 'txt')
+                optional = len(item) > 2 and item[2] == 'optional'
+                occurrences = h.count(a)
+                if optional and occurrences == 0:
+                    continue
+                if occurrences != 1:
+                    raise SystemExit('ASSERT %s txt: found %d expected %d :: %.80s' %
+                                     (did, occurrences, 1, a))
+                h = h.replace(a, b)
             h = rep(h, "u.lang=lang==='fr'?'fr-FR':'ar-SA';",
                     "u.lang=lang==='en'?'en-US':(lang==='fr'?'fr-FR':'ar-SA');", 1, t + 'speak lang')
             h = rep(h, "var langPrefix=lang==='fr'?'fr':'ar';",
