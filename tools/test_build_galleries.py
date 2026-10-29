@@ -78,7 +78,7 @@ def main():
     for deck in EXPECTED_SAMPLES:
         if "out/%s.html" % deck not in command:
             raise AssertionError("Render command must publish %s.html explicitly" % deck)
-    if "out/bac12.html" in command or "out/bac12.html" in command:
+    if "out/bac12.html" in command:
         raise AssertionError("Render command must not copy the protected bac12 gallery")
 
     subprocess.run(
