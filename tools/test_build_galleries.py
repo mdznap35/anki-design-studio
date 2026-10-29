@@ -34,7 +34,7 @@ def embedded_designs(html):
         if in_string:
             if escaped:
                 escaped = False
-            elif ch == "\\\\":
+            elif ch == "\\":
                 escaped = True
             elif ch == '"':
                 in_string = False
@@ -52,7 +52,7 @@ def embedded_designs(html):
 def main():
     protected_before = {name: digest(ROOT / name) for name in PROTECTED if (ROOT / name).exists()}
     render = (ROOT / "render.yaml").read_text(encoding="utf-8")
-    match = re.search(r"^\\s*buildCommand:\\s*(.+)$", render, re.MULTILINE)
+    match = re.search(r"^\s*buildCommand:\s*(.+)$", render, re.MULTILINE)
     if not match:
         raise AssertionError("render.yaml buildCommand is missing")
     command = match.group(1)
