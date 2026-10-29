@@ -60,8 +60,8 @@ SWAPS = {
 }
 
 FIELD_ALIASES = {
-  'en9': {'French':'Word','Français':'Word','English':'Word','Arabic':'Meaning','Arabe':'Meaning','AudioFR':'AudioEN','FrSound':'AudioEN','FrFile':'AudioEN','AudioEN':'AudioEN','AudioAR':'AudioAR','ArSound':'AudioAR','ArFile':'AudioAR','AudioBOTH':'AudioBOTH','BothSound':'AudioBOTH','BothFile':'AudioBOTH','ExtraRows':'UnitText','Extras':'UnitText','Extra':'UnitText','Unit':'Unit','UnitText':'UnitText','Dossier':'UnitText','POS':'POS','POSLabel':'POSLabel','POSColor':'POSColor','UnitNum':'UnitNum'},
-  'enlit': {'French':'English','Français':'English','English':'English','Arabic':'Arabic','Arabe':'Arabic','AudioFR':'AudioEN','FrSound':'AudioEN','FrFile':'AudioEN','AudioEN':'AudioEN','AudioAR':'AudioAR','ArSound':'AudioAR','ArFile':'AudioAR','AudioBOTH':'AudioBOTH','BothSound':'AudioBOTH','BothFile':'AudioBOTH','ExtraRows':'UnitText','Extras':'UnitText','Extra':'UnitText','Unit':'UnitText','UnitText':'UnitText','Dossier':'UnitText'},
+  'en9': {'French':'Word','Français':'Word','English':'Word','Word':'Word','Arabic':'Meaning','Arabe':'Meaning','Meaning':'Meaning','AudioFR':'AudioEN','FrSound':'AudioEN','FrFile':'AudioEN','AudioEN':'AudioEN','AudioAR':'AudioAR','ArSound':'AudioAR','ArFile':'AudioAR','AudioBOTH':'AudioBOTH','BothSound':'AudioBOTH','BothFile':'AudioBOTH','ExtraRows':'UnitText','Extras':'UnitText','Extra':'UnitText','Unit':'Unit','UnitText':'UnitText','Dossier':'UnitText','POS':'POS','POSLabel':'POSLabel','POSColor':'POSColor','UnitNum':'UnitNum'},
+  'enlit': {'French':'English','Français':'English','English':'English','Word':'English','Arabic':'Arabic','Arabe':'Arabic','Meaning':'Arabic','AudioFR':'AudioEN','FrSound':'AudioEN','FrFile':'AudioEN','AudioEN':'AudioEN','AudioAR':'AudioAR','ArSound':'AudioAR','ArFile':'AudioAR','AudioBOTH':'AudioBOTH','BothSound':'AudioBOTH','BothFile':'AudioBOTH','ExtraRows':'UnitText','Extras':'UnitText','Extra':'UnitText','Unit':'UnitText','UnitText':'UnitText','Dossier':'UnitText'},
   'ensci': {'French':'English','Français':'English','English':'English','Arabic':'Arabic','Arabe':'Arabic','AudioFR':'AudioEN','FrSound':'AudioEN','FrFile':'AudioEN','AudioEN':'AudioEN','AudioAR':'AudioAR','ArSound':'AudioAR','ArFile':'AudioAR','AudioBOTH':'AudioBOTH','BothSound':'AudioBOTH','BothFile':'AudioBOTH','ExtraRows':'UnitText','Extras':'UnitText','Extra':'UnitText','Unit':'UnitText','UnitText':'UnitText','Dossier':'UnitText'},
   'fr9': {'French':'Français','Français':'Français','English':'Français','Arabic':'Arabic','Arabe':'Arabic','AudioFR':'AudioFR','FrSound':'AudioFR','FrFile':'AudioFR','AudioEN':'AudioFR','AudioAR':'AudioAR','ArSound':'AudioAR','ArFile':'AudioAR','AudioBOTH':'AudioBOTH','BothSound':'AudioBOTH','BothFile':'AudioBOTH','ExtraRows':'Dossier','Extras':'Dossier','Extra':'Dossier','Unit':'Dossier','UnitText':'Dossier','Dossier':'Dossier'},
 }
@@ -181,7 +181,8 @@ def build_entries(did, base):
                 return '{{%s%s}}' % (prefix, aliases.get(field_name, field_name))
             template_html = re.sub(r'\{\{([#\^/]?)([^{}]+)\}\}', map_field, template_html)
             used_fields = {field_name for _, field_name in re.findall(r'\{\{([#\^/]?)([^{}]+)\}\}', template_html)}
-            unknown_fields = sorted(used_fields - model_field_set)
+            reserved_fields = {'FrontSide', 'Tags', 'Type', 'Deck', 'Subdeck', 'Card', 'c1', 'c2', 'c3', 'c4', 'c5', 'c6'}
+            unknown_fields = sorted(used_fields - model_field_set - reserved_fields)
             if unknown_fields:
                 raise SystemExit('UNMAPPED FIELDS: %s design %02d %s uses %s' %
                                  (did, number, key, ', '.join(unknown_fields)))
