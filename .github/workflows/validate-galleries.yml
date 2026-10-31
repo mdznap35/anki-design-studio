@@ -14,7 +14,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build-and-verify:
@@ -58,6 +58,34 @@ jobs:
 
           print(f"PASS shared thumbnails: {len(image_files)}")
           PY
+      - name: Publish the four generated gallery pages for static hosting
+        run: |
+          set -euo pipefail
+          cp out/en9.html out/enlit.html out/ensci.html out/fr9.html .
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import sys
+          sys.path.insert(0, "tools")
+          from build_galleries import bmatch
+          for deck in ("en9", "enlit", "ensci", "fr9"):
+              html = Path(deck + ".html").read_text(encoding="utf-8")
+              marker = "var EMBEDDED_DESIGNS_100 = "
+              pos = html.index(marker) + len(marker)
+              start = html.index("[", pos)
+              designs = json.loads(html[start:bmatch(html, start) + 1])
+              assert len(designs) == 100, f"{deck}: root page does not contain 100 designs"
+              print(f"ROOT PAGE PASS {deck}: 100 designs")
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- en9.html enlit.html ensci.html fr9.html
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish generated 100-design gallery pages"
+            git push origin HEAD:main
+          else
+            echo "Generated gallery pages are already current; no publication commit needed."
+          fi
       - name: Smoke-test the four published Render galleries
         run: |
           python - <<'PY'
@@ -109,4 +137,7 @@ jobs:
               print(f"LIVE PASS thumbnail {sample}: HTTP 200 image/jpeg")
           PY
       - name: Confirm protected source files were not changed
-        run: git diff --exit-code -- index.html bac12.html designs_100.js app.py
+        if: always()
+        run: |
+          git diff --exit-code -- index.html bac12.html designs_100.js app.py
+          git diff HEAD^ HEAD --exit-code -- index.html bac12.html designs_100.js app.py
