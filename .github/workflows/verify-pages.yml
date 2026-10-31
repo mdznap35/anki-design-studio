@@ -21,7 +21,6 @@ jobs:
         run: |
           python - <<'PY'
           import json
-          import time
           import urllib.request
 
           base = "https://mdznap35.github.io/anki-design-studio"
@@ -43,32 +42,9 @@ jobs:
                   html = raw.decode("utf-8")
                   marker = "var EMBEDDED_DESIGNS_100 = "
                   pos = html.index(marker) + len(marker)
-                  start = html.index("[", pos)
-                  depth = 0
-                  quoted = False
-                  escaped = False
-                  end = None
-                  for i in range(start, len(html)):
-                      ch = html[i]
-                      if quoted:
-                          if escaped:
-                              escaped = False
-                          elif ch == "\\\\":
-                              escaped = True
-                          elif ch == '"':
-                              quoted = False
-                      elif ch == '"':
-                          quoted = True
-                      elif ch == "[":
-                          depth += 1
-                      elif ch == "]":
-                          depth -= 1
-                          if depth == 0:
-                              end = i
-                              break
+                  payload = html[pos:].lstrip()
+                  designs, _ = json.JSONDecoder().raw_decode(payload)
                   assert status == 200, f"HTTP {status}"
-                  assert end is not None, "design array is not closed"
-                  designs = json.loads(html[start:end + 1])
                   assert len(designs) == 100, f"expected 100 designs, got {len(designs)}"
                   assert all(item.get("pack") == deck for item in designs), "wrong deck binding"
                   assert all(item.get("fields") for item in designs), "missing field mappings"
