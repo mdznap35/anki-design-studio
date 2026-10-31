@@ -198,6 +198,12 @@ def adapt_embedded_designs(h, did):
         for key in ('front', 'back', 'frontRev', 'backRev'):
             value = design.get(key)
             if isinstance(value, str):
+                # These optional extra-content panels belong to the French Bac source
+                # template, not to the four target note types.
+                value = re.sub(
+                    r'<div class="extra" id="extra">\\{\\{(?:ExtraRows|Extras)\\}\\}</div>',
+                    '', value)
+                value = value.replace('{{ExtraRows}}', '').replace('{{Extras}}', '')
                 for old_name, new_name in aliases.items():
                     value = value.replace('{{' + old_name + '}}',
                                           '{{' + new_name + '}}')
