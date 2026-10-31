@@ -57,6 +57,7 @@ jobs:
               assert f"gallery_imgs_{deck}/" not in html, f"{deck}: stale thumbnail directory remains"
               assert "gallery_imgs/" in html, f"{deck}: shared thumbnail directory missing"
               assert all(item.get("fields") for item in designs), f"{deck}: design fields missing"
+              assert all(not any(token in (item.get(key) or "") for token in ("{{ExtraRows}}", "{{Extras}}")) for item in designs for key in ("front", "back", "frontRev", "backRev")), f"{deck}: unbound extra-content placeholder remains"
               print(f"PASS {deck}: 100 designs, deck-bound fields, shared thumbnails")
 
           print(f"PASS shared thumbnails: {len(image_files)}")
