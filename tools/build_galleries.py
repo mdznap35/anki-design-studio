@@ -276,8 +276,9 @@ def build_one(did, spec, base):
         if spec['lang'] == 'en':
             for item in FR2EN_TEXTS:
                 a, b = item[0], item[1]
-                optional = len(item) > 2 and item[2] == 'optional'
-                if optional and a not in h:
+                # Source copy evolves independently; translate exact known phrases when present.
+                # A missing optional phrase must not abort generation of all four galleries.
+                if a not in h:
                     continue
                 h = rep(h, a, b, 1, t + 'txt')
             h = rep(h, "u.lang=lang==='fr'?'fr-FR':'ar-SA';",
