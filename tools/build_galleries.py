@@ -256,7 +256,7 @@ def build_one(did, spec, base):
         h = rep(h, "front = front.split('{{Unit}}').join('1');",
                 "front = front.split('{{Unit}}').join(SAMP.unit||'1');", 1, t + 'preview unit')
         preview_anchor = "  front = front.split('{{Français}}').join(SAMP.f);"
-        preview_additions = "\\n".join([
+        preview_additions = "\n".join([
             "  front = front.split('{{English}}').join(SAMP.f);",
             "  front = front.split('{{Word}}').join(SAMP.f);",
             "  front = front.split('{{Meaning}}').join(SAMP.a);",
@@ -267,7 +267,7 @@ def build_one(did, spec, base):
             "  front = front.split('{{UnitNum}}').join(SAMP.unitnum||'');",
             "  front = front.split('{{AudioEN}}').join('');",
         ])
-        h = rep(h, preview_anchor, preview_anchor + "\\n" + preview_additions,
+        h = rep(h, preview_anchor, preview_anchor + "\n" + preview_additions,
                 1, t + 'preview sample field aliases')
         conditional_anchor = "var v={French:SAMP.f,Arabic:SAMP.a,Pluriel:SAMP.p,Synonyme:SAMP.s,Contraire:SAMP.c,Badge:'Nom',Unit:'1',Page:SAMP.page,WordType:'Nom'}[f];"
         conditional_replacement = "var v={French:SAMP.f,Français:SAMP.f,English:SAMP.f,Word:SAMP.f,Arabic:SAMP.a,Meaning:SAMP.a,Pluriel:SAMP.p,Synonyme:SAMP.s,Contraire:SAMP.c,Badge:'Nom',Unit:SAMP.unit||'1',UnitText:SAMP.unit,UnitNum:SAMP.unitnum,POS:SAMP.pos,POSLabel:SAMP.poslabel,Page:SAMP.page,WordType:'Nom'}[f];"
