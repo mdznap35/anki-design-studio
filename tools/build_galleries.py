@@ -99,7 +99,7 @@ FR2EN_TEXTS = [
  ("sec('03','اضبط الصوت','اختر الصوت الفرنسي والصوت العربي، ثم عدّل السرعة",
   "sec('03','اضبط الصوت','اختر الصوت الإنجليزي والصوت العربي، ثم عدّل السرعة"),
  ("{title:'اضبط الصوت',text:'اختر الصوت الفرنسي والعربي، واضبط السرعة والنغمة والفواصل الزمنية، ثم استمع إلى المعاينة.'}",
-  "{title:'اضبط الصوت',text:'اختر الصوت الإنجليزي والعربي، واضبط السرعة والنغمة والفواصل الزمنية، ثم استمع إلى المعاينة.'}"),
+  "{title:'اضبط الصوت',text:'اختر الصوت الإنجليزي والعربي، واضبط السرعة والنغمة والفواصل الزمنية، ثم استمع إلى المعاينة.'}", 'optional'),
  ('تحصل على رزمة Anki بصيغة APKG تحتوي على البطاقات بالقوالب التي اخترتها، مع الصوت الفرنسي والعربي وفق إعداداتك.',
   'تحصل على رزمة Anki بصيغة APKG تحتوي على البطاقات بالقوالب التي اخترتها، مع الصوت الإنجليزي والعربي وفق إعداداتك.'),
 ]
@@ -156,6 +156,54 @@ def replace_embedded(h, entries):
     return h[:i] + 'var EMBEDDED_DESIGNS_100 = ' + js + ';' + h[j + 2:]
 
 
+
+def adapt_embedded_designs(h, did):
+    """Preserve the shared 100 visual designs while binding them to this deck."""
+    marker = 'var EMBEDDED_DESIGNS_100 = '
+    i = h.index(marker) + len(marker)
+    start = h.index('[', i)
+    end = bmatch(h, start)
+    entries = json.loads(h[start:end + 1])
+    if not isinstance(entries, list) or len(entries) != 100:
+        count = len(entries) if isinstance(entries, list) else 'invalid'
+        raise SystemExit('[%s] expected 100 shared designs, found %s' % (did, count))
+
+    with open(os.path.join(DECKDIR, did, 'templates.json'), encoding='utf-8') as f:
+        models = json.load(f).get('models') or []
+    if not models or not models[0].get('fields'):
+        raise SystemExit('[%s] target model fields are missing' % did)
+    fields = list(models[0]['fields'])
+
+    primary = {'en9': 'Word', 'enlit': 'English', 'ensci': 'English',
+               'fr9': 'Français'}[did]
+    secondary = {'en9': 'Meaning', 'enlit': 'Arabic', 'ensci': 'Arabic',
+                 'fr9': 'Arabic'}[did]
+    audio_primary = 'AudioFR' if did == 'fr9' else 'AudioEN'
+    unit = {'en9': 'Unit', 'enlit': 'UnitText', 'ensci': 'UnitText',
+            'fr9': 'Dossier'}[did]
+    aliases = {
+        'French': primary, 'Français': primary, 'English': primary, 'Word': primary,
+        'Arabe': secondary, 'Arabic': secondary, 'Meaning': secondary,
+        'AudioFR': audio_primary, 'AudioEN': audio_primary,
+        'FrSound': audio_primary, 'FrFile': audio_primary,
+        'AudioAR': 'AudioAR', 'ArSound': 'AudioAR', 'ArFile': 'AudioAR',
+        'AudioBOTH': 'AudioBOTH', 'BothSound': 'AudioBOTH', 'BothFile': 'AudioBOTH',
+        'Dossier': unit, 'Unit': unit, 'UnitText': unit,
+    }
+    for n, design in enumerate(entries, 1):
+        if not isinstance(design, dict):
+            raise SystemExit('[%s] design %d is not an object' % (did, n))
+        design['fields'] = fields[:]
+        design['pack'] = did
+        for key in ('front', 'back', 'frontRev', 'backRev'):
+            value = design.get(key)
+            if isinstance(value, str):
+                for old_name, new_name in aliases.items():
+                    value = value.replace('{{' + old_name + '}}',
+                                          '{{' + new_name + '}}')
+                design[key] = value
+    return replace_embedded(h, entries)
+
 def replace_fallback_fr(h, new_fr_json):
     i = h.index('var TTS_VOICES_FALLBACK={')
     bj = h.index('{', i)
@@ -195,7 +243,7 @@ def build_one(did, spec, base):
     t = '[' + did + '] '
     h = base
     if did != 'bac12':
-        h = replace_embedded(h, build_entries(did))
+        h = adapt_embedded_designs(h, did)
         s = SAMPS[did]
         samp = ("const SAMP={f:'%s',a:'%s',p:'%s',s:'%s',c:'%s',dossier:'%s',page:'%s',pos:'%s',poslabel:'%s',unit:'%s',unitnum:'%s'};"
                 % (s['f'], s['a'], s['p'], s['s'], s['c'], s['dossier'], s['page'], s['pos'], s['poslabel'], s['unit'], s['unitnum']))
@@ -228,6 +276,10 @@ def build_one(did, spec, base):
         if spec['lang'] == 'en':
             for item in FR2EN_TEXTS:
                 a, b = item[0], item[1]
+                # Source copy evolves independently; translate exact known phrases when present.
+                # A missing optional phrase must not abort generation of all four galleries.
+                if a not in h:
+                    continue
                 h = rep(h, a, b, 1, t + 'txt')
             h = rep(h, "u.lang=lang==='fr'?'fr-FR':'ar-SA';",
                     "u.lang=lang==='en'?'en-US':(lang==='fr'?'fr-FR':'ar-SA');", 1, t + 'speak lang')
