@@ -39,10 +39,10 @@ NAV = (
 NAV_OLD_RE = re.compile(r'(      <a class="hdr-link" href="(?:index\.html|gallery-[a-z0-9]+\.html)">.*?</a>\n?)+')
 
 SAMPS = {
-  'en9':   dict(f='Different', a='مختلف', p='', s='', c='', dossier='', page='', pos='ADJ', poslabel='صفة', unit='Unit 01', unitnum='01'),
-  'enlit': dict(f='Future', a='المستقبل', p='', s='', c='', dossier='', page='', pos='', poslabel='', unit='Unit 01 - Future Careers', unitnum=''),
-  'ensci': dict(f='Future', a='المستقبل', p='', s='', c='', dossier='', page='', pos='', poslabel='', unit='Unit 01 - A Learned Lesson is a Good Lesson', unitnum=''),
-  'fr9':   dict(f='Un entourage', a='محيط', p='', s='', c='', dossier='Dossier 1', page='', pos='', poslabel='', unit='', unitnum=''),
+  'en9':   dict(f='Student', a='طالب', p='', s='', c='', dossier='', page='', pos='NOUN', poslabel='اسم', unit='Unit 01', unitnum='01'),
+  'enlit': dict(f='Novel', a='رواية', p='', s='', c='', dossier='', page='', pos='', poslabel='', unit='Unit 01 - Future Careers', unitnum=''),
+  'ensci': dict(f='Atom', a='ذرة', p='', s='', c='', dossier='', page='', pos='', poslabel='', unit='Unit 01 - A Learned Lesson is a Good Lesson', unitnum=''),
+  'fr9':   dict(f='Leçon', a='درس', p='', s='', c='', dossier='Dossier 1', page='', pos='', poslabel='', unit='', unitnum=''),
 }
 
 FILLS = {
@@ -348,6 +348,12 @@ def build_one(did, spec, base):
             "var p={type:type, deviceId:DEVICE_ID, deck:DECK_ID, ts:Date.now(), url:location.href};", 1, t + 'track deck')
     h = rep(h, "var DEVICE_ID=(function(){try{var d=localStorage.getItem('anki_" + did + "_device_id');",
             "var DECK_ID='" + did + "';\nvar DEVICE_ID=(function(){try{var d=localStorage.getItem('anki_" + did + "_device_id');", 1, t + 'deck const')
+    if did in ('en9', 'enlit', 'ensci', 'fr9'):
+        h, removed_extra_buttons = re.subn(
+            r'<button class=\\\"extra-btn\\\"[\\s\\S]*?</button>', '', h)
+        if removed_extra_buttons != 100:
+            raise SystemExit('[%s] expected to remove 100 extra buttons, removed %d'
+                             % (did, removed_extra_buttons))
     return h, spec
 
 
