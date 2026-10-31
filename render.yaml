@@ -1,11 +1,12 @@
 services:
   - type: web
     name: anki-design-studio
-    env: static
+    runtime: static
     autoDeployTrigger: commit
     buildFilter:
       paths:
         - "render.yaml"
+        - "out/**"
         - "index.html"
         - "tools/**"
         - "gallery_imgs/**"
@@ -60,7 +61,14 @@ services:
       print("PASS self-contained Render publish root; protected French Bac copies are byte-identical")
       PY
       cp out/en9.html out/enlit.html out/ensci.html out/fr9.html .
-    staticPublishPath: out
+    staticPublishPath: ./out
+    headers:
+      - path: "/*.html"
+        name: Cache-Control
+        value: "no-cache, no-store, must-revalidate"
+      - path: "/gallery_imgs/*"
+        name: Cache-Control
+        value: "public, max-age=31536000, immutable"
     routes:
       - type: rewrite
         source: /en9

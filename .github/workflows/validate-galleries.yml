@@ -100,14 +100,17 @@ jobs:
           else
             echo "Generated gallery pages are already current; no publication commit needed."
           fi
-      - name: Smoke-test the four published Render galleries
+      - name: Smoke-test exact Render files and clean routes
         if: github.ref == 'refs/heads/main'
+        env:
+          EXPECTED_COMMIT: ${{ github.sha }}
         run: |
           python - <<'PY'
+          import hashlib
           import json
           import time
-          import urllib.error
           import urllib.request
+          from pathlib import Path
           import sys
           sys.path.insert(0, "tools")
           from build_galleries import bmatch
@@ -118,22 +121,44 @@ jobs:
           pending = set(decks)
           last_errors = {}
 
+          def fetch(path):
+              req = urllib.request.Request(
+                  base + path,
+                  headers={
+                      "User-Agent": "anki-gallery-deploy-verifier/2.0",
+                      "Cache-Control": "no-cache",
+                      "Pragma": "no-cache",
+                  },
+              )
+              with urllib.request.urlopen(req, timeout=25) as response:
+                  return response.status, response.read(), response.headers
+
           while pending and time.time() < deadline:
               for deck in tuple(pending):
                   try:
-                      req = urllib.request.Request(base + "/" + deck,
-                          headers={"User-Agent": "anki-gallery-smoke-test/1.0"})
-                      with urllib.request.urlopen(req, timeout=25) as response:
-                          html = response.read().decode("utf-8")
+                      expected = Path("out") / (deck + ".html")
+                      expected_bytes = expected.read_bytes()
+                      # Test the exact .html URL used by visitors, with a unique
+                      # query string to avoid accepting a stale CDN response.
+                      status, body, headers = fetch(
+                          "/" + deck + ".html?deploy_check=" + "${{ github.sha }}"
+                      )
+                      assert status == 200, f"{deck}: HTTP {status}"
+                      assert hashlib.sha256(body).digest() == hashlib.sha256(expected_bytes).digest(), (
+                          f"{deck}: live HTML is not the exact current build "
+                          f"(live={hashlib.sha256(body).hexdigest()}, "
+                          f"expected={hashlib.sha256(expected_bytes).hexdigest()})"
+                      )
                       marker = "var EMBEDDED_DESIGNS_100 = "
+                      html = body.decode("utf-8")
                       pos = html.index(marker) + len(marker)
                       start = html.index("[", pos)
-                      end = bmatch(html, start)
-                      designs = json.loads(html[start:end + 1])
-                      assert len(designs) == 100, f"{deck}: live page has {len(designs)} designs"
-                      assert "gallery_imgs_" + deck + "/" not in html, f"{deck}: stale image path"
-                      assert "gallery_imgs/" in html, f"{deck}: shared image path missing"
-                      print(f"LIVE PASS {deck}: HTTP 200, 100 embedded designs")
+                      designs = json.loads(html[start:bmatch(html, start) + 1])
+                      assert len(designs) == 100, f"{deck}: expected 100 designs, got {len(designs)}"
+                      assert all(item.get("pack") == deck for item in designs), f"{deck}: wrong deck binding"
+                      assert "gallery_imgs/" in html, f"{deck}: shared thumbnails missing"
+                      assert f"gallery_imgs_{deck}/" not in html, f"{deck}: stale thumbnail path"
+                      print(f"LIVE PASS {deck}: exact current HTML, 100 deck-bound designs")
                       pending.remove(deck)
                   except Exception as exc:
                       last_errors[deck] = repr(exc)
@@ -141,15 +166,19 @@ jobs:
                   time.sleep(20)
 
           if pending:
-              raise SystemExit("Live Render verification timed out: " + json.dumps({d:last_errors.get(d) for d in pending}))
+              raise SystemExit(
+                  "Render did not publish the current commit within 12 minutes: "
+                  + json.dumps({deck: last_errors.get(deck) for deck in sorted(pending)})
+              )
 
           for sample in ("001.jpg", "050.jpg", "100.jpg"):
-              req = urllib.request.Request(base + "/gallery_imgs/" + sample,
-                  headers={"User-Agent": "anki-gallery-smoke-test/1.0"})
-              with urllib.request.urlopen(req, timeout=25) as response:
-                  assert response.status == 200, f"thumbnail {sample}: HTTP {response.status}"
-                  assert response.headers.get_content_type() == "image/jpeg", f"thumbnail {sample}: wrong content type"
-              print(f"LIVE PASS thumbnail {sample}: HTTP 200 image/jpeg")
+              status, body, headers = fetch(
+                  "/gallery_imgs/" + sample + "?deploy_check=" + "${{ github.sha }}"
+              )
+              assert status == 200, f"thumbnail {sample}: HTTP {status}"
+              assert headers.get_content_type() == "image/jpeg", f"thumbnail {sample}: wrong content type"
+              assert len(body) > 1000, f"thumbnail {sample}: unexpectedly small ({len(body)} bytes)"
+              print(f"LIVE PASS thumbnail {sample}: HTTP 200 image/jpeg ({len(body)} bytes)")
           PY
       - name: Confirm protected source files were not changed
         if: always()
