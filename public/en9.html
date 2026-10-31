@@ -1656,6 +1656,7 @@ function fillSampleFields(front){
     return '<button class="replay-button tts-preview" data-lang="'+l+'" data-field="'+fld+'" title="استمع"></button>';
   });
   front = front.split('{{French}}').join(SAMP.f);
+  front = front.split('{{Français}}').join(SAMP.f);
   front = front.split('{{English}}').join(SAMP.f);
   front = front.split('{{English}}').join(SAMP.f);
   front = front.split('{{Word}}').join(SAMP.f);
