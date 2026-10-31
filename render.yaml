@@ -2,7 +2,50 @@ services:
   - type: web
     name: anki-design-studio
     env: static
-    buildCommand: python3 tools/build_galleries.py && cp out/*.html ./
+    autoDeployTrigger: commit
+    buildFilter:
+      paths:
+        - "render.yaml"
+        - "index.html"
+        - "tools/**"
+        - "gallery_imgs/**"
+        - "en9.html"
+        - "enlit.html"
+        - "ensci.html"
+        - "fr9.html"
+    buildCommand: |
+      set -eu
+      python3 tools/build_galleries.py
+      python3 - <<'PY'
+      import json
+      from pathlib import Path
+      import sys
+
+      sys.path.insert(0, "tools")
+      from build_galleries import bmatch
+
+      decks = ("en9", "enlit", "ensci", "fr9")
+      for deck in decks:
+          page = Path("out") / (deck + ".html")
+          html = page.read_text(encoding="utf-8")
+          marker = "var EMBEDDED_DESIGNS_100 = "
+          pos = html.index(marker) + len(marker)
+          start = html.index("[", pos)
+          designs = json.loads(html[start:bmatch(html, start) + 1])
+          assert len(designs) == 100, f"{deck}: expected 100 designs, got {len(designs)}"
+          assert all(item.get("pack") == deck for item in designs), f"{deck}: wrong deck binding"
+          assert all(item.get("fields") for item in designs), f"{deck}: missing fields"
+          assert "gallery_imgs/" in html, f"{deck}: shared image path missing"
+          assert f"gallery_imgs_{deck}/" not in html, f"{deck}: stale image path"
+          print(f"PASS {deck}: 100 designs and correct deck bindings")
+
+      thumbnails = list(Path("gallery_imgs").glob("*.jpg"))
+      assert len(thumbnails) == 100, f"expected 100 shared thumbnails, got {len(thumbnails)}"
+      for sample in ("001.jpg", "050.jpg", "100.jpg"):
+          assert (Path("gallery_imgs") / sample).is_file(), f"missing thumbnail {sample}"
+      print("PASS shared gallery thumbnails: 100")
+      PY
+      cp out/en9.html out/enlit.html out/ensci.html out/fr9.html .
     staticPublishPath: .
     routes:
       - type: rewrite
