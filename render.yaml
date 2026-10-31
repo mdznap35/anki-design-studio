@@ -13,6 +13,11 @@ services:
         - "enlit.html"
         - "ensci.html"
         - "fr9.html"
+        - "bac12.html"
+        - "designs_100.js"
+        - "template_colors.js"
+        - "stats.html"
+        - "_redirects"
     buildCommand: |
       set -eu
       python3 tools/build_galleries.py
@@ -44,9 +49,18 @@ services:
       for sample in ("001.jpg", "050.jpg", "100.jpg"):
           assert (Path("gallery_imgs") / sample).is_file(), f"missing thumbnail {sample}"
       print("PASS shared gallery thumbnails: 100")
+      publish_root = Path("out")
+      publish_images = list((publish_root / "gallery_imgs").glob("*.jpg"))
+      assert len(publish_images) == 100, f"expected 100 published thumbnails, got {len(publish_images)}"
+      for protected in ("index.html", "bac12.html", "designs_100.js"):
+          source = Path(protected)
+          published = publish_root / protected
+          assert source.is_file() and published.is_file(), f"missing protected static copy: {protected}"
+          assert source.read_bytes() == published.read_bytes(), f"protected file changed in publish copy: {protected}"
+      print("PASS self-contained Render publish root; protected French Bac copies are byte-identical")
       PY
       cp out/en9.html out/enlit.html out/ensci.html out/fr9.html .
-    staticPublishPath: .
+    staticPublishPath: out
     routes:
       - type: rewrite
         source: /en9
