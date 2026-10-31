@@ -71,6 +71,38 @@ jobs:
               assert source.read_bytes() == published.read_bytes(), f"Protected copy differs: {protected}"
           print("PASS self-contained publish root; protected files copied byte-for-byte")
           PY
+      - name: Test real preview sample-field substitution for all decks
+        run: |
+          node <<'JS'
+          const assert = require("node:assert/strict");
+          const fs = require("node:fs");
+
+          const samples = {
+            en9: { f: "Student", a: "طالب", p: "", s: "", c: "", dossier: "", page: "", pos: "NOUN", poslabel: "اسم", unit: "Unit 01", unitnum: "01" },
+            enlit: { f: "Novel", a: "رواية", p: "", s: "", c: "", dossier: "", page: "", pos: "", poslabel: "", unit: "Unit 01 - Future Careers", unitnum: "" },
+            ensci: { f: "Atom", a: "ذرة", p: "", s: "", c: "", dossier: "", page: "", pos: "", poslabel: "", unit: "Unit 01 - A Learned Lesson is a Good Lesson", unitnum: "" },
+            fr9: { f: "Leçon", a: "درس", p: "", s: "", c: "", dossier: "Dossier 1", page: "", pos: "", poslabel: "", unit: "", unitnum: "" },
+          };
+          const cases = {
+            en9: ["{{Word}}|{{Meaning}}|{{POS}}|{{POSLabel}}|{{Unit}}|{{UnitNum}}|{{AudioEN}}", "Student|طالب|NOUN|اسم|Unit 01|01|"],
+            enlit: ["{{#English}}<b>{{English}}</b>{{/English}}|{{Arabic}}|{{UnitText}}|{{AudioEN}}", "<b>Novel</b>|رواية|Unit 01 - Future Careers|"],
+            ensci: ["{{English}}|{{Arabic}}|{{UnitText}}|{{AudioEN}}", "Atom|ذرة|Unit 01 - A Learned Lesson is a Good Lesson|"],
+            fr9: ["{{Français}}|{{Arabic}}|{{Dossier}}|{{AudioFR}}", "Leçon|درس|Dossier 1|"],
+          };
+
+          for (const deck of ["en9", "enlit", "ensci", "fr9"]) {
+            const html = fs.readFileSync("out/" + deck + ".html", "utf8");
+            const start = html.indexOf("function fillSampleFields(front){");
+            const end = html.indexOf("\nvar FIT_SRC", start);
+            assert(start >= 0 && end > start, deck + ": preview function not found");
+            const source = html.slice(start, end);
+            const fillSampleFields = new Function("SAMP", source + "\nreturn fillSampleFields;")(samples[deck]);
+            const actual = fillSampleFields(cases[deck][0]);
+            assert.equal(actual, cases[deck][1], deck + ": preview sample fields were not substituted correctly");
+            assert(!/\\{\\{[^}]+\\}\\}/.test(actual), deck + ": unresolved placeholder remains in preview");
+            console.log("PASS " + deck + ": actual preview helper renders sample text and unit fields");
+          }
+          JS
       - name: Publish the generated static site for hosting
         if: github.ref == 'refs/heads/main'
         run: |
