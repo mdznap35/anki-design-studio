@@ -1657,13 +1657,22 @@ function fillSampleFields(front){
   });
   front = front.split('{{French}}').join(SAMP.f);
   front = front.split('{{English}}').join(SAMP.f);
+  front = front.split('{{English}}').join(SAMP.f);
+  front = front.split('{{Word}}').join(SAMP.f);
+  front = front.split('{{Meaning}}').join(SAMP.a);
+  front = front.split('{{POS}}').join(SAMP.pos||'');
+  front = front.split('{{POSLabel}}').join(SAMP.poslabel||'');
+  front = front.split('{{POSColor}}').join(SAMP.poscolor||'');
+  front = front.split('{{UnitText}}').join(SAMP.unit||'');
+  front = front.split('{{UnitNum}}').join(SAMP.unitnum||'');
+  front = front.split('{{AudioEN}}').join('');
   front = front.split('{{Dossier}}').join('');
   front = front.split('{{Arabic}}').join(SAMP.a);
   front = front.split('{{Pluriel}}').join(SAMP.p);
   front = front.split('{{Synonyme}}').join(SAMP.s);
   front = front.split('{{Contraire}}').join(SAMP.c);
   front = front.split('{{Badge}}').join('Nom');
-  front = front.split('{{Unit}}').join('1');
+  front = front.split('{{Unit}}').join(SAMP.unit||'1');
   front = front.split('{{Page}}').join(SAMP.page);
   front = front.split('{{Card}}').join('1');
   front = front.split('{{Sentence}}').join(SAMP.a);
@@ -1699,7 +1708,7 @@ function fillSampleFields(front){
   front = front.split('{{Extra}}').join('');
   // Keep conditional sections whose sample value exists, drop empty ones
   front = front.replace(/{{#(\w+)}}([\s\S]*?){{\/\1}}/g, function(m,f,inner){
-    var v={French:SAMP.f,Arabic:SAMP.a,Pluriel:SAMP.p,Synonyme:SAMP.s,Contraire:SAMP.c,Badge:'Nom',Unit:'1',Page:SAMP.page,WordType:'Nom'}[f];
+    var v={French:SAMP.f,Français:SAMP.f,English:SAMP.f,Word:SAMP.f,Arabic:SAMP.a,Meaning:SAMP.a,Pluriel:SAMP.p,Synonyme:SAMP.s,Contraire:SAMP.c,Badge:'Nom',Unit:SAMP.unit||'1',UnitText:SAMP.unit,UnitNum:SAMP.unitnum,POS:SAMP.pos,POSLabel:SAMP.poslabel,Page:SAMP.page,WordType:'Nom'}[f];
     return v ? inner : '';
   });
   // Remove any remaining {{...}} placeholders so no raw text leaks into preview
