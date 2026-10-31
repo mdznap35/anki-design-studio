@@ -1,0 +1,94 @@
+name: Verify published GitHub Pages galleries
+
+on:
+  workflow_run:
+    workflows:
+      - pages build and deployment
+    types:
+      - completed
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  verify-live-pages:
+    if: github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify all four live galleries and shared thumbnails
+        run: |
+          python - <<'PY'
+          import json
+          import time
+          import urllib.request
+
+          base = "https://mdznap35.github.io/anki-design-studio"
+          decks = ("en9", "enlit", "ensci", "fr9")
+
+          def fetch(url):
+              request = urllib.request.Request(
+                  url,
+                  headers={"User-Agent": "anki-design-studio-pages-verifier/1.0"},
+              )
+              with urllib.request.urlopen(request, timeout=30) as response:
+                  return response.status, response.headers, response.read()
+
+          failures = []
+          for deck in decks:
+              url = f"{base}/{deck}.html"
+              try:
+                  status, headers, raw = fetch(url)
+                  html = raw.decode("utf-8")
+                  marker = "var EMBEDDED_DESIGNS_100 = "
+                  pos = html.index(marker) + len(marker)
+                  start = html.index("[", pos)
+                  depth = 0
+                  quoted = False
+                  escaped = False
+                  end = None
+                  for i in range(start, len(html)):
+                      ch = html[i]
+                      if quoted:
+                          if escaped:
+                              escaped = False
+                          elif ch == "\\\\":
+                              escaped = True
+                          elif ch == '"':
+                              quoted = False
+                      elif ch == '"':
+                          quoted = True
+                      elif ch == "[":
+                          depth += 1
+                      elif ch == "]":
+                          depth -= 1
+                          if depth == 0:
+                              end = i
+                              break
+                  assert status == 200, f"HTTP {status}"
+                  assert end is not None, "design array is not closed"
+                  designs = json.loads(html[start:end + 1])
+                  assert len(designs) == 100, f"expected 100 designs, got {len(designs)}"
+                  assert all(item.get("pack") == deck for item in designs), "wrong deck binding"
+                  assert all(item.get("fields") for item in designs), "missing field mappings"
+                  assert "gallery_imgs/" in html, "shared thumbnail path missing"
+                  assert f"gallery_imgs_{deck}/" not in html, "stale thumbnail path found"
+                  print(f"PASS {deck}: HTTP 200, 100 designs, correct deck binding")
+              except Exception as exc:
+                  failures.append(f"{deck}: {exc}")
+
+          for sample in ("001.jpg", "050.jpg", "100.jpg"):
+              try:
+                  status, headers, body = fetch(f"{base}/gallery_imgs/{sample}")
+                  assert status == 200, f"HTTP {status}"
+                  assert headers.get_content_type() == "image/jpeg", "wrong content type"
+                  assert len(body) > 1000, f"unexpectedly small image ({len(body)} bytes)"
+                  print(f"PASS thumbnail {sample}: HTTP 200 image/jpeg ({len(body)} bytes)")
+              except Exception as exc:
+                  failures.append(f"thumbnail {sample}: {exc}")
+
+          if failures:
+              raise SystemExit("GitHub Pages live verification failed:\\n" + "\\n".join(failures))
+          print("ALL LIVE GITHUB PAGES CHECKS PASSED")
+          PY
