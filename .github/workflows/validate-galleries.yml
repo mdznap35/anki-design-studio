@@ -63,6 +63,7 @@ jobs:
           print(f"PASS shared thumbnails: {len(image_files)}")
           PY
       - name: Publish the four generated gallery pages for static hosting
+        if: github.ref == 'refs/heads/main'
         run: |
           set -euo pipefail
           cp out/en9.html out/enlit.html out/ensci.html out/fr9.html .
@@ -91,6 +92,7 @@ jobs:
             echo "Generated gallery pages are already current; no publication commit needed."
           fi
       - name: Smoke-test the four published Render galleries
+        if: github.ref == 'refs/heads/main'
         run: |
           python - <<'PY'
           import json
