@@ -58,5 +58,55 @@ jobs:
 
           print(f"PASS shared thumbnails: {len(image_files)}")
           PY
+      - name: Smoke-test the four published Render galleries
+        run: |
+          python - <<'PY'
+          import json
+          import time
+          import urllib.error
+          import urllib.request
+          import sys
+          sys.path.insert(0, "tools")
+          from build_galleries import bmatch
+
+          base = "https://anki-design-studio.onrender.com"
+          decks = ("en9", "enlit", "ensci", "fr9")
+          deadline = time.time() + 720
+          pending = set(decks)
+          last_errors = {}
+
+          while pending and time.time() < deadline:
+              for deck in tuple(pending):
+                  try:
+                      req = urllib.request.Request(base + "/" + deck,
+                          headers={"User-Agent": "anki-gallery-smoke-test/1.0"})
+                      with urllib.request.urlopen(req, timeout=25) as response:
+                          html = response.read().decode("utf-8")
+                      marker = "var EMBEDDED_DESIGNS_100 = "
+                      pos = html.index(marker) + len(marker)
+                      start = html.index("[", pos)
+                      end = bmatch(html, start)
+                      designs = json.loads(html[start:end + 1])
+                      assert len(designs) == 100, f"{deck}: live page has {len(designs)} designs"
+                      assert "gallery_imgs_" + deck + "/" not in html, f"{deck}: stale image path"
+                      assert "gallery_imgs/" in html, f"{deck}: shared image path missing"
+                      print(f"LIVE PASS {deck}: HTTP 200, 100 embedded designs")
+                      pending.remove(deck)
+                  except Exception as exc:
+                      last_errors[deck] = repr(exc)
+              if pending:
+                  time.sleep(20)
+
+          if pending:
+              raise SystemExit("Live Render verification timed out: " + json.dumps({d:last_errors.get(d) for d in pending}))
+
+          for sample in ("001.jpg", "050.jpg", "100.jpg"):
+              req = urllib.request.Request(base + "/gallery_imgs/" + sample,
+                  headers={"User-Agent": "anki-gallery-smoke-test/1.0"})
+              with urllib.request.urlopen(req, timeout=25) as response:
+                  assert response.status == 200, f"thumbnail {sample}: HTTP {response.status}"
+                  assert response.headers.get_content_type() == "image/jpeg", f"thumbnail {sample}: wrong content type"
+              print(f"LIVE PASS thumbnail {sample}: HTTP 200 image/jpeg")
+          PY
       - name: Confirm protected source files were not changed
         run: git diff --exit-code -- index.html bac12.html designs_100.js app.py
