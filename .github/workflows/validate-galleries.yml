@@ -99,7 +99,7 @@ jobs:
             const fillSampleFields = new Function("SAMP", source + "\nreturn fillSampleFields;")(samples[deck]);
             const actual = fillSampleFields(cases[deck][0]);
             assert.equal(actual, cases[deck][1], deck + ": preview sample fields were not substituted correctly");
-            assert(!/\\{\\{[^}]+\\}\\}/.test(actual), deck + ": unresolved placeholder remains in preview");
+            assert(!/\{\{[^}]+\}\}/.test(actual), deck + ": unresolved placeholder remains in preview");
             console.log("PASS " + deck + ": actual preview helper renders sample text and unit fields");
           }
           JS
