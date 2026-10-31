@@ -1,0 +1,62 @@
+name: Validate 100-design galleries
+
+on:
+  push:
+    branches:
+      - main
+      - "fix/**"
+    paths:
+      - "tools/build_galleries.py"
+      - "tools/decks/**/templates.json"
+      - "index.html"
+      - "gallery_imgs/**"
+      - ".github/workflows/validate-galleries.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile gallery builder
+        run: python -m py_compile tools/build_galleries.py
+      - name: Build four galleries
+        run: python tools/build_galleries.py
+      - name: Verify all four galleries retain 100 designs and shared thumbnails
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import sys
+          sys.path.insert(0, "tools")
+          from build_galleries import bmatch
+
+          root = Path(".")
+          image_files = list((root / "gallery_imgs").glob("*.jpg"))
+          assert len(image_files) == 100, f"Expected 100 shared thumbnails, found {len(image_files)}"
+
+          for deck in ("en9", "enlit", "ensci", "fr9"):
+              page = root / "out" / f"{deck}.html"
+              html = page.read_text(encoding="utf-8")
+              marker = "var EMBEDDED_DESIGNS_100 = "
+              pos = html.index(marker) + len(marker)
+              start = html.index("[", pos)
+              end = bmatch(html, start)
+              designs = json.loads(html[start:end + 1])
+              assert len(designs) == 100, f"{deck}: expected 100 designs, found {len(designs)}"
+              assert all(item.get("pack") == deck for item in designs), f"{deck}: incorrect deck binding"
+              assert f"gallery_imgs_{deck}/" not in html, f"{deck}: stale thumbnail directory remains"
+              assert "gallery_imgs/" in html, f"{deck}: shared thumbnail directory missing"
+              assert all(item.get("fields") for item in designs), f"{deck}: design fields missing"
+              print(f"PASS {deck}: 100 designs, deck-bound fields, shared thumbnails")
+
+          print(f"PASS shared thumbnails: {len(image_files)}")
+          PY
+      - name: Confirm protected source files were not changed
+        run: git diff --exit-code -- index.html bac12.html designs_100.js app.py
