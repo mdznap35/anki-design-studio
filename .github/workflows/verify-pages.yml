@@ -1,6 +1,12 @@
 name: Verify published GitHub Pages galleries
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/verify-pages.yml"
+  workflow_dispatch:
   workflow_run:
     workflows:
       - pages build and deployment
@@ -14,7 +20,7 @@ permissions:
 
 jobs:
   verify-live-pages:
-    if: github.event.workflow_run.conclusion == 'success'
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
       - name: Verify all four live galleries and shared thumbnails
