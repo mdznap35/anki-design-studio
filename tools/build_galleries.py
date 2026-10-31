@@ -4,7 +4,7 @@
 Reads: /workspace/index.html + /workspace/tools/decks/<id>/templates.json
 Writes: /workspace/out/<file>.html
 """
-import json, os, re
+import json, os, re, shutil
 from pathlib import Path
 
 ROOT = Path(os.environ.get('WORKSPACE_ROOT') or Path(__file__).resolve().parents[1])
@@ -374,3 +374,22 @@ if __name__ == '__main__':
         with open(out_path, 'w', encoding='utf-8') as f:
             f.write(h)
         print(did, 'written', os.path.getsize(out_path))
+
+    # Keep the Render publish directory self-contained. The source files below
+    # are copied byte-for-byte; French Bac is never rebuilt or edited here.
+    publish_root = Path(OUTDIR)
+    for name in ('index.html', 'bac12.html', 'designs_100.js',
+                 'template_colors.js', 'stats.html', '_redirects'):
+        source = ROOT / name
+        if source.is_file():
+            shutil.copy2(source, publish_root / name)
+
+    images_source = ROOT / 'gallery_imgs'
+    if images_source.is_dir():
+        shutil.copytree(images_source, publish_root / 'gallery_imgs',
+                        dirs_exist_ok=True)
+        copied_images = list((publish_root / 'gallery_imgs').glob('*.jpg'))
+        if len(copied_images) != 100:
+            raise SystemExit('Expected 100 published thumbnails, found %d'
+                             % len(copied_images))
+        print('publish root: 100 shared thumbnails copied')
