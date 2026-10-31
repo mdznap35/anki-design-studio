@@ -9,6 +9,7 @@ on:
       - "tools/build_galleries.py"
       - "tools/decks/**/templates.json"
       - "index.html"
+      - "render.yaml"
       - "gallery_imgs/**"
       - ".github/workflows/validate-galleries.yml"
   workflow_dispatch:
