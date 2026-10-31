@@ -61,8 +61,17 @@ jobs:
               print(f"PASS {deck}: 100 designs, deck-bound fields, shared thumbnails")
 
           print(f"PASS shared thumbnails: {len(image_files)}")
+          publish_root = root / "out"
+          published_images = list((publish_root / "gallery_imgs").glob("*.jpg"))
+          assert len(published_images) == 100, f"Expected 100 published thumbnails, found {len(published_images)}"
+          for protected in ("index.html", "bac12.html", "designs_100.js"):
+              source = root / protected
+              published = publish_root / protected
+              assert source.is_file() and published.is_file(), f"Missing protected copy: {protected}"
+              assert source.read_bytes() == published.read_bytes(), f"Protected copy differs: {protected}"
+          print("PASS self-contained publish root; protected files copied byte-for-byte")
           PY
-      - name: Publish the four generated gallery pages for static hosting
+      - name: Publish the generated static site for hosting
         if: github.ref == 'refs/heads/main'
         run: |
           set -euo pipefail
@@ -84,7 +93,7 @@ jobs:
           PY
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- en9.html enlit.html ensci.html fr9.html
+          git add -- en9.html enlit.html ensci.html fr9.html out/
           if ! git diff --cached --quiet; then
             git commit -m "Publish generated 100-design gallery pages"
             git push origin HEAD:main
