@@ -350,7 +350,7 @@ def build_one(did, spec, base):
             "var DECK_ID='" + did + "';\nvar DEVICE_ID=(function(){try{var d=localStorage.getItem('anki_" + did + "_device_id');", 1, t + 'deck const')
     if did in ('en9', 'enlit', 'ensci', 'fr9'):
         h, removed_extra_buttons = re.subn(
-            r'<button class=\\\\*[" ]extra-btn\\\\*[" ][\\s\\S]*?</button>', '', h)
+            r'<button class=\\*["]extra-btn\\*["][\s\S]*?</button>', '', h)
         if removed_extra_buttons != 100:
             raise SystemExit('[%s] expected to remove 100 extra buttons, removed %d'
                              % (did, removed_extra_buttons))
