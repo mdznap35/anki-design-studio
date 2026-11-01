@@ -349,8 +349,15 @@ def build_one(did, spec, base):
             '<meta property="og:title" content="' + spec['title'] + '">', 1, t + 'ogtitle')
     h = rep(h, '<meta property="og:description" content="قوالب Anki لمفردات French Bac 12 مع الصوت الفرنسي والعربي.">',
             '<meta property="og:description" content="' + spec['meta'] + '">', 1, t + 'ogdesc')
-    h = rep(h, '<link rel="canonical" href="https://anki-design-studio.onrender.com/">',
-            '<link rel="canonical" href="https://anki-design-studio.onrender.com' + spec['route'] + '">', 1, t + 'canonical')
+    canonical_tag = '<link rel="canonical" href="https://anki-design-studio.onrender.com' + spec['route'] + '">'
+    canonical_re = re.compile(r'<link\\s+rel=["\\']canonical["\\'][^>]*>', re.I)
+    h, canonical_count = canonical_re.subn(canonical_tag, h)
+    if canonical_count > 1:
+        raise SystemExit(t + 'expected at most one canonical tag, found %d' % canonical_count)
+    if canonical_count == 0:
+        h, inserted = re.subn(r'</head\\s*>', canonical_tag + '\\n</head>', h, count=1, flags=re.I)
+        if inserted != 1:
+            raise SystemExit(t + 'could not insert canonical tag into head')
 
     h2, n = NAV_OLD_RE.subn(NAV, h)
     if n == 0:
