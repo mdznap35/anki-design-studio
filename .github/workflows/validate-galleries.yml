@@ -29,7 +29,35 @@ jobs:
           python-version: "3.12"
       - name: Compile gallery builder
         run: python -m py_compile tools/build_galleries.py
+      - name: Prepare the protected live French Bac page as a read-only build base
+        run: |
+          set -euo pipefail
+          git fetch origin master
+          git show origin/master:public/index.html > /tmp/anki-french-bac-base.html
+          test -s /tmp/anki-french-bac-base.html
+          python - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          import sys
+          sys.path.insert(0, "tools")
+          from build_galleries import bmatch
+
+          path = Path("/tmp/anki-french-bac-base.html")
+          html = path.read_text(encoding="utf-8")
+          marker = "var EMBEDDED_DESIGNS_100 = "
+          pos = html.index(marker) + len(marker)
+          start = html.index("[", pos)
+          designs = json.loads(html[start:bmatch(html, start) + 1])
+          assert len(designs) == 100, f"Protected French Bac base has {len(designs)} designs, expected 100"
+          for function in ("initApp", "gvJumpTo", "gvDownload", "downloadAPKG"):
+              assert f"function {function}(" in html, f"Protected French Bac base is missing {function}"
+          print("READ-ONLY BASE PASS: exact master/public/index.html")
+          print(f"SHA256: {hashlib.sha256(path.read_bytes()).hexdigest()}")
+          print("100 designs and full gallery navigation/download functions confirmed")
+          PY
       - name: Build four galleries
+        env:
+          ANKI_BASE_HTML: /tmp/anki-french-bac-base.html
         run: python tools/build_galleries.py
       - name: Verify all four galleries retain 100 designs and shared thumbnails
         run: |
@@ -210,6 +238,14 @@ jobs:
                       assert "gallery_imgs/" in html, f"{deck}: shared thumbnails missing"
                       assert f"gallery_imgs_{deck}/" not in html, f"{deck}: stale thumbnail path"
                       print(f"LIVE PASS {deck}: exact current HTML, 100 deck-bound designs")
+                      clean_status, clean_body, _ = fetch(
+                          "/" + deck + "?deploy_check=" + "${{ github.sha }}"
+                      )
+                      assert clean_status == 200, f"{deck} clean route: HTTP {clean_status}"
+                      assert hashlib.sha256(clean_body).digest() == hashlib.sha256(expected_bytes).digest(), (
+                          f"{deck} clean route does not serve the exact current build"
+                      )
+                      print(f"LIVE PASS {deck}: clean route serves the exact current HTML")
                       pending.remove(deck)
                   except Exception as exc:
                       last_errors[deck] = repr(exc)
@@ -221,6 +257,15 @@ jobs:
                   "Render did not publish the current commit within 12 minutes: "
                   + json.dumps({deck: last_errors.get(deck) for deck in sorted(pending)})
               )
+
+          expected_bac = Path("/tmp/anki-french-bac-base.html").read_bytes()
+          for route in ("/", "/bac12"):
+              status, body, _ = fetch(route + "?deploy_check=" + "${{ github.sha }}")
+              assert status == 200, f"protected French Bac route {route}: HTTP {status}"
+              assert hashlib.sha256(body).digest() == hashlib.sha256(expected_bac).digest(), (
+                  f"protected French Bac route {route} differs from the original protected page"
+              )
+              print(f"LIVE PASS protected French Bac route {route}: byte-identical")
 
           for sample in ("001.jpg", "050.jpg", "100.jpg"):
               status, body, headers = fetch(
