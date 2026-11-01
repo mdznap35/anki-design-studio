@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
 """Build 4 gallery pages for the target decks without touching the protected bac12 files.
 
-Reads: /workspace/index.html + /workspace/tools/decks/<id>/templates.json
+Reads: ANKI_BASE_HTML (or /workspace/index.html) + /workspace/tools/decks/<id>/templates.json
 Writes: /workspace/out/<file>.html
 """
 import json, os, re, shutil
 from pathlib import Path
 
 ROOT = Path(os.environ.get('WORKSPACE_ROOT') or Path(__file__).resolve().parents[1])
-BASE = str(ROOT / 'index.html')
+# CI can provide the exact live French Bac page as a read-only base. Local runs
+# retain the repository index.html fallback.
+BASE = os.environ.get('ANKI_BASE_HTML') or str(ROOT / 'index.html')
 DECKDIR = str(ROOT / 'tools' / 'decks')
 OUTDIR = str(ROOT / 'out')
 
