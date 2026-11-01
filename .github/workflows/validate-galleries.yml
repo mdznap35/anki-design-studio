@@ -132,6 +132,25 @@ jobs:
           else
             echo "Generated gallery pages are already current; no publication commit needed."
           fi
+      - name: Publish generated galleries to the Render master branch
+        if: github.ref == 'refs/heads/main'
+        run: |
+          set -euo pipefail
+          git fetch origin master
+          git worktree add --detach /tmp/render-master origin/master
+          mkdir -p /tmp/render-master/public
+          for deck in en9 enlit ensci fr9; do
+            cp "out/${deck}.html" "/tmp/render-master/public/${deck}.html"
+          done
+          git -C /tmp/render-master config user.name "github-actions[bot]"
+          git -C /tmp/render-master config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git -C /tmp/render-master add -- public/en9.html public/enlit.html public/ensci.html public/fr9.html
+          if git -C /tmp/render-master diff --cached --quiet; then
+            echo "Render gallery files are already current."
+          else
+            git -C /tmp/render-master commit -m "Publish regenerated four gallery pages"
+            git -C /tmp/render-master push origin HEAD:master
+          fi
       - name: Smoke-test exact Render files and clean routes
         if: github.ref == 'refs/heads/main'
         env:
