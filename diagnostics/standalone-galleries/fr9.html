@@ -6854,7 +6854,7 @@ try{
 }catch(_e){}
 function initAudioStatus(){
   try{
-    fetch(apiBase()+'/api/audio_status?source=tas9).then(function(r){return r.json();}).then(function(d){
+    fetch(apiBase()+'/api/audio_status?source=tas9').then(function(r){return r.json();}).then(function(d){
       var cb=document.getElementById('includeAudio');
       var lb=document.getElementById('audioNote');
       if(!cb)return;
