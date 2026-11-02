@@ -752,7 +752,7 @@ a:not(.btn):hover{color:var(--ac)}
       var raw=(typeof input==="string")?input:(input&&input.url)||"";
       var path="";
       try{path=new URL(raw,window.location.href).pathname;}catch(_e){}
-      if(path.indexOf("/api/")===0){
+      if(path.indexOf("/api/")>=0 || raw.indexOf("/api/")>=0){
         return Promise.resolve(new Response(JSON.stringify({offline:true,message:"هذه نسخة معاينة محلية؛ وظائف الخادم والتوليد معطلة."}),{status:503,headers:{"Content-Type":"application/json"}}));
       }
       return nativeFetch(input,init);
