@@ -139,15 +139,34 @@ jobs:
                 const data = await page.evaluate(() => ({ sample: window.SAMP && window.SAMP.f, embedded: window.EMBEDDED_DESIGNS_100 && window.EMBEDDED_DESIGNS_100.length }));
                 assert.equal(data.embedded, 100, deck + ": embedded design count");
                 assert.equal(data.sample, expected, deck + ": deck-specific sample word");
-                await page.evaluate(() => window.openGalleryBrowser());
-                await page.waitForTimeout(700);
-                const gallery = await page.evaluate(() => ({
-                  count: document.querySelectorAll("#gbGrid .gb-item").length,
-                  label: (document.getElementById("gbCount") || {}).textContent || "",
-                  open: document.getElementById("galleryBrowser").classList.contains("open")
-                }));
+                await page.evaluate(() => {
+                  // Dismiss the first-visit tour as a real visitor would.
+                  if (typeof window.closeOnboarding === "function") window.closeOnboarding();
+                  window.openGalleryBrowser();
+                });
+                await page.waitForTimeout(900);
+                const gallery = await page.evaluate(() => {
+                  const el = document.getElementById("galleryBrowser");
+                  const r = el.getBoundingClientRect();
+                  const style = getComputedStyle(el);
+                  const top = document.elementFromPoint(Math.floor(innerWidth / 2), Math.floor(innerHeight / 2));
+                  const imgs = [...document.querySelectorAll("#gbGrid .gb-img")];
+                  return {
+                    count: document.querySelectorAll("#gbGrid .gb-item").length,
+                    label: (document.getElementById("gbCount") || {}).textContent || "",
+                    open: el.classList.contains("open"),
+                    visible: style.display !== "none" && style.visibility !== "hidden" && r.width > 0 && r.height > 0,
+                    onboardingDisplay: document.getElementById("onboardOverlay").style.display,
+                    topElement: top ? (top.id || top.className || top.tagName) : "",
+                    loadedThumbnails: imgs.filter(i => i.complete && i.naturalWidth > 0).length
+                  };
+                });
                 console.log(deck, "gallery-browser", JSON.stringify(gallery));
                 assert.equal(gallery.open, true, deck + ": gallery browser did not open");
+                assert.equal(gallery.visible, true, deck + ": gallery browser is not visibly rendered");
+                assert.equal(gallery.onboardingDisplay, "none", deck + ": onboarding tour still covers gallery");
+                assert(gallery.topElement !== "onboardOverlay", deck + ": onboarding is above the gallery");
+                assert(gallery.loadedThumbnails > 0, deck + ": no gallery thumbnails loaded");
                 assert.equal(gallery.count, 100, deck + ": gallery browser count");
                 assert(gallery.label.includes("100") && gallery.label.includes("/"), deck + ": gallery count label: " + gallery.label);
                 await page.screenshot({ path: "review-package/screenshots/" + deck + "-gallery.png", fullPage: false });
