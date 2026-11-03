@@ -44,10 +44,69 @@ jobs:
               assert all(x.get("pack") == deck for x in designs)
               assert "gallery_imgs/" in h
               assert "gallery_imgs_" + deck + "/" not in h
-              assert not re.search(r'<button\\b[^>]*\\bextra-btn\\b[^>]*>', h, re.I), f"{deck}: extra buttons remain"
+              assert not re.search(r'<button\b[^>]*\bextra-btn\b[^>]*>', h, re.I), f"{deck}: extra buttons remain"
               print(f"PASS {deck}: 100 designs; image references; extra buttons removed; {p.stat().st_size:,} bytes")
           print("PASS 100 thumbnails")
           PY
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install browser test runtime
+        run: |
+          npm init -y
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+      - name: Browser smoke test before packaging
+        run: |
+          set -euo pipefail
+          mkdir -p review-package/screenshots
+          python -m http.server 8765 --directory out >/tmp/gallery-http.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8765/fr9.html >/dev/null; then break; fi
+            sleep 1
+          done
+          node <<'JS'
+          const { chromium } = require("playwright");
+          const assert = require("node:assert/strict");
+          (async () => {
+            const browser = await chromium.launch({ headless: true });
+            try {
+              for (const deck of ["fr9", "en9", "enlit", "ensci"]) {
+                const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
+                const errors = [];
+                page.on("pageerror", e => errors.push(e.message));
+                await page.goto("http://127.0.0.1:8765/" + deck + ".html", { waitUntil: "domcontentloaded" });
+                await page.waitForTimeout(5000);
+                await page.evaluate(async () => {
+                  for (let y = 0; y < document.body.scrollHeight; y += 700) {
+                    window.scrollTo(0, y);
+                    await new Promise(r => setTimeout(r, 120));
+                  }
+                  window.scrollTo(0, 0);
+                  await new Promise(r => setTimeout(r, 1500));
+                });
+                const state = await page.evaluate(() => {
+                  const text = document.body.innerText || "";
+                  const imgs = [...document.images];
+                  const loaded = imgs.filter(i => i.complete && i.naturalWidth > 0).length;
+                  const loading = text.split("\n").filter(x => /جار[يٍ]?\s*(تنزيل|تحميل)|جاري\s*(تنزيل|تحميل)|تحميل القوالب|تنزيل القوالب/.test(x));
+                  return { title: document.title, textLength: text.length, imageCount: imgs.length, loadedImages: loaded, loading };
+                });
+                console.log(deck, JSON.stringify(state), "pageErrors=", JSON.stringify(errors));
+                assert(state.textLength > 100, deck + ": nearly empty page");
+                assert.equal(state.loading.length, 0, deck + ": stuck loading message is visible");
+                assert(state.imageCount > 0 && state.loadedImages > 0, deck + ": gallery thumbnails did not load");
+                assert.equal(errors.length, 0, deck + ": uncaught browser errors");
+                await page.screenshot({ path: "review-package/screenshots/" + deck + ".png", fullPage: true });
+                await page.close();
+              }
+            } finally {
+              await browser.close();
+            }
+          })().catch(e => { console.error(e); process.exit(1); });
+          JS
       - name: Create a local-use bundle with four HTML files and all thumbnails
         run: |
           set -euo pipefail
@@ -76,5 +135,6 @@ jobs:
             review-package/en9.html
             review-package/enlit.html
             review-package/ensci.html
+            review-package/screenshots/*.png
           if-no-files-found: error
           retention-days: 14
