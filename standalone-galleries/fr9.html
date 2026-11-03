@@ -123,14 +123,6 @@ img,iframe{border:0}
 .ha-btn,.ver{display:none}
 
 /* ============================================================
-   LOADING
-   ============================================================ */
-#loadingMsg{position:fixed;inset:0;z-index:90;display:grid;place-content:center;text-align:center;
-  background:var(--bg)}
-#loadBar{background:var(--ac)}
-#loadPct{color:var(--tx3)}
-
-/* ============================================================
    TABS + SECTIONS
    ============================================================ */
 .tabs{display:flex;gap:0;max-width:var(--maxw);margin:18px auto 0;padding:0 18px;border-bottom:1px solid var(--bd-strong)}
@@ -765,14 +757,6 @@ a:not(.btn):hover{color:var(--ac)}
     </div>
   </div>
 </header>
-
-<div id="loadingMsg">
-  <div style="font-family:var(--font-mono);font-size:.8em;letter-spacing:1px;color:var(--tx2);margin-bottom:12px;text-transform:uppercase">جاري تحميل القوالب...</div>
-  <div style="width:240px;height:4px;background:var(--s3);border:1px solid var(--bd-strong);border-radius:0;margin:0 auto;overflow:hidden">
-    <div id="loadBar" style="width:0%;height:100%;border-radius:0;transition:width .3s"></div>
-  </div>
-  <div id="loadPct" style="font-family:var(--font-mono);font-size:.62em;color:var(--tx3);margin-top:8px">0%</div>
-</div>
 
 <div id="sec-gal" class="sec on">
   <section class="hero hero--center reveal">
@@ -6819,7 +6803,7 @@ try{
 }catch(_e){}
 function initAudioStatus(){
   try{
-    apiFetch('/api/audio_status?source=tas9).then(function(r){return r.json();}).then(function(d){
+    apiFetch('/api/audio_status?source=tas9').then(function(r){return r.json();}).then(function(d){
       var cb=document.getElementById('includeAudio');
       var lb=document.getElementById('audioNote');
       if(!cb)return;
