@@ -200,6 +200,21 @@ def adapt_embedded_designs(h, did):
         for key in ('front', 'back', 'frontRev', 'backRev'):
             value = design.get(key)
             if isinstance(value, str):
+                # Remove stale French Bac sample labels inherited by the shared visual
+                # designs. Each gallery must identify its own deck in every preview.
+                deck_sample_label = {
+                    'en9': 'مفردة من رزمة الإنجليزي التاسع',
+                    'enlit': 'مفردة من رزمة الإنجليزي الأدبي',
+                    'ensci': 'مفردة من رزمة الإنجليزي العلمي',
+                    'fr9': 'مفردة من رزمة الفرنسي التاسع',
+                }[did]
+                for legacy_label in (
+                    'مفردة من رزمة فرنسي بكلوريا',
+                    'مفردة من رزمة فرنسي بكالوريا',
+                    'مفردة من رزمة الفرنسي بكالوريا',
+                    'مفردة من رزمة الفرنسي بكلوريا',
+                ):
+                    value = value.replace(legacy_label, deck_sample_label)
                 # These optional extra-content panels belong to the French Bac source
                 # template, not to the four target note types.
                 value = re.sub(
@@ -210,6 +225,17 @@ def adapt_embedded_designs(h, did):
                     value = value.replace('{{' + old_name + '}}',
                                           '{{' + new_name + '}}')
                 design[key] = value
+    legacy_labels = (
+        'مفردة من رزمة فرنسي بكلوريا',
+        'مفردة من رزمة فرنسي بكالوريا',
+        'مفردة من رزمة الفرنسي بكالوريا',
+        'مفردة من رزمة الفرنسي بكلوريا',
+    )
+    for n, design in enumerate(entries, 1):
+        for key in ('front', 'back', 'frontRev', 'backRev'):
+            value = design.get(key)
+            if isinstance(value, str) and any(label in value for label in legacy_labels):
+                raise SystemExit('[%s] stale French Bac sample label remains in design %d (%s)' % (did, n, key))
     return replace_embedded(h, entries)
 
 def replace_fallback_fr(h, new_fr_json):
