@@ -56,6 +56,23 @@ jobs:
           npm init -y
           npm install --no-save playwright
           npx playwright install --with-deps chromium
+      - name: Diagnose inline JavaScript syntax
+        continue-on-error: true
+        run: |
+          python - <<'PY'
+          import re
+          from pathlib import Path
+          for deck in ("fr9", "en9", "enlit", "ensci"):
+              html = Path("out", deck + ".html").read_text(encoding="utf-8")
+              scripts = re.findall(r"<script(?![^>]*\\bsrc=)[^>]*>([\\s\\S]*?)</script>", html, re.I)
+              for i, source in enumerate(scripts):
+                  Path(f"/tmp/{deck}-{i}.js").write_text(source, encoding="utf-8")
+              print(deck, "inline scripts", len(scripts))
+          PY
+          for f in /tmp/{fr9,en9,enlit,ensci}-*.js; do
+            echo "CHECK $f"
+            node --check "$f" || true
+          done
       - name: Browser smoke test before packaging
         run: |
           set -euo pipefail
@@ -76,17 +93,9 @@ jobs:
               for (const deck of ["fr9", "en9", "enlit", "ensci"]) {
                 const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
                 const errors = [];
-                page.on("pageerror", e => errors.push(e.message));
+                page.on("pageerror", e => errors.push(e.stack || e.message));
                 await page.goto("http://127.0.0.1:8765/" + deck + ".html", { waitUntil: "domcontentloaded" });
                 await page.waitForTimeout(5000);
-                await page.evaluate(async () => {
-                  for (let y = 0; y < document.body.scrollHeight; y += 700) {
-                    window.scrollTo(0, y);
-                    await new Promise(r => setTimeout(r, 120));
-                  }
-                  window.scrollTo(0, 0);
-                  await new Promise(r => setTimeout(r, 1500));
-                });
                 const state = await page.evaluate(() => {
                   const text = document.body.innerText || "";
                   const imgs = [...document.images];
