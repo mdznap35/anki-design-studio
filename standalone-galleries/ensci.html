@@ -2147,7 +2147,7 @@ function exportDoDownload(){
   var veDi=document.getElementById('veDlInfo');if(veDi)veDi.textContent='';
   var dbtns=[document.querySelector('#download .dl-btn'),document.getElementById('gvSelDl')].filter(Boolean);
   dbtns.forEach(function(b){b.disabled=true;if(!b.dataset.lbl)b.dataset.lbl=b.textContent;b.textContent='جارٍ…';});
-  fetch(apiBase()+'/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config),signal:_sig}).then(function(resp){
+  apiFetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config),signal:_sig}).then(function(resp){
     if(resp.status===202){return resp.json().then(function(dj){return pollJobDownload(dj.job,config.deckName+'.apkg',di,EXPORT_HOLD.armed);});}
     if(!resp.ok){throw new Error('Server error: '+resp.status);}
     return blobPct(resp,function(p){dlShowProg('جاري تجهيز الملفات... '+p+'%',p);}).then(function(blob){
@@ -2183,7 +2183,7 @@ function downloadSingleTpl(id){
   var _sig2=dlBegin();
   var ld=document.getElementById('loading');if(ld)ld.style.display='block';
   var di=document.getElementById('dlInfo');if(di)di.textContent='';
-  fetch(apiBase()+'/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config),signal:_sig2}).then(function(resp){
+  apiFetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config),signal:_sig2}).then(function(resp){
     if(resp.status===202){return resp.json().then(function(dj){return pollJobDownload(dj.job,config.deckName+'.apkg',di);});}
     if(!resp.ok){throw new Error('Server error: '+resp.status);}
     return blobPct(resp,function(p){dlShowProg('جاري تجهيز الملفات... '+p+'%',p);}).then(function(blob){
@@ -2214,13 +2214,9 @@ function toggleMultiSelect(id){
   renderGrid();
 }
 
-function apiBase(){
-  try{
-    var h=location.hostname||'';
-    if(h.indexOf('onrender.com')>=0||h==='127.0.0.1'||h==='localhost')return '';
-  }catch(_e){}
-  return 'https://anki-design-studio.onrender.com';
-}
+function apiBase(){return '';}
+function apiFetch(){return Promise.reject(new Error('هذه نسخة معاينة مستقلة؛ خدمات الخادم وتوليد الحزم غير متاحة هنا.'));}
+window.STANDALONE_PREVIEW_ONLY=true;
 
 function selectAllTemplates(){
   var all=getFilteredTemplates();
@@ -2362,7 +2358,7 @@ function toggleQuickDl(){
 function loadCachedVoices(){
   var note=document.getElementById('quickNote');
   if(note)note.textContent='جاري جلب الأصوات المحمّلة…';
-  fetch(apiBase()+'/api/cached_voices').then(function(r){return r.json();}).then(function(d){
+  apiFetch('/api/cached_voices').then(function(r){return r.json();}).then(function(d){
     _cachedVoicesLoaded=true;
     var frS=document.getElementById('quickFrVoice'),arS=document.getElementById('quickArVoice');
     function fill(sel,list,cur){
@@ -2409,7 +2405,7 @@ function populateVoiceSelects(){
     applySavedTTS();
     _voicesReady=true;
   }
-  fetch(apiBase()+'/api/tts_voices?lang=en').then(function(r){return r.json();}).then(function(d){
+  apiFetch('/api/tts_voices?lang=en').then(function(r){return r.json();}).then(function(d){
     if(d&&d.fr&&d.fr.length&&d.ar&&d.ar.length)fill(d.fr,d.ar);
     else fill(TTS_VOICES_FALLBACK.fr,TTS_VOICES_FALLBACK.ar);
   }).catch(function(){fill(TTS_VOICES_FALLBACK.fr,TTS_VOICES_FALLBACK.ar);});
@@ -2477,7 +2473,7 @@ async function previewTTS(){
     var pwf='Atom',pwa='ذرة';
     try{if(typeof SAMP!=='undefined'&&SAMP){if(SAMP.f)pwf=SAMP.f;if(SAMP.a)pwa=SAMP.a;}}catch(_e){}
     _ptimer=setTimeout(function(){try{if(_pctl)_pctl.abort();}catch(e){}},120000);
-    var resp=await fetch(apiBase()+'/api/tts_preview',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fr:pwf,ar:pwa,lang:'en',ttsConfig:cfg}),signal:_pctl?_pctl.signal:undefined});
+    var resp=await apiFetch('/api/tts_preview',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fr:pwf,ar:pwa,lang:'en',ttsConfig:cfg}),signal:_pctl?_pctl.signal:undefined});
     try{if(_ptimer)clearTimeout(_ptimer);}catch(e){}
     if(!resp.ok){var em='Server error: '+resp.status;try{var ej=await resp.json();if(ej&&ej.error)em=ej.error;}catch(_e){}throw new Error(em);}
     var d=await resp.json();
@@ -2532,7 +2528,7 @@ async function downloadMultiAPKG(){
     var config={deckName:deckName, designs:designs, multi:true, editionId:edSuf, autoPlay:auto, ttsConfig:dlTTS(), includeAudio:document.getElementById('includeAudio')?.checked!==false, quick:dlQuick(),wordSource:'ensci'};
   trackEvent('download',{deckName:deckName,reversed:false,unique:uniq,count:designs.length});
     toast('جاري تجهيز الرزمة بـ '+designs.length+' تصميم…');
-    var resp=await fetch(apiBase()+'/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config),signal:_sigM});
+    var resp=await apiFetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config),signal:_sigM});
     if(resp.status===202){
       var dj=await resp.json();
       try{await pollJobDownload(dj.job, config.deckName+'.apkg', di);if(veDi)veDi.textContent=di.textContent;}catch(e){var um3=userErr(e,null);if(um3!==null&&veDi)veDi.textContent='تعذر تجهيز الرزمة. حاول مرة أخرى.';}
@@ -3619,7 +3615,7 @@ async function pollJobDownload(jobId, fileName, statusEl, hold){
     await new Promise(function(r){setTimeout(r,4000);});
     if(DL_ABORT.cancelled)throw new Error('أُلغي التحميل');
     try{
-      var r=await fetch(apiBase()+'/api/job/'+jobId,{signal:dlSignal()});
+      var r=await apiFetch('/api/job/'+jobId,{signal:dlSignal()});
       var d=await r.json();
       var pct=d.total?Math.min(99,Math.round((d.done||0)/d.total*100)):0;
       if(pct!==lastPct){
@@ -3630,7 +3626,7 @@ async function pollJobDownload(jobId, fileName, statusEl, hold){
         if(jb)jb.style.width=pct+'%';
       }
       if(d.status==='done'){
-        var _dr=await fetch(apiBase()+'/api/download/'+jobId,{signal:dlSignal()});
+        var _dr=await apiFetch('/api/download/'+jobId,{signal:dlSignal()});
         var blob=await blobPct(_dr,function(p){dlShowProg('جاري تجهيز الملفات... '+p+'%',p);});
         if(jp)jp.style.display='none';
         if(blob.size<1000)throw new Error('ملف فارغ');
@@ -3669,7 +3665,7 @@ async function downloadAPKG(){
     if(typeof toast==='function')toast('جاري تجهيز الرزمة بالقالب الحالي…');
     const config={deckName:deckName,designs:[p],multi:true,reversed:rev,editionId:edSuf,ttsConfig:dlTTS(),includeAudio:document.getElementById('includeAudio')?.checked!==false,autoPlay:(document.getElementById('autoPlay')?.checked!==false),quick:dlQuick()};
   trackEvent('download',{deckName:config.deckName,reversed:rev,unique:uniq,count:1});
-    const resp=await fetch(apiBase()+'/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config),signal:_sigA});
+    const resp=await apiFetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config),signal:_sigA});
     if(resp.status===202){
       const dj=await resp.json();
       var jt0=document.getElementById('jobProgTxt');
@@ -6823,7 +6819,7 @@ try{
 }catch(_e){}
 function initAudioStatus(){
   try{
-    fetch(apiBase()+'/api/audio_status?source=ensci).then(function(r){return r.json();}).then(function(d){
+    apiFetch('/api/audio_status?source=ensci).then(function(r){return r.json();}).then(function(d){
       var cb=document.getElementById('includeAudio');
       var lb=document.getElementById('audioNote');
       if(!cb)return;
