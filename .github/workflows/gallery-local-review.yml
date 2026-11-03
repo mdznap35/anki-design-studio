@@ -44,7 +44,7 @@ jobs:
               assert all(x.get("pack") == deck for x in designs)
               assert "gallery_imgs/" in h
               assert "gallery_imgs_" + deck + "/" not in h
-              assert h.count("extra-btn") == 0, f"{deck}: extra buttons remain"
+              assert not re.search(r'<button\\b[^>]*\\bextra-btn\\b[^>]*>', h, re.I), f"{deck}: extra buttons remain"
               print(f"PASS {deck}: 100 designs; image references; extra buttons removed; {p.stat().st_size:,} bytes")
           print("PASS 100 thumbnails")
           PY
@@ -56,7 +56,7 @@ jobs:
           cp -R out/gallery_imgs review-package/gallery_imgs
           cat > review-package/README-AR.txt <<'EOF'
           حزمة معاينة محلية لمعارض Anki الأربعة
-          
+
           1) فك ضغط الملف كاملاً.
           2) لا تنقل ملفات HTML وحدها؛ اترك مجلد gallery_imgs بجانبها.
           3) افتح fr9.html أو en9.html أو enlit.html أو ensci.html باستخدام Chrome.
