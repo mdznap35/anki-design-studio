@@ -392,6 +392,39 @@ def build_one(did, spec, base):
         if removed_extra_buttons != 100:
             raise SystemExit('[%s] expected to remove 100 extra buttons, removed %d'
                              % (did, removed_extra_buttons))
+    # Harden the all-design browser against early initialization races and
+    # fit the full preview to the available viewport instead of shrinking it
+    # with the old oversized fixed padding.
+    gallery_runtime_fix = r'''<script>
+(function(){
+  var originalOpen=window.openGalleryBrowser;
+  window.openGalleryBrowser=function(){
+    try{if(typeof ensureGalleryDesigns==='function')ensureGalleryDesigns();if(typeof gvCompute==='function')gvCompute();}catch(e){}
+    if(typeof originalOpen==='function')return originalOpen.apply(this,arguments);
+  };
+  var originalFit=window.gvFitFrame;
+  window.gvFitFrame=function(){
+    try{if(typeof originalFit==='function')originalFit.apply(this,arguments);}catch(e){}
+    var frame=document.getElementById('gvFrame'),stage=document.getElementById('gvStage'),wrap=document.getElementById('gvCardWrap');
+    if(!frame||!stage||!wrap)return;
+    var w=Math.max(240,parseFloat(frame.style.width)||440),h=Math.max(240,parseFloat(frame.style.height)||900);
+    var mobile=window.innerWidth<=600,padX=mobile?20:48,padY=mobile?24:44;
+    var aw=Math.max(220,stage.clientWidth-padX),ah=Math.max(260,stage.clientHeight-padY);
+    var scale=Math.min(aw/w,ah/h,1.12);
+    if(!isFinite(scale)||scale<=0)return;
+    wrap.style.transformOrigin='center center';wrap.style.transform='scale('+scale+')';
+    wrap.style.width=w+'px';wrap.style.height=h+'px';
+  };
+  if(typeof window.renderGalleryBrowser==='function'){
+    var originalRender=window.renderGalleryBrowser;
+    window.renderGalleryBrowser=function(){
+      try{if(typeof ensureGalleryDesigns==='function')ensureGalleryDesigns();if(typeof gvCompute==='function')gvCompute();}catch(e){}
+      return originalRender.apply(this,arguments);
+    };
+  }
+})();
+</script>'''
+    h = h.replace('</body>', gallery_runtime_fix + '\\n</body>', 1)
     return h, spec
 
 
