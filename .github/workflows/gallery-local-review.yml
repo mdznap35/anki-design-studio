@@ -1,0 +1,80 @@
+name: Build local gallery review package
+
+on:
+  push:
+    branches:
+      - gallery-local-preview-fix
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build the four original galleries
+        run: |
+          set -euo pipefail
+          python -m py_compile tools/build_galleries.py
+          python tools/build_galleries.py
+      - name: Verify gallery data and required image assets
+        run: |
+          python - <<'PY'
+          import json, re
+          from pathlib import Path
+          import sys
+          sys.path.insert(0, "tools")
+          from build_galleries import bmatch
+          root = Path("out")
+          images = sorted((root / "gallery_imgs").glob("*.jpg"))
+          assert len(images) == 100, f"expected 100 images, got {len(images)}"
+          for deck in ("fr9", "en9", "enlit", "ensci"):
+              p = root / f"{deck}.html"
+              h = p.read_text(encoding="utf-8")
+              marker = "var EMBEDDED_DESIGNS_100 = "
+              pos = h.index(marker) + len(marker)
+              start = h.index("[", pos)
+              designs = json.loads(h[start:bmatch(h, start) + 1])
+              assert len(designs) == 100, (deck, len(designs))
+              assert all(x.get("pack") == deck for x in designs)
+              assert "gallery_imgs/" in h
+              assert "gallery_imgs_" + deck + "/" not in h
+              assert h.count("extra-btn") == 0, f"{deck}: extra buttons remain"
+              print(f"PASS {deck}: 100 designs; image references; extra buttons removed; {p.stat().st_size:,} bytes")
+          print("PASS 100 thumbnails")
+          PY
+      - name: Create a local-use bundle with four HTML files and all thumbnails
+        run: |
+          set -euo pipefail
+          mkdir -p review-package
+          cp out/fr9.html out/en9.html out/enlit.html out/ensci.html review-package/
+          cp -R out/gallery_imgs review-package/gallery_imgs
+          cat > review-package/README-AR.txt <<'EOF'
+          حزمة معاينة محلية لمعارض Anki الأربعة
+          
+          1) فك ضغط الملف كاملاً.
+          2) لا تنقل ملفات HTML وحدها؛ اترك مجلد gallery_imgs بجانبها.
+          3) افتح fr9.html أو en9.html أو enlit.html أو ensci.html باستخدام Chrome.
+          4) يجب أن تكون شبكة الإنترنت متاحة لتحميل الخطوط الخارجية إن وجدت.
+          5) هذه نسخة معاينة فقط؛ لم يتم نشرها على Render أو GitHub Pages.
+          EOF
+          cd review-package
+          zip -qr ../anki-galleries-local-review.zip .
+          cd ..
+          sha256sum anki-galleries-local-review.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: anki-galleries-local-review
+          path: |
+            anki-galleries-local-review.zip
+            review-package/fr9.html
+            review-package/en9.html
+            review-package/enlit.html
+            review-package/ensci.html
+          if-no-files-found: error
+          retention-days: 14
