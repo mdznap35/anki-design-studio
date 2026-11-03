@@ -73,31 +73,29 @@ jobs:
         continue-on-error: true
         run: |
           python - <<'PY'
+          from html.parser import HTMLParser
           from pathlib import Path
+          class Scripts(HTMLParser):
+              def __init__(self):
+                  super().__init__(convert_charrefs=False)
+                  self.items=[]
+                  self.current=None
+              def handle_starttag(self, tag, attrs):
+                  if tag.lower()=="script":
+                      self.current=[]
+              def handle_data(self, data):
+                  if self.current is not None:
+                      self.current.append(data)
+              def handle_endtag(self, tag):
+                  if tag.lower()=="script" and self.current is not None:
+                      self.items.append("".join(self.current))
+                      self.current=None
           for deck in ("fr9", "en9", "enlit", "ensci"):
-              html = Path("out", deck + ".html").read_text(encoding="utf-8")
-              scripts = []
-              for part in html.split("<script")[1:]:
-                  if ">" not in part:
-                      continue
-                  tag, rest = part.split(">", 1)
-                  if "src=" not in tag.lower() and "</script>" in rest:
-                      scripts.append(rest.split("</script>", 1)[0])
-              for i, source in enumerate(scripts):
-                  Path(f"/tmp/{deck}-{i}.js").write_text(source, encoding="utf-8")
-                  print("SCRIPT", deck, i, "length", len(source), "HEAD", repr(source[:300]), "TAIL", repr(source[-700:])) 
-              print(deck, "inline scripts", len(scripts))
-              for token in ("/gi,'');}", "</script>/gi", "</script>/g"):
-                  at = html.find(token)
-                  if at >= 0:
-                      print("TOKEN-CONTEXT", deck, token, repr(html[max(0, at-700):at+250]))
-              pos = 0
-              while True:
-                  pos = html.lower().find("</script", pos)
-                  if pos < 0:
-                      break
-                  print("SCRIPT-CLOSE-CONTEXT", deck, repr(html[max(0, pos-180):pos+40]))
-                  pos += 9
+              parser=Scripts()
+              parser.feed(Path("out",deck+".html").read_text(encoding="utf-8"))
+              for i,source in enumerate(parser.items):
+                  Path(f"/tmp/{deck}-{i}.js").write_text(source,encoding="utf-8")
+              print(deck,"actual inline script elements",len(parser.items))
           PY
           for f in /tmp/{fr9,en9,enlit,ensci}-*.js; do
             echo "CHECK $f"
