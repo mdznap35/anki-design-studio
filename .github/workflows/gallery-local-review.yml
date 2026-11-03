@@ -72,6 +72,7 @@ jobs:
                       scripts.append(rest.split("</script>", 1)[0])
               for i, source in enumerate(scripts):
                   Path(f"/tmp/{deck}-{i}.js").write_text(source, encoding="utf-8")
+                  print("SCRIPT", deck, i, "length", len(source), "HEAD", repr(source[:300]), "TAIL", repr(source[-700:])) 
               print(deck, "inline scripts", len(scripts))
           PY
           for f in /tmp/{fr9,en9,enlit,ensci}-*.js; do
