@@ -156,6 +156,13 @@ jobs:
                     try { return frame.contentDocument && frame.contentDocument.body ? frame.contentDocument.body.innerText : ""; }
                     catch (_) { return ""; }
                   });
+                  const geometry = frames.map(frame => {
+                    const rect = frame.getBoundingClientRect();
+                    const media = frame.parentElement && frame.parentElement.getBoundingClientRect();
+                    return { frameWidth: rect.width, frameHeight: rect.height, mediaWidth: media ? media.width : 0, mediaHeight: media ? media.height : 0, transform: getComputedStyle(frame).transform };
+                  });
+                  const fittedFrames = geometry.filter(g => g.mediaWidth > 0 && g.mediaHeight > 0 &&
+                    Math.abs(g.frameWidth - g.mediaWidth) <= 3 && Math.abs(g.frameHeight - g.mediaHeight) <= 3).length;
                   return {
                     count: document.querySelectorAll("#gbGrid .gb-item").length,
                     label: (document.getElementById("gbCount") || {}).textContent || "",
@@ -165,7 +172,9 @@ jobs:
                     topElement: top ? (top.id || top.className || top.tagName) : "",
                     loadedThumbnails: frames.filter((frame, i) => frame.contentDocument && frame.contentDocument.readyState === "complete" && previewTexts[i].length > 0).length,
                     sampleMatches: previewTexts.filter(text => text.includes(window.SAMP.f)).length,
-                    firstPreviewText: (previewTexts[0] || "").slice(0, 120)
+                    fittedFrames,
+                    firstPreviewText: (previewTexts[0] || "").slice(0, 120),
+                    firstGeometry: geometry[0] || null
                   };
                 });
                 console.log(deck, "gallery-browser", JSON.stringify(gallery));
@@ -175,6 +184,7 @@ jobs:
                 assert(gallery.topElement !== "onboardOverlay", deck + ": onboarding is above the gallery");
                 assert(gallery.loadedThumbnails > 0, deck + ": no live gallery previews loaded");
                 assert(gallery.sampleMatches > 0, deck + ": live previews do not show the deck-specific sample word " + expected);
+                assert(gallery.fittedFrames > 0, deck + ": preview iframes are clipped instead of fitted to the card area");
                 assert.equal(gallery.count, 100, deck + ": gallery browser count");
                 assert(gallery.label.includes("100") && gallery.label.includes("/"), deck + ": gallery count label: " + gallery.label);
                 await page.screenshot({ path: "review-package/screenshots/" + deck + "-gallery.png", fullPage: false });
