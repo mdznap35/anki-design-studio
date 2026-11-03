@@ -74,6 +74,10 @@ jobs:
                   Path(f"/tmp/{deck}-{i}.js").write_text(source, encoding="utf-8")
                   print("SCRIPT", deck, i, "length", len(source), "HEAD", repr(source[:300]), "TAIL", repr(source[-700:])) 
               print(deck, "inline scripts", len(scripts))
+              for token in ("/gi,'');}", "</script>/gi", "</script>/g"):
+                  at = html.find(token)
+                  if at >= 0:
+                      print("TOKEN-CONTEXT", deck, token, repr(html[max(0, at-700):at+250]))
               pos = 0
               while True:
                   pos = html.lower().find("</script", pos)
