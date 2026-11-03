@@ -150,7 +150,11 @@ jobs:
                   const r = el.getBoundingClientRect();
                   const style = getComputedStyle(el);
                   const top = document.elementFromPoint(Math.floor(innerWidth / 2), Math.floor(innerHeight / 2));
-                  const imgs = [...document.querySelectorAll("#gbGrid .gb-img")];
+                  const frames = [...document.querySelectorAll("#gbGrid iframe.gb-preview-frame")];
+                  const previewTexts = frames.map(frame => {
+                    try { return frame.contentDocument && frame.contentDocument.body ? frame.contentDocument.body.innerText : ""; }
+                    catch (_) { return ""; }
+                  });
                   return {
                     count: document.querySelectorAll("#gbGrid .gb-item").length,
                     label: (document.getElementById("gbCount") || {}).textContent || "",
@@ -158,7 +162,9 @@ jobs:
                     visible: style.display !== "none" && style.visibility !== "hidden" && r.width > 0 && r.height > 0,
                     onboardingDisplay: document.getElementById("onboardOverlay").style.display,
                     topElement: top ? (top.id || top.className || top.tagName) : "",
-                    loadedThumbnails: imgs.filter(i => i.complete && i.naturalWidth > 0).length
+                    loadedThumbnails: frames.filter((frame, i) => frame.contentDocument && frame.contentDocument.readyState === "complete" && previewTexts[i].length > 0).length,
+                    sampleMatches: previewTexts.filter(text => text.includes(window.SAMP.f)).length,
+                    firstPreviewText: (previewTexts[0] || "").slice(0, 120)
                   };
                 });
                 console.log(deck, "gallery-browser", JSON.stringify(gallery));
@@ -166,7 +172,8 @@ jobs:
                 assert.equal(gallery.visible, true, deck + ": gallery browser is not visibly rendered");
                 assert.equal(gallery.onboardingDisplay, "none", deck + ": onboarding tour still covers gallery");
                 assert(gallery.topElement !== "onboardOverlay", deck + ": onboarding is above the gallery");
-                assert(gallery.loadedThumbnails > 0, deck + ": no gallery thumbnails loaded");
+                assert(gallery.loadedThumbnails > 0, deck + ": no live gallery previews loaded");
+                assert(gallery.sampleMatches > 0, deck + ": live previews do not show the deck-specific sample word " + expected);
                 assert.equal(gallery.count, 100, deck + ": gallery browser count");
                 assert(gallery.label.includes("100") && gallery.label.includes("/"), deck + ": gallery count label: " + gallery.label);
                 await page.screenshot({ path: "review-package/screenshots/" + deck + "-gallery.png", fullPage: false });
