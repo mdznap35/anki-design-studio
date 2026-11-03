@@ -392,6 +392,35 @@ def build_one(did, spec, base):
         if removed_extra_buttons != 100:
             raise SystemExit('[%s] expected to remove 100 extra buttons, removed %d'
                              % (did, removed_extra_buttons))
+
+        # The inherited French Bac page has a full-screen loading overlay.
+        # It is unnecessary on the generated deck galleries and can remain
+        # visible if an optional startup hook fails, hiding the usable page.
+        h, removed_loader_css = re.subn(
+            r'/\\* ={3,}\\s*LOADING\\s*={3,}\\s*\\*/\\s*#loadingMsg\\{[^}]*\\}\\s*#loadBar\\{[^}]*\\}\\s*#loadPct\\{[^}]*\\}\\s*',
+            '', h, count=1)
+        if removed_loader_css != 1:
+            raise SystemExit('[%s] expected exactly one inherited loading CSS block, removed %d'
+                             % (did, removed_loader_css))
+
+        h, removed_loader_markup = re.subn(
+            r'<div id="loadingMsg">[\\s\\S]*?\\n</div>\\n\\n(?=<div id="sec-gal")',
+            '', h, count=1)
+        if removed_loader_markup != 1:
+            raise SystemExit('[%s] expected exactly one inherited loading overlay, removed %d'
+                             % (did, removed_loader_markup))
+
+        for old_loader_ref in (
+            "try{var lm=document.getElementById('loadingMsg');if(lm)lm.remove();}catch(e){}",
+            "var lm=document.getElementById('loadingMsg');if(lm)lm.style.display='none';",
+        ):
+            if h.count(old_loader_ref) != 1:
+                raise SystemExit('[%s] expected one obsolete loading reference: %s'
+                                 % (did, old_loader_ref))
+            h = h.replace(old_loader_ref, '')
+
+        if 'loadingMsg' in h or 'جاري تحميل القوالب...' in h:
+            raise SystemExit('[%s] blocking loader remnants remain' % did)
     return h, spec
 
 
