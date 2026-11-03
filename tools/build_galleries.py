@@ -324,7 +324,7 @@ def build_one(did, spec, base):
             h = rep(h, "front = front.split('{{Français}}').join(SAMP.f);", "front = front.split('{{English}}').join(SAMP.f);", 1, t + 'fr field')
             h = rep(h, "front = front.split('{{Dossier}}').join(SAMP.dossier||'Dossier 1');", "front = front.split('{{Dossier}}').join('');", 1, t + 'dossier field')
         h = rep(h, "fetch(apiBase()+'/api/audio_status')",
-                "fetch(apiBase()+'/api/audio_status?source=" + spec['ws'] + ")", 1, t + 'status url')
+                "fetch(apiBase()+'/api/audio_status?source=" + spec['ws'] + "')", 1, t + 'status url')
         h = rep(h, "JSON.stringify({fr:pwf,ar:pwa,ttsConfig:cfg})",
                 "JSON.stringify({fr:pwf,ar:pwa,lang:'" + spec['lang'] + "',ttsConfig:cfg})", 1, t + 'preview lang')
         h = rep(h, "    includeAudio:inc,\n    quick:dlQuick()\n  };",
