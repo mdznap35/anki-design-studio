@@ -430,7 +430,7 @@ def build_one(did, spec, base):
     body_close = h.rfind('</body>')
     if body_close < 0:
         raise SystemExit(t + 'could not find the final HTML </body> tag')
-    h = h[:body_close] + gallery_runtime_fix + '\\n' + h[body_close:]
+    h = h[:body_close] + gallery_runtime_fix + '\n' + h[body_close:]
     return h, spec
 
 
