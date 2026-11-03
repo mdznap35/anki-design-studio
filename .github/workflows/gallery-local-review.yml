@@ -55,10 +55,11 @@ jobs:
               designs = json.loads(h[start:bmatch(h, start) + 1])
               assert len(designs) == 100, (deck, len(designs))
               assert all(x.get("pack") == deck for x in designs)
-              assert "gallery_imgs/" in h
+              assert "thumbDoc(t)" in h, f"{deck}: live deck preview renderer missing"
+              assert "gb-preview-frame" in h, f"{deck}: live gallery preview frames missing"
               assert "gallery_imgs_" + deck + "/" not in h
               assert not re.search(r'<button\b[^>]*\bextra-btn\b[^>]*>', h, re.I), f"{deck}: extra buttons remain"
-              print(f"PASS {deck}: 100 designs; image references; extra buttons removed; {p.stat().st_size:,} bytes")
+              print(f"PASS {deck}: 100 designs; live deck previews; extra buttons removed; {p.stat().st_size:,} bytes")
           print("PASS 100 thumbnails")
           PY
       - uses: actions/setup-node@v4
