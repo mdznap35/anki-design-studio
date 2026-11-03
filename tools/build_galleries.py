@@ -397,14 +397,14 @@ def build_one(did, spec, base):
         # It is unnecessary on the generated deck galleries and can remain
         # visible if an optional startup hook fails, hiding the usable page.
         h, removed_loader_css = re.subn(
-            r'/\\* ={3,}\\s*LOADING\\s*={3,}\\s*\\*/\\s*#loadingMsg\\{[^}]*\\}\\s*#loadBar\\{[^}]*\\}\\s*#loadPct\\{[^}]*\\}\\s*',
+            r'/\* ={3,}\s*LOADING\s*={3,}\s*\*/\s*#loadingMsg\{[^}]*\}\s*#loadBar\{[^}]*\}\s*#loadPct\{[^}]*\}\s*',
             '', h, count=1)
         if removed_loader_css != 1:
             raise SystemExit('[%s] expected exactly one inherited loading CSS block, removed %d'
                              % (did, removed_loader_css))
 
         h, removed_loader_markup = re.subn(
-            r'<div id="loadingMsg">[\\s\\S]*?\\n</div>\\n\\n(?=<div id="sec-gal")',
+            r'<div id="loadingMsg">[\s\S]*?\n</div>\n\n(?=<div id="sec-gal")',
             '', h, count=1)
         if removed_loader_markup != 1:
             raise SystemExit('[%s] expected exactly one inherited loading overlay, removed %d'
