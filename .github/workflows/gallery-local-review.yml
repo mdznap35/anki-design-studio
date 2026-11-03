@@ -60,11 +60,16 @@ jobs:
         continue-on-error: true
         run: |
           python - <<'PY'
-          import re
           from pathlib import Path
           for deck in ("fr9", "en9", "enlit", "ensci"):
               html = Path("out", deck + ".html").read_text(encoding="utf-8")
-              scripts = re.findall(r"<script(?![^>]*\\bsrc=)[^>]*>([\\s\\S]*?)</script>", html, re.I)
+              scripts = []
+              for part in html.split("<script")[1:]:
+                  if ">" not in part:
+                      continue
+                  tag, rest = part.split(">", 1)
+                  if "src=" not in tag.lower() and "</script>" in rest:
+                      scripts.append(rest.split("</script>", 1)[0])
               for i, source in enumerate(scripts):
                   Path(f"/tmp/{deck}-{i}.js").write_text(source, encoding="utf-8")
               print(deck, "inline scripts", len(scripts))
