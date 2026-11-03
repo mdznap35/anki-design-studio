@@ -395,6 +395,35 @@ def build_one(did, spec, base):
     return h, spec
 
 
+def remove_blocking_gallery_loader(html, deck_id):
+    """Remove the full-screen startup overlay from generated gallery pages only."""
+    css_pattern = (
+        r'/\\* ={10,}\\s*\\n\\s*LOADING\\s*\\n\\s*={10,} \\*/\\s*'
+        r'#loadingMsg\\{[^}]*\\}\\s*#loadBar\\{[^}]*\\}\\s*#loadPct\\{[^}]*\\}\\s*'
+    )
+    html, css_count = re.subn(css_pattern, '', html, count=1)
+    if css_count != 1:
+        raise SystemExit('[%s] expected one blocking-loader CSS block, found %d'
+                         % (deck_id, css_count))
+
+    start_marker = '<div id="loadingMsg">'
+    end_marker = '<div id="sec-gal" class="sec on">'
+    if html.count(start_marker) != 1 or html.count(end_marker) != 1:
+        raise SystemExit('[%s] expected one loading overlay and one gallery root'
+                         % deck_id)
+    start = html.index(start_marker)
+    end = html.index(end_marker, start)
+    overlay = html[start:end]
+    if overlay.count('</div>') != 5 or 'جاري تحميل القوالب...' not in overlay:
+        raise SystemExit('[%s] loading overlay structure changed; refusing unsafe removal'
+                         % deck_id)
+    html = html[:start] + html[end:]
+
+    if 'id="loadingMsg"' in html or 'جاري تحميل القوالب...' in html:
+        raise SystemExit('[%s] blocking loader remains after removal' % deck_id)
+    return html
+
+
 if __name__ == '__main__':
     base = open(BASE, encoding='utf-8').read()
     os.makedirs(OUTDIR, exist_ok=True)
@@ -402,6 +431,7 @@ if __name__ == '__main__':
         if did == 'bac12':
             continue
         h, _ = build_one(did, spec, base)
+        h = remove_blocking_gallery_loader(h, did)
         out_path = os.path.join(OUTDIR, spec['ffile'])
         with open(out_path, 'w', encoding='utf-8') as f:
             f.write(h)
