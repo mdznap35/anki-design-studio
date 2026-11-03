@@ -406,7 +406,26 @@ def build_one(did, spec, base):
       im.style.cssText='display:block;width:100%;height:100%;min-height:180px;border:0;pointer-events:none;background:#0e0c16;';
       im.srcdoc=thumbDoc(t);
       var media=it.querySelector('.gb-thumb');
-      if(media){media.style.cssText='display:block;position:relative;width:100%;aspect-ratio:22/45;min-height:180px;overflow:hidden;background:#0e0c16;';media.appendChild(im);}"""
+      if(media){
+        media.style.cssText='display:block;position:relative;width:100%;aspect-ratio:22/45;min-height:180px;overflow:hidden;background:#0e0c16;';
+        media.appendChild(im);
+        var fitThumb=function(){
+          var mw=media.clientWidth||180,mh=media.clientHeight||368;
+          var thumbScale=Math.min(mw/440,mh/900);
+          if(!isFinite(thumbScale)||thumbScale<=0)return;
+          im.style.position='absolute';im.style.left='0';im.style.top='0';
+          im.style.width='440px';im.style.height='900px';
+          im.style.transformOrigin='top left';
+          im.style.transform='scale('+thumbScale+')';
+        };
+        fitThumb();
+        if(typeof ResizeObserver!=='undefined'){
+          var thumbObserver=new ResizeObserver(fitThumb);
+          thumbObserver.observe(media);
+        }else{
+          window.addEventListener('resize',fitThumb);
+        }
+      }"""
     h = rep(h, gallery_thumb_old, gallery_thumb_new, 1, t + 'deck-specific live gallery previews')
     gallery_handlers_old = """      var im=it.querySelector('.gb-img');
       im.addEventListener('load',function(){this.removeAttribute('data-loading');var sk=this.parentNode.querySelector('.gb-sk');if(sk)sk.style.display='none';});
