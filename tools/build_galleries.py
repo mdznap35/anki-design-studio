@@ -397,7 +397,7 @@ def build_one(did, spec, base):
 
 def remove_blocking_gallery_loader(html, deck_id):
     """Remove the full-screen startup overlay from generated gallery pages only."""
-    css_start_marker = '/* ============================================================\\n   LOADING'
+    css_start_marker = '/* ============================================================\n   LOADING'
     css_end_marker = '#loadPct{color:var(--tx3)}'
     if html.count(css_start_marker) != 1 or html.count(css_end_marker) != 1:
         raise SystemExit('[%s] expected one blocking-loader CSS block' % deck_id)
