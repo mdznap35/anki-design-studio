@@ -424,7 +424,13 @@ def build_one(did, spec, base):
   }
 })();
 </script>'''
-    h = h.replace('</body>', gallery_runtime_fix + '\\n</body>', 1)
+    # The literal </body> also appears inside JavaScript strings (for preview
+    # documents). Insert only before the final HTML body close, never the first
+    # textual occurrence, which would corrupt the surrounding JavaScript.
+    body_close = h.rfind('</body>')
+    if body_close < 0:
+        raise SystemExit(t + 'could not find the final HTML </body> tag')
+    h = h[:body_close] + gallery_runtime_fix + '\\n' + h[body_close:]
     return h, spec
 
 
