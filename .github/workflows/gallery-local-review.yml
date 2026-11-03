@@ -22,6 +22,19 @@ jobs:
           set -euo pipefail
           python -m py_compile tools/build_galleries.py
           python tools/build_galleries.py
+      - name: Escape a literal closing-script token inside the preview sanitizer
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          for deck in ("fr9", "en9", "enlit", "ensci"):
+              p = Path("out", deck + ".html")
+              html = p.read_text(encoding="utf-8")
+              count = html.count("</script>/gi")
+              print(deck, "unsafe sanitizer terminators found:", count)
+              if count:
+                  html = html.replace("</script>/gi", "<\\/script>/gi")
+                  p.write_text(html, encoding="utf-8")
+          PY
       - name: Verify gallery data and required image assets
         run: |
           python - <<'PY'
