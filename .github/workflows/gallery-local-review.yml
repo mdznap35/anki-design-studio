@@ -135,6 +135,27 @@ jobs:
                 assert(state.textLength > 100, deck + ": nearly empty page");
                 assert.equal(state.loading.length, 0, deck + ": stuck loading message is visible");
                 assert.equal(errors.length, 0, deck + ": uncaught browser errors");
+                const expected = { fr9: "Leçon", en9: "Student", enlit: "Novel", ensci: "Atom" }[deck];
+                const data = await page.evaluate(() => ({ sample: window.SAMP && window.SAMP.f, embedded: window.EMBEDDED_DESIGNS_100 && window.EMBEDDED_DESIGNS_100.length }));
+                assert.equal(data.embedded, 100, deck + ": embedded design count");
+                assert.equal(data.sample, expected, deck + ": deck-specific sample word");
+                await page.evaluate(() => window.openGalleryBrowser());
+                await page.waitForTimeout(700);
+                const gallery = await page.evaluate(() => ({
+                  count: document.querySelectorAll("#gbGrid .gb-item").length,
+                  label: (document.getElementById("gbCount") || {}).textContent || "",
+                  open: document.getElementById("galleryBrowser").classList.contains("open")
+                }));
+                console.log(deck, "gallery-browser", JSON.stringify(gallery));
+                assert.equal(gallery.open, true, deck + ": gallery browser did not open");
+                assert.equal(gallery.count, 100, deck + ": gallery browser count");
+                assert.match(gallery.label, /^100\\s*\\/\\s*100/, deck + ": gallery count label");
+                await page.screenshot({ path: "review-package/screenshots/" + deck + "-gallery.png", fullPage: false });
+                await page.evaluate(() => window.closeGalleryBrowser());
+                await page.waitForTimeout(500);
+                const preview = await page.evaluate(() => { const r = document.getElementById("gvCardWrap").getBoundingClientRect(); return { width: Math.round(r.width), height: Math.round(r.height) }; });
+                console.log(deck, "preview-size", JSON.stringify(preview));
+                assert(preview.width >= 150 && preview.height >= 180, deck + ": preview still too small");
                 await page.screenshot({ path: "review-package/screenshots/" + deck + ".png", fullPage: true });
                 await page.close();
               }
