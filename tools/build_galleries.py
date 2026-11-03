@@ -392,6 +392,46 @@ def build_one(did, spec, base):
         if removed_extra_buttons != 100:
             raise SystemExit('[%s] expected to remove 100 extra buttons, removed %d'
                              % (did, removed_extra_buttons))
+    # Render each gallery tile from its own deck-adapted Anki template.
+    # The previous static JPGs were captured from French Bac 12 and therefore
+    # leaked French sample text into the other three galleries.
+    gallery_thumb_old = """      var img='gallery_imgs/'+('000'+(i+1)).slice(-3)+'.jpg';
+      it.innerHTML='<span class="gb-sk"></span><span class="gb-num">'+num+'</span><img class="gb-img" data-loading="1" loading="lazy" decoding="async" src="'+img+'" alt="تصميم '+num+'"><span class="gb-ov"><span class="gb-ov-t">تصميم '+num+'</span><span class="gb-ov-b">اختيار ←</span></span>';"""
+    gallery_thumb_new = """      it.innerHTML='<span class="gb-sk"></span><span class="gb-num">'+num+'</span><div class="gb-thumb"></div><span class="gb-ov"><span class="gb-ov-t">تصميم '+num+'</span><span class="gb-ov-b">اختيار ←</span></span>';
+      var im=document.createElement('iframe');
+      im.className='gb-preview-frame';
+      im.setAttribute('loading','lazy');
+      im.setAttribute('title','معاينة التصميم '+num);
+      im.setAttribute('sandbox','allow-same-origin');
+      im.style.cssText='display:block;width:100%;height:100%;min-height:180px;border:0;pointer-events:none;background:#0e0c16;';
+      im.srcdoc=thumbDoc(t);
+      var media=it.querySelector('.gb-thumb');
+      if(media){media.style.cssText='display:block;position:relative;width:100%;aspect-ratio:22/45;min-height:180px;overflow:hidden;background:#0e0c16;';media.appendChild(im);}"""
+    h = rep(h, gallery_thumb_old, gallery_thumb_new, 1, t + 'deck-specific live gallery previews')
+    gallery_handlers_old = """      var im=it.querySelector('.gb-img');
+      im.addEventListener('load',function(){this.removeAttribute('data-loading');var sk=this.parentNode.querySelector('.gb-sk');if(sk)sk.style.display='none';});
+       im.addEventListener('error',function(){
+         this.style.display='none';
+         var sk=this.parentNode.querySelector('.gb-sk');if(sk)sk.style.display='none';
+         var fb=document.createElement('div');
+         fb.style.cssText='position:absolute;inset:0;display:grid;place-items:center;background:linear-gradient(135deg,var(--s2),var(--s3));font-weight:800;font-size:1.1rem;color:var(--ac);padding:10px;text-align:center;border-radius:inherit;';
+         fb.textContent='تصميم '+num;
+         this.parentNode.insertBefore(fb,this);
+       });"""
+    gallery_handlers_new = """      im.addEventListener('load',function(){
+        var item=this.parentNode.parentNode;
+        var sk=item&&item.querySelector('.gb-sk');if(sk)sk.style.display='none';
+      });
+      im.addEventListener('error',function(){
+        var media=this.parentNode;var item=media&&media.parentNode;
+        this.style.display='none';if(media)media.style.display='none';
+        var sk=item&&item.querySelector('.gb-sk');if(sk)sk.style.display='none';
+        var fb=document.createElement('div');
+        fb.style.cssText='position:absolute;inset:0;display:grid;place-items:center;background:linear-gradient(135deg,var(--s2),var(--s3));font-weight:800;font-size:1.1rem;color:var(--ac);padding:10px;text-align:center;border-radius:inherit;';
+        fb.textContent='تصميم '+num;
+        if(item)item.insertBefore(fb,item.querySelector('.gb-ov'));
+      });"""
+    h = rep(h, gallery_handlers_old, gallery_handlers_new, 1, t + 'live gallery preview handlers')
     # Harden the all-design browser against early initialization races and
     # fit the full preview to the available viewport instead of shrinking it
     # with the old oversized fixed padding.
