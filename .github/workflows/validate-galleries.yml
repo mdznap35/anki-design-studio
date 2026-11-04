@@ -158,6 +158,12 @@ jobs:
               assert "document.body.style.overflow=onboardPreviousOverflow" in html, f"{deck}: body scrolling is not restored"
               assert "e.key==='Tab'" in html and "e.key==='Escape'" in html, f"{deck}: keyboard dialog controls are missing"
               assert "aria-labelledby=\"onboardStepTitle\"" in html and "aria-valuenow=" in html, f"{deck}: tour accessibility semantics are incomplete"
+              assert "overlay.showModal()" in html, f"{deck}: tour must open as a native modal dialog"
+              assert "overlay.close()" in html, f"{deck}: tour must close through the native dialog lifecycle"
+              assert "overlay.removeAttribute('open')" in html, f"{deck}: non-native dialog fallback is missing"
+              assert "if(!overlay||!overlay.hasAttribute('open'))return;" in html, f"{deck}: keyboard handler must follow the dialog open state"
+              assert "overlay.style.display='flex'" not in html, f"{deck}: dialog is being shown without native modal semantics"
+              assert 'aria-modal="true"' in html, f"{deck}: native modal semantics are not declared"
               assert "@media(max-width:620px)" in html and "prefers-reduced-motion:reduce" in html, f"{deck}: responsive/reduced-motion styles are missing"
 
               assert "gv-fab" not in html, f"{deck}: floating corner flip button remains"
