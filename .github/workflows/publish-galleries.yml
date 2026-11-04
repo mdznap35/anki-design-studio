@@ -197,6 +197,100 @@ jobs:
               print(f"PASS {deck}: 100 deck-bound designs + 100 static preview images")
           PY
 
+      - name: Verify quick tour and single-preview interactions
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m http.server 8765 --directory out >/tmp/gallery-http.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8765/fr9.html >/dev/null; then break; fi
+            sleep 1
+          done
+          node --input-type=module <<'JS'
+          import { chromium } from "playwright";
+          import assert from "node:assert/strict";
+
+          const decks = [
+            { id: "fr9", language: "الفرنسي", sample: "Leçon" },
+            { id: "en9", language: "الإنجليزي", sample: "Student" },
+            { id: "enlit", language: "الإنجليزي", sample: "Novel" },
+            { id: "ensci", language: "الإنجليزي", sample: "Atom" }
+          ];
+          const browser = await chromium.launch({ headless: true, args: ["--no-sandbox"] });
+          try {
+            for (const deck of decks) {
+              for (const viewport of [
+                { name: "mobile", width: 390, height: 844 },
+                { name: "desktop", width: 1440, height: 1000 }
+              ]) {
+                const page = await browser.newPage({ viewport: { width: viewport.width, height: viewport.height } });
+                const errors = [];
+                page.on("pageerror", error => errors.push(error.message));
+                await page.emulateMedia({ reducedMotion: "reduce" });
+                await page.goto("http://127.0.0.1:8765/" + deck.id + ".html", { waitUntil: "domcontentloaded" });
+                await page.evaluate(() => {
+                  if (typeof closeOnboarding === "function") closeOnboarding();
+                  if (typeof showOnboarding === "function") showOnboarding();
+                });
+                await page.waitForSelector("#onboardOverlay .tour-title", { state: "visible", timeout: 10000 });
+                const initial = await page.evaluate(() => ({
+                  open: document.getElementById("onboardOverlay").style.display !== "none",
+                  steps: document.querySelectorAll("#onboardBox .tour-route-item").length,
+                  language: TOUR_DECK.language,
+                  sample: TOUR_DECK.word,
+                  visual: !!document.querySelector("#onboardBox .tour-visual"),
+                  cornerFlip: !!document.querySelector("#gvStage .gv-fab.gv-flip"),
+                  answerControl: !!document.getElementById("gvShowAns"),
+                  progress: document.querySelector("#onboardBox [role=progressbar]")?.getAttribute("aria-valuenow")
+                }));
+                assert.equal(initial.open, true, deck.id + ": tour did not open");
+                assert.equal(initial.steps, 5, deck.id + ": tour should contain five steps");
+                assert.equal(initial.language, deck.language, deck.id + ": wrong primary voice language");
+                assert.equal(initial.sample, deck.sample, deck.id + ": wrong deck sample word");
+                assert.equal(initial.visual, true, deck.id + ": tour visual missing");
+                assert.equal(initial.cornerFlip, false, deck.id + ": corner flip control still present");
+                assert.equal(initial.answerControl, true, deck.id + ": main answer/flip control was removed");
+                assert.equal(initial.progress, "20", deck.id + ": initial progress is incorrect");
+
+                await page.locator("[data-tour-next]").click();
+                assert.equal(await page.evaluate(() => onbStep), 1, deck.id + ": next step failed");
+                await page.locator("[data-tour-prev]").click();
+                assert.equal(await page.evaluate(() => onbStep), 0, deck.id + ": previous step failed");
+                await page.locator("#onboardBox .tour-route-item").nth(3).click();
+                assert.equal(await page.evaluate(() => onbStep), 3, deck.id + ": direct step navigation failed");
+                assert.match(await page.locator("#onboardBox .tour-visual").innerText(), /VOICE STUDIO|إعدادات النطق/i);
+                await page.locator("#onboardBox .tour-route-item").nth(4).click();
+                assert.equal(await page.evaluate(() => onbStep), 4, deck.id + ": export step did not open");
+                await page.locator("[data-tour-next]").click();
+                await page.waitForFunction(() => document.getElementById("onboardOverlay").style.display === "none");
+                await page.evaluate(() => showOnboarding());
+                await page.waitForSelector("#onboardOverlay .tour-title", { state: "visible" });
+                await page.keyboard.press("Escape");
+                await page.waitForFunction(() => document.getElementById("onboardOverlay").style.display === "none");
+
+                const layout = await page.evaluate(() => {
+                  const main = document.querySelector("#onboardBox .tour-main");
+                  return {
+                    viewport: window.innerWidth,
+                    document: document.documentElement.scrollWidth,
+                    mainClient: main.clientWidth,
+                    mainScroll: main.scrollWidth
+                  };
+                });
+                assert.ok(layout.document <= layout.viewport + 1, deck.id + " " + viewport.name + ": horizontal page overflow " + JSON.stringify(layout));
+                assert.ok(layout.mainScroll <= layout.mainClient + 2, deck.id + " " + viewport.name + ": tour content overflows horizontally " + JSON.stringify(layout));
+                assert.equal(errors.length, 0, deck.id + " " + viewport.name + ": page errors " + JSON.stringify(errors));
+                console.log("PASS tour", deck.id, viewport.name, JSON.stringify(initial), JSON.stringify(layout));
+                await page.close();
+              }
+            }
+          } finally {
+            await browser.close();
+          }
+          JS
+
       - name: Capture full gallery layout screenshots (mobile + desktop)
         shell: bash
         run: |
