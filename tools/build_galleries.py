@@ -750,7 +750,7 @@ function closeOnboarding(){
   try{if(overlay.open)overlay.close();}catch(_e){}
   overlay.style.display='none';
   document.body.style.overflow='';
-  try{localStorage.setItem('anki_onboarded','1');}catch(_e){}
+  try{localStorage.setItem(__TOUR_STORAGE_KEY__,'1');}catch(_e){}
   var previous=tourPreviousFocus;
   tourPreviousFocus=null;
   if(previous&&typeof previous.focus==='function'&&document.contains(previous)){
@@ -816,6 +816,7 @@ function renderOnboardStep(){
 })();
 '''
     new_tour = new_tour.replace("__TOUR_DECK__", json.dumps(deck_data, ensure_ascii=False))
+    new_tour = new_tour.replace("__TOUR_STORAGE_KEY__", json.dumps("anki_%s_onboarded" % did))
     h = h[:start] + new_tour + "\n" + h[end:]
 
     # Repair leftover primary-language wording in the English voice controls and export FAQ.
