@@ -264,7 +264,7 @@ def apply_gallery_ux(h, did):
 
     # Replace the old text-only onboarding with a responsive, illustrated walkthrough.
     start_marker = 'var ONBOARD_STEPS=['
-    end_marker = '\n\n// ============================================================\n// WHAT\\'S NEW'
+    end_marker = '\n\n// ============================================================\n// WHAT'
     start = h.find(start_marker)
     end = h.find(end_marker, start)
     if start < 0 or end < 0:
