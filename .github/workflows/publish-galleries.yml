@@ -248,7 +248,8 @@ jobs:
                   visual: !!document.querySelector("#onboardBox .tour-visual"),
                   cornerFlip: !!document.querySelector("#gvStage .gv-fab.gv-flip"),
                   answerControl: !!document.getElementById("gvShowAns"),
-                  progress: document.querySelector("#onboardBox [role=progressbar]")?.getAttribute("aria-valuenow")
+                  progress: document.querySelector("#onboardBox [role=progressbar]")?.getAttribute("aria-valuenow"),
+                  staleFrenchCopy: /صمت قبل الفرنسي|الصوت الفرنسي|الكلمة الفرنسية|خط فرنسي|الخط الفرنسي/.test(document.body.innerText)
                 }));
                 assert.equal(initial.open, true, deck.id + ": tour did not open");
                 assert.equal(initial.steps, 5, deck.id + ": tour should contain five steps");
@@ -258,6 +259,11 @@ jobs:
                 assert.equal(initial.cornerFlip, false, deck.id + ": corner flip control still present");
                 assert.equal(initial.answerControl, true, deck.id + ": main answer/flip control was removed");
                 assert.equal(initial.progress, "20", deck.id + ": initial progress is incorrect");
+                if (deck.id !== "fr9") {
+                  assert.equal(initial.staleFrenchCopy, false, deck.id + ": French-only copy leaked into the English gallery UI");
+                } else {
+                  assert.equal(initial.staleFrenchCopy, false, deck.id + ": English copy unexpectedly leaked into the French 9 gallery UI");
+                }
 
                 await page.locator("[data-tour-next]").click();
                 assert.equal(await page.evaluate(() => onbStep), 1, deck.id + ": next step failed");
