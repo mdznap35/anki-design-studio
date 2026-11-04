@@ -151,7 +151,7 @@ jobs:
               assert len(designs) == 100, f"{deck}: expected 100 designs"
               assert all(item.get("pack") == deck for item in designs), f"{deck}: mixed design packs"
 
-              assert len(re.findall(r"\\{icon:'", html[html.index("var ONBOARD_STEPS=["):html.index("var onbStep=", html.index("var ONBOARD_STEPS=["))])) == 6, f"{deck}: tour must have six steps"
+              assert len(re.findall(r"\{icon:'", html[html.index("var ONBOARD_STEPS=["):html.index("var onbStep=", html.index("var ONBOARD_STEPS=["))])) == 6, f"{deck}: tour must have six steps"
               assert f"localStorage.setItem('anki_{deck}_onboarded','1')" in html, f"{deck}: wrong onboarding completion key"
               assert f"if(!localStorage.getItem('anki_{deck}_onboarded'))setTimeout(showOnboarding,80);" in html, f"{deck}: first-visit tour must be delayed safely"
               assert "onboardReturnFocus=document.activeElement" in html, f"{deck}: return focus is not captured"
@@ -164,7 +164,7 @@ jobs:
               assert 'id="fsFlipBtn"' in html, f"{deck}: full-screen flip control was removed"
               assert 'id="loadingMsg"' not in html and "جاري تحميل القوالب..." not in html, f"{deck}: blocking loader remains"
 
-              ids = re.findall(r'\\bid=["\']([^"\']+)["\']', html)
+              ids = re.findall(r'\bid=["\']([^"\']+)["\']', html)
               duplicates = sorted({value for value in ids if ids.count(value) > 1})
               assert not duplicates, f"{deck}: duplicate HTML IDs: {duplicates}"
               print(f"PASS {deck}: 100 deck-bound designs, six tour steps, focus/keyboard/accessibility, no corner flip or blocking loader")
