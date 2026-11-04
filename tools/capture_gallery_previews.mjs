@@ -45,11 +45,10 @@ try {
       await capturePage.addStyleTag({
         content: "html,body{width:440px!important;height:900px!important;margin:0!important;overflow:hidden!important}*,*::before,*::after{animation:none!important;transition:none!important;caret-color:transparent!important}"
       });
-      await capturePage.evaluate(() => Promise.race([
-        document.fonts ? document.fonts.ready : Promise.resolve(),
-        new Promise(resolve => setTimeout(resolve, 1000))
-      ]));
-      await capturePage.waitForTimeout(65);
+      // The gallery grid uses static snapshots; do not wait on external font
+      // downloads for every one of the 400 captures. The browser layout is
+      // stable after DOMContentLoaded, and the card remains legible with fallback fonts.
+      await capturePage.waitForTimeout(35);
 
       const file = path.join(outputDir, String(i + 1).padStart(3, "0") + ".png");
       await capturePage.screenshot({ path: file, type: "png", fullPage: false });
