@@ -8,6 +8,7 @@ on:
       - "feature/**"
     paths:
       - "tools/build_galleries.py"
+      - "tools/gallery_ux.py"
       - "tools/decks/**/templates.json"
       - "index.html"
       - "render.yaml"
