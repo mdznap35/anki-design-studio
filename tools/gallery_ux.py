@@ -25,7 +25,11 @@ def apply_gallery_ux(html, deck):
     html = _replace_once(html, LOADER_HTML, "", deck + " loading markup")
     html = _replace_once(html, FLIP_CSS, "", deck + " floating flip CSS")
     html = _replace_once(html, FLIP_EXTRA_CSS, "", deck + " floating flip extra CSS")
-    html = _replace_once(html, FLIP_THEME_CSS, "", deck + " floating flip hover theme CSS")
+    theme_css_count = html.count(FLIP_THEME_CSS)
+    if theme_css_count > 1:
+        raise SystemExit(deck + " found duplicate legacy floating flip hover rules")
+    if theme_css_count == 1:
+        html = html.replace(FLIP_THEME_CSS, "", 1)
     flip_button_count = html.count(FLIP_HTML)
     if flip_button_count > 1:
         raise SystemExit(deck + " expected at most one floating corner flip button, found %d" % flip_button_count)
@@ -59,8 +63,17 @@ def apply_gallery_ux(html, deck):
     if inserted != 1:
         raise SystemExit(deck + " could not insert the tour stylesheet into the document head")
 
-    if "gv-fab" in html or 'id="loadingMsg"' in html:
-        raise SystemExit(deck + " UX transform left a removed control or loader behind")
+    residuals = []
+    for token in ("gv-fab", 'id="loadingMsg"'):
+        cursor = 0
+        while len(residuals) < 8:
+            position = html.find(token, cursor)
+            if position < 0:
+                break
+            residuals.append((token, html[max(0, position - 70):position + 150]))
+            cursor = position + len(token)
+    if residuals:
+        raise SystemExit(deck + " UX transform left a removed control or loader behind: " + repr(residuals))
     if 'id="fsFlipBtn"' not in html:
         raise SystemExit(deck + " full-screen flip control was unexpectedly removed")
     return html
