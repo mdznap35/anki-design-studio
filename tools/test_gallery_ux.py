@@ -2,7 +2,6 @@
 """Static UX regression checks for the four generated non-protected galleries."""
 from pathlib import Path
 import re
-import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 DECKS = ("en9", "enlit", "ensci", "fr9")
@@ -14,6 +13,9 @@ for deck in DECKS:
         failures.append(f"{deck}: generated page is missing")
         continue
     html = path.read_text(encoding="utf-8")
+    start = html.find("var ONBOARD_STEPS=")
+    end = html.find("// WHAT", start)
+    onboarding = html[start:end] if start >= 0 and end > start else ""
 
     checks = {
         "new onboarding styles are present exactly once":
@@ -23,7 +25,7 @@ for deck in DECKS:
         "accessible onboarding dialog is present":
             'aria-modal="true" aria-label="الجولة الإرشادية"' in html,
         "onboarding has five guided steps":
-            len(re.findall(r"\\{title:'", html[html.find("var ONBOARD_STEPS="):html.find("// WHAT", html.find("var ONBOARD_STEPS="))])) == 5,
+            len(re.findall(r"\{title:'", onboarding)) == 5,
         "floating circular-arrow preview button is removed":
             'class="gv-fab gv-flip"' not in html,
         "lower flip-card action remains available":
@@ -43,5 +45,5 @@ for deck in DECKS:
         print(f"PASS {deck}: onboarding, responsive layout, accessibility, and preview controls")
 
 if failures:
-    raise SystemExit("\\n".join(failures))
+    raise SystemExit("\n".join(failures))
 print("ALL FOUR GALLERY UX REGRESSION CHECKS PASSED")
