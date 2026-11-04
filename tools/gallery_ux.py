@@ -49,7 +49,9 @@ def apply_gallery_ux(html, deck):
     html = _replace_once(html, old_init, new_init, deck + " delayed first-visit tour")
 
     style_tag = '<style id="gallery-tour-redesign">\n' + TOUR_CSS + '\n</style>\n'
-    html = _replace_once(html, "</head>", style_tag + "</head>", deck + " tour stylesheet insertion")
+    html, inserted = re.subn(r"</head\\s*>", style_tag + "</head>", html, count=1, flags=re.I)
+    if inserted != 1:
+        raise SystemExit(deck + " could not insert the tour stylesheet into the document head")
 
     if "gv-fab" in html or 'id="loadingMsg"' in html:
         raise SystemExit(deck + " UX transform left a removed control or loader behind")
