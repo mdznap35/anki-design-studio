@@ -35,6 +35,15 @@ try {
       if (summary.cards !== 100 || summary.imgs !== 100 || !summary.gridVisible) throw new Error(deck + " " + viewport.name + ": " + JSON.stringify(summary));
       const file = path.join(out, deck + "-" + viewport.name + ".png");
       await page.screenshot({ path: file, fullPage: true, animations: "disabled" });
+      await page.evaluate(() => {
+        if (typeof showOnboarding === "function") showOnboarding();
+      });
+      await page.waitForSelector("#onboardOverlay .tour-title", { state: "visible", timeout: 10000 });
+      const tourFile = path.join(out, deck + "-" + viewport.name + "-tour.png");
+      await page.screenshot({ path: tourFile, fullPage: true, animations: "disabled" });
+      await page.evaluate(() => {
+        if (typeof closeOnboarding === "function") closeOnboarding();
+      });
       if (errors.length) throw new Error(deck + " " + viewport.name + " page errors: " + errors.join(" | "));
       console.log("PASS", deck, viewport.name, JSON.stringify(summary), file);
       await page.close();
