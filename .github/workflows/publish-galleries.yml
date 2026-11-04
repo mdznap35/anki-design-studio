@@ -1,5 +1,9 @@
 name: Build and publish optimized gallery previews
 
+concurrency:
+  group: anki-gallery-publish-${{ github.ref }}
+  cancel-in-progress: false
+
 on:
   push:
     branches:
@@ -9,6 +13,7 @@ on:
       - "tools/build_galleries.py"
       - "tools/decks/**"
       - "tools/capture_gallery_previews.mjs"
+      - "tools/capture_gallery_layout_screenshots.mjs"
       - ".github/workflows/publish-galleries.yml"
   workflow_dispatch:
 
@@ -331,5 +336,15 @@ jobs:
             echo "No gallery output changes to publish."
           else
             git commit -m "Publish optimized deck-specific gallery previews"
+            built_builder_sha="$(git rev-parse HEAD:tools/build_galleries.py)"
+            built_decks_sha="$(git rev-parse HEAD:tools/decks)"
+            git fetch origin master
+            remote_builder_sha="$(git rev-parse origin/master:tools/build_galleries.py)"
+            remote_decks_sha="$(git rev-parse origin/master:tools/decks)"
+            if [[ "$built_builder_sha" != "$remote_builder_sha" || "$built_decks_sha" != "$remote_decks_sha" ]]; then
+              echo "Gallery build inputs changed during this run; refusing to publish stale output. A fresh run will rebuild from the new inputs."
+              exit 1
+            fi
+            git rebase origin/master
             git push origin HEAD:master
           fi
