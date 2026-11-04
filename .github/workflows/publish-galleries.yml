@@ -235,10 +235,18 @@ jobs:
                 page.on("pageerror", error => errors.push(error.message));
                 await page.emulateMedia({ reducedMotion: "reduce" });
                 await page.goto("http://127.0.0.1:8765/" + deck.id + ".html", { waitUntil: "domcontentloaded" });
-                await page.evaluate(() => {
+                const storageScope = await page.evaluate(() => {
                   if (typeof closeOnboarding === "function") closeOnboarding();
+                  const key = "anki_" + DECK_ID + "_onboarded";
+                  const result = {
+                    scoped: localStorage.getItem(key),
+                    generic: localStorage.getItem("anki_onboarded")
+                  };
                   if (typeof showOnboarding === "function") showOnboarding();
+                  return result;
                 });
+                assert.equal(storageScope.scoped, "1", deck.id + ": onboarding completion was not saved per deck");
+                assert.equal(storageScope.generic, null, deck.id + ": onboarding still writes the shared storage key");
                 await page.waitForSelector("#onboardOverlay .tour-title", { state: "visible", timeout: 10000 });
                 const initial = await page.evaluate(() => ({
                   open: document.getElementById("onboardOverlay").style.display !== "none",
