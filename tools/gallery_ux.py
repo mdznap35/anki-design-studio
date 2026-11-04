@@ -24,7 +24,11 @@ def apply_gallery_ux(html, deck):
     html = _replace_once(html, LOADER_HTML, "", deck + " loading markup")
     html = _replace_once(html, FLIP_CSS, "", deck + " floating flip CSS")
     html = _replace_once(html, FLIP_EXTRA_CSS, "", deck + " floating flip extra CSS")
-    html = _replace_once(html, FLIP_HTML, "", deck + " corner flip button")
+    flip_button_count = html.count(FLIP_HTML)
+    if flip_button_count > 1:
+        raise SystemExit(deck + " expected at most one floating corner flip button, found %d" % flip_button_count)
+    if flip_button_count:
+        html = html.replace(FLIP_HTML, "", 1)
     html = _replace_once(html, OLD_TOUR_CSS, "", deck + " legacy tour CSS")
 
     dialog_old = '<dialog class="onboard-overlay" id="onboardOverlay" style="display:none">'
@@ -49,7 +53,7 @@ def apply_gallery_ux(html, deck):
     html = _replace_once(html, old_init, new_init, deck + " delayed first-visit tour")
 
     style_tag = '<style id="gallery-tour-redesign">\n' + TOUR_CSS + '\n</style>\n'
-    html, inserted = re.subn(r"</head\\s*>", style_tag + "</head>", html, count=1, flags=re.I)
+    html, inserted = re.subn(r"</head\s*>", style_tag + "</head>", html, count=1, flags=re.I)
     if inserted != 1:
         raise SystemExit(deck + " could not insert the tour stylesheet into the document head")
 
