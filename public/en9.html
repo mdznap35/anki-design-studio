@@ -806,7 +806,7 @@ a:not(.btn):hover{color:var(--ac)}
         <iframe id="gvFrame" class="gv-frame" title="معاينة القالب" onload="if(typeof gvFitFrame==='function')gvFitFrame()"></iframe>
       </div>
       <button class="gv-arrow gv-prev" onclick="gvStep(-1)" aria-label="السابق">‹</button>
-      <button class="gv-fab gv-flip" onclick="gvFlip()" title="قلب البطاقة" aria-label="قلب البطاقة"><svg width="1.1em" height="1.1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg></button>
+      
       <div class="gv-info" id="gvInfo" aria-live="polite"></div>
     </div>
     <button id="gvShowAns" class="gv-showans" onclick="gvFlip()" aria-label="قلب البطاقة">قلب البطاقة</button>
@@ -845,7 +845,7 @@ a:not(.btn):hover{color:var(--ac)}
         </div>
       </div>
       <div class="studio-gaps">
-        <div><label for="gTtsGapFrBefore" class="aa-lb">صمت قبل الفرنسي</label><input class="tx" id="gTtsGapFrBefore" data-pid="ttsGapFrBefore" type="number" min="0" max="5000" step="50" value="0" onchange="saveVoiceSel(this)"></div>
+        <div><label for="gTtsGapFrBefore" class="aa-lb">صمت قبل الإنجليزي</label><input class="tx" id="gTtsGapFrBefore" data-pid="ttsGapFrBefore" type="number" min="0" max="5000" step="50" value="0" onchange="saveVoiceSel(this)"></div>
         <div><label for="gTtsGapFrAfter" class="aa-lb">الفاصل بين الكلمتين</label><input class="tx" id="gTtsGapFrAfter" data-pid="ttsGapFrAfter" type="number" min="0" max="5000" step="50" value="0" onchange="saveVoiceSel(this)"></div>
         <div><label for="gTtsGapArBefore" class="aa-lb">صمت قبل العربي</label><input class="tx" id="gTtsGapArBefore" data-pid="ttsGapArBefore" type="number" min="0" max="5000" step="50" value="0" onchange="saveVoiceSel(this)"></div>
         <div><label for="gTtsGapArAfter" class="aa-lb">صمت بعد العربي</label><input class="tx" id="gTtsGapArAfter" data-pid="ttsGapArAfter" type="number" min="0" max="5000" step="50" value="0" onchange="saveVoiceSel(this)"></div>
@@ -976,7 +976,7 @@ a:not(.btn):hover{color:var(--ac)}
        <p class="sb-desc">ستجد هنا إجابات مختصرة عن القوالب، والصوت، والتصدير، والاستيراد، واستخدام الرزمة بعد تنزيلها.</p>
      </div>
      <div class="faq">
-      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false"><span>ما الذي أحصل عليه عند التصدير؟</span><span class="faq-arr">▾</span></button><div class="faq-a"><p>تحصل على رزمة Anki بصيغة APKG تحتوي على البطاقات بالقوالب التي اخترتها، مع الصوت الفرنسي والعربي وفق إعداداتك، عند تفعيل تضمين الصوت.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false"><span>ما الذي أحصل عليه عند التصدير؟</span><span class="faq-arr">▾</span></button><div class="faq-a"><p>تحصل على رزمة Anki بصيغة APKG تحتوي على البطاقات بالقوالب التي اخترتها، مع الصوت الإنجليزي والعربي وفق إعداداتك، عند تفعيل تضمين الصوت.</p></div></div>
       <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false"><span>هل أستطيع اختيار أكثر من قالب؟</span><span class="faq-arr">▾</span></button><div class="faq-a"><p>نعم. يمكنك اختيار قالب واحد أو عدة قوالب، وستتوزع البطاقات بينها تلقائيًا عند إنشاء الرزمة.</p></div></div>
       <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false"><span>كيف تتوزع البطاقات عند اختيار عدة قوالب؟</span><span class="faq-arr">▾</span></button><div class="faq-a"><p>تتوزع البطاقات بالتناوب على القوالب التي اخترتها. تبدأ البطاقة الأولى بالقالب الأول، ثم الثانية بالقالب الثاني، وهكذا بالتتابع حتى تكتمل الرزمة.</p></div></div>
       <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false"><span>هل أستطيع تغيير إعدادات الصوت قبل التصدير؟</span><span class="faq-arr">▾</span></button><div class="faq-a"><p>نعم. يمكنك اختيار الصوت وتعديل السرعة والنغمة والفواصل الزمنية والاستماع إلى المعاينة قبل بدء التصدير.</p></div></div>
@@ -1167,7 +1167,7 @@ const ARFONTS=[
 // ============================================================
 // TEMPLATES DEFINITIONS
 // ============================================================
-const CATS={all:'الكل',classic:'كلاسيكي',modern:'عصري',colorful:'ملون',elegant:'أنيق',minimal:'بسيط',bold:'جريء',creative:'إبداعي',french:'فرنسي',arabic:'عربي'};
+const CATS={all:'الكل',classic:'كلاسيكي',modern:'عصري',colorful:'ملون',elegant:'أنيق',minimal:'بسيط',bold:'جريء',creative:'إبداعي',french:'إنجليزي',arabic:'عربي'};
 // TAGS SYSTEM
 const TAGS=[{k:"dark",l:"داكن",e:""},{k:"light",l:"فاتح",e:""},{k:"glass",l:"زجاجي",e:""},{k:"rounded",l:"دائري",e:""},{k:"colorful",l:"ملون",e:""},{k:"elegant",l:"أنيق",e:""},{k:"bold",l:"جريء",e:""}];
 var curTag="all";
@@ -1280,9 +1280,9 @@ cfg:defCfg({cardBg:'#f0f9ff',cardBg2:'#e0f2fe',frenchColor:'#0369a1',meaningColo
 cfg:defCfg({cardBg:'#f0fdf4',cardBg2:'#dcfce7',frenchColor:'#166534',meaningColor:'#15803d',meaningBg:'rgba(21,128,61,.05)',meaningBorder:'rgba(21,128,61,.15)',badgeNomBg:'#dcfce7',badgeNomColor:'#166534',borderRadius:24,cardShadow:'0 8px 32px rgba(22,101,52,.1)'})},
 
 // ===== FRENCH =====
-{id:'fre-1',nm:'فرنسي فخري',en:'French Flag',cat:'french',
+{id:'fre-1',nm:'إنجليزي فخري',en:'French Flag',cat:'french',
 cfg:defCfg({cardBg:'#ffffff',cardBg2:'#f1f5f9',frenchColor:'#1e3a5f',meaningColor:'#2563eb',meaningBg:'#eff6ff',meaningBorder:'#bfdbfe',badgeNomBg:'#dbeafe',badgeNomColor:'#1e40af',borderRadius:12,cardBorderWidth:3,cardBorderColor:'#1e3a5f',cardShadow:'0 4px 16px rgba(0,0,0,.1)'})},
-{id:'fre-2',nm:'فرنسي أنيق',en:'French Elegant',cat:'french',
+{id:'fre-2',nm:'إنجليزي أنيق',en:'French Elegant',cat:'french',
 cfg:defCfg({cardBg:'#fefefe',frenchColor:'#1a1a2e',meaningColor:'#4a4a6a',meaningBg:'#f8f7ff',meaningBorder:'#e5e3f0',meaningBorderRadius:8,meaningBorderWidth:1,badgeNomBg:'#f0eef8',badgeNomColor:'#4a4a6a',borderRadius:8,cardShadow:'0 2px 12px rgba(0,0,0,.08)'})},
 
 // ===== ARABIC =====
@@ -2018,7 +2018,7 @@ function showHelp(){
   var html='<div class="help-head"><span class="sb-kicker">خطوة بخطوة</span><h2>من القالب إلى رزمة Anki في دقائق</h2><p class="help-sub">صُمم المعرض ليجمع اختيار القالب وإعداد الصوت وإنشاء الرزمة في مكان واحد. اختر ما يناسبك، راجع البطاقة، اضبط الصوت، ثم أنشئ الملف واستورده إلى Anki.</p><button class="fs-close" onclick="closeHelp()" aria-label="إغلاق">✕</button></div><div class="help-body">';
   html+=sec('1','اختر القالب','تصفّح القوالب باستخدام أزرار التنقل، أو افتح «جميع القوالب» لمشاهدة المجموعة كاملة. اضغط «تحديد» على أي قالب تريد استخدامه. ويمكنك اختيار أكثر من قالب إذا أردت تنويع شكل البطاقات داخل الرزمة نفسها.');
   html+=sec('2','راجع شكل البطاقة','استخدم «قلب البطاقة» لمشاهدة الجهة الأخرى من البطاقة والتأكد من أن التصميم مناسب لك قبل متابعة التصدير.');
-  html+=sec('3','اضبط الصوت','اختر الصوت الفرنسي والصوت العربي، ثم عدّل السرعة والنغمة والفواصل الزمنية حسب الطريقة التي تفضّلها. استخدم «معاينة الصوت» للاستماع إلى النطق قبل إنشاء الرزمة.');
+  html+=sec('3','اضبط الصوت','اختر الصوت الإنجليزي والصوت العربي، ثم عدّل السرعة والنغمة والفواصل الزمنية حسب الطريقة التي تفضّلها. استخدم «معاينة الصوت» للاستماع إلى النطق قبل إنشاء الرزمة.');
   html+=sec('4','اختر إعدادات التصدير','حدّد ما إذا كنت تريد تضمين الصوت، وتشغيله تلقائيًا عند فتح البطاقة، وإنشاء نسخة جديدة عند كل تصدير. ويمكنك كذلك تفعيل «الرزمة المعكوسة» لإنشاء نسخة بالمراجعة في الاتجاه المعاكس.');
   html+=sec('5','أنشئ الرزمة','بعد الانتهاء من اختيار القوالب والإعدادات، اضغط «تصدير رزمة Anki». سيجهّز الموقع الملف وفق الخيارات التي اخترتها، ثم يصبح جاهزًا للتنزيل بصيغة APKG.');
   html+='</div>';
@@ -3068,7 +3068,7 @@ h+=renderPropertySearch();
   }
 
   var an='';
-  an+=animCtrl('french','🇫🇷 الكلمة الفرنسية');
+  an+=animCtrl('french','🇬🇧 الكلمة الإنجليزية');
   an+=animCtrl('meaning','📖 المعنى');
   an+=animCtrl('badge','🏷️ الشارات');
   an+=animCtrl('sec','📋 الأقسام');
@@ -3113,7 +3113,7 @@ h+=renderPropertySearch();
 
   // 15. LAYERS PANEL
   var layersHtml="";
-  var layerElements=[{k:"badge",l:"🏷️ الشارات"},{k:"french",l:"🇫🇷 الكلمة الفرنسية"},{k:"separator",l:"➖ الفاصل"},{k:"meaning",l:"📖 المعنى"},{k:"sections",l:"📋 الأقسام"},{k:"page",l:"📄 الصفحة"},{k:"speaker",l:"🔊 الصوت"}];
+  var layerElements=[{k:"badge",l:"🏷️ الشارات"},{k:"french",l:"🇬🇧 الكلمة الإنجليزية"},{k:"separator",l:"➖ الفاصل"},{k:"meaning",l:"📖 المعنى"},{k:"sections",l:"📋 الأقسام"},{k:"page",l:"📄 الصفحة"},{k:"speaker",l:"🔊 الصوت"}];
   layerElements.forEach(function(el){
     var vis=S["show"+el.k.charAt(0).toUpperCase()+el.k.slice(1)]!==false;
     layersHtml+=`<div class="layer-item" onclick="toggleLayerVisibility('${el.k}')"><span class="layer-vis" style="${vis?'background:var(--ac);color:#fff':''}">${vis?'✓':'✗'}</span><span style="flex:1">${el.l}</span><span class="layer-lock" onclick="event.stopPropagation();lockLayer('${el.k}')">🔒</span></div>`;
@@ -3150,7 +3150,7 @@ h+=renderPropertySearch();
   timelineHtml+=`<div class="timeline-markers">`;
   for(var i=0;i<=10;i++){timelineHtml+=`<span class="timeline-marker">${i*10}%</span>`;}
   timelineHtml+="</div>";
-  var anims=[{k:"french",l:"🇫🇷 فرنسي",c:"var(--ac)"},{k:"meaning",l:"📖 معنى",c:"var(--gn)"},{k:"badge",l:"🏷️ شارة",c:"#f59e0b"}];
+  var anims=[{k:"french",l:"🇬🇧 إنجليزي",c:"var(--ac)"},{k:"meaning",l:"📖 معنى",c:"var(--gn)"},{k:"badge",l:"🏷️ شارة",c:"#f59e0b"}];
   anims.forEach(function(a){
     var dur=S[a.k+"AnimDur"]||0.5;
     var delay=S[a.k+"AnimDelay"]||0;
@@ -3178,11 +3178,11 @@ h+=renderPropertySearch();
 
   // 20. FONT BROWSER
   var fontHtml="";
-  fontHtml+=sel("fontFrench","خط فرنسي",FONTS.map(function(f){return {v:f.v,l:f.l}}));
+  fontHtml+=sel("fontFrench","خط إنجليزي",FONTS.map(function(f){return {v:f.v,l:f.l}}));
   fontHtml+=sel("fontArabic","خط عربي",ARFONTS.map(function(f){return {v:f.v,l:f.l}}));
-  fontHtml+=rng("frenchFontSize","حجم الخط الفرنسي",0.5,6,0.1,2.4);
+  fontHtml+=rng("frenchFontSize","حجم الخط الإنجليزي",0.5,6,0.1,2.4);
   fontHtml+=rng("meaningFontSize","حجم الخط العربي",0.5,4,0.1,1.5);
-  fontHtml+=rng("frenchFontWeight","وزن الخط الفرنسي",100,900,100,900);
+  fontHtml+=rng("frenchFontWeight","وزن الخط الإنجليزي",100,900,100,900);
   fontHtml+=rng("meaningFontWeight","وزن الخط العربي",100,900,100,800);
   fontHtml+=rng("frenchLetterSpacing","تباعد الخط",0,20,1,0);
   fontHtml+=rng("frenchLineHeight","ارتفاع السطر",0.5,3,0.1,1.2);
@@ -3478,7 +3478,7 @@ const VE_PROPS={
   ]
 };
 
-const VE_LABELS={card:' البطاقة',badge:' الشارات',badgeNom:' شارة Nom',badgeUnit:' شارة الوحدة',french:' الكلمة الفرنسية',separator:' الفاصل',meaning:' المعنى',pluriel:' Pluriel',synonyme:' Synonyme',contraire:' Contraire',page:' الصفحة',speaker:' زر الصوت'};
+const VE_LABELS={card:' البطاقة',badge:' الشارات',badgeNom:' شارة Nom',badgeUnit:' شارة الوحدة',french:' الكلمة الإنجليزية',separator:' الفاصل',meaning:' المعنى',pluriel:' Pluriel',synonyme:' Synonyme',contraire:' Contraire',page:' الصفحة',speaker:' زر الصوت'};
 
 function renderVE(){
   const cv=document.getElementById('veCanvas');if(!cv)return;
@@ -3559,7 +3559,7 @@ function initTTS(){
   ttsARVoice=arV.find(isMaleVoice)||arV[0]||null;
   // Debug
   const dbg=document.getElementById('ttsDebug');
-  if(dbg)dbg.innerHTML='<b>صوت فرنسي:</b> '+(ttsFRVoice?.name||'لا يوجد')+'<br><b>صوت عربي:</b> '+(ttsARVoice?.name||'لا يوجد')+'<br><b>إجمالي:</b> '+voices.length+' صوت';
+  if(dbg)dbg.innerHTML='<b>صوت إنجليزي:</b> '+(ttsFRVoice?.name||'لا يوجد')+'<br><b>صوت عربي:</b> '+(ttsARVoice?.name||'لا يوجد')+'<br><b>إجمالي:</b> '+voices.length+' صوت';
   const rateEl=document.getElementById('ttsRate');
   const pitchEl=document.getElementById('ttsPitch');
   if(rateEl)rateEl.oninput=function(){document.getElementById('ttsRateVal').textContent=this.value+'x';};
@@ -3738,11 +3738,11 @@ var PROP_DOCS = {
   'cardGap': {tip:'المسافة بين العناصر',use:'المسافة العمودية بين الكلمة والمعنى',example:'10 = ضيق، 24 = واسع'},
   'cardMinHeight': {tip:'الحد الأدنى للارتفاع',use:'ارتفاع البطاقة الأدنى بالبكسل',example:'300 = عادي، 400 = طويل'},
   'previewWidth': {tip:'عرض البطاقة',use:'عرض البطاقة بالبكسل',example:'380 = عادي للجوال، 500 = للكمبيوتر'},
-  'frenchColor': {tip:'لون الكلمة الفرنسية',use:'اللون الرئيسي للكلمة',example:'#1e293b = داكن، #ffffff = فاتح'},
-  'frenchFontSize': {tip:'حجم الخط الفرنسي',use:'حجم خط الكلمة الفرنسية',example:'2.4 = عادي، 3.5 = كبير'},
-  'frenchFontWeight': {tip:'وزن الخط الفرنسي',use:'رفيق (100) إلى سميك (900)',example:'900 = سميك جداً'},
-  'frenchLetterSpacing': {tip:'تباعد الخط',use:'المسافة بين الحروف الفرنسية',example:'0 = عادي، 2 = واسع'},
-  'frenchLineHeight': {tip:'ارتفاع السطر',use:'ارتفاع سطر الكلمة الفرنسية',example:'1.2 = عادي، 1.5 = مريح'},
+  'frenchColor': {tip:'لون الكلمة الإنجليزية',use:'اللون الرئيسي للكلمة',example:'#1e293b = داكن، #ffffff = فاتح'},
+  'frenchFontSize': {tip:'حجم الخط الإنجليزي',use:'حجم خط الكلمة الإنجليزية',example:'2.4 = عادي، 3.5 = كبير'},
+  'frenchFontWeight': {tip:'وزن الخط الإنجليزي',use:'رفيق (100) إلى سميك (900)',example:'900 = سميك جداً'},
+  'frenchLetterSpacing': {tip:'تباعد الخط',use:'المسافة بين الحروف الإنجليزية',example:'0 = عادي، 2 = واسع'},
+  'frenchLineHeight': {tip:'ارتفاع السطر',use:'ارتفاع سطر الكلمة الإنجليزية',example:'1.2 = عادي، 1.5 = مريح'},
   'meaningColor': {tip:'لون المعنى',use:'لون الترجمة العربية',example:'#1e40af = أزرق، #333 = رمادي'},
   'meaningFontSize': {tip:'حجم الخط العربي',use:'حجم خط المعنى',example:'1.5 = عادي، 2.0 = كبير'},
   'meaningFontWeight': {tip:'وزن الخط العربي',use:'وزن خط المعنى',example:'800 = سميك'},
@@ -3754,7 +3754,7 @@ var PROP_DOCS = {
   'cardShadow': {tip:'ظل البطاقة',use:'ظل خارجي للبطاقة',example:'0 4px 16px rgba(0,0,0,.1) = خفيف'},
   'cardBorderWidth': {tip:'سمك الحد',use:'سمك حد البطاقة الخارجي',example:'0 = بدون، 2 = خفيف'},
   'cardBorderColor': {tip:'لون الحد',use:'لون حد البطاقة',example:'#e2e8f0 = رمادي فاتح'},
-  'fontFrench': {tip:'الخط الفرنسي',use:'الخط المستخدم للكلمة الفرنسية',example:'Inter = حديث، Playfair = كلاسيكي'},
+  'fontFrench': {tip:'الخط الإنجليزي',use:'الخط المستخدم للكلمة الإنجليزية',example:'Inter = حديث، Playfair = كلاسيكي'},
   'fontArabic': {tip:'الخط العربي',use:'الخط المستخدم للترجمة',example:'Noto Sans Arabic = حديث، Amiri = كلاسيكي'},
   'cardDirection': {tip:'اتجاه التخطيط',use:'عمودي أو أفقي',example:'column = عادي، row = أفقي'},
   'cardAlign': {tip:'المحاذاة',use:'أين تبدأ العناصر',example:'center = وسط، flex-start = أعلى'},
@@ -3812,7 +3812,7 @@ function renderSmartSuggestions(){
   
   // Analyze current design and suggest improvements
   if(S.frenchFontSize > 3 && S.meaningFontSize < 1){
-    suggestions.push({icon:'📐',text:'الخط الفرنسي كبير جداً مقارنة بالعربي — زِد حجم العربي',fix:function(){S.meaningFontSize=1.8;pushHist();renderCtrls();renderAll();setTimeout(addDocTooltips,50);}});
+    suggestions.push({icon:'📐',text:'الخط الإنجليزي كبير جداً مقارنة بالعربي — زِد حجم العربي',fix:function(){S.meaningFontSize=1.8;pushHist();renderCtrls();renderAll();setTimeout(addDocTooltips,50);}});
   }
   if(S.cardBg === '#ffffff' && S.frenchColor === '#1e293b'){
     suggestions.push({icon:'🎨',text:'تصميم أبيض كلاسيكي — جرب "عصري أزرق" للتميز',fix:function(){selectTemplate('modern-1');}});
@@ -3957,12 +3957,12 @@ function runDiagnostics(){
   // Check contrast
   if(S.frenchColor && S.cardBg){
     var fg = getContrastRatio(S.frenchColor, S.cardBg);
-    if(fg < 3) issues.push({sev:'error', msg:'تباين منخفض للكلمة الفرنسية (' + fg.toFixed(1) + ':1) — صعب القراءة'});
-    else if(fg < 4.5) warnings.push({sev:'warn', msg:'تباين مقبول للكلمة الفرنسية (' + fg.toFixed(1) + ':1) — يمكن تحسينه'});
+    if(fg < 3) issues.push({sev:'error', msg:'تباين منخفض للكلمة الإنجليزية (' + fg.toFixed(1) + ':1) — صعب القراءة'});
+    else if(fg < 4.5) warnings.push({sev:'warn', msg:'تباين مقبول للكلمة الإنجليزية (' + fg.toFixed(1) + ':1) — يمكن تحسينه'});
   }
   
   // Check font sizes
-  if(S.frenchFontSize < 1) warnings.push({sev:'warn', msg:'حجم الخط الفرنسي صغير جداً — قد لا يُقرأ'});
+  if(S.frenchFontSize < 1) warnings.push({sev:'warn', msg:'حجم الخط الإنجليزي صغير جداً — قد لا يُقرأ'});
   if(S.meaningFontSize < 0.8) warnings.push({sev:'warn', msg:'حجم الخط العربي صغير جداً'});
   
   // Check padding
@@ -5092,52 +5092,120 @@ function showCompatChecker(){
 // ============================================================
 // ONBOARDING
 // ============================================================
-var ONBOARD_STEPS=[
-  {welcome:true,title:'مرحبًا بك في معرض قوالب Anki',text:'في بضع خطوات فقط، ستتمكن من اختيار القالب، إعداد الصوت، وإنشاء رزمة جاهزة للمراجعة.'},
-  {title:'اختر القالب',text:'استعرض القوالب واختر التصميم الذي يناسبك. يمكنك الاكتفاء بقالب واحد أو اختيار عدة قوالب لتوزيع البطاقات بينها تلقائيًا.'},
-  {title:'راجع البطاقة',text:'استخدم «قلب البطاقة» لمشاهدة الجهة الأخرى والتأكد من أن شكل التصميم مناسب لك قبل المتابعة.'},
-  {title:'اضبط الصوت',text:'اختر الصوت الفرنسي والعربي، واضبط السرعة والنغمة والفواصل الزمنية، ثم استمع إلى المعاينة قبل التصدير.'},
-  {title:'أنشئ الرزمة',text:'بعد الانتهاء من اختيار القوالب وإعدادات الصوت، صدّر الرزمة بصيغة APKG واستوردها إلى Anki لبدء المراجعة.'},
+var TOUR_DECK = {"name": "English 9", "nameAr": "الإنجليزية للصف التاسع", "language": "الإنجليزي", "code": "EN", "word": "Student", "meaning": "طالب"};
+var ONBOARD_STEPS = [
+  {eyebrow:'مرحباً بك في الاستوديو',icon:'✦',title:'مساحة واحدة لتصميم رزمة مميزة',text:'أهلاً بك في معرض '+TOUR_DECK.name+'؛ هنا تستعرض التصاميم، تختبر شكل البطاقة، تضبط النطق، ثم تخرج برزمتك الجاهزة لـ Anki.',tip:'ابدأ باستكشاف القوالب، ولا تحتاج إلى أي إعداد مسبق.'},
+  {eyebrow:'الخطوة 01 · اختيار التصميم',icon:'▦',title:'اعثر على الشكل الذي يناسبك',text:'تصفّح القوالب المئة، واستخدم البحث والتصنيفات للوصول إلى الشكل الذي تريده. افتح أي تصميم لتشاهد معاينته، ثم حدده لإضافته إلى اختياراتك.',tip:'يمكنك اختيار قالب واحد أو عدة قوالب؛ وتظهر اختياراتك في شريط التحديد.'},
+  {eyebrow:'الخطوة 02 · المعاينة',icon:'◫',title:'اختبر وجهي البطاقة قبل الاختيار',text:'افتح المعاينة الكاملة، شاهد الوجه الأمامي والخلفي، وانتقل بين التصاميم للمقارنة. هكذا تتأكد من وضوح الكلمة والمعنى والصوت قبل اعتماد القالب.',tip:'زر «قلب البطاقة» يعرض الجهة الأخرى، و«تحديد» يعتمد التصميم.'},
+  {eyebrow:'الخطوة 03 · إعداد الصوت',icon:'♫',title:'اجعل النطق مناسباً لطريقتك',text:'اختر الصوت '+TOUR_DECK.language+' والصوت العربي، واضبط السرعة والنغمة والفواصل الزمنية. استمع إلى المعاينة أولاً، ثم احتفظ بالإعدادات التي تناسبك.',tip:'إعدادات الصوت نفسها تُستخدم عند إنشاء الرزمة، ويمكنك إلغاء تضمين الصوت عند التصدير.'},
+  {eyebrow:'الخطوة 04 · التصدير',icon:'⇩',title:'حوّل اختياراتك إلى رزمة Anki',text:'اكتب اسم الرزمة، راجع خيار تضمين الصوت والتشغيل التلقائي، ثم ابدأ التصدير. ستحصل على ملف APKG تستورده داخل تطبيق Anki.',tip:'بعد الاستيراد، افتح الرزمة في Anki وتأكد من ظهور البطاقات والصوت كما عاينتهما.'}
 ];
 var onbStep=0;
+var tourPreviousFocus=null;
+
+function tourVisualForStep(index){
+  if(index===0){
+    return '<div class="tv-wrap"><div class="tv-window"><div class="tv-bar"><span class="tv-dots"><i></i><i></i><i></i></span><span class="tv-caption">ANKI DESIGN STUDIO</span></div><div class="tv-body"><div class="tv-brandline"><b>'+TOUR_DECK.name+'</b><span class="tv-pill">'+TOUR_DECK.code+' · DECK</span></div><div class="tv-stats"><div class="tv-stat"><strong>100</strong><span>قالب قابل للمعاينة</span></div><div class="tv-stat"><strong>01</strong><span>معرض مستقل</span></div><div class="tv-stat"><strong>APKG</strong><span>صيغة التصدير</span></div></div><div style="margin-top:14px;padding:12px;border-radius:12px;background:linear-gradient(100deg,rgba(139,92,246,.18),rgba(14,165,233,.1));color:#dbeafe;font-size:10px;text-align:center">من الفكرة إلى بطاقة جاهزة للمراجعة ✨</div></div></div></div>';
+  }
+  if(index===1){
+    return '<div class="tv-wrap"><div class="tv-window"><div class="tv-bar"><span class="tv-dots"><i></i><i></i><i></i></span><span class="tv-caption">TEMPLATE GALLERY</span></div><div class="tv-body"><div class="tv-search">⌕ &nbsp; ابحث عن تصميم...</div><div class="tv-cards"><div class="tv-mini-card"><i>▤</i><b>تصميم 08</b><small>هادئ وبسيط</small></div><div class="tv-mini-card active"><i>✦</i><b>تصميم 24</b><small>محدد للمعاينة</small></div><div class="tv-mini-card"><i>◈</i><b>تصميم 51</b><small>ألوان مميزة</small></div></div><div style="margin-top:13px;display:flex;justify-content:space-between;color:#93a4bf;font-size:9px"><span>100 تصميم</span><span style="color:#c4b5fd">اختيار القالب ←</span></div></div></div></div>';
+  }
+  if(index===2){
+    return '<div class="tv-wrap"><div class="tv-window"><div class="tv-bar"><span class="tv-dots"><i></i><i></i><i></i></span><span class="tv-caption">CARD PREVIEW</span></div><div class="tv-body"><div class="tv-brandline"><b>معاينة البطاقة</b><span class="tv-pill">FRONT / BACK</span></div><div class="tv-flash"><div class="tv-word">'+TOUR_DECK.word+'</div><div class="tv-meaning">'+TOUR_DECK.meaning+'</div><small>اضغط لقلب البطاقة ومشاهدة الوجه الآخر</small></div><div style="display:flex;justify-content:center;gap:8px;margin-top:12px"><span class="tv-pill">السابق</span><span class="tv-pill">قلب البطاقة ↻</span><span class="tv-pill">التالي</span></div></div></div></div>';
+  }
+  if(index===3){
+    return '<div class="tv-wrap"><div class="tv-window"><div class="tv-bar"><span class="tv-dots"><i></i><i></i><i></i></span><span class="tv-caption">VOICE STUDIO</span></div><div class="tv-body"><div class="tv-brandline"><b>إعدادات النطق</b><span class="tv-pill">AUDIO</span></div><div class="tv-voice-grid"><div class="tv-voice"><div class="tv-voice-head"><span>الصوت '+TOUR_DECK.language+'</span><span>'+TOUR_DECK.code+'</span></div><div class="tv-wave"></div></div><div class="tv-voice"><div class="tv-voice-head"><span>الصوت العربي</span><span>AR</span></div><div class="tv-wave ar"></div></div><div class="tv-voice"><div class="tv-voice-head"><span>السرعة والنغمة</span><span>1.0×</span></div><div class="tv-wave"></div></div></div></div></div></div>';
+  }
+  return '<div class="tv-wrap"><div class="tv-window"><div class="tv-bar"><span class="tv-dots"><i></i><i></i><i></i></span><span class="tv-caption">READY TO EXPORT</span></div><div class="tv-body"><div class="tv-export"><div class="tv-export-icon">⇩</div><b>ملف Anki جاهز</b><span>'+TOUR_DECK.name+' · .APKG</span><div class="tv-checks"><span>✓ القوالب المحددة</span><span>✓ إعدادات الصوت</span><span>✓ اسم الرزمة</span><span>✓ جاهز للاستيراد</span></div></div></div></div></div>';
+}
 
 function showOnboarding(){
+  var overlay=document.getElementById('onboardOverlay');
+  if(!overlay)return;
+  tourPreviousFocus=document.activeElement;
   onbStep=0;
   renderOnboardStep();
-  document.getElementById('onboardOverlay').style.display='flex';
+  overlay.setAttribute('role','dialog');
+  overlay.setAttribute('aria-modal','true');
+  overlay.setAttribute('aria-label','جولة استخدام معرض '+TOUR_DECK.name);
+  try{
+    if(typeof overlay.showModal==='function'&&!overlay.open)overlay.showModal();
+  }catch(_e){}
+  overlay.style.display='flex';
+  document.body.style.overflow='hidden';
+  setTimeout(function(){var next=overlay.querySelector('[data-tour-next]');if(next)next.focus();},30);
 }
 
 function closeOnboarding(){
-  document.getElementById('onboardOverlay').style.display='none';
-  localStorage.setItem('anki_en9_onboarded','1');
+  var overlay=document.getElementById('onboardOverlay');
+  if(!overlay)return;
+  try{if(overlay.open)overlay.close();}catch(_e){}
+  overlay.style.display='none';
+  document.body.style.overflow='';
+  try{localStorage.setItem("anki_en9_onboarded",'1');}catch(_e){}
+  var previous=tourPreviousFocus;
+  tourPreviousFocus=null;
+  if(previous&&typeof previous.focus==='function'&&document.contains(previous)){
+    try{previous.focus({preventScroll:true});}catch(_e){try{previous.focus();}catch(_e2){}}
+  }
+}
+
+function goOnboardingStep(next){
+  var n=parseInt(next,10);
+  if(!isFinite(n))return;
+  onbStep=Math.max(0,Math.min(ONBOARD_STEPS.length-1,n));
+  renderOnboardStep();
 }
 
 function renderOnboardStep(){
   var box=document.getElementById('onboardBox');
   if(!box)return;
+  onbStep=Math.max(0,Math.min(ONBOARD_STEPS.length-1,onbStep));
   var step=ONBOARD_STEPS[onbStep];
-  var h='<div class="ob-full">';
-  h+='<div class="ob-medal">'+(onbStep+1)+'</div>';
-  h+='<h2 class="ob-title">'+step.title+'</h2>';
-  h+='<p class="ob-text">'+step.text+'</p>';
-  h+='<div class="onboard-steps">';
-  ONBOARD_STEPS.forEach(function(_,i){
-    h+='<div class="onboard-step'+(i===onbStep?' active':i<onbStep?' done':'')+'">'+(i<onbStep?'✓':(i+1))+'</div>';
+  var total=ONBOARD_STEPS.length;
+  var percent=Math.round(((onbStep+1)/total)*100);
+  var h='<button class="tour-close" type="button" onclick="closeOnboarding()" aria-label="إغلاق الجولة">×</button>';
+  h+='<aside class="tour-rail"><div class="tour-brand"><span class="tour-brand-mark">A</span><div class="tour-brand-copy"><b>ANKI DESIGN STUDIO</b><span>دليل البداية السريع</span></div></div>';
+  h+='<div class="tour-rail-intro"><div class="tour-rail-kicker">YOUR WORKFLOW</div><h2 class="tour-rail-title">من اختيار القالب إلى رزمة جاهزة</h2><p class="tour-rail-desc">خمس محطات قصيرة لتتعرف على الأدوات الأساسية وتبدأ بثقة.</p></div>';
+  h+='<nav class="tour-route-list" aria-label="مراحل الجولة">';
+  ONBOARD_STEPS.forEach(function(item,i){
+    var state=i===onbStep?' active':i<onbStep?' done':'';
+    h+='<button type="button" class="tour-route-item'+state+'" onclick="goOnboardingStep('+i+')" '+(i===onbStep?'aria-current="step"':'')+'><span class="tour-route-num">'+(i<onbStep?'✓':String(i+1).padStart(2,'0'))+'</span><span class="tour-route-text">'+['البداية','اختيار التصميم','المعاينة','الصوت','التصدير'][i]+'</span></button>';
   });
-  h+='</div>';
-  h+='<div class="ob-nav">';
-  if(onbStep===0){
-    h+='<button class="btn-hero primary ob-btn" onclick="onbStep++;renderOnboardStep()">ابدأ الجولة</button>';
-    h+='<button class="btn-hero ghost ob-btn" onclick="closeOnboarding()">تخطي الجولة</button>';
-  }else{
-    if(onbStep>0)h+='<button class="btn-hero ghost ob-btn" onclick="onbStep--;renderOnboardStep()">السابق</button>';
-    if(onbStep<ONBOARD_STEPS.length-1)h+='<button class="btn-hero primary ob-btn" onclick="onbStep++;renderOnboardStep()">التالي</button>';
-    else h+='<button class="btn-hero primary ob-btn" onclick="closeOnboarding()">إنهاء الجولة</button>';
-  }
-  h+='</div>';
-  h+='</div>';
+  h+='</nav><div class="tour-rail-foot">المعرض الحالي<br><strong>'+TOUR_DECK.name+'</strong><br>كل خطوة تحفظ وقتك وتقلل التجربة العشوائية.</div></aside>';
+  h+='<main class="tour-main"><div class="tour-top"><div class="tour-step-label"><i>STEP '+String(onbStep+1).padStart(2,'0')+'</i><span>/</span><span>'+String(total).padStart(2,'0')+'</span></div><div class="tour-progress-copy">'+percent+'٪ مكتمل</div></div>';
+  h+='<div class="tour-progress-track" role="progressbar" aria-label="تقدم الجولة" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+percent+'"><div class="tour-progress-fill" style="width:'+percent+'%"></div></div>';
+  h+='<section class="tour-content" aria-live="polite"><div class="tour-copy"><div class="tour-icon" aria-hidden="true">'+step.icon+'</div><p class="tour-eyebrow">'+step.eyebrow+'</p><h1 class="tour-title" id="tourStepTitle">'+step.title+'</h1><p class="tour-text">'+step.text+'</p><div class="tour-tip"><b>نصيحة</b><span>'+step.tip+'</span></div></div>';
+  h+='<div class="tour-visual" aria-hidden="true">'+tourVisualForStep(onbStep)+'</div></section>';
+  h+='<footer class="tour-footer"><div class="tour-footer-note">خطوة '+(onbStep+1)+' من '+total+' · '+TOUR_DECK.nameAr+'</div><div class="tour-actions">';
+  h+='<button type="button" class="tour-btn text" onclick="closeOnboarding()">تخطي الجولة</button>';
+  if(onbStep>0)h+='<button type="button" class="tour-btn" data-tour-prev onclick="goOnboardingStep('+(onbStep-1)+')">السابق</button>';
+  if(onbStep<total-1)h+='<button type="button" class="tour-btn primary" data-tour-next onclick="goOnboardingStep('+(onbStep+1)+')">'+(onbStep===0?'ابدأ الجولة':'التالي')+' ←</button>';
+  else h+='<button type="button" class="tour-btn primary" data-tour-next onclick="closeOnboarding()">إنهاء الجولة وابدأ ←</button>';
+  h+='</div></footer></main>';
   box.innerHTML=h;
+  var overlay=document.getElementById('onboardOverlay');
+  if(overlay){
+    overlay.setAttribute('aria-labelledby','tourStepTitle');
+    setTimeout(function(){var target=box.querySelector('[data-tour-next]')||box.querySelector('[data-tour-prev]');if(target)target.focus();},0);
+  }
 }
+
+(function bindOnboardingKeys(){
+  var overlay=document.getElementById('onboardOverlay');
+  if(!overlay||overlay.dataset.tourBound)return;
+  overlay.dataset.tourBound='1';
+  overlay.addEventListener('click',function(event){if(event.target===overlay)closeOnboarding();});
+  overlay.addEventListener('cancel',function(event){event.preventDefault();closeOnboarding();});
+  document.addEventListener('keydown',function(event){
+    var active=document.getElementById('onboardOverlay');
+    if(!active||(active.style.display==='none'&&!active.open))return;
+    if(event.key==='Escape'){event.preventDefault();closeOnboarding();return;}
+    if(event.altKey||event.ctrlKey||event.metaKey)return;
+    if(event.key==='ArrowLeft'){event.preventDefault();goOnboardingStep(onbStep+1);}
+    else if(event.key==='ArrowRight'){event.preventDefault();goOnboardingStep(onbStep-1);}
+  });
+})();
 
 // ============================================================
 // WHAT'S NEW
@@ -5370,7 +5438,7 @@ function getSmartSuggestions(){
     suggestions.push({icon:'🎨',text:'خلفية غير بيضاء: '+S.cardBg});
   }
   if(S.frenchAnim&&S.frenchAnim!=='none'){
-    suggestions.push({icon:'✨',text:'حركة فرنسية: '+S.frenchAnim});
+    suggestions.push({icon:'✨',text:'حركة إنجليزية: '+S.frenchAnim});
   }
   if(S.cardBgBlur&&S.cardBgBlur>0){
     suggestions.push({icon:'🔮',text:'تمويه: '+S.cardBgBlur+'px'});
@@ -5502,7 +5570,7 @@ function showTransformPanel(){
   html+=rng('frenchTextShadowX','ظل X',-20,20,1,0);
   html+=rng('frenchTextShadowY','ظل Y',-20,20,1,2);
   html+=rng('frenchTextShadowBlur','ظل التمويه',0,20,1,4);
-  html+=clr('frenchTextShadowColor','لون الظل الفرنسية','rgba(0,0,0,.3)');
+  html+=clr('frenchTextShadowColor','لون الظل الإنجليزية','rgba(0,0,0,.3)');
   html+=clr('meaningTextShadowColor','لون الظل العربية','rgba(0,0,0,.3)');
   html+='</div>';
   var panel=document.createElement('div');
@@ -6133,7 +6201,7 @@ function exportAsHTML(){
   html+=generateCardCSS(S);
   html+='\n/* === EXTRACTED INLINE STYLES === */.hdr-actions{display:flex;justify-content:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}.hdr-info{display:flex;justify-content:center;gap:8px;font-size:.55em;color:var(--tx3);align-items:center}.layer-item-inner{display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:var(--br-sm);cursor:pointer;font-size:var(--fs-sm);transition:background .15s}.shadow-layer-controls{flex:1;display:flex;gap:3px;align-items:center;flex-wrap:wrap}/* === CHATGPT FIXES CSS === */:root {  --z-dropdown: 100;  --z-modal: 200;  --z-tooltip: 300;  --z-toast: 400;  --z-overlay: 500;  --transition-fast: 0.15s;  --transition-normal: 0.25s;  --transition-slow: 0.4s;}.ctx-menu { z-index: var(--z-dropdown); }.cmd-palette { z-index: var(--z-modal); }.tip::after { z-index: var(--z-tooltip); }#toast { z-index: var(--z-toast); }.onboard-overlay, .whatsnew-overlay { z-index: var(--z-overlay); }.score-panel { z-index: var(--z-modal); }.acc-b { transition: max-height var(--transition-normal) ease, opacity var(--transition-normal) ease; }.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}</style>\n</head>\n<body>\n';
   html+=renderCardHTML(S);
-  html+='\n<!-- FOOTER -->\n<div class="footer">\n<div class="footer-inner">\n<div>\n<div class="footer-brand"><div class="logo">A</div><h3>Anki Template Gallery</h3></div>\n<p class="footer-desc">معرض قوالب Anki — اختر قالبك، اضبط الصوت، وصدّر رزمتك.</p>\n</div>\n<div>\n<h4>التصنيفات</h4>\n<a href="#">القوالب الاحترافية</a>\n<a href="#">الصوت العربي والفرنسي</a>\n<a href="#">المعرض الحيّ</a>\n<a href="#">التنزيل الفوري</a>\n</div>\n<div>\n<h4>الدعم</h4>\n<a href="#">دليل الاستخدام</a>\n<a href="#">الأسئلة الشائعة</a>\n<a href="#">تواصل معنا</a>\n</div>\n</div>\n<div class="footer-copy">© 2026 Anki Template Gallery</div>\n</div>\n</body>\n</html>';
+  html+='\n<!-- FOOTER -->\n<div class="footer">\n<div class="footer-inner">\n<div>\n<div class="footer-brand"><div class="logo">A</div><h3>Anki Template Gallery</h3></div>\n<p class="footer-desc">معرض قوالب Anki — اختر قالبك، اضبط الصوت، وصدّر رزمتك.</p>\n</div>\n<div>\n<h4>التصنيفات</h4>\n<a href="#">القوالب الاحترافية</a>\n<a href="#">الصوت العربي والإنجليزي</a>\n<a href="#">المعرض الحيّ</a>\n<a href="#">التنزيل الفوري</a>\n</div>\n<div>\n<h4>الدعم</h4>\n<a href="#">دليل الاستخدام</a>\n<a href="#">الأسئلة الشائعة</a>\n<a href="#">تواصل معنا</a>\n</div>\n</div>\n<div class="footer-copy">© 2026 Anki Template Gallery</div>\n</div>\n</body>\n</html>';
   downloadFile(html,'anki-card.html','text/html');
   toast('تم تصدير HTML');
 }
@@ -6240,9 +6308,9 @@ var DOCS={
   cardPadding:'الحشو الداخلي — المسافة بين محتوى البطاقة وحدودها.',
   cardGap:'المسافة بين العناصر — المسافة العمودية بين الكلمة والمعنى والأقسام.',
   cardMinHeight:'الحد الأدنى للارتفاع — ارتفاع البطاقة الأدنى بالبكسل.',
-  frenchColor:'لون الكلمة الفرنسية — اللون الرئيسي للكلمة.',
-  frenchFontSize:'حجم الخط الفرنسي — حجم خط الكلمة الفرنسية.',
-  frenchFontWeight:'وزن الخط الفرنسي — رفيع (100) إلى سميك (900).',
+  frenchColor:'لون الكلمة الإنجليزية — اللون الرئيسي للكلمة.',
+  frenchFontSize:'حجم الخط الإنجليزي — حجم خط الكلمة الإنجليزية.',
+  frenchFontWeight:'وزن الخط الإنجليزي — رفيع (100) إلى سميك (900).',
   meaningColor:'لون المعنى — لون الترجمة العربية.',
   meaningFontSize:'حجم الخط العربي — حجم خط المعنى.',
   meaningFontWeight:'وزن الخط العربي.',
@@ -6251,7 +6319,7 @@ var DOCS={
   effect:'تأثير البطاقة — توهج، نبض، نيون، ساكورا.',
   cardShadow:'ظل البطاقة — يمكنك اختيار ظل جاهز أو بناء ظل مخصص.',
   cardClipPath:'شكل البطاقة — مقصوص بشكل معين، دائري، أو غيره.',
-  fontFrench:'الخط الفرنسي — الخط المستخدم للكلمة الفرنسية.',
+  fontFrench:'الخط الإنجليزي — الخط المستخدم للكلمة الإنجليزية.',
   fontArabic:'الخط العربي — الخط المستخدم للترجمة.',
   previewWidth:'عرض البطاقة — عرض البطاقة بالبكسل.',
   customCSS:'CSS مخصص — أضف أي CSS يدويًا هنا.',
@@ -6940,5 +7008,221 @@ setTimeout(function(){try{setupExportModal();}catch(_e){}},1500);
   }
 })();
 </script>
+
+<style id="anki-tour-v2">
+
+/* Anki Design Studio — onboarding tour v2 */
+#onboardOverlay.onboard-overlay{
+  position:fixed!important;inset:0!important;z-index:10050!important;
+  width:100vw!important;height:100dvh!important;max-width:none!important;max-height:none!important;
+  margin:0!important;padding:18px!important;border:0!important;
+  display:none;align-items:center;justify-content:center;
+  overflow:auto!important;background:
+    radial-gradient(850px 520px at 12% 8%,rgba(124,58,237,.24),transparent 62%),
+    radial-gradient(700px 480px at 90% 95%,rgba(14,165,233,.16),transparent 60%),
+    rgba(5,7,15,.94)!important;color:#f8fafc!important;
+  direction:rtl;
+}
+#onboardOverlay[open]{display:flex!important}
+#onboardOverlay .onboard-box{
+  width:min(1080px,100%)!important;max-width:1080px!important;
+  height:auto!important;max-height:calc(100dvh - 36px)!important;min-height:590px;
+  padding:0!important;margin:auto!important;border:1px solid rgba(255,255,255,.12)!important;
+  border-radius:28px!important;overflow:hidden!important;
+  display:grid!important;grid-template-columns:290px minmax(0,1fr)!important;
+  align-items:stretch!important;justify-content:stretch!important;
+  background:#0d1220!important;
+  box-shadow:0 35px 110px rgba(0,0,0,.58),0 0 0 1px rgba(124,58,237,.12);
+  animation:tourEnter .38s cubic-bezier(.2,.8,.2,1) both!important;
+}
+@keyframes tourEnter{from{opacity:0;transform:translateY(16px) scale(.985)}to{opacity:1;transform:none}}
+#onboardOverlay .tour-rail{
+  position:relative;display:flex;flex-direction:column;gap:26px;
+  padding:32px 24px;background:
+    radial-gradient(300px 220px at 35% 0%,rgba(124,58,237,.24),transparent 75%),
+    linear-gradient(160deg,#171b31,#101524 72%);
+  border-left:1px solid rgba(255,255,255,.08);
+}
+#onboardOverlay .tour-brand{display:flex;align-items:center;gap:12px}
+#onboardOverlay .tour-brand-mark{
+  width:44px;height:44px;display:grid;place-items:center;border-radius:15px;
+  color:white;font-weight:950;font-size:18px;letter-spacing:-1px;
+  background:linear-gradient(140deg,#8b5cf6,#4f46e5 58%,#0ea5e9);
+  box-shadow:0 10px 28px rgba(99,102,241,.34)
+}
+#onboardOverlay .tour-brand-copy b{display:block;font-size:13px;font-weight:900;color:#fff;letter-spacing:.2px}
+#onboardOverlay .tour-brand-copy span{display:block;margin-top:3px;color:#929bb4;font-size:11px}
+#onboardOverlay .tour-rail-intro{padding:18px 0 2px}
+#onboardOverlay .tour-rail-kicker{color:#a78bfa;font-size:10px;font-weight:900;letter-spacing:1.7px}
+#onboardOverlay .tour-rail-title{margin:9px 0 7px;color:#fff;font-size:22px;line-height:1.45;font-weight:950}
+#onboardOverlay .tour-rail-desc{margin:0;color:#9ca8c0;font-size:12px;line-height:1.9}
+#onboardOverlay .tour-route-list{display:grid;gap:10px;margin-top:2px}
+#onboardOverlay .tour-route-item{
+  display:flex;align-items:center;gap:11px;width:100%;padding:10px 11px;
+  color:#8f9ab2;background:transparent;border:1px solid transparent;border-radius:13px;
+  text-align:right;font:inherit;cursor:pointer;transition:background .2s,border-color .2s,color .2s
+}
+#onboardOverlay .tour-route-item:hover{background:rgba(255,255,255,.045);color:#fff}
+#onboardOverlay .tour-route-item.active{color:#fff;background:rgba(139,92,246,.13);border-color:rgba(167,139,250,.32)}
+#onboardOverlay .tour-route-num{
+  display:grid;place-items:center;flex:0 0 28px;height:28px;border-radius:9px;
+  background:rgba(255,255,255,.07);font-size:11px;font-weight:900;color:#aab4ca
+}
+#onboardOverlay .tour-route-item.active .tour-route-num{background:linear-gradient(135deg,#8b5cf6,#4f46e5);color:#fff}
+#onboardOverlay .tour-route-item.done .tour-route-num{background:rgba(16,185,129,.16);color:#6ee7b7}
+#onboardOverlay .tour-route-text{font-size:12px;font-weight:800}
+#onboardOverlay .tour-rail-foot{margin-top:auto;padding-top:18px;border-top:1px solid rgba(255,255,255,.08);color:#818da7;font-size:11px;line-height:1.8}
+#onboardOverlay .tour-rail-foot strong{color:#c4b5fd}
+#onboardOverlay .tour-main{min-width:0;display:flex;flex-direction:column;padding:30px 34px 24px;background:
+  radial-gradient(620px 320px at 96% 0%,rgba(76,29,149,.17),transparent 72%),#0e1422}
+#onboardOverlay .tour-top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:2px 52px 20px 0}
+#onboardOverlay .tour-step-label{display:flex;align-items:center;gap:9px;color:#a6b1c8;font-size:11px;font-weight:900;letter-spacing:.5px}
+#onboardOverlay .tour-step-label i{font-style:normal;color:#c4b5fd}
+#onboardOverlay .tour-progress-copy{color:#8390aa;font-size:11px;font-weight:800;white-space:nowrap}
+#onboardOverlay .tour-progress-track{height:5px;background:rgba(255,255,255,.075);border-radius:99px;overflow:hidden;margin-bottom:28px}
+#onboardOverlay .tour-progress-fill{height:100%;width:0;background:linear-gradient(90deg,#8b5cf6,#6366f1 55%,#22d3ee);border-radius:99px;box-shadow:0 0 18px rgba(139,92,246,.45);transition:width .35s ease}
+#onboardOverlay .tour-content{display:grid;grid-template-columns:minmax(0,.92fr) minmax(280px,1.08fr);gap:28px;align-items:center;flex:1;min-height:0}
+#onboardOverlay .tour-copy{min-width:0;padding:8px 0}
+#onboardOverlay .tour-icon{
+  width:58px;height:58px;display:grid;place-items:center;border-radius:18px;margin-bottom:20px;
+  font-size:26px;color:#e9ddff;background:linear-gradient(145deg,rgba(139,92,246,.24),rgba(14,165,233,.12));
+  border:1px solid rgba(167,139,250,.23);box-shadow:0 12px 30px rgba(76,29,149,.18)
+}
+#onboardOverlay .tour-eyebrow{margin:0 0 8px;color:#a78bfa;font-size:11px;font-weight:950;letter-spacing:1.1px}
+#onboardOverlay .tour-title{margin:0 0 13px;color:#fff;font-size:clamp(25px,3vw,36px);line-height:1.35;font-weight:950;letter-spacing:-.5px}
+#onboardOverlay .tour-text{margin:0;color:#aab5ca;font-size:14px;line-height:2.05;max-width:440px}
+#onboardOverlay .tour-tip{
+  display:flex;align-items:flex-start;gap:10px;margin-top:23px;padding:13px 14px;
+  color:#cbd5e1;background:rgba(30,41,59,.58);border:1px solid rgba(148,163,184,.15);
+  border-radius:14px;font-size:11px;line-height:1.85
+}
+#onboardOverlay .tour-tip b{color:#67e8f9;white-space:nowrap}
+#onboardOverlay .tour-visual{
+  position:relative;min-width:0;min-height:300px;display:grid;place-items:center;
+  padding:22px;border-radius:24px;overflow:hidden;
+  background:
+    radial-gradient(330px 220px at 50% 10%,rgba(124,58,237,.18),transparent 74%),
+    linear-gradient(145deg,#151d32,#111827);
+  border:1px solid rgba(255,255,255,.095);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 20px 60px rgba(0,0,0,.18)
+}
+#onboardOverlay .tour-visual:before,#onboardOverlay .tour-visual:after{
+  content:"";position:absolute;width:140px;height:140px;border:1px solid rgba(167,139,250,.09);border-radius:50%;pointer-events:none
+}
+#onboardOverlay .tour-visual:before{top:-75px;left:-55px}
+#onboardOverlay .tour-visual:after{bottom:-92px;right:-70px;width:190px;height:190px}
+#onboardOverlay .tv-wrap{position:relative;z-index:1;width:min(100%,390px)}
+#onboardOverlay .tv-window{
+  overflow:hidden;border-radius:17px;border:1px solid rgba(255,255,255,.13);
+  background:#0e1525;box-shadow:0 18px 45px rgba(0,0,0,.3)
+}
+#onboardOverlay .tv-bar{height:34px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;background:#1b2438;border-bottom:1px solid rgba(255,255,255,.07)}
+#onboardOverlay .tv-dots{display:flex;gap:4px;direction:ltr}
+#onboardOverlay .tv-dots i{width:6px;height:6px;border-radius:50%;background:#66718b}
+#onboardOverlay .tv-caption{color:#aab6ce;font-size:9px;font-weight:800;letter-spacing:.4px}
+#onboardOverlay .tv-body{padding:18px}
+#onboardOverlay .tv-brandline{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:15px}
+#onboardOverlay .tv-brandline b{color:#f8fafc;font-size:12px}
+#onboardOverlay .tv-pill{padding:5px 9px;border-radius:20px;color:#c4b5fd;background:rgba(139,92,246,.15);font-size:9px;font-weight:900}
+#onboardOverlay .tv-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+#onboardOverlay .tv-stat{padding:12px 8px;border-radius:12px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.07);text-align:center}
+#onboardOverlay .tv-stat strong{display:block;color:#fff;font-size:21px;font-weight:950}
+#onboardOverlay .tv-stat span{display:block;margin-top:4px;color:#8f9bb3;font-size:9px}
+#onboardOverlay .tv-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+#onboardOverlay .tv-mini-card{min-width:0;padding:13px 7px 10px;border-radius:12px;text-align:center;background:linear-gradient(150deg,#f8fafc,#dbeafe);color:#172033;border:2px solid transparent}
+#onboardOverlay .tv-mini-card.active{border-color:#a78bfa;box-shadow:0 0 0 3px rgba(139,92,246,.16)}
+#onboardOverlay .tv-mini-card i{display:block;font-size:19px;font-style:normal;margin-bottom:8px}
+#onboardOverlay .tv-mini-card b{display:block;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#onboardOverlay .tv-mini-card small{display:block;margin-top:5px;color:#64748b;font-size:8px}
+#onboardOverlay .tv-search{padding:9px 11px;margin-bottom:12px;border-radius:10px;background:rgba(255,255,255,.055);color:#8492ab;font-size:9px}
+#onboardOverlay .tv-flash{
+  min-height:190px;padding:22px;border-radius:16px;display:flex;flex-direction:column;
+  justify-content:center;align-items:center;text-align:center;color:#182033;
+  background:linear-gradient(145deg,#fff,#e8eaff);box-shadow:0 14px 30px rgba(0,0,0,.22)
+}
+#onboardOverlay .tv-flash .tv-word{font-size:clamp(25px,4vw,37px);font-weight:950;letter-spacing:.3px}
+#onboardOverlay .tv-flash .tv-meaning{margin-top:13px;color:#6d4bd1;font-size:19px;font-weight:800}
+#onboardOverlay .tv-flash small{margin-top:19px;color:#64748b;font-size:9px}
+#onboardOverlay .tv-voice-grid{display:grid;gap:10px}
+#onboardOverlay .tv-voice{padding:13px;border:1px solid rgba(255,255,255,.09);border-radius:12px;background:rgba(255,255,255,.045)}
+#onboardOverlay .tv-voice-head{display:flex;align-items:center;justify-content:space-between;gap:8px;color:#e2e8f0;font-size:10px;font-weight:800}
+#onboardOverlay .tv-voice-head span:last-child{color:#a78bfa;font-size:9px}
+#onboardOverlay .tv-wave{height:5px;margin-top:11px;border-radius:9px;background:linear-gradient(90deg,#8b5cf6 0 62%,rgba(255,255,255,.09) 62%);overflow:hidden}
+#onboardOverlay .tv-wave.ar{background:linear-gradient(90deg,#22d3ee 0 78%,rgba(255,255,255,.09) 78%)}
+#onboardOverlay .tv-export{padding:18px;border:1px solid rgba(167,139,250,.22);border-radius:16px;background:rgba(139,92,246,.08);text-align:center}
+#onboardOverlay .tv-export-icon{width:62px;height:62px;margin:0 auto 12px;display:grid;place-items:center;border-radius:19px;color:#fff;font-size:25px;background:linear-gradient(145deg,#8b5cf6,#4f46e5);box-shadow:0 12px 28px rgba(99,102,241,.28)}
+#onboardOverlay .tv-export b{display:block;color:#fff;font-size:18px}
+#onboardOverlay .tv-export span{display:block;margin-top:7px;color:#9aa8c2;font-size:10px}
+#onboardOverlay .tv-checks{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:13px;text-align:right}
+#onboardOverlay .tv-checks span{padding:8px;border-radius:9px;background:rgba(16,185,129,.09);color:#86efac;font-size:9px}
+#onboardOverlay .tour-footer{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding-top:22px;margin-top:24px;border-top:1px solid rgba(255,255,255,.08)
+}
+#onboardOverlay .tour-footer-note{color:#7f8ca5;font-size:10px}
+#onboardOverlay .tour-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+#onboardOverlay .tour-btn{
+  min-height:43px;padding:0 19px;border-radius:12px;border:1px solid rgba(255,255,255,.12);
+  color:#cbd5e1;background:rgba(255,255,255,.045);font:inherit;font-size:12px;font-weight:900;cursor:pointer;
+  transition:transform .18s,border-color .18s,background .18s
+}
+#onboardOverlay .tour-btn:hover{border-color:rgba(167,139,250,.45);background:rgba(255,255,255,.08)}
+#onboardOverlay .tour-btn:active{transform:scale(.97)}
+#onboardOverlay .tour-btn.primary{color:#fff;border-color:transparent;background:linear-gradient(120deg,#7c3aed,#4f46e5 58%,#2563eb);box-shadow:0 9px 24px rgba(79,70,229,.3)}
+#onboardOverlay .tour-btn.primary:hover{filter:brightness(1.1);transform:translateY(-1px)}
+#onboardOverlay .tour-btn.text{border-color:transparent;background:transparent;color:#8f9bb3}
+#onboardOverlay .tour-close{
+  position:absolute;top:18px;left:18px;z-index:5;width:38px;height:38px;border-radius:12px;
+  display:grid;place-items:center;color:#b9c3d8;background:rgba(255,255,255,.055);
+  border:1px solid rgba(255,255,255,.11);font-size:19px;cursor:pointer
+}
+#onboardOverlay .tour-close:hover{color:#fff;background:rgba(239,68,68,.16);border-color:rgba(248,113,113,.35)}
+#onboardOverlay button:focus-visible{outline:2px solid #67e8f9;outline-offset:3px}
+@media(max-width:850px){
+  #onboardOverlay.onboard-overlay{padding:0!important;align-items:stretch}
+  #onboardOverlay .onboard-box{width:100%!important;max-height:100dvh!important;min-height:100dvh;border-radius:0!important;grid-template-columns:1fr!important;grid-template-rows:auto 1fr!important}
+  #onboardOverlay .tour-rail{padding:15px 18px 12px;gap:8px;border-left:0;border-bottom:1px solid rgba(255,255,255,.08)}
+  #onboardOverlay .tour-brand{gap:9px}
+  #onboardOverlay .tour-brand-mark{width:35px;height:35px;border-radius:11px;font-size:15px}
+  #onboardOverlay .tour-brand-copy b{font-size:11px}
+  #onboardOverlay .tour-brand-copy span{font-size:9px}
+  #onboardOverlay .tour-rail-intro,#onboardOverlay .tour-rail-foot{display:none}
+  #onboardOverlay .tour-route-list{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin:6px 0 0}
+  #onboardOverlay .tour-route-item{justify-content:center;padding:5px 2px;border-radius:9px}
+  #onboardOverlay .tour-route-num{width:25px;height:25px;flex-basis:25px;border-radius:8px;font-size:10px}
+  #onboardOverlay .tour-route-text{display:none}
+  #onboardOverlay .tour-main{padding:18px 18px 16px;min-height:0;overflow:auto}
+  #onboardOverlay .tour-top{padding:0 46px 13px 0}
+  #onboardOverlay .tour-progress-track{margin-bottom:16px}
+  #onboardOverlay .tour-content{grid-template-columns:1fr;gap:16px;align-content:start}
+  #onboardOverlay .tour-copy{padding:0}
+  #onboardOverlay .tour-icon{width:43px;height:43px;border-radius:13px;margin-bottom:11px;font-size:20px}
+  #onboardOverlay .tour-title{font-size:25px;margin-bottom:7px}
+  #onboardOverlay .tour-text{font-size:12px;line-height:1.85}
+  #onboardOverlay .tour-tip{margin-top:12px;padding:10px 11px;font-size:10px}
+  #onboardOverlay .tour-visual{min-height:205px;padding:12px;border-radius:17px}
+  #onboardOverlay .tv-wrap{width:min(100%,360px)}
+  #onboardOverlay .tv-body{padding:12px}
+  #onboardOverlay .tv-flash{min-height:125px}
+  #onboardOverlay .tour-footer{margin-top:15px;padding-top:14px;align-items:flex-end}
+  #onboardOverlay .tour-footer-note{display:none}
+  #onboardOverlay .tour-actions{width:100%;display:grid;grid-template-columns:auto 1fr auto}
+  #onboardOverlay .tour-btn{min-height:42px;padding:0 12px;font-size:11px}
+  #onboardOverlay .tour-close{top:12px;left:14px;width:33px;height:33px;border-radius:10px}
+}
+@media(max-width:380px){
+  #onboardOverlay .tour-main{padding:14px 13px 12px}
+  #onboardOverlay .tour-title{font-size:22px}
+  #onboardOverlay .tour-visual{min-height:185px}
+  #onboardOverlay .tour-actions{gap:5px}
+  #onboardOverlay .tour-btn{padding:0 8px}
+}
+@media(prefers-reduced-motion:reduce){
+  #onboardOverlay *,#onboardOverlay *:before,#onboardOverlay *:after{
+    animation:none!important;transition:none!important;scroll-behavior:auto!important
+  }
+}
+
+</style>
 </body>
 </html>
