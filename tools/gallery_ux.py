@@ -38,17 +38,17 @@ def apply_gallery_ux(html, deck):
 
     tour_js = TOUR_JS.replace("__DECK__", deck)
     start = html.find("var ONBOARD_STEPS=[")
-    end_marker = "// ============================================================\\n// WHAT'S NEW"
+    end_marker = "// ============================================================\n// WHAT'S NEW"
     end = html.find(end_marker, start)
     if start < 0 or end < 0:
         raise SystemExit(deck + " could not locate the original onboarding block")
-    html = html[:start] + tour_js + "\\n\\n" + html[end:]
+    html = html[:start] + tour_js + "\n\n" + html[end:]
 
     old_init = "if(!localStorage.getItem('anki_" + deck + "_onboarded'))showOnboarding();"
     new_init = "if(!localStorage.getItem('anki_" + deck + "_onboarded'))setTimeout(showOnboarding,80);"
     html = _replace_once(html, old_init, new_init, deck + " delayed first-visit tour")
 
-    style_tag = '<style id="gallery-tour-redesign">\\n' + TOUR_CSS + '\\n</style>\\n'
+    style_tag = '<style id="gallery-tour-redesign">\n' + TOUR_CSS + '\n</style>\n'
     html = _replace_once(html, "</head>", style_tag + "</head>", deck + " tour stylesheet insertion")
 
     if "gv-fab" in html or 'id="loadingMsg"' in html:
