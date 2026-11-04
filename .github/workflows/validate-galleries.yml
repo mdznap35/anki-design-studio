@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - "fix/**"
+      - "feature/**"
     paths:
       - "tools/build_galleries.py"
       - "tools/decks/**/templates.json"
@@ -131,6 +132,46 @@ jobs:
             console.log("PASS " + deck + ": actual preview helper renders sample text and unit fields");
           }
           JS
+      - name: Verify polished six-step tour and preview controls for all four galleries
+        run: |
+          python - <<'PY'
+          import json
+          import re
+          from pathlib import Path
+          import sys
+          sys.path.insert(0, "tools")
+          from build_galleries import bmatch
+
+          for deck in ("en9", "enlit", "ensci", "fr9"):
+              html = (Path("out") / f"{deck}.html").read_text(encoding="utf-8")
+              marker = "var EMBEDDED_DESIGNS_100 = "
+              pos = html.index(marker) + len(marker)
+              start = html.index("[", pos)
+              designs = json.loads(html[start:bmatch(html, start) + 1])
+              assert len(designs) == 100, f"{deck}: expected 100 designs"
+              assert all(item.get("pack") == deck for item in designs), f"{deck}: mixed design packs"
+
+              assert len(re.findall(r"\\{icon:'", html[html.index("var ONBOARD_STEPS=["):html.index("var onbStep=", html.index("var ONBOARD_STEPS=["))])) == 6, f"{deck}: tour must have six steps"
+              assert f"localStorage.setItem('anki_{deck}_onboarded','1')" in html, f"{deck}: wrong onboarding completion key"
+              assert f"if(!localStorage.getItem('anki_{deck}_onboarded'))setTimeout(showOnboarding,80);" in html, f"{deck}: first-visit tour must be delayed safely"
+              assert "onboardReturnFocus=document.activeElement" in html, f"{deck}: return focus is not captured"
+              assert "document.body.style.overflow=onboardPreviousOverflow" in html, f"{deck}: body scrolling is not restored"
+              assert "e.key==='Tab'" in html and "e.key==='Escape'" in html, f"{deck}: keyboard dialog controls are missing"
+              assert "aria-labelledby=\"onboardStepTitle\"" in html and "aria-valuenow=" in html, f"{deck}: tour accessibility semantics are incomplete"
+              assert "@media(max-width:620px)" in html and "prefers-reduced-motion:reduce" in html, f"{deck}: responsive/reduced-motion styles are missing"
+
+              assert "gv-fab" not in html, f"{deck}: floating corner flip button remains"
+              assert 'id="fsFlipBtn"' in html, f"{deck}: full-screen flip control was removed"
+              assert 'id="loadingMsg"' not in html and "جاري تحميل القوالب..." not in html, f"{deck}: blocking loader remains"
+
+              ids = re.findall(r'\\bid=["\']([^"\']+)["\']', html)
+              duplicates = sorted({value for value in ids if ids.count(value) > 1})
+              assert not duplicates, f"{deck}: duplicate HTML IDs: {duplicates}"
+              print(f"PASS {deck}: 100 deck-bound designs, six tour steps, focus/keyboard/accessibility, no corner flip or blocking loader")
+
+          print("ALL FOUR GALLERY UX REGRESSION CHECKS PASSED")
+          PY
+
       - name: Publish the generated static site for hosting
         if: github.ref == 'refs/heads/main'
         run: |
