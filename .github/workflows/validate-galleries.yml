@@ -7,6 +7,7 @@ on:
       - "fix/**"
     paths:
       - "tools/build_galleries.py"
+      - "tools/test_gallery_ux.py"
       - "tools/decks/**/templates.json"
       - "index.html"
       - "render.yaml"
@@ -99,6 +100,8 @@ jobs:
               assert source.read_bytes() == published.read_bytes(), f"Protected copy differs: {protected}"
           print("PASS self-contained publish root; protected files copied byte-for-byte")
           PY
+      - name: Test onboarding and preview UX regressions
+        run: python tools/test_gallery_ux.py
       - name: Test real preview sample-field substitution for all decks
         run: |
           node <<'JS'
