@@ -197,6 +197,27 @@ jobs:
               print(f"PASS {deck}: 100 deck-bound designs + 100 static preview images")
           PY
 
+      - name: Capture full gallery layout screenshots (mobile + desktop)
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m http.server 8765 --directory out >/tmp/gallery-http.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8765/fr9.html >/dev/null; then break; fi
+            sleep 1
+          done
+          node tools/capture_gallery_layout_screenshots.mjs
+
+      - name: Upload visual audit screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: gallery-visual-audit
+          path: /tmp/anki-gallery-layout-shots/*.png
+          if-no-files-found: error
+          retention-days: 14
+
       - name: Publish only the four gallery pages and their previews to Render (master only)
         if: github.ref == 'refs/heads/master'
         shell: bash
