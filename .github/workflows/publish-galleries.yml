@@ -249,7 +249,8 @@ jobs:
                   cornerFlip: !!document.querySelector("#gvStage .gv-fab.gv-flip"),
                   answerControl: !!document.getElementById("gvShowAns"),
                   progress: document.querySelector("#onboardBox [role=progressbar]")?.getAttribute("aria-valuenow"),
-                  staleFrenchCopy: /صمت قبل الفرنسي|الصوت الفرنسي|الكلمة الفرنسية|خط فرنسي|الخط الفرنسي/.test(document.body.innerText)
+                  staleFrenchCopy: /صمت قبل الفرنسي|الصوت الفرنسي|الكلمة الفرنسية|خط فرنسي|الخط الفرنسي/.test(document.body.innerText),
+                  staleEnglishCopy: /صمت قبل الإنجليزي|الصوت الإنجليزي|الكلمة الإنجليزية|خط إنجليزي|الخط الإنجليزي/.test(document.body.innerText)
                 }));
                 assert.equal(initial.open, true, deck.id + ": tour did not open");
                 assert.equal(initial.steps, 5, deck.id + ": tour should contain five steps");
@@ -262,7 +263,7 @@ jobs:
                 if (deck.id !== "fr9") {
                   assert.equal(initial.staleFrenchCopy, false, deck.id + ": French-only copy leaked into the English gallery UI");
                 } else {
-                  assert.equal(initial.staleFrenchCopy, false, deck.id + ": English copy unexpectedly leaked into the French 9 gallery UI");
+                  assert.equal(initial.staleEnglishCopy, false, deck.id + ": English-only copy leaked into the French 9 gallery UI");
                 }
 
                 await page.locator("[data-tour-next]").click();
