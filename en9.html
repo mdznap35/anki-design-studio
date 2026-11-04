@@ -977,7 +977,7 @@ a:not(.btn):hover{color:var(--ac)}
     <div class="gb-grid" id="gbGrid"></div>
     <div class="gb-toast" id="gbToast" role="status" aria-live="polite"></div>
   </div>
-<dialog class="onboard-overlay" id="onboardOverlay" style="display:none">
+<dialog class="onboard-overlay" id="onboardOverlay" aria-label="جولة سريعة" aria-labelledby="onboardStepTitle" aria-modal="true" onclick="if(event.target===this)closeOnboarding()" style="display:none">
   <div class="onboard-box" id="onboardBox"></div>
 </dialog>
 <dialog class="whatsnew-overlay" id="whatsNewOverlay" style="display:none">
@@ -4754,7 +4754,7 @@ function initApp(){
   window.__ANKI_INITED = true;
   loadTheme();
   try{
-    if(!localStorage.getItem('anki_en9_onboarded'))showOnboarding();
+    if(!localStorage.getItem('anki_en9_onboarded'))setTimeout(showOnboarding,50);
     try{localStorage.setItem('anki_en9_whatsnew_v60','1');}catch(_e){}
   }catch(_e){}
   try{checkCrashRecovery();}catch(_e){}
@@ -5110,11 +5110,13 @@ var ONBOARD_STEPS=[
 ];
 var onbStep=0;
 var onboardPreviousOverflow='';
+var onboardReturnFocus=null;
 function showOnboarding(){
   var overlay=document.getElementById('onboardOverlay');
   if(!overlay)return;
   onbStep=0;
   renderOnboardStep();
+  onboardReturnFocus=document.activeElement;
   onboardPreviousOverflow=document.body.style.overflow||'';
   document.body.style.overflow='hidden';
   overlay.style.display='flex';
@@ -5124,7 +5126,9 @@ function closeOnboarding(){
   var overlay=document.getElementById('onboardOverlay');
   if(overlay)overlay.style.display='none';
   document.body.style.overflow=onboardPreviousOverflow;
-  try{localStorage.setItem('anki_fr9_onboarded','1');}catch(_e){}
+  try{if(onboardReturnFocus&&typeof onboardReturnFocus.focus==='function')onboardReturnFocus.focus();}catch(_e){}
+  onboardReturnFocus=null;
+  try{localStorage.setItem('anki_en9_onboarded','1');}catch(_e){}
 }
 function moveOnboardStep(delta){
   var next=onbStep+delta;
