@@ -832,6 +832,19 @@ function renderOnboardStep(){
                 raise SystemExit("[%s] expected exactly one stale voice label (%d): %s" % (did, count, old[:70]))
             h = h.replace(old, new, 1)
 
+    # Convert the remaining primary-language UI labels in English galleries.
+    # Internal field names such as fontFrench remain unchanged for compatibility;
+    # only their Arabic-facing labels and explanatory copy are adapted.
+    if did in ("en9", "enlit", "ensci"):
+        for old, new in (
+            ("🇫🇷", "🇬🇧"),
+            ("الفرنسية", "الإنجليزية"),
+            ("الفرنسي", "الإنجليزي"),
+            ("فرنسية", "إنجليزية"),
+            ("فرنسي", "إنجليزي"),
+        ):
+            h = h.replace(old, new)
+
     # Add the new visual system at the end so it safely overrides the old tour styles.
     body_close = h.rfind("</body>")
     if body_close < 0:
