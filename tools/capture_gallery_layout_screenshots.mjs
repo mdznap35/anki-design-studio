@@ -33,14 +33,22 @@ try {
         title: document.title
       }));
       if (summary.cards !== 100 || summary.imgs !== 100 || !summary.gridVisible) throw new Error(deck + " " + viewport.name + ": " + JSON.stringify(summary));
-      const file = path.join(out, deck + "-" + viewport.name + ".png");
-      await page.screenshot({ path: file, fullPage: true, animations: "disabled" });
+      // The gallery browser is a fixed, internally scrollable surface.
+      // Capture its actual viewport rather than a misleading full-page image.
+      const file = path.join(out, deck + "-" + viewport.name + "-grid-top.png");
+      await page.screenshot({ path: file, fullPage: false, animations: "disabled" });
+      const grid = page.locator("#gbGrid");
+      await grid.evaluate(el => { el.scrollTop = el.scrollHeight; });
+      await page.waitForTimeout(450);
+      const bottomFile = path.join(out, deck + "-" + viewport.name + "-grid-bottom.png");
+      await page.screenshot({ path: bottomFile, fullPage: false, animations: "disabled" });
+      await grid.evaluate(el => { el.scrollTop = 0; });
       await page.evaluate(() => {
         if (typeof showOnboarding === "function") showOnboarding();
       });
       await page.waitForSelector("#onboardOverlay .tour-title", { state: "visible", timeout: 10000 });
       const tourFile = path.join(out, deck + "-" + viewport.name + "-tour.png");
-      await page.screenshot({ path: tourFile, fullPage: true, animations: "disabled" });
+      await page.screenshot({ path: tourFile, fullPage: false, animations: "disabled" });
       await page.evaluate(() => {
         if (typeof closeOnboarding === "function") closeOnboarding();
       });
