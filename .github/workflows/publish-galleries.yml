@@ -139,32 +139,28 @@ jobs:
                 { timeout: 15000 }
               );
 
-              await page.evaluate(async () => {
-                const grid = document.getElementById("gbGrid");
-                for (let y = 0; y < grid.scrollHeight; y += Math.max(140, grid.clientHeight * 0.65)) {
-                  grid.scrollTop = y;
-                  await new Promise(resolve => setTimeout(resolve, 45));
-                }
-                grid.scrollTop = 0;
-              });
-              await page.waitForFunction(() => {
+              const state = await page.evaluate(async () => {
                 const images = [...document.querySelectorAll("#gbGrid img.gb-img")];
-                return images.length === 100 && images.every(image =>
-                  image.complete && image.naturalWidth > 0
-                );
-              }, null, { timeout: 35000 });
-
-              const state = await page.evaluate(() => ({
-                cards: document.querySelectorAll("#gbGrid .gb-item").length,
-                images: document.querySelectorAll("#gbGrid img.gb-img").length,
-                iframes: document.querySelectorAll("#gbGrid iframe").length,
-                wrongDeckPaths: [...document.querySelectorAll("#gbGrid img.gb-img")]
-                  .filter(image => !image.getAttribute("src").includes("/gallery_previews/" )).length,
-                loaded: [...document.querySelectorAll("#gbGrid img.gb-img")]
-                  .filter(image => image.complete && image.naturalWidth > 0).length,
-                broken: [...document.querySelectorAll("#gbGrid img.gb-img")]
-                  .filter(image => !image.complete || image.naturalWidth === 0).length
-              }));
+                const allLazy = images.length === 100 &&
+                  images.every(image => image.getAttribute("loading") === "lazy");
+                // The real grid stays lazy-loaded. For the audit only, ask the
+                // browser to fetch every asset so we can verify all 100 URLs.
+                images.forEach(image => { image.loading = "eager"; });
+                const decoded = await Promise.all(images.map(image =>
+                  image.decode().then(() => true, () => false)
+                ));
+                return {
+                  cards: document.querySelectorAll("#gbGrid .gb-item").length,
+                  images: images.length,
+                  iframes: document.querySelectorAll("#gbGrid iframe").length,
+                  wrongDeckPaths: images.filter(image =>
+                    !image.getAttribute("src").includes("/gallery_previews/")
+                  ).length,
+                  allLazy,
+                  loaded: images.filter(image => image.complete && image.naturalWidth > 0).length,
+                  broken: decoded.filter(ok => !ok).length
+                };
+              });
               console.log(deck, JSON.stringify(state), "pageErrors=", JSON.stringify(errors));
               assert.equal(state.cards, 100, deck + ": wrong gallery card count");
               assert.equal(state.images, 100, deck + ": wrong thumbnail count");
