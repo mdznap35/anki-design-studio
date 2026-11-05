@@ -6,6 +6,11 @@ on:
       - main
     paths:
       - ".github/workflows/verify-pages.yml"
+      - "en9.html"
+      - "enlit.html"
+      - "ensci.html"
+      - "fr9.html"
+      - "gallery_imgs/**"
   workflow_dispatch:
   workflow_run:
     workflows:
