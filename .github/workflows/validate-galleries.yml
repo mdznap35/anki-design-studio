@@ -159,6 +159,10 @@ jobs:
               assert "document.body.style.overflow=onboardPreviousOverflow" in html, f"{deck}: body scrolling is not restored"
               assert "e.key==='Tab'" in html and "e.key==='Escape'" in html, f"{deck}: keyboard dialog controls are missing"
               assert "aria-labelledby=\"onboardStepTitle\"" in html and "aria-valuenow=" in html, f"{deck}: tour accessibility semantics are incomplete"
+              dialog = re.search(r'<dialog[^>]*id="onboardOverlay"[^>]*>', html)
+              assert dialog, f"{deck}: onboarding dialog markup is missing"
+              assert "style=" not in dialog.group(0), f"{deck}: inline display style can hide the open modal"
+              assert '#onboardOverlay.onboard-overlay[open]{display:flex}' in html, f"{deck}: open dialog has no visible display rule"
               assert "overlay.showModal()" in html, f"{deck}: tour must open as a native modal dialog"
               assert "overlay.close()" in html, f"{deck}: tour must close through the native dialog lifecycle"
               assert "overlay.removeAttribute('open')" in html, f"{deck}: non-native dialog fallback is missing"
