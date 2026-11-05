@@ -64,8 +64,28 @@ jobs:
                   });
                   await page.emulateMedia({ reducedMotion: "reduce" });
                   const url = origin + "/" + deck.id + "?live_visual_audit=" + process.env.AUDIT_SHA + "-" + viewport.name;
-                  const response = await page.goto(url, { waitUntil: "domcontentloaded", timeout: 90000 });
-                  assert(response && response.status() === 200, deck.id + " " + viewport.name + ": route did not return HTTP 200");
+                  let response = null;
+                  let lastNavigationError = "";
+                  for (let attempt = 1; attempt <= 12; attempt++) {
+                    try {
+                      response = await page.goto(url, { waitUntil: "domcontentloaded", timeout: 90000 });
+                      const status = response ? response.status() : null;
+                      console.log("NAVIGATION", deck.id, viewport.name, "attempt", attempt, "status", status, "finalUrl", page.url());
+                      if (response && status === 200) break;
+                    } catch (error) {
+                      lastNavigationError = error.message;
+                      console.log("NAVIGATION RETRY", deck.id, viewport.name, "attempt", attempt, lastNavigationError);
+                    }
+                    await page.waitForTimeout(10000);
+                  }
+                  if (!response || response.status() !== 200) {
+                    const diagnostic = await page.evaluate(() => ({
+                      title: document.title,
+                      url: location.href,
+                      body: document.body ? document.body.innerText.slice(0, 1000) : ""
+                    })).catch(error => ({ pageDiagnosticError: String(error) }));
+                    throw new Error(deck.id + " " + viewport.name + ": route did not return HTTP 200; lastError=" + lastNavigationError + "; page=" + JSON.stringify(diagnostic));
+                  }
                   await page.waitForFunction(() => typeof window.openGalleryBrowser === "function", null, { timeout: 30000 });
                   await page.evaluate(() => {
                     if (typeof window.closeOnboarding === "function") window.closeOnboarding();
