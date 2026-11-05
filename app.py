@@ -7,7 +7,8 @@ import tts
 app = Flask(__name__, static_folder='public')
 @app.after_request
 def no_cache(response):  # nosec SXXX
-    if request.path.endswith('.html'):
+    gallery_routes = {'/fr9', '/en9', '/enlit', '/ensci'}
+    if request.path.endswith('.html') or request.path in gallery_routes:
         response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
         response.headers['Pragma'] = 'no-cache'
         response.headers['Expires'] = '0'
