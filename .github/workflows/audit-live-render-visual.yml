@@ -86,16 +86,57 @@ jobs:
                     })).catch(error => ({ pageDiagnosticError: String(error) }));
                     throw new Error(deck.id + " " + viewport.name + ": route did not return HTTP 200; lastError=" + lastNavigationError + "; page=" + JSON.stringify(diagnostic));
                   }
-                  await page.waitForFunction(() => typeof window.openGalleryBrowser === "function", null, { timeout: 30000 });
-                  await page.evaluate(() => {
-                    if (typeof window.closeOnboarding === "function") window.closeOnboarding();
-                    window.openGalleryBrowser();
+                  // Wait for the parser and every blocking inline script to finish.
+                  await page.waitForLoadState("load", { timeout: 90000 }).catch(error =>
+                    console.log("LOAD STATE WARNING", deck.id, viewport.name, error.message)
+                  );
+                  await page.waitForFunction(() => document.readyState === "complete", null, { timeout: 45000 }).catch(error =>
+                    console.log("DOCUMENT READY WARNING", deck.id, viewport.name, error.message)
+                  );
+                  const beforeOpen = await page.evaluate(() => {
+                    let gvType = "missing";
+                    let gvLength = null;
+                    try {
+                      gvType = typeof gvList;
+                      if (Array.isArray(gvList)) gvLength = gvList.length;
+                    } catch (error) {
+                      gvType = "ReferenceError: " + error.message;
+                    }
+                    return {
+                      readyState: document.readyState,
+                      openGalleryBrowser: typeof window.openGalleryBrowser,
+                      gvListType: gvType,
+                      gvListLength: gvLength,
+                      gvCompute: typeof window.gvCompute,
+                      initApp: typeof window.initApp,
+                      designs: typeof window.EMBEDDED_DESIGNS_100,
+                      pageTitle: document.title,
+                      scriptCount: document.scripts.length
+                    };
                   });
+                  console.log("LIVE PAGE INITIALIZATION", deck.id, viewport.name, JSON.stringify(beforeOpen));
+                  const baseScreenshot = "live-render-audit/" + deck.id + "-" + viewport.name + "-page.png";
+                  await page.screenshot({ path: baseScreenshot, fullPage: false, animations: "disabled" });
+                  const galleryOpenError = await page.evaluate(() => {
+                    try {
+                      if (typeof window.closeOnboarding === "function") window.closeOnboarding();
+                      if (typeof window.openGalleryBrowser !== "function") return "openGalleryBrowser is missing";
+                      window.openGalleryBrowser();
+                      return "";
+                    } catch (error) {
+                      return error.name + ": " + error.message + "\\n" + (error.stack || "");
+                    }
+                  });
+                  if (galleryOpenError) {
+                    console.log("GALLERY OPEN ERROR", deck.id, viewport.name, galleryOpenError);
+                  }
                   await page.waitForFunction(() => {
                     const grid = document.querySelector("#gbGrid");
                     return grid && grid.querySelectorAll(".gb-item").length === 100
                       && grid.querySelectorAll("iframe.gb-preview-frame").length === 100;
-                  }, null, { timeout: 45000 });
+                  }, null, { timeout: 45000 }).catch(error =>
+                    console.log("GRID READY WARNING", deck.id, viewport.name, error.message)
+                  );
                   await page.waitForTimeout(900);
 
                   const metrics = await page.evaluate((expectedWord) => {
