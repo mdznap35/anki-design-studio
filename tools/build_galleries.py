@@ -7,6 +7,8 @@ Writes: /workspace/out/<file>.html
 import json, os, re, shutil
 from pathlib import Path
 
+from gallery_ux import apply_gallery_ux
+
 ROOT = Path(os.environ.get('WORKSPACE_ROOT') or Path(__file__).resolve().parents[1])
 # CI can provide the exact live French Bac page as a read-only base. Local runs
 # retain the repository index.html fallback.
@@ -392,6 +394,7 @@ def build_one(did, spec, base):
         if removed_extra_buttons != 100:
             raise SystemExit('[%s] expected to remove 100 extra buttons, removed %d'
                              % (did, removed_extra_buttons))
+    h = apply_gallery_ux(h, did)
     return h, spec
 
 
