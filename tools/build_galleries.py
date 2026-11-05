@@ -325,6 +325,13 @@ def build_one(did, spec, base):
             h = rep(h, "front = front.split('{{Dossier}}').join(SAMP.dossier||'Dossier 1');", "front = front.split('{{Dossier}}').join('');", 1, t + 'dossier field')
         h = rep(h, "fetch(apiBase()+'/api/audio_status')",
                 "fetch(apiBase()+'/api/audio_status?source=" + spec['ws'] + "')", 1, t + 'status url')
+        # Guard against stale/malformed generated output: every deck-specific
+        # audio-status URL must keep the closing JavaScript string delimiter.
+        _audio_ok = "fetch(apiBase()+'/api/audio_status?source=" + spec['ws'] + "')"
+        _audio_bad = "fetch(apiBase()+'/api/audio_status?source=" + spec['ws'] + ")"
+        if _audio_bad in h:
+            h = h.replace(_audio_bad, _audio_ok)
+        assert _audio_ok in h, t + 'audio status URL must be valid JavaScript'
         h = rep(h, "JSON.stringify({fr:pwf,ar:pwa,ttsConfig:cfg})",
                 "JSON.stringify({fr:pwf,ar:pwa,lang:'" + spec['lang'] + "',ttsConfig:cfg})", 1, t + 'preview lang')
         h = rep(h, "    includeAudio:inc,\n    quick:dlQuick()\n  };",
