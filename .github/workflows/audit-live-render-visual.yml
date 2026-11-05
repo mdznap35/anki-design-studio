@@ -132,12 +132,29 @@ jobs:
                   }
                   await page.waitForFunction(() => {
                     const grid = document.querySelector("#gbGrid");
-                    return grid && grid.querySelectorAll(".gb-item").length === 100
-                      && grid.querySelectorAll("iframe.gb-preview-frame").length === 100;
+                    return document.readyState === "complete"
+                      && Array.isArray(window.gvList) && window.gvList.length === 100
+                      && grid && grid.querySelectorAll(".gb-item").length === 100
+                      && grid.querySelectorAll("img.gb-img").length === 100;
                   }, null, { timeout: 45000 }).catch(error =>
                     console.log("GRID READY WARNING", deck.id, viewport.name, error.message)
                   );
-                  await page.waitForTimeout(900);
+
+                  // Trigger every lazy thumbnail so the audit can distinguish
+                  // missing/wrong assets from images that have not entered view yet.
+                  const imageSummary = await page.evaluate(async () => {
+                    const grid = document.querySelector("#gbGrid");
+                    const imgs = Array.from(grid ? grid.querySelectorAll("img.gb-img") : []);
+                    imgs.forEach(img => { img.loading = "eager"; });
+                    await Promise.all(imgs.map(img => img.decode().catch(() => null)));
+                    return {
+                      count: imgs.length,
+                      loaded: imgs.filter(img => img.complete && img.naturalWidth > 0).length,
+                      broken: imgs.filter(img => img.complete && img.naturalWidth === 0).length,
+                      sources: imgs.map(img => img.getAttribute("src")),
+                    };
+                  });
+                  await page.waitForTimeout(500);
 
                   const metrics = await page.evaluate((expectedWord) => {
                     const pick = (selector) => document.querySelector(selector);
@@ -153,6 +170,7 @@ jobs:
                         backgroundImage: s.backgroundImage,
                         color: s.color,
                         borderRadius: s.borderRadius,
+                        objectFit: s.objectFit,
                         width: Math.round(r.width),
                         height: Math.round(r.height)
                       };
@@ -160,14 +178,15 @@ jobs:
                     const gallery = pick("#galleryBrowser");
                     const grid = pick("#gbGrid");
                     const first = grid && grid.querySelector(".gb-item");
-                    const frame = first && first.querySelector("iframe.gb-preview-frame");
-                    let frameInfo = null;
-                    if (frame) {
+                    const firstImage = first && first.querySelector("img.gb-img");
+                    const previewFrame = pick("#gvFrame");
+                    let previewInfo = null;
+                    if (previewFrame) {
                       try {
-                        const doc = frame.contentDocument;
+                        const doc = previewFrame.contentDocument;
                         const scene = doc && (doc.querySelector(".scene") || doc.body);
                         const sceneStyle = scene && getComputedStyle(scene);
-                        frameInfo = {
+                        previewInfo = {
                           readyState: doc && doc.readyState,
                           title: doc && doc.title,
                           text: (doc && doc.body ? doc.body.innerText : "").slice(0, 220),
@@ -177,11 +196,13 @@ jobs:
                           sceneWidth: scene && Math.round(scene.getBoundingClientRect().width)
                         };
                       } catch (error) {
-                        frameInfo = { accessError: String(error) };
+                        previewInfo = { accessError: String(error) };
                       }
                     }
-                    const imgs = Array.from(grid ? grid.querySelectorAll("img") : []);
-                    const sampleVisible = (grid && grid.innerText || "").includes(expectedWord);
+                    const imgSources = Array.from(grid ? grid.querySelectorAll("img.gb-img") : []).map(img => img.getAttribute("src") || "");
+                    const deckPrefix = "/gallery_previews/" + location.pathname.replace(/^\\//, "") + "/";
+                    const deckSpecific = imgSources.filter(src => src.includes(deckPrefix)).length;
+                    const shared = imgSources.filter(src => src.includes("gallery_imgs/")).length;
                     return {
                       title: document.title,
                       styleSheets: document.styleSheets.length,
@@ -189,24 +210,54 @@ jobs:
                       gallery: css("#galleryBrowser"),
                       grid: css("#gbGrid"),
                       firstCard: css("#gbGrid .gb-item"),
-                      firstThumb: css("#gbGrid .gb-thumb"),
-                      iframeCount: grid ? grid.querySelectorAll("iframe.gb-preview-frame").length : 0,
-                      iframeLoaded: frame ? !!frame.contentDocument && frame.contentDocument.readyState === "complete" : false,
-                      frameInfo,
-                      visibleSampleWordInGrid: sampleVisible,
+                      firstImage: css("#gbGrid img.gb-img"),
+                      imageCount: imgSources.length,
+                      deckSpecificPreviewCount: deckSpecific,
+                      sharedThumbnailCount: shared,
+                      uniqueImageSources: new Set(imgSources).size,
+                      visibleSampleWordInGrid: (grid && grid.innerText || "").includes(expectedWord),
+                      previewFrame: css("#gvFrame"),
+                      previewInfo,
                       body: css("body")
                     };
                   }, deck.word);
 
-                  const screenshot = "live-render-audit/" + deck.id + "-" + viewport.name + ".png";
+                  const screenshot = "live-render-audit/" + deck.id + "-" + viewport.name + "-grid.png";
                   await page.screenshot({ path: screenshot, fullPage: false, animations: "disabled" });
-                  const entry = { deck: deck.id, expectedWord: deck.word, viewport: viewport.name, url, httpStatus: response.status(), metrics, pageErrors, httpErrors, screenshot };
+
+                  // Capture the first-visit tour on the real production page too.
+                  await page.evaluate(() => {
+                    if (typeof window.closeOnboarding === "function") window.closeOnboarding();
+                    if (typeof window.showOnboarding === "function") window.showOnboarding();
+                  });
+                  await page.waitForTimeout(350);
+                  const tour = await page.evaluate(() => {
+                    const overlay = document.querySelector("#onboardOverlay");
+                    const title = overlay && overlay.querySelector(".tour-title, .ob-title, h1, h2");
+                    const s = overlay ? getComputedStyle(overlay) : null;
+                    return {
+                      exists: !!overlay,
+                      open: !!overlay && (overlay.open || overlay.hasAttribute("open")),
+                      display: s && s.display,
+                      visibility: s && s.visibility,
+                      title: title && title.textContent,
+                      box: overlay && (() => { const r=overlay.getBoundingClientRect(); return {width:Math.round(r.width),height:Math.round(r.height)}; })()
+                    };
+                  });
+                  const tourScreenshot = "live-render-audit/" + deck.id + "-" + viewport.name + "-tour.png";
+                  await page.screenshot({ path: tourScreenshot, fullPage: false, animations: "disabled" });
+
+                  const entry = { deck: deck.id, expectedWord: deck.word, viewport: viewport.name, url, httpStatus: response.status(), metrics, imageSummary, tour, pageErrors, httpErrors, screenshot, tourScreenshot };
                   results.push(entry);
                   console.log(JSON.stringify(entry));
                   if (!metrics.galleryOpen || metrics.gallery.display !== "flex" || metrics.grid.display !== "grid"
-                      || metrics.firstCard.borderRadius === "0px" || metrics.iframeCount !== 100
-                      || !metrics.iframeLoaded || pageErrors.length || httpErrors.length) {
+                      || metrics.imageCount !== 100 || imageSummary.loaded < 20 || imageSummary.broken > 0
+                      || metrics.firstCard.borderRadius === "0px" || pageErrors.length || httpErrors.length) {
                     failures.push(deck.id + "/" + viewport.name + ": " + JSON.stringify(entry));
+                  }
+                  if (metrics.deckSpecificPreviewCount !== 100) {
+                    console.log("DECK PREVIEW SOURCE REGRESSION", deck.id, "deckSpecific=", metrics.deckSpecificPreviewCount,
+                      "shared=", metrics.sharedThumbnailCount, "sample=", metrics.imageSummary && metrics.imageSummary.sources && metrics.imageSummary.sources.slice(0, 4));
                   }
                   await page.close();
                 }
