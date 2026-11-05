@@ -5119,12 +5119,19 @@ function showOnboarding(){
   onboardReturnFocus=document.activeElement;
   onboardPreviousOverflow=document.body.style.overflow||'';
   document.body.style.overflow='hidden';
-  overlay.style.display='flex';
+  if(typeof overlay.showModal==='function'){
+    if(!overlay.open)overlay.showModal();
+  }else{
+    overlay.setAttribute('open','');
+  }
   window.setTimeout(function(){var b=overlay.querySelector('.ob-btn.primary');if(b)b.focus();},40);
 }
 function closeOnboarding(){
   var overlay=document.getElementById('onboardOverlay');
-  if(overlay)overlay.style.display='none';
+  if(overlay){
+    if(typeof overlay.close==='function'&&overlay.open)overlay.close();
+    else overlay.removeAttribute('open');
+  }
   document.body.style.overflow=onboardPreviousOverflow;
   try{if(onboardReturnFocus&&typeof onboardReturnFocus.focus==='function')onboardReturnFocus.focus();}catch(_e){}
   onboardReturnFocus=null;
@@ -5164,7 +5171,7 @@ function renderOnboardStep(){
 }
 document.addEventListener('keydown',function(e){
   var overlay=document.getElementById('onboardOverlay');
-  if(!overlay||overlay.style.display==='none')return;
+  if(!overlay||!overlay.hasAttribute('open'))return;
   if(e.key==='Escape'){e.preventDefault();closeOnboarding();return;}
   if(e.key==='Tab'){
     var focusable=Array.prototype.slice.call(overlay.querySelectorAll(
@@ -5185,7 +5192,6 @@ document.addEventListener('keydown',function(e){
   if(e.key==='ArrowLeft'){e.preventDefault();moveOnboardStep(1);}
   else if(e.key==='ArrowRight'&&onbStep>0){e.preventDefault();moveOnboardStep(-1);}
 });
-
 
 
 // ============================================================
