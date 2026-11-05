@@ -41,8 +41,7 @@ def apply_gallery_ux(html, deck):
     dialog_new = (
         '<dialog class="onboard-overlay" id="onboardOverlay" '
         'aria-label="جولة سريعة" aria-labelledby="onboardStepTitle" '
-        'aria-modal="true" onclick="if(event.target===this)closeOnboarding()" '
-        'style="display:none">'
+        'aria-modal="true" onclick="if(event.target===this)closeOnboarding()">'
     )
     html = _replace_once(html, dialog_old, dialog_new, deck + " tour dialog semantics")
 
