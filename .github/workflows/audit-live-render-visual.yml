@@ -200,7 +200,7 @@ jobs:
                       }
                     }
                     const imgSources = Array.from(grid ? grid.querySelectorAll("img.gb-img") : []).map(img => img.getAttribute("src") || "");
-                    const deckPrefix = "/gallery_previews/" + location.pathname.replace(/^\\//, "") + "/";
+                    const deckPrefix = "/gallery_previews/" + location.pathname.replace(/^\//, "") + "/";
                     const deckSpecific = imgSources.filter(src => src.includes(deckPrefix)).length;
                     const shared = imgSources.filter(src => src.includes("gallery_imgs/")).length;
                     return {
