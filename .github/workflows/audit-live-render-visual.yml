@@ -1,0 +1,169 @@
+name: Audit live Render gallery visuals
+
+on:
+  push:
+    branches:
+      - audit/render-live-browser-2026-11-05
+
+permissions:
+  contents: read
+
+jobs:
+  browser-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install Playwright Chromium
+        run: |
+          npm init -y
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+      - name: Open the actual production Render routes in Chromium
+        env:
+          AUDIT_SHA: ${{ github.sha }}
+        run: |
+          mkdir -p live-render-audit
+          node <<'JS'
+          const { chromium } = require("playwright");
+          const fs = require("node:fs/promises");
+          const assert = require("node:assert/strict");
+
+          (async () => {
+            const browser = await chromium.launch({ headless: true, args: ["--no-sandbox"] });
+            const origin = "https://anki-design-studio.onrender.com";
+            const decks = [
+              { id: "fr9", word: "Leçon" },
+              { id: "en9", word: "Student" },
+              { id: "enlit", word: "Novel" },
+              { id: "ensci", word: "Atom" }
+            ];
+            const results = [];
+            const failures = [];
+            try {
+              for (const deck of decks) {
+                for (const viewport of [
+                  { name: "mobile", width: 390, height: 844 },
+                  { name: "desktop", width: 1440, height: 1000 }
+                ]) {
+                  const page = await browser.newPage({
+                    viewport: { width: viewport.width, height: viewport.height },
+                    deviceScaleFactor: 1
+                  });
+                  const pageErrors = [];
+                  const httpErrors = [];
+                  page.on("pageerror", error => pageErrors.push(error.message));
+                  page.on("response", response => {
+                    const url = response.url();
+                    if (url.startsWith(origin) && response.status() >= 400) {
+                      httpErrors.push({ status: response.status(), url });
+                    }
+                  });
+                  await page.emulateMedia({ reducedMotion: "reduce" });
+                  const url = origin + "/" + deck.id + "?live_visual_audit=" + process.env.AUDIT_SHA + "-" + viewport.name;
+                  const response = await page.goto(url, { waitUntil: "domcontentloaded", timeout: 90000 });
+                  assert(response && response.status() === 200, deck.id + " " + viewport.name + ": route did not return HTTP 200");
+                  await page.waitForFunction(() => typeof window.openGalleryBrowser === "function", null, { timeout: 30000 });
+                  await page.evaluate(() => {
+                    if (typeof window.closeOnboarding === "function") window.closeOnboarding();
+                    window.openGalleryBrowser();
+                  });
+                  await page.waitForFunction(() => {
+                    const grid = document.querySelector("#gbGrid");
+                    return grid && grid.querySelectorAll(".gb-item").length === 100
+                      && grid.querySelectorAll("iframe.gb-preview-frame").length === 100;
+                  }, null, { timeout: 45000 });
+                  await page.waitForTimeout(900);
+
+                  const metrics = await page.evaluate((expectedWord) => {
+                    const pick = (selector) => document.querySelector(selector);
+                    const css = (selector) => {
+                      const el = pick(selector);
+                      if (!el) return null;
+                      const s = getComputedStyle(el);
+                      const r = el.getBoundingClientRect();
+                      return {
+                        display: s.display,
+                        visibility: s.visibility,
+                        backgroundColor: s.backgroundColor,
+                        backgroundImage: s.backgroundImage,
+                        color: s.color,
+                        borderRadius: s.borderRadius,
+                        width: Math.round(r.width),
+                        height: Math.round(r.height)
+                      };
+                    };
+                    const gallery = pick("#galleryBrowser");
+                    const grid = pick("#gbGrid");
+                    const first = grid && grid.querySelector(".gb-item");
+                    const frame = first && first.querySelector("iframe.gb-preview-frame");
+                    let frameInfo = null;
+                    if (frame) {
+                      try {
+                        const doc = frame.contentDocument;
+                        const scene = doc && (doc.querySelector(".scene") || doc.body);
+                        const sceneStyle = scene && getComputedStyle(scene);
+                        frameInfo = {
+                          readyState: doc && doc.readyState,
+                          title: doc && doc.title,
+                          text: (doc && doc.body ? doc.body.innerText : "").slice(0, 220),
+                          sceneBackground: sceneStyle && sceneStyle.backgroundColor,
+                          sceneBackgroundImage: sceneStyle && sceneStyle.backgroundImage,
+                          sceneColor: sceneStyle && sceneStyle.color,
+                          sceneWidth: scene && Math.round(scene.getBoundingClientRect().width)
+                        };
+                      } catch (error) {
+                        frameInfo = { accessError: String(error) };
+                      }
+                    }
+                    const imgs = Array.from(grid ? grid.querySelectorAll("img") : []);
+                    const sampleVisible = (grid && grid.innerText || "").includes(expectedWord);
+                    return {
+                      title: document.title,
+                      styleSheets: document.styleSheets.length,
+                      galleryOpen: !!gallery && gallery.classList.contains("open"),
+                      gallery: css("#galleryBrowser"),
+                      grid: css("#gbGrid"),
+                      firstCard: css("#gbGrid .gb-item"),
+                      firstThumb: css("#gbGrid .gb-thumb"),
+                      iframeCount: grid ? grid.querySelectorAll("iframe.gb-preview-frame").length : 0,
+                      iframeLoaded: frame ? !!frame.contentDocument && frame.contentDocument.readyState === "complete" : false,
+                      frameInfo,
+                      visibleSampleWordInGrid: sampleVisible,
+                      body: css("body")
+                    };
+                  }, deck.word);
+
+                  const screenshot = "live-render-audit/" + deck.id + "-" + viewport.name + ".png";
+                  await page.screenshot({ path: screenshot, fullPage: false, animations: "disabled" });
+                  const entry = { deck: deck.id, expectedWord: deck.word, viewport: viewport.name, url, httpStatus: response.status(), metrics, pageErrors, httpErrors, screenshot };
+                  results.push(entry);
+                  console.log(JSON.stringify(entry));
+                  if (!metrics.galleryOpen || metrics.gallery.display !== "flex" || metrics.grid.display !== "grid"
+                      || metrics.firstCard.borderRadius === "0px" || metrics.iframeCount !== 100
+                      || !metrics.iframeLoaded || pageErrors.length || httpErrors.length) {
+                    failures.push(deck.id + "/" + viewport.name + ": " + JSON.stringify(entry));
+                  }
+                  await page.close();
+                }
+              }
+              await fs.writeFile("live-render-audit/results.json", JSON.stringify(results, null, 2));
+              await fs.writeFile("live-render-audit/failures.json", JSON.stringify(failures, null, 2));
+              if (failures.length) throw new Error("Live Render browser visual audit failed:\n" + failures.join("\n"));
+              console.log("LIVE RENDER VISUAL AUDIT PASS: all four clean routes rendered 100 styled template previews on mobile and desktop.");
+            } finally {
+              await browser.close();
+            }
+          })().catch(error => { console.error(error); process.exit(1); });
+          JS
+      - name: Upload live visual evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: live-render-browser-audit
+          path: live-render-audit/
+          if-no-files-found: warn
+          retention-days: 30
