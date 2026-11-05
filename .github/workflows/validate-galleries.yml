@@ -14,6 +14,25 @@ on:
       - "render.yaml"
       - "gallery_imgs/**"
       - ".github/workflows/validate-galleries.yml"
+      - "en9.html"
+      - "enlit.html"
+      - "ensci.html"
+      - "fr9.html"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "tools/build_galleries.py"
+      - "tools/gallery_ux.py"
+      - "tools/decks/**/templates.json"
+      - "index.html"
+      - "render.yaml"
+      - "gallery_imgs/**"
+      - "en9.html"
+      - "enlit.html"
+      - "ensci.html"
+      - "fr9.html"
+      - ".github/workflows/validate-galleries.yml"
   workflow_dispatch:
 
 permissions:
@@ -183,6 +202,50 @@ jobs:
           print("ALL FOUR GALLERY UX REGRESSION CHECKS PASSED")
           PY
 
+      - name: Verify committed gallery pages stay synchronized with native dialog behavior
+        run: |
+          python - <<'PY'
+          import json
+          import re
+          from pathlib import Path
+          for deck in ("en9", "enlit", "ensci", "fr9"):
+              html = Path(deck + ".html").read_text(encoding="utf-8")
+              marker = "var EMBEDDED_DESIGNS_100 = "
+              pos = html.index(marker) + len(marker)
+              start = html.index("[", pos)
+              depth = 0
+              quoted = False
+              escaped = False
+              for i in range(start, len(html)):
+                  ch = html[i]
+                  if quoted:
+                      if escaped: escaped = False
+                      elif ch == "\\": escaped = True
+                      elif ch == '"': quoted = False
+                  elif ch == '"': quoted = True
+                  elif ch == "[": depth += 1
+                  elif ch == "]":
+                      depth -= 1
+                      if depth == 0: break
+              designs = json.loads(html[start:i + 1])
+              assert len(designs) == 100, f"{deck}: expected 100 committed designs"
+              assert all(item.get("pack") == deck for item in designs), f"{deck}: wrong committed deck binding"
+              assert all(item.get("fields") for item in designs), f"{deck}: committed field mappings missing"
+              dialogs = [line for line in html.splitlines() if line.startswith("<dialog") and 'id="onboardOverlay"' in line]
+              assert len(dialogs) == 1 and "style=" not in dialogs[0], f"{deck}: missing or hidden inline onboarding dialog"
+              assert "overlay.showModal()" in html and "overlay.close()" in html, f"{deck}: native dialog lifecycle missing"
+              assert "overlay.setAttribute('open','')" in html and "overlay.removeAttribute('open')" in html, f"{deck}: dialog fallback missing"
+              assert "overlay.style.display='flex'" not in html and "overlay.style.display='none'" not in html, f"{deck}: legacy display-based modal remains"
+              assert "#onboardOverlay.onboard-overlay[open]{display:flex}" in html, f"{deck}: open dialog visibility rule missing"
+              assert len(re.findall(r"\{icon:'", html[html.index("var ONBOARD_STEPS=["):html.index("var onbStep=")])) == 6, f"{deck}: tour must have six steps"
+              assert "gv-fab" not in html and 'id="fsFlipBtn"' in html, f"{deck}: obsolete or missing preview flip control"
+              assert 'id="loadingMsg"' not in html and "جاري تحميل القوالب..." not in html, f"{deck}: blocking loader remains"
+              assert f"localStorage.setItem('anki_{deck}_onboarded','1')" in html, f"{deck}: wrong onboarding storage key"
+              ids = re.findall(r'id="([^"]+)"', html)
+              assert len(ids) == len(set(ids)), f"{deck}: duplicate HTML IDs"
+              print(f"PASS committed {deck}: 100 deck-bound designs, six-step native tour, clean preview controls")
+          print("ALL COMMITTED GALLERY PAGES PASSED")
+          PY
       - name: Publish the generated static site for hosting
         if: github.ref == 'refs/heads/main'
         run: |
