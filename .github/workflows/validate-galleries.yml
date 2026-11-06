@@ -233,6 +233,7 @@ jobs:
               assert 'onboardGuideReturnFocus = closeButton' in tour_source and 'onboardGuideReturnFocus = opener' in tour_source, f"{deck}: export-review focus handoff is incomplete"
               assert 'localStorage.setItem(ONBOARD_STORAGE_KEY,"1")' in tour_source and "catch(_e)" in tour_source, f"{deck}: safe per-gallery completion state is missing"
               assert "function renderOnboardVisual" not in tour_source, f"{deck}: fake static tour visuals remain"
+              assert "innerHTML" not in tour_source and "textContent" in tour_source, f"{deck}: onboarding content must use safe DOM text nodes, not HTML string injection"
               assert "confirmExport(" not in tour_source and "runGenerate(" not in tour_source and "downloadAPKG(" not in tour_source, f"{deck}: onboarding can trigger destructive export work"
               launcher_marker = '<button id="onboardTourLauncher"'
               launcher_index = html.rfind(launcher_marker)
