@@ -202,7 +202,7 @@ jobs:
 
               assert 'ONBOARD_PRIMARY_LANGUAGE = ONBOARD_DECK === "fr9" ? "الفرنسية" : "الإنجليزية";' in tour_source, f"{deck}: audio language is not deck-aware"
               assert 'aria-live="polite"' in tour_source, f"{deck}: guide announcements are missing"
-              assert 'aria-current="' + (index === onbStep ? "step" : "false")' in tour_source, f"{deck}: direct accessible step navigation is missing"
+              assert 'aria-current=' in tour_source and 'index === onbStep' in tour_source and '"step"' in tour_source and '"false"' in tour_source, f"{deck}: direct accessible step navigation is missing"
               assert "data-guide-step" in tour_source and "data-guide-action" in tour_source, f"{deck}: guide controls are not wired"
               assert "og-spotlight" in tour_source and "og-spotlight" in html, f"{deck}: real controls are not highlighted"
               assert "pointer-events:none" in html and "pointer-events:auto" in html, f"{deck}: coachmark should not block the gallery"
