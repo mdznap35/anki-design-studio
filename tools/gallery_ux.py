@@ -150,7 +150,20 @@ TOUR_CSS = r"""#onboardOverlay.onboard-overlay{position:fixed;inset:0;z-index:99
 }
 @media(prefers-reduced-motion:reduce){
 #onboardOverlay *,#onboardOverlay *:before,#onboardOverlay *:after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
-}"""
+}
+@keyframes obStepEnter{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+#onboardOverlay .ob-visual,#onboardOverlay .ob-copy{animation:obStepEnter .24s ease both}
+#onboardOverlay .ob-progress-step{display:block;min-width:0;padding:7px 0;border:0;background:transparent;cursor:pointer}
+#onboardOverlay .ob-progress-step span{display:block;height:6px;border-radius:99px;background:rgba(255,255,255,.105);transition:background .22s,box-shadow .22s}
+#onboardOverlay .ob-progress-step span.done{background:linear-gradient(90deg,#8b5cf6,#22d3ee);box-shadow:0 0 13px rgba(139,92,246,.25)}
+#onboardOverlay .ob-progress-step[aria-current="step"] span{box-shadow:0 0 0 2px rgba(103,232,249,.24),0 0 16px rgba(34,211,238,.22)}
+#onboardOverlay .ob-progress-step:focus-visible{outline:2px solid #67e8f9;outline-offset:3px;border-radius:5px}
+#onboardTourLauncher{position:fixed;left:calc(env(safe-area-inset-left,0px) + 16px);bottom:calc(env(safe-area-inset-bottom,0px) + 16px);z-index:9998;display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:46px;padding:0 16px;border:1px solid rgba(196,181,253,.28);border-radius:999px;background:linear-gradient(115deg,#6d28d9,#4338ca 58%,#0e7490);color:#fff;box-shadow:0 10px 28px rgba(15,23,42,.35),0 0 0 1px rgba(255,255,255,.07) inset;font:inherit;font-size:.78rem;font-weight:900;cursor:pointer;transition:transform .18s,box-shadow .18s}
+#onboardTourLauncher:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(15,23,42,.42),0 0 22px rgba(103,232,249,.16)}
+#onboardTourLauncher:focus-visible{outline:3px solid #67e8f9;outline-offset:4px}
+#onboardTourLauncher[hidden]{display:none}
+@media(max-width:720px){#onboardTourLauncher{left:calc(env(safe-area-inset-left,0px) + 12px);bottom:calc(env(safe-area-inset-bottom,0px) + 12px);min-height:43px;padding:0 13px;font-size:.74rem}}
+"""
 
 TOUR_JS = r"""var ONBOARD_DECK = "__DECK__";
 var ONBOARD_IS_FRENCH = ONBOARD_DECK === "fr9";
@@ -220,6 +233,8 @@ function markOnboardingCompleted(){
 
 function focusOnboardHeading(){
   window.setTimeout(function(){
+    var box=document.querySelector('#onboardOverlay .onboard-box');
+    if(box)box.scrollTop=0;
     var heading=document.getElementById('onboardStepTitle');
     if(heading&&typeof heading.focus==='function')heading.focus();
   },0);
@@ -228,6 +243,8 @@ function focusOnboardHeading(){
 function showOnboarding(){
   var overlay=document.getElementById('onboardOverlay');
   if(!overlay||overlay.open)return;
+  var launcher=document.getElementById('onboardTourLauncher');
+  if(launcher)launcher.hidden=true;
   onbStep=0;
   renderOnboardStep();
   onboardReturnFocus=document.activeElement;
@@ -254,6 +271,8 @@ function closeOnboarding(){
   }catch(_e){}
   onboardReturnFocus=null;
   markOnboardingCompleted();
+  var launcher=document.getElementById('onboardTourLauncher');
+  if(launcher)launcher.hidden=false;
 }
 
 function goToOnboardStep(index){
@@ -277,22 +296,24 @@ function renderOnboardStep(){
   var step=ONBOARD_STEPS[onbStep];
   if(!step)return;
   var progress='';
-  ONBOARD_STEPS.forEach(function(_,i){progress+='<span class="'+(i<=onbStep?'done':'')+'"></span>';});
+  ONBOARD_STEPS.forEach(function(item,i){
+    progress+='<button class="ob-progress-step" type="button" onclick="goToOnboardStep('+i+')" aria-label="الانتقال إلى الخطوة '+(i+1)+': '+escapeOnboardText(item.label)+'" aria-current="'+(i===onbStep?'step':'false')+'"><span class="'+(i<=onbStep?'done':'')+'"></span></button>';
+  });
   var checks='';
   step.checks.forEach(function(item){checks+='<li>'+escapeOnboardText(item)+'</li>';});
   var h='<div class="ob-shell" role="group" aria-label="خطوات الجولة">';
-  h+='<div class="ob-top"><div class="ob-brand"><span class="ob-brand-mark" aria-hidden="true">A</span><span class="ob-brand-copy"><strong>ANKI DESIGN STUDIO</strong><small>دليل الاستخدام التفاعلي</small></span></div>';
+  h+='<div class="ob-top"><div class="ob-brand"><span class="ob-brand-mark" aria-hidden="true">A</span><span class="ob-brand-copy"><strong>ANKI DESIGN STUDIO</strong><small>جولة تفاعلية • 6 خطوات قصيرة</small></span></div>';
   h+='<div class="ob-top-actions"><span class="ob-count" aria-hidden="true">الخطوة '+(onbStep+1)+' من '+ONBOARD_STEPS.length+'</span><button class="ob-close" type="button" onclick="closeOnboarding()" aria-label="إغلاق الجولة">×</button></div></div>';
-  h+='<div class="ob-progress" role="progressbar" aria-label="التقدم في الجولة" aria-valuemin="1" aria-valuemax="'+ONBOARD_STEPS.length+'" aria-valuenow="'+(onbStep+1)+'">'+progress+'</div>';
+  h+='<div class="ob-progress" role="group" aria-label="التنقل بين خطوات الجولة">'+progress+'</div>';
   h+='<p class="ob-sr-only" role="status" aria-live="polite">الخطوة '+(onbStep+1)+' من '+ONBOARD_STEPS.length+': '+escapeOnboardText(step.title)+'</p>';
-  h+='<div class="ob-content"><div class="ob-visual" role="img" aria-label="'+escapeOnboardText(step.label)+'">'+renderOnboardVisual(step.visual)+'</div>';
+  h+='<div class="ob-content"><div class="ob-visual" role="group" aria-label="رسم توضيحي: '+escapeOnboardText(step.label)+'">'+renderOnboardVisual(step.visual)+'</div>';
   h+='<div class="ob-copy"><p class="ob-kicker"><span class="ob-kicker-icon" aria-hidden="true">'+escapeOnboardText(step.icon)+'</span>'+escapeOnboardText(step.label)+'</p><h2 class="ob-title" id="onboardStepTitle" tabindex="-1">'+escapeOnboardText(step.title)+'</h2><p class="ob-text">'+escapeOnboardText(step.text)+'</p>';
   h+='<ul class="ob-checklist">'+checks+'</ul><div class="ob-outcome"><strong>النتيجة:</strong> '+escapeOnboardText(step.outcome)+'</div>';
   h+='<div class="ob-tip"><span class="ob-tip-icon" aria-hidden="true">✦</span><span>'+escapeOnboardText(step.tip)+'</span></div></div></div>';
-  h+='<div class="ob-footer"><button class="ob-skip" type="button" onclick="closeOnboarding()">تخطي الجولة</button><div class="ob-nav">';
+  h+='<div class="ob-footer"><button class="ob-skip" type="button" onclick="closeOnboarding()">'+(onbStep===ONBOARD_STEPS.length-1?'إنهاء الجولة':'تخطي الجولة')+'</button><div class="ob-nav">';
   if(onbStep>0)h+='<button class="ob-btn ghost" type="button" onclick="moveOnboardStep(-1)">السابق</button>';
   else h+='<button class="ob-btn ghost" type="button" onclick="closeOnboarding()">إغلاق</button>';
-  if(onbStep<ONBOARD_STEPS.length-1)h+='<button class="ob-btn primary" type="button" onclick="moveOnboardStep(1)">التالي <span aria-hidden="true">←</span></button>';
+  if(onbStep<ONBOARD_STEPS.length-1)h+='<button class="ob-btn primary" type="button" onclick="moveOnboardStep(1)">'+(onbStep===0?'ابدأ الجولة':'التالي')+' <span aria-hidden="true">←</span></button>';
   else h+='<button class="ob-btn primary" type="button" onclick="closeOnboarding()">ابدأ استخدام المعرض <span aria-hidden="true">✓</span></button>';
   h+='</div></div></div>';
   box.innerHTML=h;
@@ -376,6 +397,11 @@ def apply_gallery_ux(html, deck):
     old_init = "if(!localStorage.getItem('anki_" + deck + "_onboarded'))showOnboarding();"
     new_init = "if(!isOnboardingCompleted())setTimeout(showOnboarding,80);"
     html = _replace_once(html, old_init, new_init, deck + " delayed first-visit tour")
+
+    launcher_html = '<button id="onboardTourLauncher" type="button" onclick="showOnboarding()" aria-label="إعادة فتح الجولة السريعة"><span aria-hidden="true">✦</span><span>الجولة السريعة</span></button>\n'
+    html, launcher_inserted = re.subn(r"</body\s*>", launcher_html + "</body>", html, count=1, flags=re.I)
+    if launcher_inserted != 1:
+        raise SystemExit(deck + " could not add the persistent quick-tour launcher")
 
     style_tag = '<style id="gallery-tour-redesign">\n' + TOUR_CSS + '\n</style>\n'
     html, inserted = re.subn(r"</head\s*>", style_tag + "</head>", html, count=1, flags=re.I)
