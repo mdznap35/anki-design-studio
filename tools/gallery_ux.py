@@ -230,6 +230,8 @@ function handleOnboardAction(action){
     var button = document.getElementById("exOpenBtn");
     if(button)button.click();
     else if(typeof openExport === "function")openExport();
+    var closeButton = document.querySelector("#exportOverlay .fs-close");
+    if(closeButton)onboardGuideReturnFocus = closeButton;
     onboardReviewOpened = true;
     renderOnboardStep();
     window.setTimeout(positionOnboardGuide,120);
@@ -293,6 +295,8 @@ document.addEventListener("click",function(event){
   if(onbStep === 5 && target.closest("#exOpenBtn")){
     window.setTimeout(function(){
       if(onboardGuideOpen && onbStep === 5){
+        var closeButton = document.querySelector("#exportOverlay .fs-close");
+        if(closeButton)onboardGuideReturnFocus = closeButton;
         onboardReviewOpened = true;
         renderOnboardStep();
         positionOnboardGuide();
@@ -302,7 +306,21 @@ document.addEventListener("click",function(event){
 });
 document.addEventListener("keydown",function(event){
   if(!onboardGuideOpen)return;
-  if(event.key === "Escape"){event.preventDefault();closeOnboarding();return;}
+  if(event.key === "Escape"){
+    var exportOverlay = document.getElementById("exportOverlay");
+    if(onbStep === 5 && exportOverlay && exportOverlay.classList.contains("on") && typeof closeExport === "function"){
+      event.preventDefault();
+      closeExport();
+      window.setTimeout(function(){
+        if(onboardGuideOpen && onboardGuideRoot){
+          var heading = onboardGuideRoot.querySelector("#onboardGuideTitle");
+          if(heading && typeof heading.focus === "function")heading.focus({preventScroll:true});
+        }
+      },100);
+      return;
+    }
+    event.preventDefault();closeOnboarding();return;
+  }
   var target = event.target;
   var typing = target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.tagName === "SELECT" || target.isContentEditable);
   if(typing || event.altKey || event.ctrlKey || event.metaKey)return;
@@ -320,6 +338,8 @@ if(typeof closeExport === "function" && !window.__ankiGuideWrappedCloseExport){
         var overlay = document.getElementById("exportOverlay");
         if(!overlay || !overlay.classList.contains("on")){
           onboardReviewOpened = false;
+          var opener = document.getElementById("exOpenBtn");
+          if(opener)onboardGuideReturnFocus = opener;
           renderOnboardStep();
           positionOnboardGuide();
         }
