@@ -42,7 +42,7 @@ TOUR_CSS = r"""
 #onboardGuideRoot .og-target-copy small{color:#94a3b8;font-size:.63rem}
 #onboardGuideRoot .og-target-copy strong{color:#e0f2fe;font-size:.76rem;font-weight:900}
 #onboardGuideRoot .og-note{margin-top:9px;color:#aebbd0;font-size:.7rem;line-height:1.75}
-#onboardGuideRoot .og-footer{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:15px;padding-top:13px;border-top:1px solid rgba(255,255,255,.09)}
+#onboardGuideRoot .og-footer{position:sticky;bottom:-13px;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:10px;margin:15px -13px -13px;padding:13px 13px 13px;border-top:1px solid rgba(255,255,255,.09);background:linear-gradient(180deg,rgba(8,12,25,.9),rgba(8,12,25,.995));backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
 #onboardGuideRoot .og-skip{border:0;background:none;color:#9ca3b8;font:inherit;font-size:.73rem;text-decoration:underline;text-underline-offset:4px;cursor:pointer}
 #onboardGuideRoot .og-skip:hover{color:#e2e8f0}
 #onboardGuideRoot .og-actions{display:flex;align-items:center;gap:8px}
