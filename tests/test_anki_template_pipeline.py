@@ -34,7 +34,8 @@ class TemplateFieldRegressionTests(unittest.TestCase):
         }
         with patch.object(tts, "_silence", side_effect=silence), patch.object(tts, "_concat_mp3", side_effect=concat):
             _fr, _ar, both = tts._build_clips(b"FR", b"AR", cfg)
-        self.assertEqual(base64.b64decode(both), b"S100|FR|S250|S400|AR|S150")
+        payload = both.split(",", 1)[1] if "," in both else both
+        self.assertEqual(base64.b64decode(payload), b"S100|FR|S250|S400|AR|S150")
 
 
 if __name__ == "__main__":
