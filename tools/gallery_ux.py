@@ -4,7 +4,12 @@ import re
 TOUR_CSS = r"""
 #onboardOverlay[hidden]{display:none!important}
 #onboardGuideRoot{position:fixed;inset:0;z-index:2147483000;pointer-events:none;direction:rtl;color:#f8fafc}
-#onboardGuideRoot .og-card{position:fixed;right:max(14px,env(safe-area-inset-right,0px));bottom:max(14px,env(safe-area-inset-bottom,0px));width:min(430px,calc(100vw - 28px));max-height:min(44dvh,390px);overflow:auto;overscroll-behavior:contain;padding:20px;border:1px solid rgba(167,139,250,.34);border-radius:22px;background:linear-gradient(145deg,rgba(17,21,38,.985),rgba(8,12,25,.99));box-shadow:0 24px 80px rgba(0,0,0,.48),0 0 0 1px rgba(255,255,255,.045) inset,0 0 36px rgba(99,102,241,.12);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);pointer-events:auto;scrollbar-width:thin;animation:ogEnter .24s cubic-bezier(.2,.8,.2,1) both}
+#onboardGuideRoot .og-backdrop{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+#onboardGuideRoot .og-card{position:fixed;left:12px;right:auto;top:12px;bottom:auto;width:min(430px,calc(100vw - 24px));max-height:min(54dvh,460px);overflow:auto;overscroll-behavior:contain;padding:20px;border:1px solid rgba(167,139,250,.34);border-radius:22px;background:linear-gradient(145deg,rgba(17,21,38,.985),rgba(8,12,25,.99));box-shadow:0 24px 80px rgba(0,0,0,.48),0 0 0 1px rgba(255,255,255,.045) inset,0 0 36px rgba(99,102,241,.12);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);pointer-events:auto;scrollbar-width:thin;z-index:1;animation:ogEnter .24s cubic-bezier(.2,.8,.2,1) both}
+#onboardGuideRoot .og-card:after{content:"";position:absolute;left:var(--og-arrow-x,50%);width:12px;height:12px;background:#111526;border:1px solid rgba(167,139,250,.34);transform:translateX(-50%) rotate(45deg);pointer-events:none}
+#onboardGuideRoot .og-card[data-placement="below"]:after{top:-7px;border-right:0;border-bottom:0}
+#onboardGuideRoot .og-card[data-placement="above"]:after{bottom:-7px;border-left:0;border-top:0}
+#onboardGuideRoot .og-card[data-placement="center"]:after{display:none}
 #onboardGuideRoot .og-card:before{content:"";position:absolute;inset:0 16% auto;height:1px;background:linear-gradient(90deg,transparent,#a78bfa,#67e8f9,transparent);pointer-events:none}
 @keyframes ogEnter{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 #onboardGuideRoot .og-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:15px}
@@ -42,7 +47,7 @@ TOUR_CSS = r"""
 #onboardGuideRoot .og-btn.ghost{background:rgba(255,255,255,.045);color:#dbeafe}
 body .og-spotlight{position:relative!important;z-index:2147482998!important;outline:3px solid #67e8f9!important;outline-offset:6px!important;border-radius:14px!important;box-shadow:0 0 0 9px rgba(34,211,238,.15),0 16px 48px rgba(0,0,0,.28)!important;transition:outline-color .18s,box-shadow .18s}
 @media(max-width:640px){
-#onboardGuideRoot .og-card{left:10px;right:10px;bottom:calc(env(safe-area-inset-bottom,0px) + 10px);width:auto;max-height:min(43dvh,350px);padding:16px;border-radius:19px}
+#onboardGuideRoot .og-card{width:min(420px,calc(100vw - 24px));max-height:min(54dvh,440px);padding:16px;border-radius:19px}
 #onboardGuideRoot .og-head{margin-bottom:11px}
 #onboardGuideRoot .og-brand-copy strong{font-size:.65rem}
 #onboardGuideRoot .og-brand-copy small{font-size:.6rem}
@@ -70,6 +75,10 @@ TOUR_JS = r"""
 var ONBOARD_DECK = "__DECK__";
 var ONBOARD_PRIMARY_LANGUAGE = ONBOARD_DECK === "fr9" ? "الفرنسية" : "الإنجليزية";
 var ONBOARD_STORAGE_KEY = "anki_" + ONBOARD_DECK + "_onboarded";
+var ONBOARD_SNOOZE_KEY = "anki_" + ONBOARD_DECK + "_onboarding_snoozed";
+var onboardOpenedBrowser = false;
+var onboardOpenedAudio = false;
+var onboardPositionFrame = 0;
 var ONBOARD_STEPS = [
   {id:"start",label:"ابدأ هنا",title:"من القالب إلى رزمة Anki — بخطوات واضحة",text:"هذه ليست نافذة شرح منفصلة. سنمشي داخل المعرض نفسه: افتح المكتبة، جرّب المعاينة، افهم التحديد، اضبط الصوت، ثم راجع إعدادات التصدير. لن تُنشأ أي رزمة أثناء الجولة.",target:".hero-cta-main",targetLabel:"زر «استعرض القوالب»",note:"ستبقى أدوات الصفحة قابلة للاستخدام، ويمكنك إغلاق الجولة أو إعادة فتحها متى شئت."},
   {id:"library",label:"المكتبة",title:"استكشف القوالب الحقيقية — لا صورًا تجريبية",text:"هذه المكتبة تضم 100 تصميم فعلي. استخدم التصنيفات لتقليل الخيارات، وتصفّح البطاقات، ثم اضغط تصميمًا لترى معاينته الحقيقية في الصفحة. اختيار بطاقة من المكتبة يبدّل المعاينة فقط؛ لا يضيف قالبًا إلى رُزمتك ولا ينشئ ملفًا.",target:"#gbGrid .gb-item",fallback:"#gbFilters",targetLabel:"بطاقة حقيقية من شبكة القوالب",note:"جرّب اختيار قالب من الشبكة؛ ستنتقل الجولة تلقائيًا إلى معاينته."},
@@ -89,7 +98,10 @@ function escapeOnboardText(value){
   return String(value == null ? "" : value).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
 }
 function isOnboardingCompleted(){
-  try{return localStorage.getItem(ONBOARD_STORAGE_KEY) === "1";}
+  try{
+    if(localStorage.getItem(ONBOARD_STORAGE_KEY) === "1")return true;
+  }catch(_e){}
+  try{return sessionStorage.getItem(ONBOARD_SNOOZE_KEY) === "1";}
   catch(_e){return false;}
 }
 function markOnboardingCompleted(){
@@ -134,13 +146,23 @@ function onboardEnsureRoot(){
 function onboardPrepareStep(index){
   var browser = document.getElementById("galleryBrowser");
   if(index === 1){
-    if(browser && !browser.classList.contains("open") && typeof openGalleryBrowser === "function")openGalleryBrowser();
-  }else if(browser && browser.classList.contains("open") && typeof closeGalleryBrowser === "function"){
+    if(browser && !browser.classList.contains("open") && typeof openGalleryBrowser === "function"){
+      openGalleryBrowser();
+      onboardOpenedBrowser = true;
+    }
+  }else if(onboardOpenedBrowser && browser && browser.classList.contains("open") && typeof closeGalleryBrowser === "function"){
     closeGalleryBrowser();
+    onboardOpenedBrowser = false;
   }
+  var audio = document.getElementById("gAudioPanelBody");
   if(index === 4){
-    var audio = document.getElementById("gAudioPanelBody");
-    if(audio && !audio.classList.contains("open") && typeof toggleAudioPanel === "function")toggleAudioPanel();
+    if(audio && !audio.classList.contains("open") && typeof toggleAudioPanel === "function"){
+      toggleAudioPanel();
+      onboardOpenedAudio = true;
+    }
+  }else if(onboardOpenedAudio && audio && audio.classList.contains("open") && typeof toggleAudioPanel === "function"){
+    toggleAudioPanel();
+    onboardOpenedAudio = false;
   }
 }
 function goToOnboardStep(index){
@@ -151,7 +173,25 @@ function goToOnboardStep(index){
   onboardReviewOpened = false;
   onboardPrepareStep(next);
   renderOnboardStep();
-  window.setTimeout(positionOnboardGuide,90);
+  window.setTimeout(scheduleOnboardPosition,90);
+}
+function onboardBackdropPath(target,width,height){
+  var outer = "M0 0H" + width + "V" + height + "H0Z";
+  if(!target || !target.isConnected)return outer;
+  var rect = target.getBoundingClientRect();
+  if(!rect.width || !rect.height)return outer;
+  var pad = 10;
+  var left = Math.max(0,rect.left-pad);
+  var top = Math.max(0,rect.top-pad);
+  var right = Math.min(width,rect.right+pad);
+  var bottom = Math.min(height,rect.bottom+pad);
+  var radius = Math.min(16,(right-left)/4,(bottom-top)/4);
+  var hole = "M" + (left+radius) + " " + top +
+    "H" + (right-radius) + "Q" + right + " " + top + " " + right + " " + (top+radius) +
+    "V" + (bottom-radius) + "Q" + right + " " + bottom + " " + (right-radius) + " " + bottom +
+    "H" + (left+radius) + "Q" + left + " " + bottom + " " + left + " " + (bottom-radius) +
+    "V" + (top+radius) + "Q" + left + " " + top + " " + (left+radius) + " " + top + "Z";
+  return outer + " " + hole;
 }
 function positionOnboardGuide(){
   if(!onboardGuideOpen || !onboardGuideRoot)return;
@@ -159,19 +199,63 @@ function positionOnboardGuide(){
   var step = ONBOARD_STEPS[onbStep];
   var target = onboardStepTarget(step);
   var card = onboardGuideRoot.querySelector(".og-card");
-  if(!card)return;
-  card.style.top = "auto";
-  card.style.bottom = "max(14px,env(safe-area-inset-bottom,0px))";
-  if(target){
+  var path = onboardGuideRoot.querySelector("#ogBackdropPath");
+  if(!card || !path)return;
+  var width = Math.max(320,document.documentElement.clientWidth || window.innerWidth || 320);
+  var height = Math.max(320,window.innerHeight || document.documentElement.clientHeight || 320);
+  var reduced = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  if(target && target.isConnected){
+    var initialRect = target.getBoundingClientRect();
+    if(initialRect.top < 76 || initialRect.bottom > height-76){
+      try{target.scrollIntoView({behavior:reduced ? "auto" : "smooth",block:"center",inline:"nearest"});}catch(_e){}
+    }
     onboardActiveTarget = target;
     target.classList.add("og-spotlight");
-    try{target.scrollIntoView({behavior:window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",block:"center",inline:"nearest"});}catch(_e){}
-    var rect = target.getBoundingClientRect();
-    if(rect.bottom > window.innerHeight * 0.54){
-      card.style.bottom = "auto";
-      card.style.top = "max(14px,env(safe-area-inset-top,0px))";
-    }
+  }else{
+    target = null;
   }
+  var rect = target ? target.getBoundingClientRect() : null;
+  path.setAttribute("d",onboardBackdropPath(target,width,height));
+  var margin = 12;
+  var gap = 18;
+  card.style.right = "auto";
+  card.style.bottom = "auto";
+  card.style.left = margin + "px";
+  card.style.top = margin + "px";
+  card.style.width = Math.min(width-24,width <= 640 ? 420 : 430) + "px";
+  card.style.maxHeight = Math.min(height*.54,460) + "px";
+  card.dataset.placement = "center";
+  if(!rect){
+    var centered = card.getBoundingClientRect();
+    card.style.left = Math.max(margin,(width-centered.width)/2) + "px";
+    card.style.top = Math.max(margin,(height-centered.height)/2) + "px";
+    return;
+  }
+  var measured = card.getBoundingClientRect();
+  var availableAbove = Math.max(0,rect.top-margin-gap);
+  var availableBelow = Math.max(0,height-rect.bottom-margin-gap);
+  var placeBelow = availableBelow >= measured.height || availableBelow >= availableAbove;
+  var available = placeBelow ? availableBelow : availableAbove;
+  var maxCardHeight = Math.max(190,Math.min(height*.68,available-8));
+  card.style.maxHeight = maxCardHeight + "px";
+  measured = card.getBoundingClientRect();
+  var top = placeBelow ? rect.bottom+gap : rect.top-measured.height-gap;
+  top = Math.max(margin,Math.min(height-measured.height-margin,top));
+  var left = rect.left + rect.width/2 - measured.width/2;
+  left = Math.max(margin,Math.min(width-measured.width-margin,left));
+  card.style.left = left + "px";
+  card.style.top = top + "px";
+  card.dataset.placement = placeBelow ? "below" : "above";
+  var arrowX = Math.max(22,Math.min(measured.width-22,rect.left+rect.width/2-left));
+  card.style.setProperty("--og-arrow-x",arrowX + "px");
+}
+function scheduleOnboardPosition(){
+  if(!onboardGuideOpen || onboardPositionFrame)return;
+  var request = window.requestAnimationFrame || function(callback){return window.setTimeout(callback,16);};
+  onboardPositionFrame = request(function(){
+    onboardPositionFrame = 0;
+    positionOnboardGuide();
+  });
 }
 function renderOnboardStep(){
   if(!onboardGuideOpen)return;
@@ -201,6 +285,7 @@ function renderOnboardStep(){
     (review ? "finish" : "review");
   var previous = onbStep > 0 ? '<button class="og-btn ghost" type="button" data-guide-action="previous">السابق</button>' : "";
   root.innerHTML =
+    '<svg class="og-backdrop" aria-hidden="true" focusable="false" viewBox="0 0 100 100" preserveAspectRatio="none"><path id="ogBackdropPath" fill="rgba(3,7,18,.68)" fill-rule="evenodd" d="M0 0H100V100H0Z"/></svg>' +
     '<section class="og-card" role="dialog" aria-modal="false" aria-labelledby="onboardGuideTitle" aria-describedby="onboardGuideText">' +
       '<div class="og-head"><div class="og-brand"><span class="og-mark" aria-hidden="true">A</span><span class="og-brand-copy"><strong>ANKI DESIGN STUDIO</strong><small>جولة داخل المعرض • ٦ محطات</small></span></div><button class="og-close" type="button" data-guide-action="close" aria-label="إغلاق الجولة">×</button></div>' +
       '<nav class="og-progress" aria-label="محطات الجولة">' + progress + '</nav>' +
@@ -209,13 +294,14 @@ function renderOnboardStep(){
       '<p class="og-text" id="onboardGuideText" aria-live="polite">' + escapeOnboardText(body) + '</p>' +
       '<div class="og-target"><span class="og-target-mark" aria-hidden="true">◎</span><span class="og-target-copy"><small>الأداة الفعلية على الصفحة</small><strong>' + escapeOnboardText(targetLabel) + '</strong></span></div>' +
       '<p class="og-note" id="onboardGuideNote" role="status" aria-live="polite">' + escapeOnboardText(note) + '</p>' +
-      '<div class="og-footer"><button class="og-skip" type="button" data-guide-action="close">إنهاء / تخطي</button><div class="og-actions">' + previous + '<button class="og-btn primary" type="button" data-guide-action="' + primaryAction + '">' + escapeOnboardText(primaryLabel) + '</button></div></div>' +
+      '<div class="og-footer"><button class="og-skip" type="button" data-guide-action="later">لاحقًا</button><div class="og-actions">' + previous + '<button class="og-btn primary" type="button" data-guide-action="' + primaryAction + '">' + escapeOnboardText(primaryLabel) + '</button></div></div>' +
     '</section>';
   var heading = root.querySelector("#onboardGuideTitle");
   if(heading && typeof heading.focus === "function")heading.focus({preventScroll:true});
 }
 function handleOnboardAction(action){
-  if(action === "close" || action === "finish"){closeOnboarding();return;}
+  if(action === "finish"){closeOnboarding(true);return;}
+  if(action === "close" || action === "later"){closeOnboarding(false);return;}
   if(action === "previous"){goToOnboardStep(onbStep-1);return;}
   if(action === "start"){goToOnboardStep(1);return;}
   if(action === "preview"){goToOnboardStep(2);return;}
@@ -234,7 +320,7 @@ function handleOnboardAction(action){
     if(closeButton)onboardGuideReturnFocus = closeButton;
     onboardReviewOpened = true;
     renderOnboardStep();
-    window.setTimeout(positionOnboardGuide,120);
+    window.setTimeout(scheduleOnboardPosition,120);
   }
 }
 function showOnboarding(){
@@ -242,20 +328,31 @@ function showOnboarding(){
   onboardGuideReturnFocus = document.activeElement;
   onboardGuideOpen = true;
   onboardReviewOpened = false;
+  onboardOpenedBrowser = false;
+  onboardOpenedAudio = false;
   var launcher = document.getElementById("onboardTourLauncher");
   if(launcher)launcher.hidden = true;
   onboardEnsureRoot();
   goToOnboardStep(0);
 }
-function closeOnboarding(){
+function closeOnboarding(completed){
   if(!onboardGuideOpen)return;
   onboardGuideOpen = false;
   onboardClearSpotlight();
   var browser = document.getElementById("galleryBrowser");
-  if(browser && browser.classList.contains("open") && typeof closeGalleryBrowser === "function")closeGalleryBrowser();
+  if(onboardOpenedBrowser && browser && browser.classList.contains("open") && typeof closeGalleryBrowser === "function")closeGalleryBrowser();
+  onboardOpenedBrowser = false;
+  var audio = document.getElementById("gAudioPanelBody");
+  if(onboardOpenedAudio && audio && audio.classList.contains("open") && typeof toggleAudioPanel === "function")toggleAudioPanel();
+  onboardOpenedAudio = false;
   if(onboardGuideRoot && onboardGuideRoot.parentNode)onboardGuideRoot.parentNode.removeChild(onboardGuideRoot);
   onboardGuideRoot = null;
-  markOnboardingCompleted();
+  if(completed){
+    markOnboardingCompleted();
+    try{sessionStorage.removeItem(ONBOARD_SNOOZE_KEY);}catch(_e){}
+  }else{
+    try{sessionStorage.setItem(ONBOARD_SNOOZE_KEY,"1");}catch(_e){}
+  }
   var launcher = document.getElementById("onboardTourLauncher");
   if(launcher)launcher.hidden = false;
   try{
@@ -299,7 +396,7 @@ document.addEventListener("click",function(event){
         if(closeButton)onboardGuideReturnFocus = closeButton;
         onboardReviewOpened = true;
         renderOnboardStep();
-        positionOnboardGuide();
+        scheduleOnboardPosition();
       }
     },120);
   }
@@ -327,7 +424,8 @@ document.addEventListener("keydown",function(event){
   if(event.key === "ArrowLeft" && onbStep < ONBOARD_STEPS.length-1){event.preventDefault();goToOnboardStep(onbStep+1);}
   else if(event.key === "ArrowRight" && onbStep > 0){event.preventDefault();goToOnboardStep(onbStep-1);}
 });
-window.addEventListener("resize",function(){if(onboardGuideOpen)positionOnboardGuide();});
+window.addEventListener("resize",scheduleOnboardPosition);
+window.addEventListener("scroll",scheduleOnboardPosition,true);
 var onboardOriginalCloseExport = null;
 if(typeof closeExport === "function" && !window.__ankiGuideWrappedCloseExport){
   onboardOriginalCloseExport = closeExport;
@@ -341,7 +439,7 @@ if(typeof closeExport === "function" && !window.__ankiGuideWrappedCloseExport){
           var opener = document.getElementById("exOpenBtn");
           if(opener)onboardGuideReturnFocus = opener;
           renderOnboardStep();
-          positionOnboardGuide();
+          scheduleOnboardPosition();
         }
       },80);
     }
@@ -401,7 +499,7 @@ def apply_gallery_ux(html, deck):
     html = html[:start] + tour_js + "\n\n" + html[end:]
 
     old_init = "if(!localStorage.getItem('anki_" + deck + "_onboarded'))showOnboarding();"
-    new_init = "if(!isOnboardingCompleted())setTimeout(showOnboarding,80);"
+    new_init = "if(!isOnboardingCompleted())setTimeout(showOnboarding,180);"
     html = _replace_once(html, old_init, new_init, deck + " delayed first-visit tour")
 
     launcher_html = '<button id="onboardTourLauncher" type="button" onclick="showOnboarding()" aria-label="إعادة فتح الجولة السريعة"><span aria-hidden="true">✦</span><span>الجولة السريعة</span></button>\n'
