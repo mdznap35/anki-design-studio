@@ -471,7 +471,9 @@ def _build_clips(fr_raw, ar_raw, cfg):
     fr_clip = _concat_mp3([fr_before, fr_raw, fr_after]) if fr_raw else b""
     ar_clip = _concat_mp3([ar_before, ar_raw, ar_after]) if ar_raw else b""
     if fr_raw and ar_raw:
-        both_raw = _concat_mp3([fr_before, fr_raw, fr_after, ar_raw, ar_after])
+        # The combined preview must contain both independently configurable
+        # boundaries: after the primary word and before the Arabic word.
+        both_raw = _concat_mp3([fr_before, fr_raw, fr_after, ar_before, ar_raw, ar_after])
     elif fr_raw:
         both_raw = fr_clip
     else:
