@@ -478,13 +478,14 @@ def apply_gallery_ux(html, deck):
     # The upstream gallery builder substitutes the per-deck audio-status URL
     # but omits its closing quote. Repair the exact generated token here,
     # without changing the protected builder or the French Bac source.
-    audio_status_bad = "fetch(apiBase()+'/api/audio_status?source=" + deck + ")"
-    audio_status_good = "fetch(apiBase()+'/api/audio_status?source=" + deck + "')"
+    audio_source = "tas9" if deck == "fr9" else deck
+    audio_status_bad = "fetch(apiBase()+'/api/audio_status?source=" + audio_source + ")"
+    audio_status_good = "fetch(apiBase()+'/api/audio_status?source=" + audio_source + "')"
     audio_status_count = html.count(audio_status_bad)
     if audio_status_count != 1:
         raise SystemExit(
-            deck + " expected one malformed generated audio-status URL, found "
-            + str(audio_status_count)
+            deck + " expected one malformed generated audio-status URL for "
+            + audio_source + ", found " + str(audio_status_count)
         )
     html = html.replace(audio_status_bad, audio_status_good, 1)
 
