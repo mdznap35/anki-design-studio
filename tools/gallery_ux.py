@@ -79,6 +79,7 @@ var ONBOARD_SNOOZE_KEY = "anki_" + ONBOARD_DECK + "_onboarding_snoozed";
 var onboardOpenedBrowser = false;
 var onboardOpenedAudio = false;
 var onboardPositionFrame = 0;
+var onboardScrollingTarget = false;
 var ONBOARD_STEPS = [
   {id:"start",label:"ابدأ هنا",title:"من القالب إلى رزمة Anki — بخطوات واضحة",text:"هذه ليست نافذة شرح منفصلة. سنمشي داخل المعرض نفسه: افتح المكتبة، جرّب المعاينة، افهم التحديد، اضبط الصوت، ثم راجع إعدادات التصدير. لن تُنشأ أي رزمة أثناء الجولة.",target:".hero-cta-main",targetLabel:"زر «استعرض القوالب»",note:"ستبقى أدوات الصفحة قابلة للاستخدام، ويمكنك إغلاق الجولة أو إعادة فتحها متى شئت."},
   {id:"library",label:"المكتبة",title:"استكشف القوالب الحقيقية — لا صورًا تجريبية",text:"هذه المكتبة تضم 100 تصميم فعلي. استخدم التصنيفات لتقليل الخيارات، وتصفّح البطاقات، ثم اضغط تصميمًا لترى معاينته الحقيقية في الصفحة. اختيار بطاقة من المكتبة يبدّل المعاينة فقط؛ لا يضيف قالبًا إلى رُزمتك ولا ينشئ ملفًا.",target:"#gbGrid .gb-item",fallback:"#gbFilters",targetLabel:"بطاقة حقيقية من شبكة القوالب",note:"جرّب اختيار قالب من الشبكة؛ ستنتقل الجولة تلقائيًا إلى معاينته."},
@@ -105,8 +106,8 @@ function isOnboardingCompleted(){
   catch(_e){return false;}
 }
 function markOnboardingCompleted(){
-  try{localStorage.setItem(ONBOARD_STORAGE_KEY,"1");}
-  catch(_e){}
+  try{localStorage.setItem(ONBOARD_STORAGE_KEY,"1");return true;}
+  catch(_e){return false;}
 }
 function onboardStepTarget(step){
   if(!step)return null;
@@ -200,14 +201,18 @@ function positionOnboardGuide(){
   var target = onboardStepTarget(step);
   var card = onboardGuideRoot.querySelector(".og-card");
   var path = onboardGuideRoot.querySelector("#ogBackdropPath");
-  if(!card || !path)return;
+  var backdrop = onboardGuideRoot.querySelector(".og-backdrop");
+  if(!card || !path || !backdrop)return;
   var width = Math.max(320,document.documentElement.clientWidth || window.innerWidth || 320);
   var height = Math.max(320,window.innerHeight || document.documentElement.clientHeight || 320);
   var reduced = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  backdrop.setAttribute("viewBox","0 0 " + width + " " + height);
   if(target && target.isConnected){
     var initialRect = target.getBoundingClientRect();
-    if(initialRect.top < 76 || initialRect.bottom > height-76){
+    if(!onboardScrollingTarget && (initialRect.top < 76 || initialRect.bottom > height-76)){
+      onboardScrollingTarget = true;
       try{target.scrollIntoView({behavior:reduced ? "auto" : "smooth",block:"center",inline:"nearest"});}catch(_e){}
+      window.setTimeout(function(){onboardScrollingTarget = false;scheduleOnboardPosition();},reduced ? 40 : 360);
     }
     onboardActiveTarget = target;
     target.classList.add("og-spotlight");
@@ -348,8 +353,11 @@ function closeOnboarding(completed){
   if(onboardGuideRoot && onboardGuideRoot.parentNode)onboardGuideRoot.parentNode.removeChild(onboardGuideRoot);
   onboardGuideRoot = null;
   if(completed){
-    markOnboardingCompleted();
-    try{sessionStorage.removeItem(ONBOARD_SNOOZE_KEY);}catch(_e){}
+    var persisted = markOnboardingCompleted();
+    try{
+      if(persisted)sessionStorage.removeItem(ONBOARD_SNOOZE_KEY);
+      else sessionStorage.setItem(ONBOARD_SNOOZE_KEY,"1");
+    }catch(_e){}
   }else{
     try{sessionStorage.setItem(ONBOARD_SNOOZE_KEY,"1");}catch(_e){}
   }
