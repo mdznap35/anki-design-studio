@@ -1,5 +1,8 @@
 import base64
+import json
+import re
 import unittest
+from pathlib import Path
 from unittest.mock import patch
 
 import tts
@@ -7,12 +10,19 @@ from app import _resolve_design_fields
 
 
 class TemplateFieldRegressionTests(unittest.TestCase):
-    def test_design_41_declares_every_referenced_field(self):
-        front = '<div>{{French}}</div><i data-audio="{{AudioFR}}"></i>'
-        back = '<div>{{Arabic}}</div><section>{{Extras}}</section>'
-        fields = _resolve_design_fields(None, front, back)
-        for field in ("French", "Arabic", "AudioFR", "Extras"):
-            self.assertIn(field, fields)
+    def test_real_design_41_declares_every_referenced_field(self):
+        source = Path("public/designs_100.js").read_text(encoding="utf-8")
+        payload = source.split("=", 1)[1].strip().rstrip(";")
+        designs = json.loads(payload)
+        design = next(item for item in designs if item.get("name") == "41")
+        fields = _resolve_design_fields(design.get("fields"), design.get("front", ""), design.get("back", ""))
+        referenced = set(re.findall(r'{{\\s*(?:[#\\^/]\\s*)?(?:text:|type:)?\\s*([^{}]+?)\\s*}}',
+                                    design.get("front", "") + design.get("back", "")))
+        for raw in referenced:
+            field = raw.strip()
+            if field not in {"FrontSide", "Tags", "Deck", "Subdeck", "Card", "CardFlag", "Note", "Template"}:
+                self.assertIn(field, fields, "design 41 references an undeclared field: " + field)
+        self.assertIn("Extras", fields)
 
     def test_declared_fields_are_preserved_without_duplicates(self):
         fields = _resolve_design_fields(["French", "Arabic", "Extras"], "{{French}}", "{{Extras}}")
