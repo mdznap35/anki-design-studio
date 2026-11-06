@@ -40,7 +40,7 @@ TOUR_CSS = r"""
 #onboardGuideRoot .og-btn:hover{transform:translateY(-1px)}
 #onboardGuideRoot .og-btn.primary{border-color:transparent;background:linear-gradient(110deg,#6d28d9,#4f46e5 58%,#0e7490);color:#fff;box-shadow:0 9px 22px rgba(79,70,229,.25)}
 #onboardGuideRoot .og-btn.ghost{background:rgba(255,255,255,.045);color:#dbeafe}
-#onboardGuideRoot .og-spotlight{position:relative!important;z-index:2147482998!important;outline:3px solid #67e8f9!important;outline-offset:6px!important;border-radius:14px!important;box-shadow:0 0 0 9px rgba(34,211,238,.15),0 16px 48px rgba(0,0,0,.28)!important;transition:outline-color .18s,box-shadow .18s}
+body .og-spotlight{position:relative!important;z-index:2147482998!important;outline:3px solid #67e8f9!important;outline-offset:6px!important;border-radius:14px!important;box-shadow:0 0 0 9px rgba(34,211,238,.15),0 16px 48px rgba(0,0,0,.28)!important;transition:outline-color .18s,box-shadow .18s}
 @media(max-width:640px){
 #onboardGuideRoot .og-card{left:10px;right:10px;bottom:calc(env(safe-area-inset-bottom,0px) + 10px);width:auto;max-height:min(43dvh,350px);padding:16px;border-radius:19px}
 #onboardGuideRoot .og-head{margin-bottom:11px}
