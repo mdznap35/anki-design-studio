@@ -411,6 +411,19 @@ def _unit_subdeck(deck_name, unit):
     return deck_name + '::' + u
 
 
+def _resolve_design_fields(declared, front, back):
+    """Return a complete, stable Anki field schema for a template payload."""
+    base = declared or tts.DEFAULT_FIELDS
+    special = {'FrontSide', 'Tags', 'Deck', 'Subdeck', 'Card', 'CardFlag', 'Note', 'Template'}
+    referenced = []
+    for html in (front or '', back or ''):
+        for raw in re.findall(r'{{\s*(?:[#\^/]\s*)?(?:text:|type:)?\s*([^{}]+?)\s*}}', html):
+            field = raw.strip()
+            if field and field not in special and field not in referenced:
+                referenced.append(field)
+    return list(dict.fromkeys(list(base) + referenced))
+
+
 def _build_deck_apkg(deck_name, designs, tts_cfg, include_audio, progress=None, word_source='bac', quick=False):
     """يبني الرزمة (توزيع عادل للكلمات على التصاميم + رزم فرعية حسب الوحدة) ويعيد مسار ملف apkg
     quick=True: صوت مخزّن فقط بدون توليد (سريع، بأقل إنترنت)"""
@@ -428,15 +441,7 @@ def _build_deck_apkg(deck_name, designs, tts_cfg, include_audio, progress=None, 
         # referenced Anki field and merge it with the standard schema; otherwise
         # templates such as design 41 reference {{Extras}} but the note type only
         # declares DEFAULT_FIELDS (which contains ExtraRows, not Extras).
-        declared = d.get('fields') or tts.DEFAULT_FIELDS
-        special = {'FrontSide', 'Tags', 'Deck', 'Subdeck', 'Card', 'CardFlag', 'Note', 'Template'}
-        referenced = []
-        for html in (front, back):
-            for raw in re.findall(r'{{\s*(?:[#\^/]\s*)?(?:text:|type:)?\s*([^{}]+?)\s*}}', html):
-                field = raw.strip()
-                if field and field not in special and field not in referenced:
-                    referenced.append(field)
-        fields = list(dict.fromkeys(list(declared) + referenced))
+        fields = _resolve_design_fields(d.get('fields'), front, back)
         mid = stable_id('MultiDesign_' + deck_name + '_' + str(i) + '_' + name)
         model = genanki.Model(
             mid, name,
