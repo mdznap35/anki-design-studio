@@ -475,6 +475,19 @@ def apply_gallery_ux(html, deck):
     if deck not in ("en9", "enlit", "ensci", "fr9"):
         raise SystemExit("UX polish is restricted to the four non-Bac galleries")
 
+    # The upstream gallery builder substitutes the per-deck audio-status URL
+    # but omits its closing quote. Repair the exact generated token here,
+    # without changing the protected builder or the French Bac source.
+    audio_status_bad = "fetch(apiBase()+'/api/audio_status?source=" + deck + ")"
+    audio_status_good = "fetch(apiBase()+'/api/audio_status?source=" + deck + "')"
+    audio_status_count = html.count(audio_status_bad)
+    if audio_status_count != 1:
+        raise SystemExit(
+            deck + " expected one malformed generated audio-status URL, found "
+            + str(audio_status_count)
+        )
+    html = html.replace(audio_status_bad, audio_status_good, 1)
+
     html = _replace_once(html, LOADER_CSS, "", deck + " loading CSS")
     html = _replace_once(html, LOADER_HTML, "", deck + " loading markup")
     html = _replace_once(html, FLIP_CSS, "", deck + " floating flip CSS")
