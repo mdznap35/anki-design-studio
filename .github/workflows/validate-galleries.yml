@@ -257,9 +257,9 @@ jobs:
             const source = html.slice(start, end);
             assert.doesNotThrow(() => new Function(source), deck + ": onboarding JavaScript syntax error");
             const geometryStart = source.indexOf("function onboardBackdropPath(");
-            const geometryEnd = source.indexOf("\\nfunction positionOnboardGuide", geometryStart);
+            const geometryEnd = source.indexOf("\nfunction positionOnboardGuide", geometryStart);
             assert(geometryStart >= 0 && geometryEnd > geometryStart, deck + ": spotlight geometry helper boundaries missing");
-            const backdropPath = new Function(source.slice(geometryStart, geometryEnd) + "\\nreturn onboardBackdropPath;")();
+            const backdropPath = new Function(source.slice(geometryStart, geometryEnd) + "\nreturn onboardBackdropPath;")();
             assert.equal(backdropPath(null, 360, 800), "M0 0H360V800H0Z", deck + ": full-screen backdrop geometry is incorrect");
             const target = {isConnected:true, getBoundingClientRect:() => ({left:50, top:100, right:150, bottom:160, width:100, height:60})};
             const cutout = backdropPath(target, 360, 800);
