@@ -16,7 +16,7 @@ class TemplateFieldRegressionTests(unittest.TestCase):
         designs = json.loads(payload)
         design = next(item for item in designs if item.get("name") == "41")
         fields = _resolve_design_fields(design.get("fields"), design.get("front", ""), design.get("back", ""))
-        referenced = set(re.findall(r'{{\\s*(?:[#\\^/]\\s*)?(?:text:|type:)?\\s*([^{}]+?)\\s*}}',
+        referenced = set(re.findall(r'{{\s*(?:[#\^/]\s*)?(?:text:|type:)?\s*([^{}]+?)\s*}}',
                                     design.get("front", "") + design.get("back", "")))
         for raw in referenced:
             field = raw.strip()
