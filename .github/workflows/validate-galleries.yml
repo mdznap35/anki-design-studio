@@ -165,7 +165,7 @@ jobs:
           expected_steps = ("start", "library", "preview", "selection", "audio", "export")
           required_targets = (
               ".hero-cta-main", "#gbFilters", "#gbGrid", "#gvShowAns",
-              "#gvSelectBtn", "#gTtsPreviewBtn", "#gAudioPanelBody", "#exOpenBtn",
+              "#gvSelectBtn", "#gTtsPreviewBtn", "#gAudioPanelBody", "#exOpenBtn", ".gb-item",
               "#exViewSummary",
           )
           for deck in ("en9", "enlit", "ensci", "fr9"):
@@ -204,6 +204,9 @@ jobs:
               assert 'aria-live="polite"' in tour_source, f"{deck}: guide announcements are missing"
               assert 'aria-current=' in tour_source and 'index === onbStep' in tour_source and '"step"' in tour_source and '"false"' in tour_source, f"{deck}: direct accessible step navigation is missing"
               assert "data-guide-step" in tour_source and "data-guide-action" in tour_source, f"{deck}: guide controls are not wired"
+              assert 'target.closest("#gbGrid .gb-item")' in tour_source, f"{deck}: real template selection does not advance the guide"
+              assert 'target.closest("#gvShowAns,.gv-flip")' in tour_source, f"{deck}: real card flip does not advance the guide"
+              assert 'target.closest("#exOpenBtn")' in tour_source, f"{deck}: export review action is not observed"
               assert "og-spotlight" in tour_source and "og-spotlight" in html, f"{deck}: real controls are not highlighted"
               assert "pointer-events:none" in html and "pointer-events:auto" in html, f"{deck}: coachmark should not block the gallery"
               assert "prefers-reduced-motion:reduce" in html and "safe-area-inset-bottom" in html, f"{deck}: mobile/reduced-motion support is missing"
