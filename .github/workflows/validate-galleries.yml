@@ -230,7 +230,11 @@ jobs:
               assert 'localStorage.setItem(ONBOARD_STORAGE_KEY,"1")' in tour_source and "catch(_e)" in tour_source, f"{deck}: safe per-gallery completion state is missing"
               assert "function renderOnboardVisual" not in tour_source, f"{deck}: fake static tour visuals remain"
               assert "confirmExport(" not in tour_source and "runGenerate(" not in tour_source and "downloadAPKG(" not in tour_source, f"{deck}: onboarding can trigger destructive export work"
-              assert 'id="onboardTourLauncher"' in html and 'onclick="showOnboarding()"' in html, f"{deck}: persistent tour relaunch control is missing"
+              launcher_marker = '<button id="onboardTourLauncher"'
+              launcher_index = html.rfind(launcher_marker)
+              last_script_close = html.lower().rfind("</script>")
+              last_body_close = html.lower().rfind("</body>")
+              assert html.count(launcher_marker) == 1 and last_script_close < launcher_index < last_body_close, f"{deck}: persistent tour launcher must be a single real document control after scripts"
               assert 'id="onboardOverlay"' in html and 'hidden aria-hidden="true"' in html, f"{deck}: obsolete modal tour must remain hidden"
               assert 'id="fsFlipBtn"' in html and 'id="gvShowAns"' in html, f"{deck}: actual preview flip controls are missing"
               assert 'id="loadingMsg"' not in html and "جاري تحميل القوالب..." not in html, f"{deck}: blocking loader remains"
@@ -541,31 +545,37 @@ jobs:
                   const page = await context.newPage();
                   const pageErrors = [];
                   let downloads = 0;
-                  page.on("pageerror", error => pageErrors.push(error.message));
+                  page.on("pageerror", error => {
+                    pageErrors.push(error.message);
+                    console.error("BROWSER PAGE ERROR " + deck + "/" + viewport.name + ": " + error.message);
+                  });
+                  page.on("console", message => {
+                    if (message.type() === "error") console.error("BROWSER CONSOLE ERROR " + deck + "/" + viewport.name + ": " + message.text());
+                  });
                   page.on("download", () => downloads++);
 
                   await page.goto("http://127.0.0.1:4173/" + deck + ".html", { waitUntil: "domcontentloaded" });
-                  await page.waitForSelector("#onboardGuideRoot .og-card", { timeout: 20000 });
+                  try {
+                    await page.waitForSelector("#onboardGuideRoot .og-card", { timeout: 20000 });
+                  } catch (error) {
+                    const diagnostics = await page.evaluate(() => ({
+                      title: document.title,
+                      url: location.href,
+                      bodyText: (document.body && document.body.innerText || "").slice(0, 500),
+                      launcherCount: document.querySelectorAll("#onboardTourLauncher").length,
+                      initAppType: typeof initApp,
+                      showOnboardingType: typeof showOnboarding,
+                      onboardState: typeof onboardGuideOpen === "undefined" ? "undefined" : String(onboardGuideOpen),
+                      scripts: Array.from(document.scripts).map(script => ({ src: script.src, type: script.type, length: script.textContent.length })).slice(-8)
+                    }));
+                    throw new Error("Tour did not mount for " + deck + "/" + viewport.name + ": " + JSON.stringify(diagnostics) + "; " + error.message);
+                  }
 
                   const steps = [];
                   for (let index = 0; index < 6; index++) {
                     if (index > 0) {
                       await page.locator('[data-guide-step="' + index + '"]').click();
                       await waitForStep(page, index);
-                    }
-
-                    if (viewport.exerciseControls && index === 1) {
-                      await page.locator(".gbGrid .gb-item").first().click({ timeout: 10000 });
-                      await page.waitForFunction(() => window.onbStep === 2, null, { timeout: 10000 });
-                      await waitForStep(page, 2);
-                      index = 2;
-                    } else if (viewport.exerciseControls && index === 2) {
-                      await page.locator("#gvShowAns").click({ timeout: 10000 });
-                      await page.waitForFunction(() => window.onbStep === 3, null, { timeout: 10000 });
-                      await waitForStep(page, 3);
-                      index = 3;
-                      await page.locator("#gvSelectBtn").click({ timeout: 10000 });
-                      await page.waitForTimeout(100);
                     }
 
                     const state = await inspectStep(page, deck, viewport, index);
@@ -577,6 +587,24 @@ jobs:
                   }
 
                   if (viewport.exerciseControls) {
+                    await page.locator('[data-guide-step="1"]').click();
+                    await waitForStep(page, 1);
+                    await page.locator(".gbGrid .gb-item").first().click({ timeout: 10000 });
+                    await page.waitForFunction(() => window.onbStep === 2, null, { timeout: 10000 });
+                    await waitForStep(page, 2);
+                    await inspectStep(page, deck, viewport, 2);
+
+                    await page.locator("#gvShowAns").click({ timeout: 10000 });
+                    await page.waitForFunction(() => window.onbStep === 3, null, { timeout: 10000 });
+                    await waitForStep(page, 3);
+                    await page.locator("#gvSelectBtn").click({ timeout: 10000 });
+                    await page.waitForFunction(() => {
+                      const note = document.getElementById("onboardGuideNote");
+                      return note && /تم تحديث الاختيار فعليًا|أُزيل تحديد القالب الحالي/.test(note.textContent);
+                    }, null, { timeout: 10000 });
+
+                    await page.locator('[data-guide-step="5"]').click();
+                    await waitForStep(page, 5);
                     await page.locator('[data-guide-action="review"]').click();
                     await page.waitForFunction(() => {
                       const overlay = document.getElementById("exportOverlay");
