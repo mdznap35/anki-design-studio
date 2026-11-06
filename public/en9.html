@@ -122,13 +122,6 @@ img,iframe{border:0}
 .ic-btn:active{transform:scale(.94)}
 .ha-btn,.ver{display:none}
 
-/* ============================================================
-   LOADING
-   ============================================================ */
-#loadingMsg{position:fixed;inset:0;z-index:90;display:grid;place-content:center;text-align:center;
-  background:var(--bg)}
-#loadBar{background:var(--ac)}
-#loadPct{color:var(--tx3)}
 
 /* ============================================================
    TABS + SECTIONS
@@ -229,11 +222,6 @@ img,iframe{border:0}
 .gv-arrow:active{transform:translateY(-50%) scale(.92)}
 .gv-next{left:14px}
 .gv-prev{right:14px}
-.gv-fabs{position:absolute;top:14px;left:14px;z-index:5;display:flex;flex-direction:column;gap:8px}
-.gv-fab{position:absolute;top:14px;left:14px;width:42px;height:42px;border-radius:2px;font-size:1.1rem;display:grid;place-items:center;
-  background:var(--bg-1);border:1px solid var(--bd-strong);color:var(--tx);transition:var(--t-f);z-index:5}
-.gv-fab.gv-flip{top:64px}
-.gv-fab:hover{border-color:var(--ac);color:var(--ac)}
 .gv-fav.on{background:var(--ac);color:#fff;border-color:var(--ac)}
 .gv-info{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);z-index:5;
   font-family:var(--font-mono);font-weight:500;font-size:.8rem;color:var(--tx);
@@ -368,17 +356,6 @@ button .ic, .btn .ic, a .ic{margin-left:.35em}
 .onboard-overlay,.whatsnew-overlay{background:rgba(14,14,12,.62)}
 .onboard-box,.whatsnew-box{width:min(640px,94vw);max-height:88vh;overflow:auto;background:var(--bg-1);
   border:1px solid var(--bd-strong);border-radius:6px;padding:26px;animation:pop .3s ease both}
-#onboardOverlay.onboard-overlay{background:radial-gradient(120% 100% at 50% 0%,rgba(139,92,246,.22),transparent 60%),linear-gradient(180deg,#14111d,#0b0a12)}
-#onboardOverlay .onboard-box{width:100vw;max-width:100vw;height:100dvh;max-height:100dvh;border:0;border-radius:0;background:transparent;animation:none;display:flex;align-items:center;justify-content:center;padding:24px}
-#onboardOverlay .ob-full{width:100%;max-width:620px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px}
-#onboardOverlay .ob-medal{display:grid;place-items:center;width:74px;height:74px;border-radius:50%;font-size:1.7rem;font-weight:900;color:#fff;background:linear-gradient(135deg,#7c3aed,#8b5cf6 50%,#0ea5e9);box-shadow:0 18px 44px rgba(124,58,237,.5);margin-bottom:14px}
-#onboardOverlay .ob-title{font-size:clamp(1.5rem,4.5vw,2.3rem);font-weight:900;font-family:var(--font-head);line-height:1.5;margin:0 0 8px;background:linear-gradient(115deg,#e9e2ff,#a78bfa 55%,#67e8f9);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-#onboardOverlay .ob-text{font-size:1rem;color:var(--tx2);line-height:2;max-width:540px;margin:0 0 14px}
-#onboardOverlay .ob-nav{display:flex;gap:12px;justify-content:center;margin-top:14px;flex-wrap:wrap}
-#onboardOverlay .ob-btn{padding:12px 40px;font-size:.9em}
-#onboardOverlay .ob-skip{margin-top:16px}
-#onboardOverlay .ob-skip button{background:none;border:none;color:var(--tx3);text-decoration:underline;cursor:pointer;font-size:.8em}
-#onboardOverlay .onboard-steps{justify-content:center}
 .help-overlay{background:rgba(14,14,12,.62)}
 .help-overlay>div,.help-overlay .panel{width:min(720px,94vw);max-height:88vh;overflow:auto;background:var(--bg-1);
   border:1px solid var(--bd-strong);border-radius:6px;padding:26px;animation:pop .3s ease both}
@@ -536,7 +513,7 @@ html{scroll-behavior:smooth}
 .gv-cardwrap:hover .gv-frame{box-shadow:0 26px 70px rgba(139,92,246,.35)}
 .btn:active,.gv-act:active{transform:scale(.97)}
 .gv-chip button:focus-visible{outline:2px solid var(--ac);outline-offset:3px}
-.gv-fab{font-size:1.3rem}
+
 
 /* ===== Full-screen gallery browser ===== */
 .gallery-browser{position:fixed;inset:0;z-index:var(--z-overlay);display:none;flex-direction:column;--gb-ac:var(--ac);background:
@@ -577,13 +554,6 @@ html{scroll-behavior:smooth}
 .gb-item:hover .gb-img{transform:scale(1.08);filter:saturate(1.08)}
 .gb-sk{position:absolute;inset:0;z-index:0;background:linear-gradient(100deg,#16131f 30%,#241d36 50%,#16131f 70%);background-size:200% 100%;animation:gbSk 1.2s linear infinite}
 @keyframes gbSk{from{background-position:200% 0}to{background-position:-200% 0}}
-#gbGrid .gb-img{object-fit:contain!important;object-position:center!important;}
-#gbGrid .gb-item,#gbGrid .gb-item *{animation:none!important;transition:none!important;}
-#gbGrid .gb-item:hover{transform:none!important;}
-#gbGrid .gb-item:hover .gb-img{transform:none!important;filter:none!important;}
-#gbGrid .gb-sk{animation:none!important;background:#171421!important;background-image:none!important;}
-#gbGrid .gb-img-fallback{display:grid;place-items:center;aspect-ratio:22/45;min-height:180px;padding:12px;text-align:center;color:var(--tx);background:#171421;font-weight:700;}
-@media(prefers-reduced-motion:reduce){#gbGrid *{animation:none!important;transition:none!important;scroll-behavior:auto!important;}}
 .gb-num{position:absolute;top:10px;left:10px;z-index:3;background:linear-gradient(135deg,var(--card-ac,var(--ac)),var(--ac3));color:#fff;font-size:.72rem;font-weight:800;padding:3px 11px;border-radius:20px;box-shadow:0 6px 16px rgba(0,0,0,.4);backdrop-filter:blur(4px);transition:transform .25s,box-shadow .25s}
 .gb-item:hover .gb-num{transform:translateY(-2px) scale(1.08)}
 .gb-ov{position:absolute;left:0;right:0;bottom:0;z-index:4;display:flex;flex-direction:column;gap:2px;padding:26px 14px 12px;background:linear-gradient(0deg,rgba(8,6,14,.92),rgba(8,6,14,.5) 55%,transparent);opacity:0;transform:translateY(8px);transition:opacity .25s ease,transform .25s ease;pointer-events:none}
@@ -659,8 +629,6 @@ body,body *{transition:background-color .25s ease,color .25s ease,border-color .
 .gv-act.primary:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(139,92,246,.45)}
 /* 16) إطار المعاينة بتوهّج بنفسجي */
 .gv-frame{box-shadow:0 30px 80px rgba(0,0,0,.55),0 0 0 1px rgba(139,92,246,.25) inset,0 0 40px rgba(139,92,246,.12)}
-/* 17) أزرار عائمة بتدرّج عند المرور */
-.gv-fab:hover{background:linear-gradient(135deg,var(--ac),var(--ac3));color:#fff;border-color:transparent;transform:scale(1.06)}
 /* 18) تحسين لوحة التنزيل */
 .dl-c{background:linear-gradient(180deg,rgba(255,255,255,.03),transparent);border:1px solid var(--bd-strong);border-radius:18px;padding:24px}
 .dl-btn{font-size:1rem;padding:14px 22px}
@@ -750,6 +718,82 @@ a:not(.btn):hover{color:var(--ac)}
 </style>
 
 <link rel="canonical" href="https://anki-design-studio.onrender.com/en9">
+<style id="gallery-tour-redesign">
+
+#onboardOverlay[hidden]{display:none!important}
+#onboardTourLauncher{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:2147483001;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:10px 16px;border:1px solid rgba(196,181,253,.34);border-radius:999px;background:linear-gradient(110deg,#6d28d9,#4f46e5 58%,#0e7490);color:#fff;font:inherit;font-size:.78rem;font-weight:900;box-shadow:0 12px 30px rgba(30,27,75,.38),0 0 0 1px rgba(255,255,255,.06) inset;cursor:pointer;pointer-events:auto;transition:transform .18s,box-shadow .18s,filter .18s}
+#onboardTourLauncher[hidden]{display:none!important}
+#onboardTourLauncher:hover{transform:translateY(-2px);filter:brightness(1.08);box-shadow:0 16px 36px rgba(30,27,75,.48)}
+#onboardTourLauncher:focus-visible{outline:3px solid #67e8f9;outline-offset:4px}
+@media(max-width:640px){#onboardTourLauncher{right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));min-height:44px;padding:9px 13px;font-size:.72rem}}
+#onboardGuideRoot{position:fixed;inset:0;z-index:2147483000;pointer-events:none;direction:rtl;color:#f8fafc}
+#onboardGuideRoot .og-backdrop{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+#onboardGuideRoot .og-card{position:fixed;left:12px;right:auto;top:12px;bottom:auto;width:min(430px,calc(100vw - 24px));max-height:min(54dvh,460px);overflow:auto;overscroll-behavior:contain;padding:20px;border:1px solid rgba(167,139,250,.34);border-radius:22px;background:linear-gradient(145deg,rgba(17,21,38,.985),rgba(8,12,25,.99));box-shadow:0 24px 80px rgba(0,0,0,.48),0 0 0 1px rgba(255,255,255,.045) inset,0 0 36px rgba(99,102,241,.12);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);pointer-events:auto;scrollbar-width:thin;z-index:1;animation:ogEnter .24s cubic-bezier(.2,.8,.2,1) both}
+#onboardGuideRoot .og-card:after{content:"";position:absolute;left:var(--og-arrow-x,50%);width:12px;height:12px;background:#111526;border:1px solid rgba(167,139,250,.34);transform:translateX(-50%) rotate(45deg);pointer-events:none}
+#onboardGuideRoot .og-card[data-placement="below"]:after{top:-7px;border-right:0;border-bottom:0}
+#onboardGuideRoot .og-card[data-placement="above"]:after{bottom:-7px;border-left:0;border-top:0}
+#onboardGuideRoot .og-card[data-placement="center"]:after{display:none}
+#onboardGuideRoot .og-card:before{content:"";position:absolute;inset:0 16% auto;height:1px;background:linear-gradient(90deg,transparent,#a78bfa,#67e8f9,transparent);pointer-events:none}
+@keyframes ogEnter{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+#onboardGuideRoot .og-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:15px}
+#onboardGuideRoot .og-brand{display:flex;align-items:center;gap:9px;min-width:0}
+#onboardGuideRoot .og-mark{display:grid;place-items:center;flex:0 0 auto;width:33px;height:33px;border:1px solid rgba(167,139,250,.36);border-radius:11px;background:linear-gradient(135deg,#6d28d9,#0e7490);font-size:.88rem;font-weight:950;box-shadow:0 7px 18px rgba(79,70,229,.2)}
+#onboardGuideRoot .og-brand-copy{display:grid;gap:2px;min-width:0}
+#onboardGuideRoot .og-brand-copy strong{color:#e9e6ff;font-size:.7rem;font-weight:950;letter-spacing:.09em}
+#onboardGuideRoot .og-brand-copy small{color:#9ca3b8;font-size:.65rem}
+#onboardGuideRoot .og-close{display:grid;place-items:center;flex:0 0 auto;width:36px;height:36px;border:1px solid rgba(255,255,255,.12);border-radius:11px;background:rgba(255,255,255,.045);color:#dbe3f3;font-size:1.15rem;cursor:pointer}
+#onboardGuideRoot .og-close:hover{background:rgba(248,113,113,.14);border-color:rgba(248,113,113,.4)}
+#onboardGuideRoot .og-progress{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;margin:0 0 14px}
+#onboardGuideRoot .og-progress button{display:block;min-width:0;padding:7px 0;border:0;background:transparent;cursor:pointer}
+#onboardGuideRoot .og-progress button span{display:block;height:5px;border-radius:99px;background:rgba(255,255,255,.13);transition:background .2s,box-shadow .2s}
+#onboardGuideRoot .og-progress button.done span{background:linear-gradient(90deg,#8b5cf6,#22d3ee)}
+#onboardGuideRoot .og-progress button[aria-current="step"] span{background:linear-gradient(90deg,#8b5cf6,#22d3ee);box-shadow:0 0 0 2px rgba(103,232,249,.22),0 0 14px rgba(34,211,238,.2)}
+#onboardGuideRoot .og-progress button:focus-visible,#onboardGuideRoot button:focus-visible{outline:3px solid #67e8f9;outline-offset:3px;border-radius:7px}
+#onboardGuideRoot .og-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+#onboardGuideRoot .og-step-label{color:#67e8f9;font-size:.72rem;font-weight:950}
+#onboardGuideRoot .og-count{color:#9ca3b8;font-size:.69rem;font-variant-numeric:tabular-nums}
+#onboardGuideRoot .og-title{margin:0 0 9px;color:#fff;font-family:var(--font-head,inherit);font-size:clamp(1.13rem,2.5vw,1.42rem);font-weight:950;line-height:1.5}
+#onboardGuideRoot .og-text{margin:0;color:#d0d6e5;font-size:.84rem;line-height:1.9}
+#onboardGuideRoot .og-target{display:flex;align-items:center;gap:10px;margin-top:13px;padding:10px 12px;border:1px solid rgba(103,232,249,.18);border-radius:13px;background:rgba(8,145,178,.09)}
+#onboardGuideRoot .og-target-mark{display:grid;place-items:center;flex:0 0 auto;width:27px;height:27px;border-radius:9px;background:rgba(34,211,238,.12);color:#67e8f9;font-weight:950}
+#onboardGuideRoot .og-target-copy{display:grid;gap:2px;min-width:0}
+#onboardGuideRoot .og-target-copy small{color:#94a3b8;font-size:.63rem}
+#onboardGuideRoot .og-target-copy strong{color:#e0f2fe;font-size:.76rem;font-weight:900}
+#onboardGuideRoot .og-note{margin-top:9px;color:#aebbd0;font-size:.7rem;line-height:1.75}
+#onboardGuideRoot .og-footer{position:sticky;bottom:-13px;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:10px;margin:15px -13px -13px;padding:13px 13px 13px;border-top:1px solid rgba(255,255,255,.09);background:linear-gradient(180deg,rgba(8,12,25,.9),rgba(8,12,25,.995));backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+#onboardGuideRoot .og-skip{border:0;background:none;color:#9ca3b8;font:inherit;font-size:.73rem;text-decoration:underline;text-underline-offset:4px;cursor:pointer}
+#onboardGuideRoot .og-skip:hover{color:#e2e8f0}
+#onboardGuideRoot .og-actions{display:flex;align-items:center;gap:8px}
+#onboardGuideRoot .og-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;padding:9px 15px;border:1px solid rgba(255,255,255,.13);border-radius:12px;font:inherit;font-size:.77rem;font-weight:900;cursor:pointer;transition:transform .16s,box-shadow .16s,background .16s}
+#onboardGuideRoot .og-btn:hover{transform:translateY(-1px)}
+#onboardGuideRoot .og-btn.primary{border-color:transparent;background:linear-gradient(110deg,#6d28d9,#4f46e5 58%,#0e7490);color:#fff;box-shadow:0 9px 22px rgba(79,70,229,.25)}
+#onboardGuideRoot .og-btn.ghost{background:rgba(255,255,255,.045);color:#dbeafe}
+body .og-spotlight{position:relative!important;z-index:2147482998!important;outline:3px solid #67e8f9!important;outline-offset:6px!important;border-radius:14px!important;box-shadow:0 0 0 9px rgba(34,211,238,.15),0 16px 48px rgba(0,0,0,.28)!important;transition:outline-color .18s,box-shadow .18s}
+@media(max-width:640px){
+#onboardGuideRoot .og-card{width:min(420px,calc(100vw - 24px));max-height:min(54dvh,440px);padding:16px;border-radius:19px}
+#onboardGuideRoot .og-head{margin-bottom:11px}
+#onboardGuideRoot .og-brand-copy strong{font-size:.65rem}
+#onboardGuideRoot .og-brand-copy small{font-size:.6rem}
+#onboardGuideRoot .og-meta{margin-bottom:6px}
+#onboardGuideRoot .og-title{font-size:1.08rem;margin-bottom:7px}
+#onboardGuideRoot .og-text{font-size:.77rem;line-height:1.8}
+#onboardGuideRoot .og-target{margin-top:10px;padding:8px 10px}
+#onboardGuideRoot .og-note{font-size:.66rem}
+#onboardGuideRoot .og-footer{margin-top:11px;padding-top:10px}
+#onboardGuideRoot .og-btn{min-height:40px;padding:8px 11px;font-size:.72rem}
+}
+@media(max-width:360px){
+#onboardGuideRoot .og-card{padding:13px}
+#onboardGuideRoot .og-brand-copy small{display:none}
+#onboardGuideRoot .og-title{font-size:1rem}
+#onboardGuideRoot .og-text{font-size:.73rem}
+#onboardGuideRoot .og-actions{gap:5px}
+}
+@media(prefers-reduced-motion:reduce){
+#onboardGuideRoot *,#onboardGuideRoot *:before,#onboardGuideRoot *:after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+}
+
+</style>
 </head>
 <body>
 <div class="scroll-prog" id="scrollProg" aria-hidden="true"></div>
@@ -773,13 +817,6 @@ a:not(.btn):hover{color:var(--ac)}
   </div>
 </header>
 
-<div id="loadingMsg">
-  <div style="font-family:var(--font-mono);font-size:.8em;letter-spacing:1px;color:var(--tx2);margin-bottom:12px;text-transform:uppercase">جاري تحميل القوالب...</div>
-  <div style="width:240px;height:4px;background:var(--s3);border:1px solid var(--bd-strong);border-radius:0;margin:0 auto;overflow:hidden">
-    <div id="loadBar" style="width:0%;height:100%;border-radius:0;transition:width .3s"></div>
-  </div>
-  <div id="loadPct" style="font-family:var(--font-mono);font-size:.62em;color:var(--tx3);margin-top:8px">0%</div>
-</div>
 
 <div id="sec-gal" class="sec on">
   <section class="hero hero--center reveal">
@@ -845,7 +882,7 @@ a:not(.btn):hover{color:var(--ac)}
         </div>
       </div>
       <div class="studio-gaps">
-        <div><label for="gTtsGapFrBefore" class="aa-lb">صمت قبل الإنجليزي</label><input class="tx" id="gTtsGapFrBefore" data-pid="ttsGapFrBefore" type="number" min="0" max="5000" step="50" value="0" onchange="saveVoiceSel(this)"></div>
+        <div><label for="gTtsGapFrBefore" class="aa-lb">صمت قبل الفرنسي</label><input class="tx" id="gTtsGapFrBefore" data-pid="ttsGapFrBefore" type="number" min="0" max="5000" step="50" value="0" onchange="saveVoiceSel(this)"></div>
         <div><label for="gTtsGapFrAfter" class="aa-lb">الفاصل بين الكلمتين</label><input class="tx" id="gTtsGapFrAfter" data-pid="ttsGapFrAfter" type="number" min="0" max="5000" step="50" value="0" onchange="saveVoiceSel(this)"></div>
         <div><label for="gTtsGapArBefore" class="aa-lb">صمت قبل العربي</label><input class="tx" id="gTtsGapArBefore" data-pid="ttsGapArBefore" type="number" min="0" max="5000" step="50" value="0" onchange="saveVoiceSel(this)"></div>
         <div><label for="gTtsGapArAfter" class="aa-lb">صمت بعد العربي</label><input class="tx" id="gTtsGapArAfter" data-pid="ttsGapArAfter" type="number" min="0" max="5000" step="50" value="0" onchange="saveVoiceSel(this)"></div>
@@ -957,7 +994,7 @@ a:not(.btn):hover{color:var(--ac)}
     <div class="gb-grid" id="gbGrid"></div>
     <div class="gb-toast" id="gbToast" role="status" aria-live="polite"></div>
   </div>
-<dialog class="onboard-overlay" id="onboardOverlay" style="display:none">
+<dialog class="onboard-overlay" id="onboardOverlay" hidden aria-hidden="true">
   <div class="onboard-box" id="onboardBox"></div>
 </dialog>
 <dialog class="whatsnew-overlay" id="whatsNewOverlay" style="display:none">
@@ -976,7 +1013,7 @@ a:not(.btn):hover{color:var(--ac)}
        <p class="sb-desc">ستجد هنا إجابات مختصرة عن القوالب، والصوت، والتصدير، والاستيراد، واستخدام الرزمة بعد تنزيلها.</p>
      </div>
      <div class="faq">
-      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false"><span>ما الذي أحصل عليه عند التصدير؟</span><span class="faq-arr">▾</span></button><div class="faq-a"><p>تحصل على رزمة Anki بصيغة APKG تحتوي على البطاقات بالقوالب التي اخترتها، مع الصوت الإنجليزي والعربي وفق إعداداتك، عند تفعيل تضمين الصوت.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false"><span>ما الذي أحصل عليه عند التصدير؟</span><span class="faq-arr">▾</span></button><div class="faq-a"><p>تحصل على رزمة Anki بصيغة APKG تحتوي على البطاقات بالقوالب التي اخترتها، مع الصوت الفرنسي والعربي وفق إعداداتك، عند تفعيل تضمين الصوت.</p></div></div>
       <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false"><span>هل أستطيع اختيار أكثر من قالب؟</span><span class="faq-arr">▾</span></button><div class="faq-a"><p>نعم. يمكنك اختيار قالب واحد أو عدة قوالب، وستتوزع البطاقات بينها تلقائيًا عند إنشاء الرزمة.</p></div></div>
       <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false"><span>كيف تتوزع البطاقات عند اختيار عدة قوالب؟</span><span class="faq-arr">▾</span></button><div class="faq-a"><p>تتوزع البطاقات بالتناوب على القوالب التي اخترتها. تبدأ البطاقة الأولى بالقالب الأول، ثم الثانية بالقالب الثاني، وهكذا بالتتابع حتى تكتمل الرزمة.</p></div></div>
       <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false"><span>هل أستطيع تغيير إعدادات الصوت قبل التصدير؟</span><span class="faq-arr">▾</span></button><div class="faq-a"><p>نعم. يمكنك اختيار الصوت وتعديل السرعة والنغمة والفواصل الزمنية والاستماع إلى المعاينة قبل بدء التصدير.</p></div></div>
@@ -1078,7 +1115,6 @@ a:not(.btn):hover{color:var(--ac)}
   function gbToast(msg){var el=document.getElementById('gbToast');if(!el)return;el.textContent=msg;el.classList.add('show');clearTimeout(gbToastT);gbToastT=setTimeout(function(){el.classList.remove('show');},2200);}
 
   function thumbDoc(t){try{var d=buildPreviewDoc(t);return d.replace(/<script[\s\S]*?<\/script>/gi,'');}catch(e){return '<html><body style="margin:0;background:#14121f"></body></html>';}}
-  window.__GALLERY_THUMB_DOC__=thumbDoc;
   function renderGalleryBrowser(){
     var grid=document.getElementById('gbGrid');if(!grid)return;
     var list=gvList||[];
@@ -1090,25 +1126,14 @@ a:not(.btn):hover{color:var(--ac)}
       it.setAttribute('role','button');it.setAttribute('tabindex','0');it.setAttribute('title','معاينة القالب');
       var num=(t.nm||'').replace(/^0+/,'')||(i+1);
       var ac=gbAccentOf(i);if(ac)it.style.setProperty('--card-ac',ac);
-      var img='/gallery_previews/'+DECK_ID+'/'+('000'+(i+1)).slice(-3)+'.webp';
-      it.innerHTML='<span class="gb-sk"></span><span class="gb-num">'+num+'</span><img class="gb-img" data-loading="1" loading="lazy" decoding="async" fetchpriority="low" src="'+img+'" alt="معاينة القالب '+num+'"><span class="gb-ov"><span class="gb-ov-t">تصميم '+num+'</span><span class="gb-ov-b">اختيار ←</span></span>';
+      var img='gallery_imgs/'+('000'+(i+1)).slice(-3)+'.jpg';
+      it.innerHTML='<span class="gb-sk"></span><span class="gb-num">'+num+'</span><img class="gb-img" data-loading="1" loading="lazy" decoding="async" src="'+img+'" alt="تصميم '+num+'"><span class="gb-ov"><span class="gb-ov-t">تصميم '+num+'</span><span class="gb-ov-b">اختيار ←</span></span>';
       if(i===gbCur)it.classList.add('gc');
       if(i===gvIdx)it.classList.add('on');
-      // Static thumbnails do not animate in the gallery grid.
+      it.style.animationDelay=Math.min(i,18)*0.02+'s';
       var im=it.querySelector('.gb-img');
-      im.addEventListener('load',function(){
-        this.removeAttribute('data-loading');
-        var sk=this.parentNode.querySelector('.gb-sk');if(sk)sk.style.display='none';
-      });
-      im.addEventListener('error',function(){
-        this.removeAttribute('data-loading');
-        this.style.display='none';
-        var sk=this.parentNode.querySelector('.gb-sk');if(sk)sk.style.display='none';
-        var fb=document.createElement('span');
-        fb.className='gb-img-fallback';
-        fb.textContent='المعاينة غير متاحة';
-        this.parentNode.insertBefore(fb,this);
-      });
+      im.addEventListener('load',function(){this.removeAttribute('data-loading');var sk=this.parentNode.querySelector('.gb-sk');if(sk)sk.style.display='none';});
+      im.addEventListener('error',function(){this.removeAttribute('data-loading');var sk=this.parentNode.querySelector('.gb-sk');if(sk)sk.style.display='none';});
       it.addEventListener('click',function(){gbApply(i);});
       it.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();gbApply(i);}});
       grid.appendChild(it);
@@ -1167,7 +1192,7 @@ const ARFONTS=[
 // ============================================================
 // TEMPLATES DEFINITIONS
 // ============================================================
-const CATS={all:'الكل',classic:'كلاسيكي',modern:'عصري',colorful:'ملون',elegant:'أنيق',minimal:'بسيط',bold:'جريء',creative:'إبداعي',french:'إنجليزي',arabic:'عربي'};
+const CATS={all:'الكل',classic:'كلاسيكي',modern:'عصري',colorful:'ملون',elegant:'أنيق',minimal:'بسيط',bold:'جريء',creative:'إبداعي',french:'فرنسي',arabic:'عربي'};
 // TAGS SYSTEM
 const TAGS=[{k:"dark",l:"داكن",e:""},{k:"light",l:"فاتح",e:""},{k:"glass",l:"زجاجي",e:""},{k:"rounded",l:"دائري",e:""},{k:"colorful",l:"ملون",e:""},{k:"elegant",l:"أنيق",e:""},{k:"bold",l:"جريء",e:""}];
 var curTag="all";
@@ -1280,9 +1305,9 @@ cfg:defCfg({cardBg:'#f0f9ff',cardBg2:'#e0f2fe',frenchColor:'#0369a1',meaningColo
 cfg:defCfg({cardBg:'#f0fdf4',cardBg2:'#dcfce7',frenchColor:'#166534',meaningColor:'#15803d',meaningBg:'rgba(21,128,61,.05)',meaningBorder:'rgba(21,128,61,.15)',badgeNomBg:'#dcfce7',badgeNomColor:'#166534',borderRadius:24,cardShadow:'0 8px 32px rgba(22,101,52,.1)'})},
 
 // ===== FRENCH =====
-{id:'fre-1',nm:'إنجليزي فخري',en:'French Flag',cat:'french',
+{id:'fre-1',nm:'فرنسي فخري',en:'French Flag',cat:'french',
 cfg:defCfg({cardBg:'#ffffff',cardBg2:'#f1f5f9',frenchColor:'#1e3a5f',meaningColor:'#2563eb',meaningBg:'#eff6ff',meaningBorder:'#bfdbfe',badgeNomBg:'#dbeafe',badgeNomColor:'#1e40af',borderRadius:12,cardBorderWidth:3,cardBorderColor:'#1e3a5f',cardShadow:'0 4px 16px rgba(0,0,0,.1)'})},
-{id:'fre-2',nm:'إنجليزي أنيق',en:'French Elegant',cat:'french',
+{id:'fre-2',nm:'فرنسي أنيق',en:'French Elegant',cat:'french',
 cfg:defCfg({cardBg:'#fefefe',frenchColor:'#1a1a2e',meaningColor:'#4a4a6a',meaningBg:'#f8f7ff',meaningBorder:'#e5e3f0',meaningBorderRadius:8,meaningBorderWidth:1,badgeNomBg:'#f0eef8',badgeNomColor:'#4a4a6a',borderRadius:8,cardShadow:'0 2px 12px rgba(0,0,0,.08)'})},
 
 // ===== ARABIC =====
@@ -2018,7 +2043,7 @@ function showHelp(){
   var html='<div class="help-head"><span class="sb-kicker">خطوة بخطوة</span><h2>من القالب إلى رزمة Anki في دقائق</h2><p class="help-sub">صُمم المعرض ليجمع اختيار القالب وإعداد الصوت وإنشاء الرزمة في مكان واحد. اختر ما يناسبك، راجع البطاقة، اضبط الصوت، ثم أنشئ الملف واستورده إلى Anki.</p><button class="fs-close" onclick="closeHelp()" aria-label="إغلاق">✕</button></div><div class="help-body">';
   html+=sec('1','اختر القالب','تصفّح القوالب باستخدام أزرار التنقل، أو افتح «جميع القوالب» لمشاهدة المجموعة كاملة. اضغط «تحديد» على أي قالب تريد استخدامه. ويمكنك اختيار أكثر من قالب إذا أردت تنويع شكل البطاقات داخل الرزمة نفسها.');
   html+=sec('2','راجع شكل البطاقة','استخدم «قلب البطاقة» لمشاهدة الجهة الأخرى من البطاقة والتأكد من أن التصميم مناسب لك قبل متابعة التصدير.');
-  html+=sec('3','اضبط الصوت','اختر الصوت الإنجليزي والصوت العربي، ثم عدّل السرعة والنغمة والفواصل الزمنية حسب الطريقة التي تفضّلها. استخدم «معاينة الصوت» للاستماع إلى النطق قبل إنشاء الرزمة.');
+  html+=sec('3','اضبط الصوت','اختر الصوت الفرنسي والصوت العربي، ثم عدّل السرعة والنغمة والفواصل الزمنية حسب الطريقة التي تفضّلها. استخدم «معاينة الصوت» للاستماع إلى النطق قبل إنشاء الرزمة.');
   html+=sec('4','اختر إعدادات التصدير','حدّد ما إذا كنت تريد تضمين الصوت، وتشغيله تلقائيًا عند فتح البطاقة، وإنشاء نسخة جديدة عند كل تصدير. ويمكنك كذلك تفعيل «الرزمة المعكوسة» لإنشاء نسخة بالمراجعة في الاتجاه المعاكس.');
   html+=sec('5','أنشئ الرزمة','بعد الانتهاء من اختيار القوالب والإعدادات، اضغط «تصدير رزمة Anki». سيجهّز الموقع الملف وفق الخيارات التي اخترتها، ثم يصبح جاهزًا للتنزيل بصيغة APKG.');
   html+='</div>';
@@ -3068,7 +3093,7 @@ h+=renderPropertySearch();
   }
 
   var an='';
-  an+=animCtrl('french','🇬🇧 الكلمة الإنجليزية');
+  an+=animCtrl('french','🇫🇷 الكلمة الفرنسية');
   an+=animCtrl('meaning','📖 المعنى');
   an+=animCtrl('badge','🏷️ الشارات');
   an+=animCtrl('sec','📋 الأقسام');
@@ -3113,7 +3138,7 @@ h+=renderPropertySearch();
 
   // 15. LAYERS PANEL
   var layersHtml="";
-  var layerElements=[{k:"badge",l:"🏷️ الشارات"},{k:"french",l:"🇬🇧 الكلمة الإنجليزية"},{k:"separator",l:"➖ الفاصل"},{k:"meaning",l:"📖 المعنى"},{k:"sections",l:"📋 الأقسام"},{k:"page",l:"📄 الصفحة"},{k:"speaker",l:"🔊 الصوت"}];
+  var layerElements=[{k:"badge",l:"🏷️ الشارات"},{k:"french",l:"🇫🇷 الكلمة الفرنسية"},{k:"separator",l:"➖ الفاصل"},{k:"meaning",l:"📖 المعنى"},{k:"sections",l:"📋 الأقسام"},{k:"page",l:"📄 الصفحة"},{k:"speaker",l:"🔊 الصوت"}];
   layerElements.forEach(function(el){
     var vis=S["show"+el.k.charAt(0).toUpperCase()+el.k.slice(1)]!==false;
     layersHtml+=`<div class="layer-item" onclick="toggleLayerVisibility('${el.k}')"><span class="layer-vis" style="${vis?'background:var(--ac);color:#fff':''}">${vis?'✓':'✗'}</span><span style="flex:1">${el.l}</span><span class="layer-lock" onclick="event.stopPropagation();lockLayer('${el.k}')">🔒</span></div>`;
@@ -3150,7 +3175,7 @@ h+=renderPropertySearch();
   timelineHtml+=`<div class="timeline-markers">`;
   for(var i=0;i<=10;i++){timelineHtml+=`<span class="timeline-marker">${i*10}%</span>`;}
   timelineHtml+="</div>";
-  var anims=[{k:"french",l:"🇬🇧 إنجليزي",c:"var(--ac)"},{k:"meaning",l:"📖 معنى",c:"var(--gn)"},{k:"badge",l:"🏷️ شارة",c:"#f59e0b"}];
+  var anims=[{k:"french",l:"🇫🇷 فرنسي",c:"var(--ac)"},{k:"meaning",l:"📖 معنى",c:"var(--gn)"},{k:"badge",l:"🏷️ شارة",c:"#f59e0b"}];
   anims.forEach(function(a){
     var dur=S[a.k+"AnimDur"]||0.5;
     var delay=S[a.k+"AnimDelay"]||0;
@@ -3178,11 +3203,11 @@ h+=renderPropertySearch();
 
   // 20. FONT BROWSER
   var fontHtml="";
-  fontHtml+=sel("fontFrench","خط إنجليزي",FONTS.map(function(f){return {v:f.v,l:f.l}}));
+  fontHtml+=sel("fontFrench","خط فرنسي",FONTS.map(function(f){return {v:f.v,l:f.l}}));
   fontHtml+=sel("fontArabic","خط عربي",ARFONTS.map(function(f){return {v:f.v,l:f.l}}));
-  fontHtml+=rng("frenchFontSize","حجم الخط الإنجليزي",0.5,6,0.1,2.4);
+  fontHtml+=rng("frenchFontSize","حجم الخط الفرنسي",0.5,6,0.1,2.4);
   fontHtml+=rng("meaningFontSize","حجم الخط العربي",0.5,4,0.1,1.5);
-  fontHtml+=rng("frenchFontWeight","وزن الخط الإنجليزي",100,900,100,900);
+  fontHtml+=rng("frenchFontWeight","وزن الخط الفرنسي",100,900,100,900);
   fontHtml+=rng("meaningFontWeight","وزن الخط العربي",100,900,100,800);
   fontHtml+=rng("frenchLetterSpacing","تباعد الخط",0,20,1,0);
   fontHtml+=rng("frenchLineHeight","ارتفاع السطر",0.5,3,0.1,1.2);
@@ -3478,7 +3503,7 @@ const VE_PROPS={
   ]
 };
 
-const VE_LABELS={card:' البطاقة',badge:' الشارات',badgeNom:' شارة Nom',badgeUnit:' شارة الوحدة',french:' الكلمة الإنجليزية',separator:' الفاصل',meaning:' المعنى',pluriel:' Pluriel',synonyme:' Synonyme',contraire:' Contraire',page:' الصفحة',speaker:' زر الصوت'};
+const VE_LABELS={card:' البطاقة',badge:' الشارات',badgeNom:' شارة Nom',badgeUnit:' شارة الوحدة',french:' الكلمة الفرنسية',separator:' الفاصل',meaning:' المعنى',pluriel:' Pluriel',synonyme:' Synonyme',contraire:' Contraire',page:' الصفحة',speaker:' زر الصوت'};
 
 function renderVE(){
   const cv=document.getElementById('veCanvas');if(!cv)return;
@@ -3559,7 +3584,7 @@ function initTTS(){
   ttsARVoice=arV.find(isMaleVoice)||arV[0]||null;
   // Debug
   const dbg=document.getElementById('ttsDebug');
-  if(dbg)dbg.innerHTML='<b>صوت إنجليزي:</b> '+(ttsFRVoice?.name||'لا يوجد')+'<br><b>صوت عربي:</b> '+(ttsARVoice?.name||'لا يوجد')+'<br><b>إجمالي:</b> '+voices.length+' صوت';
+  if(dbg)dbg.innerHTML='<b>صوت فرنسي:</b> '+(ttsFRVoice?.name||'لا يوجد')+'<br><b>صوت عربي:</b> '+(ttsARVoice?.name||'لا يوجد')+'<br><b>إجمالي:</b> '+voices.length+' صوت';
   const rateEl=document.getElementById('ttsRate');
   const pitchEl=document.getElementById('ttsPitch');
   if(rateEl)rateEl.oninput=function(){document.getElementById('ttsRateVal').textContent=this.value+'x';};
@@ -3738,11 +3763,11 @@ var PROP_DOCS = {
   'cardGap': {tip:'المسافة بين العناصر',use:'المسافة العمودية بين الكلمة والمعنى',example:'10 = ضيق، 24 = واسع'},
   'cardMinHeight': {tip:'الحد الأدنى للارتفاع',use:'ارتفاع البطاقة الأدنى بالبكسل',example:'300 = عادي، 400 = طويل'},
   'previewWidth': {tip:'عرض البطاقة',use:'عرض البطاقة بالبكسل',example:'380 = عادي للجوال، 500 = للكمبيوتر'},
-  'frenchColor': {tip:'لون الكلمة الإنجليزية',use:'اللون الرئيسي للكلمة',example:'#1e293b = داكن، #ffffff = فاتح'},
-  'frenchFontSize': {tip:'حجم الخط الإنجليزي',use:'حجم خط الكلمة الإنجليزية',example:'2.4 = عادي، 3.5 = كبير'},
-  'frenchFontWeight': {tip:'وزن الخط الإنجليزي',use:'رفيق (100) إلى سميك (900)',example:'900 = سميك جداً'},
-  'frenchLetterSpacing': {tip:'تباعد الخط',use:'المسافة بين الحروف الإنجليزية',example:'0 = عادي، 2 = واسع'},
-  'frenchLineHeight': {tip:'ارتفاع السطر',use:'ارتفاع سطر الكلمة الإنجليزية',example:'1.2 = عادي، 1.5 = مريح'},
+  'frenchColor': {tip:'لون الكلمة الفرنسية',use:'اللون الرئيسي للكلمة',example:'#1e293b = داكن، #ffffff = فاتح'},
+  'frenchFontSize': {tip:'حجم الخط الفرنسي',use:'حجم خط الكلمة الفرنسية',example:'2.4 = عادي، 3.5 = كبير'},
+  'frenchFontWeight': {tip:'وزن الخط الفرنسي',use:'رفيق (100) إلى سميك (900)',example:'900 = سميك جداً'},
+  'frenchLetterSpacing': {tip:'تباعد الخط',use:'المسافة بين الحروف الفرنسية',example:'0 = عادي، 2 = واسع'},
+  'frenchLineHeight': {tip:'ارتفاع السطر',use:'ارتفاع سطر الكلمة الفرنسية',example:'1.2 = عادي، 1.5 = مريح'},
   'meaningColor': {tip:'لون المعنى',use:'لون الترجمة العربية',example:'#1e40af = أزرق، #333 = رمادي'},
   'meaningFontSize': {tip:'حجم الخط العربي',use:'حجم خط المعنى',example:'1.5 = عادي، 2.0 = كبير'},
   'meaningFontWeight': {tip:'وزن الخط العربي',use:'وزن خط المعنى',example:'800 = سميك'},
@@ -3754,7 +3779,7 @@ var PROP_DOCS = {
   'cardShadow': {tip:'ظل البطاقة',use:'ظل خارجي للبطاقة',example:'0 4px 16px rgba(0,0,0,.1) = خفيف'},
   'cardBorderWidth': {tip:'سمك الحد',use:'سمك حد البطاقة الخارجي',example:'0 = بدون، 2 = خفيف'},
   'cardBorderColor': {tip:'لون الحد',use:'لون حد البطاقة',example:'#e2e8f0 = رمادي فاتح'},
-  'fontFrench': {tip:'الخط الإنجليزي',use:'الخط المستخدم للكلمة الإنجليزية',example:'Inter = حديث، Playfair = كلاسيكي'},
+  'fontFrench': {tip:'الخط الفرنسي',use:'الخط المستخدم للكلمة الفرنسية',example:'Inter = حديث، Playfair = كلاسيكي'},
   'fontArabic': {tip:'الخط العربي',use:'الخط المستخدم للترجمة',example:'Noto Sans Arabic = حديث، Amiri = كلاسيكي'},
   'cardDirection': {tip:'اتجاه التخطيط',use:'عمودي أو أفقي',example:'column = عادي، row = أفقي'},
   'cardAlign': {tip:'المحاذاة',use:'أين تبدأ العناصر',example:'center = وسط، flex-start = أعلى'},
@@ -3812,7 +3837,7 @@ function renderSmartSuggestions(){
   
   // Analyze current design and suggest improvements
   if(S.frenchFontSize > 3 && S.meaningFontSize < 1){
-    suggestions.push({icon:'📐',text:'الخط الإنجليزي كبير جداً مقارنة بالعربي — زِد حجم العربي',fix:function(){S.meaningFontSize=1.8;pushHist();renderCtrls();renderAll();setTimeout(addDocTooltips,50);}});
+    suggestions.push({icon:'📐',text:'الخط الفرنسي كبير جداً مقارنة بالعربي — زِد حجم العربي',fix:function(){S.meaningFontSize=1.8;pushHist();renderCtrls();renderAll();setTimeout(addDocTooltips,50);}});
   }
   if(S.cardBg === '#ffffff' && S.frenchColor === '#1e293b'){
     suggestions.push({icon:'🎨',text:'تصميم أبيض كلاسيكي — جرب "عصري أزرق" للتميز',fix:function(){selectTemplate('modern-1');}});
@@ -3957,12 +3982,12 @@ function runDiagnostics(){
   // Check contrast
   if(S.frenchColor && S.cardBg){
     var fg = getContrastRatio(S.frenchColor, S.cardBg);
-    if(fg < 3) issues.push({sev:'error', msg:'تباين منخفض للكلمة الإنجليزية (' + fg.toFixed(1) + ':1) — صعب القراءة'});
-    else if(fg < 4.5) warnings.push({sev:'warn', msg:'تباين مقبول للكلمة الإنجليزية (' + fg.toFixed(1) + ':1) — يمكن تحسينه'});
+    if(fg < 3) issues.push({sev:'error', msg:'تباين منخفض للكلمة الفرنسية (' + fg.toFixed(1) + ':1) — صعب القراءة'});
+    else if(fg < 4.5) warnings.push({sev:'warn', msg:'تباين مقبول للكلمة الفرنسية (' + fg.toFixed(1) + ':1) — يمكن تحسينه'});
   }
   
   // Check font sizes
-  if(S.frenchFontSize < 1) warnings.push({sev:'warn', msg:'حجم الخط الإنجليزي صغير جداً — قد لا يُقرأ'});
+  if(S.frenchFontSize < 1) warnings.push({sev:'warn', msg:'حجم الخط الفرنسي صغير جداً — قد لا يُقرأ'});
   if(S.meaningFontSize < 0.8) warnings.push({sev:'warn', msg:'حجم الخط العربي صغير جداً'});
   
   // Check padding
@@ -4746,7 +4771,7 @@ function initApp(){
   window.__ANKI_INITED = true;
   loadTheme();
   try{
-    if(!localStorage.getItem('anki_en9_onboarded'))showOnboarding();
+    if(!isOnboardingCompleted())setTimeout(showOnboarding,180);
     try{localStorage.setItem('anki_en9_whatsnew_v60','1');}catch(_e){}
   }catch(_e){}
   try{checkCrashRecovery();}catch(_e){}
@@ -5092,151 +5117,477 @@ function showCompatChecker(){
 // ============================================================
 // ONBOARDING
 // ============================================================
-var TOUR_DECK = {"name": "English 9", "nameAr": "الإنجليزية للصف التاسع", "language": "الإنجليزي", "code": "EN", "word": "Student", "meaning": "طالب"};
+
+var ONBOARD_DECK = "en9";
+var ONBOARD_PRIMARY_LANGUAGE = ONBOARD_DECK === "fr9" ? "الفرنسية" : "الإنجليزية";
+var ONBOARD_STORAGE_KEY = "anki_" + ONBOARD_DECK + "_onboarded";
+var ONBOARD_SNOOZE_KEY = "anki_" + ONBOARD_DECK + "_onboarding_snoozed";
+var onboardOpenedBrowser = false;
+var onboardOpenedAudio = false;
+var onboardPositionFrame = 0;
+var onboardScrollingTarget = false;
 var ONBOARD_STEPS = [
-  {eyebrow:'مرحباً بك في الاستوديو',icon:'✦',title:'مساحة واحدة لتصميم رزمة مميزة',text:'أهلاً بك في معرض '+TOUR_DECK.name+'؛ هنا تستعرض التصاميم، تختبر شكل البطاقة، تضبط النطق، ثم تخرج برزمتك الجاهزة لـ Anki.',tip:'ابدأ باستكشاف القوالب، ولا تحتاج إلى أي إعداد مسبق.'},
-  {eyebrow:'الخطوة 01 · اختيار التصميم',icon:'▦',title:'اعثر على الشكل الذي يناسبك',text:'تصفّح القوالب المئة، واستخدم البحث والتصنيفات للوصول إلى الشكل الذي تريده. افتح أي تصميم لتشاهد معاينته، ثم حدده لإضافته إلى اختياراتك.',tip:'يمكنك اختيار قالب واحد أو عدة قوالب؛ وتظهر اختياراتك في شريط التحديد.'},
-  {eyebrow:'الخطوة 02 · المعاينة',icon:'◫',title:'اختبر وجهي البطاقة قبل الاختيار',text:'افتح المعاينة الكاملة، شاهد الوجه الأمامي والخلفي، وانتقل بين التصاميم للمقارنة. هكذا تتأكد من وضوح الكلمة والمعنى والصوت قبل اعتماد القالب.',tip:'زر «قلب البطاقة» يعرض الجهة الأخرى، و«تحديد» يعتمد التصميم.'},
-  {eyebrow:'الخطوة 03 · إعداد الصوت',icon:'♫',title:'اجعل النطق مناسباً لطريقتك',text:'اختر الصوت '+TOUR_DECK.language+' والصوت العربي، واضبط السرعة والنغمة والفواصل الزمنية. استمع إلى المعاينة أولاً، ثم احتفظ بالإعدادات التي تناسبك.',tip:'إعدادات الصوت نفسها تُستخدم عند إنشاء الرزمة، ويمكنك إلغاء تضمين الصوت عند التصدير.'},
-  {eyebrow:'الخطوة 04 · التصدير',icon:'⇩',title:'حوّل اختياراتك إلى رزمة Anki',text:'اكتب اسم الرزمة، راجع خيار تضمين الصوت والتشغيل التلقائي، ثم ابدأ التصدير. ستحصل على ملف APKG تستورده داخل تطبيق Anki.',tip:'بعد الاستيراد، افتح الرزمة في Anki وتأكد من ظهور البطاقات والصوت كما عاينتهما.'}
+  {id:"start",label:"ابدأ هنا",title:"من القالب إلى رزمة Anki — بخطوات واضحة",text:"هذه ليست نافذة شرح منفصلة. سنمشي داخل المعرض نفسه: افتح المكتبة، جرّب المعاينة، افهم التحديد، اضبط الصوت، ثم راجع إعدادات التصدير. لن تُنشأ أي رزمة أثناء الجولة.",target:".hero-cta-main",targetLabel:"زر «استعرض القوالب»",note:"ستبقى أدوات الصفحة قابلة للاستخدام، ويمكنك إغلاق الجولة أو إعادة فتحها متى شئت."},
+  {id:"library",label:"المكتبة",title:"استكشف القوالب الحقيقية — لا صورًا تجريبية",text:"هذه المكتبة تضم 100 تصميم فعلي. استخدم التصنيفات لتقليل الخيارات، وتصفّح البطاقات، ثم اضغط تصميمًا لترى معاينته الحقيقية في الصفحة. اختيار بطاقة من المكتبة يبدّل المعاينة فقط؛ لا يضيف قالبًا إلى رُزمتك ولا ينشئ ملفًا.",target:"#gbGrid .gb-item",fallback:"#gbFilters",targetLabel:"بطاقة حقيقية من شبكة القوالب",note:"جرّب اختيار قالب من الشبكة؛ ستنتقل الجولة تلقائيًا إلى معاينته."},
+  {id:"preview",label:"المعاينة",title:"افحص البطاقة كما ستظهر فعلًا",text:"هذه معاينة القالب الحقيقي داخل إطار البطاقة. راجع وضوح النص والمسافات، وتنقّل بين التصاميم بالأسهم. جرّب زر «قلب البطاقة» لترى الوجه الآخر قبل أن تعتمد التصميم.",target:"#gvShowAns",fallback:"#gvStage",targetLabel:"زر «قلب البطاقة»",note:"قلب البطاقة يغيّر المعاينة فقط، ولا يغيّر محتوى رُزمتك."},
+  {id:"selection",label:"التحديد",title:"اختر القوالب التي تريد استخدامها",text:"زر «تحديد» يضيف القالب الحالي إلى اختياراتك أو يزيله منها. يمكنك تحديد قالب واحد أو عدة قوالب؛ وستظهر حالة الاختيار وعدد القوالب في شريط التحديد. لا يحدث أي تصدير هنا.",target:"#gvSelectBtn",targetLabel:"زر تحديد القالب",note:"الجولة لا تحدّد قوالب نيابةً عنك؛ أي تغيير تجريه هنا يكون باختيارك."},
+  {id:"audio",label:"الصوت",title:"اضبط نطق " + ONBOARD_PRIMARY_LANGUAGE + " والعربية",text:"من هذه اللوحة تختار صوت اللغة الأساسية والعربية، وتعدّل السرعة والنغمة والفواصل. يمكنك تشغيل معاينة الصوت بنفسك عند توفر اتصال مناسب؛ الجولة لن تطلب ملفات صوتية أو تشغّل طلبات شبكة تلقائيًا.",target:"#gTtsPreviewBtn",fallback:"#gAudioPanelBody",targetLabel:"زر معاينة الصوت",note:"للمعرض الفرنسي اللغة الأساسية هي الفرنسية، وللمعارض الإنجليزية هي الإنجليزية."},
+  {id:"export",label:"مراجعة التصدير",title:"راجع الإعدادات قبل إنشاء الرزمة",text:"هذا الزر يفتح مراجعة اسم الرزمة والقوالب والصوت والحجم المتوقع، من دون إنشاء ملف. لا يبدأ إنشاء APKG إلا عندما تضغط «بدء التصدير» بنفسك. بعد تنزيل الملف، ستجد أسفل الصفحة قسم «كيفية الاستيراد» لإضافته إلى Anki على الكمبيوتر أو الهاتف.",target:"#exOpenBtn",targetLabel:"زر «تصدير رزمة Anki»",note:"سنفتح شاشة الملخص عند طلبك، لكننا لن نضغط «بدء التصدير» ولن ننشئ ملفًا ضمن الجولة."}
 ];
-var onbStep=0;
-var tourPreviousFocus=null;
+var onbStep = 0;
+var onboardGuideOpen = false;
+var onboardGuideRoot = null;
+var onboardGuideReturnFocus = null;
+var onboardActiveTarget = null;
+var onboardReviewOpened = false;
 
-function tourVisualForStep(index){
-  if(index===0){
-    return '<div class="tv-wrap"><div class="tv-window"><div class="tv-bar"><span class="tv-dots"><i></i><i></i><i></i></span><span class="tv-caption">ANKI DESIGN STUDIO</span></div><div class="tv-body"><div class="tv-brandline"><b>'+TOUR_DECK.name+'</b><span class="tv-pill">'+TOUR_DECK.code+' · DECK</span></div><div class="tv-stats"><div class="tv-stat"><strong>100</strong><span>قالب قابل للمعاينة</span></div><div class="tv-stat"><strong>01</strong><span>معرض مستقل</span></div><div class="tv-stat"><strong>APKG</strong><span>صيغة التصدير</span></div></div><div style="margin-top:14px;padding:12px;border-radius:12px;background:linear-gradient(100deg,rgba(139,92,246,.18),rgba(14,165,233,.1));color:#dbeafe;font-size:10px;text-align:center">من الفكرة إلى بطاقة جاهزة للمراجعة ✨</div></div></div></div>';
-  }
-  if(index===1){
-    return '<div class="tv-wrap"><div class="tv-window"><div class="tv-bar"><span class="tv-dots"><i></i><i></i><i></i></span><span class="tv-caption">TEMPLATE GALLERY</span></div><div class="tv-body"><div class="tv-search">⌕ &nbsp; ابحث عن تصميم...</div><div class="tv-cards"><div class="tv-mini-card"><i>▤</i><b>تصميم 08</b><small>هادئ وبسيط</small></div><div class="tv-mini-card active"><i>✦</i><b>تصميم 24</b><small>محدد للمعاينة</small></div><div class="tv-mini-card"><i>◈</i><b>تصميم 51</b><small>ألوان مميزة</small></div></div><div style="margin-top:13px;display:flex;justify-content:space-between;color:#93a4bf;font-size:9px"><span>100 تصميم</span><span style="color:#c4b5fd">اختيار القالب ←</span></div></div></div></div>';
-  }
-  if(index===2){
-    return '<div class="tv-wrap"><div class="tv-window"><div class="tv-bar"><span class="tv-dots"><i></i><i></i><i></i></span><span class="tv-caption">CARD PREVIEW</span></div><div class="tv-body"><div class="tv-brandline"><b>معاينة البطاقة</b><span class="tv-pill">FRONT / BACK</span></div><div class="tv-flash"><div class="tv-word">'+TOUR_DECK.word+'</div><div class="tv-meaning">'+TOUR_DECK.meaning+'</div><small>اضغط لقلب البطاقة ومشاهدة الوجه الآخر</small></div><div style="display:flex;justify-content:center;gap:8px;margin-top:12px"><span class="tv-pill">السابق</span><span class="tv-pill">قلب البطاقة ↻</span><span class="tv-pill">التالي</span></div></div></div></div>';
-  }
-  if(index===3){
-    return '<div class="tv-wrap"><div class="tv-window"><div class="tv-bar"><span class="tv-dots"><i></i><i></i><i></i></span><span class="tv-caption">VOICE STUDIO</span></div><div class="tv-body"><div class="tv-brandline"><b>إعدادات النطق</b><span class="tv-pill">AUDIO</span></div><div class="tv-voice-grid"><div class="tv-voice"><div class="tv-voice-head"><span>الصوت '+TOUR_DECK.language+'</span><span>'+TOUR_DECK.code+'</span></div><div class="tv-wave"></div></div><div class="tv-voice"><div class="tv-voice-head"><span>الصوت العربي</span><span>AR</span></div><div class="tv-wave ar"></div></div><div class="tv-voice"><div class="tv-voice-head"><span>السرعة والنغمة</span><span>1.0×</span></div><div class="tv-wave"></div></div></div></div></div></div>';
-  }
-  return '<div class="tv-wrap"><div class="tv-window"><div class="tv-bar"><span class="tv-dots"><i></i><i></i><i></i></span><span class="tv-caption">READY TO EXPORT</span></div><div class="tv-body"><div class="tv-export"><div class="tv-export-icon">⇩</div><b>ملف Anki جاهز</b><span>'+TOUR_DECK.name+' · .APKG</span><div class="tv-checks"><span>✓ القوالب المحددة</span><span>✓ إعدادات الصوت</span><span>✓ اسم الرزمة</span><span>✓ جاهز للاستيراد</span></div></div></div></div></div>';
-}
-
-function showOnboarding(){
-  var overlay=document.getElementById('onboardOverlay');
-  if(!overlay)return;
-  tourPreviousFocus=document.activeElement;
-  onbStep=0;
-  renderOnboardStep();
-  overlay.setAttribute('role','dialog');
-  overlay.setAttribute('aria-modal','true');
-  overlay.setAttribute('aria-label','جولة استخدام معرض '+TOUR_DECK.name);
+function isOnboardingCompleted(){
   try{
-    if(typeof overlay.showModal==='function'&&!overlay.open)overlay.showModal();
+    if(localStorage.getItem(ONBOARD_STORAGE_KEY) === "1")return true;
   }catch(_e){}
-  overlay.style.display='flex';
-  document.body.style.overflow='hidden';
-  setTimeout(function(){var next=overlay.querySelector('[data-tour-next]');if(next)next.focus();},30);
+  try{return sessionStorage.getItem(ONBOARD_SNOOZE_KEY) === "1";}
+  catch(_e){return false;}
 }
-
-function closeOnboarding(markDone){
-  var overlay=document.getElementById('onboardOverlay');
-  if(!overlay)return;
-  try{if(overlay.open)overlay.close();}catch(_e){}
-  overlay.style.display='none';
-  document.body.style.overflow='';
-  if(markDone!==false){
-    try{localStorage.setItem("anki_en9_onboarded",'1');}catch(_e){}
-  }
-  var previous=tourPreviousFocus;
-  tourPreviousFocus=null;
-  if(previous&&typeof previous.focus==='function'&&document.contains(previous)){
-    try{previous.focus({preventScroll:true});}catch(_e){try{previous.focus();}catch(_e2){}}
+function markOnboardingCompleted(){
+  try{localStorage.setItem(ONBOARD_STORAGE_KEY,"1");return true;}
+  catch(_e){return false;}
+}
+function onboardStepTarget(step){
+  if(!step)return null;
+  var selector = (step.id === "export" && onboardReviewOpened) ? "#exViewSummary" : step.target;
+  var target = selector ? document.querySelector(selector) : null;
+  if(!target && step.fallback)target = document.querySelector(step.fallback);
+  return target;
+}
+function onboardClearSpotlight(){
+  if(onboardActiveTarget){
+    onboardActiveTarget.classList.remove("og-spotlight");
+    onboardActiveTarget = null;
   }
 }
-
-function tourTryStep(){
-  var step=onbStep;
-  closeOnboarding(false);
-  try{
-    if(step===0||step===1){
-      if(typeof openGalleryBrowser==='function')openGalleryBrowser();
-    }else if(step===2){
-      var visible=typeof getFilteredTemplates==='function'?getFilteredTemplates():[];
-      if(visible&&visible.length&&typeof openFullscreen==='function'){
-        curTplIdx=0;
-        openFullscreen();
-      }else if(typeof openGalleryBrowser==='function')openGalleryBrowser();
-    }else if(step===3){
-      var panel=document.querySelector('.aa');
-      if(panel)panel.scrollIntoView({behavior:'smooth',block:'center'});
-      var body=document.getElementById('gAudioPanelBody');
-      if(body&&!body.classList.contains('open')&&typeof toggleAudioPanel==='function')toggleAudioPanel();
-    }else if(step===4){
-      if(typeof openExport==='function')openExport();
-      else{
-        var target=document.getElementById('download');
-        if(target)target.scrollIntoView({behavior:'smooth',block:'start'});
-      }
+function onboardEnsureRoot(){
+  if(onboardGuideRoot && onboardGuideRoot.isConnected)return onboardGuideRoot;
+  var legacy = document.getElementById("onboardOverlay");
+  if(legacy){legacy.hidden = true;legacy.setAttribute("aria-hidden","true");}
+  var root = document.createElement("div");
+  root.id = "onboardGuideRoot";
+  root.className = "onboard-guide-root";
+  root.setAttribute("dir","rtl");
+  document.body.appendChild(root);
+  root.addEventListener("click",function(event){
+    var stepButton = event.target.closest ? event.target.closest("[data-guide-step]") : null;
+    if(stepButton){
+      var nextIndex = parseInt(stepButton.getAttribute("data-guide-step"),10);
+      if(Number.isInteger(nextIndex))goToOnboardStep(nextIndex);
+      return;
     }
-  }catch(error){
-    console.warn('Tour action could not open the target control:',error);
+    var actionButton = event.target.closest ? event.target.closest("[data-guide-action]") : null;
+    if(actionButton)handleOnboardAction(actionButton.getAttribute("data-guide-action"));
+  });
+  onboardGuideRoot = root;
+  return root;
+}
+function onboardPrepareStep(index){
+  var browser = document.getElementById("galleryBrowser");
+  if(index === 1){
+    // Ensure the 100 real designs have been mounted before opening the library.
+    // The tour can start before the asynchronous gallery watcher has populated gvList.
+    try{if(typeof ensureGalleryDesigns === "function")ensureGalleryDesigns();}catch(_e){}
+    if(browser && !browser.classList.contains("open") && typeof openGalleryBrowser === "function"){
+      openGalleryBrowser();
+      onboardOpenedBrowser = true;
+    }
+  }else if(onboardOpenedBrowser && browser && browser.classList.contains("open") && typeof closeGalleryBrowser === "function"){
+    closeGalleryBrowser();
+    onboardOpenedBrowser = false;
+  }
+  var audio = document.getElementById("gAudioPanelBody");
+  if(index === 4){
+    if(audio && !audio.classList.contains("open") && typeof toggleAudioPanel === "function"){
+      toggleAudioPanel();
+      onboardOpenedAudio = true;
+    }
+  }else if(onboardOpenedAudio && audio && audio.classList.contains("open") && typeof toggleAudioPanel === "function"){
+    toggleAudioPanel();
+    onboardOpenedAudio = false;
   }
 }
-
-function goOnboardingStep(next){
-  var n=parseInt(next,10);
-  if(!isFinite(n))return;
-  onbStep=Math.max(0,Math.min(ONBOARD_STEPS.length-1,n));
+function goToOnboardStep(index){
+  var next = Number(index);
+  if(!Number.isInteger(next) || next < 0 || next >= ONBOARD_STEPS.length)return;
+  onboardClearSpotlight();
+  onbStep = next;
+  onboardReviewOpened = false;
+  onboardPrepareStep(next);
   renderOnboardStep();
+  window.setTimeout(scheduleOnboardPosition,90);
 }
-
-function renderOnboardStep(){
-  var box=document.getElementById('onboardBox');
-  if(!box)return;
-  onbStep=Math.max(0,Math.min(ONBOARD_STEPS.length-1,onbStep));
-  var step=ONBOARD_STEPS[onbStep];
-  var total=ONBOARD_STEPS.length;
-  var percent=Math.round(((onbStep+1)/total)*100);
-  var h='<button class="tour-close" type="button" onclick="closeOnboarding()" aria-label="إغلاق الجولة">×</button>';
-  h+='<aside class="tour-rail"><div class="tour-brand"><span class="tour-brand-mark">A</span><div class="tour-brand-copy"><b>ANKI DESIGN STUDIO</b><span>دليل البداية السريع</span></div></div>';
-  h+='<div class="tour-rail-intro"><div class="tour-rail-kicker">YOUR WORKFLOW</div><h2 class="tour-rail-title">من اختيار القالب إلى رزمة جاهزة</h2><p class="tour-rail-desc">خمس محطات قصيرة لتتعرف على الأدوات الأساسية وتبدأ بثقة.</p></div>';
-  h+='<nav class="tour-route-list" aria-label="مراحل الجولة">';
-  ONBOARD_STEPS.forEach(function(item,i){
-    var state=i===onbStep?' active':i<onbStep?' done':'';
-    h+='<button type="button" class="tour-route-item'+state+'" onclick="goOnboardingStep('+i+')" '+(i===onbStep?'aria-current="step"':'')+'><span class="tour-route-num">'+(i<onbStep?'✓':String(i+1).padStart(2,'0'))+'</span><span class="tour-route-text">'+['البداية','اختيار التصميم','المعاينة','الصوت','التصدير'][i]+'</span></button>';
+function onboardBackdropPath(target,width,height){
+  var outer = "M0 0H" + width + "V" + height + "H0Z";
+  if(!target || !target.isConnected)return outer;
+  var rect = target.getBoundingClientRect();
+  if(!rect.width || !rect.height)return outer;
+  var pad = 10;
+  var left = Math.max(0,rect.left-pad);
+  var top = Math.max(0,rect.top-pad);
+  var right = Math.min(width,rect.right+pad);
+  var bottom = Math.min(height,rect.bottom+pad);
+  var radius = Math.min(16,(right-left)/4,(bottom-top)/4);
+  var hole = "M" + (left+radius) + " " + top +
+    "H" + (right-radius) + "Q" + right + " " + top + " " + right + " " + (top+radius) +
+    "V" + (bottom-radius) + "Q" + right + " " + bottom + " " + (right-radius) + " " + bottom +
+    "H" + (left+radius) + "Q" + left + " " + bottom + " " + left + " " + (bottom-radius) +
+    "V" + (top+radius) + "Q" + left + " " + top + " " + (left+radius) + " " + top + "Z";
+  return outer + " " + hole;
+}
+function positionOnboardGuide(){
+  if(!onboardGuideOpen || !onboardGuideRoot)return;
+  onboardClearSpotlight();
+  var step = ONBOARD_STEPS[onbStep];
+  var target = onboardStepTarget(step);
+  var card = onboardGuideRoot.querySelector(".og-card");
+  var path = onboardGuideRoot.querySelector("#ogBackdropPath");
+  var backdrop = onboardGuideRoot.querySelector(".og-backdrop");
+  if(!card || !path || !backdrop)return;
+  var width = Math.max(320,document.documentElement.clientWidth || window.innerWidth || 320);
+  var height = Math.max(320,window.innerHeight || document.documentElement.clientHeight || 320);
+  var reduced = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  backdrop.setAttribute("viewBox","0 0 " + width + " " + height);
+  if(target && target.isConnected){
+    var initialRect = target.getBoundingClientRect();
+    if(!onboardScrollingTarget && (initialRect.top < 76 || initialRect.bottom > height-76)){
+      onboardScrollingTarget = true;
+      try{target.scrollIntoView({behavior:reduced ? "auto" : "smooth",block:"center",inline:"nearest"});}catch(_e){}
+      window.setTimeout(function(){onboardScrollingTarget = false;scheduleOnboardPosition();},reduced ? 40 : 360);
+    }
+    onboardActiveTarget = target;
+    target.classList.add("og-spotlight");
+  }else{
+    target = null;
+  }
+  var rect = target ? target.getBoundingClientRect() : null;
+  path.setAttribute("d",onboardBackdropPath(target,width,height));
+  var margin = 12;
+  var gap = 18;
+  card.style.right = "auto";
+  card.style.bottom = "auto";
+  card.style.left = margin + "px";
+  card.style.top = margin + "px";
+  card.style.width = Math.min(width-24,width <= 640 ? 420 : 430) + "px";
+  card.style.maxHeight = Math.min(height*.54,460) + "px";
+  card.dataset.placement = "center";
+  if(!rect){
+    var centered = card.getBoundingClientRect();
+    card.style.left = Math.max(margin,(width-centered.width)/2) + "px";
+    card.style.top = Math.max(margin,(height-centered.height)/2) + "px";
+    return;
+  }
+  var measured = card.getBoundingClientRect();
+  var availableAbove = Math.max(0,rect.top-margin-gap);
+  var availableBelow = Math.max(0,height-rect.bottom-margin-gap);
+  var placeBelow = availableBelow >= measured.height || availableBelow >= availableAbove;
+  var available = placeBelow ? availableBelow : availableAbove;
+  var maxCardHeight = Math.max(190,Math.min(height*.68,available-8));
+  card.style.maxHeight = maxCardHeight + "px";
+  measured = card.getBoundingClientRect();
+  var top = placeBelow ? rect.bottom+gap : rect.top-measured.height-gap;
+  top = Math.max(margin,Math.min(height-measured.height-margin,top));
+  var left = rect.left + rect.width/2 - measured.width/2;
+  left = Math.max(margin,Math.min(width-measured.width-margin,left));
+  card.style.left = left + "px";
+  card.style.top = top + "px";
+  card.dataset.placement = placeBelow ? "below" : "above";
+  var arrowX = Math.max(22,Math.min(measured.width-22,rect.left+rect.width/2-left));
+  card.style.setProperty("--og-arrow-x",arrowX + "px");
+}
+function scheduleOnboardPosition(){
+  if(!onboardGuideOpen || onboardPositionFrame)return;
+  var request = window.requestAnimationFrame || function(callback){return window.setTimeout(callback,16);};
+  onboardPositionFrame = request(function(){
+    onboardPositionFrame = 0;
+    positionOnboardGuide();
   });
-  h+='</nav><div class="tour-rail-foot">المعرض الحالي<br><strong>'+TOUR_DECK.name+'</strong><br>كل خطوة تحفظ وقتك وتقلل التجربة العشوائية.</div></aside>';
-  h+='<main class="tour-main"><div class="tour-top"><div class="tour-step-label"><i>STEP '+String(onbStep+1).padStart(2,'0')+'</i><span>/</span><span>'+String(total).padStart(2,'0')+'</span></div><div class="tour-progress-copy">'+percent+'٪ مكتمل</div></div>';
-  h+='<div class="tour-progress-track" role="progressbar" aria-label="تقدم الجولة" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+percent+'"><div class="tour-progress-fill" style="width:'+percent+'%"></div></div>';
-  h+='<section class="tour-content" aria-live="polite"><div class="tour-copy"><div class="tour-icon" aria-hidden="true">'+step.icon+'</div><p class="tour-eyebrow">'+step.eyebrow+'</p><h1 class="tour-title" id="tourStepTitle">'+step.title+'</h1><p class="tour-text">'+step.text+'</p><div class="tour-tip"><b>نصيحة</b><span>'+step.tip+'</span><button type="button" class="tour-try" onclick="tourTryStep()">افتح الأداة وجرّبها ↗</button></div></div>';
-  h+='<div class="tour-visual" aria-hidden="true">'+tourVisualForStep(onbStep)+'</div></section>';
-  h+='<footer class="tour-footer"><div class="tour-footer-note">خطوة '+(onbStep+1)+' من '+total+' · '+TOUR_DECK.nameAr+'</div><div class="tour-actions">';
-  h+='<button type="button" class="tour-btn text" onclick="closeOnboarding()">تخطي الجولة</button>';
-  if(onbStep>0)h+='<button type="button" class="tour-btn" data-tour-prev onclick="goOnboardingStep('+(onbStep-1)+')">السابق</button>';
-  if(onbStep<total-1)h+='<button type="button" class="tour-btn primary" data-tour-next onclick="goOnboardingStep('+(onbStep+1)+')">'+(onbStep===0?'ابدأ الجولة':'التالي')+' ←</button>';
-  else h+='<button type="button" class="tour-btn primary" data-tour-next onclick="closeOnboarding()">إنهاء الجولة وابدأ ←</button>';
-  h+='</div></footer></main>';
-  box.innerHTML=h;
-  var overlay=document.getElementById('onboardOverlay');
-  if(overlay){
-    overlay.setAttribute('aria-labelledby','tourStepTitle');
-    setTimeout(function(){var target=box.querySelector('[data-tour-next]')||box.querySelector('[data-tour-prev]');if(target)target.focus();},0);
+}
+function onboardNode(tag,className,text){
+  var node = document.createElement(tag);
+  if(className)node.className = className;
+  if(text !== undefined && text !== null)node.textContent = String(text);
+  return node;
+}
+function renderOnboardStep(){
+  if(!onboardGuideOpen)return;
+  var root = onboardEnsureRoot();
+  var step = ONBOARD_STEPS[onbStep];
+  if(!step)return;
+  var review = step.id === "export" && onboardReviewOpened;
+  var title = review ? "هكذا تبدو مراجعة الرزمة قبل الإنشاء" : step.title;
+  var body = review ? "راجع اسم الرزمة، وعدد القوالب المختارة، وإعدادات الصوت وخيارات التضمين. يمكنك إغلاق النافذة والعودة للتعديل. تذكير: لن يبدأ الإنشاء حتى تضغط زر «بدء التصدير» بنفسك." : step.text;
+  var targetLabel = review ? "ملخص إعدادات الرزمة" : step.targetLabel;
+  var note = review ? "لم نضغط زر بدء التصدير، ولم يُرسل طلب إنشاء APKG." : step.note;
+  var primaryLabel = onbStep === 0 ? "ابدأ الجولة" :
+    onbStep === 1 ? "انتقل إلى المعاينة" :
+    onbStep === 2 ? "جرّب قلب البطاقة" :
+    onbStep === 3 ? "تابع إلى إعدادات الصوت" :
+    onbStep === 4 ? "تابع إلى التصدير" :
+    (review ? "إنهاء الجولة" : "افتح شاشة المراجعة");
+  var primaryAction = onbStep === 0 ? "start" :
+    onbStep === 1 ? "preview" :
+    onbStep === 2 ? "flip" :
+    onbStep === 3 ? "audio" :
+    onbStep === 4 ? "export" :
+    (review ? "finish" : "review");
+
+  var svgNS = "http://www.w3.org/2000/svg";
+  var backdrop = document.createElementNS(svgNS,"svg");
+  backdrop.setAttribute("class","og-backdrop");
+  backdrop.setAttribute("aria-hidden","true");
+  backdrop.setAttribute("focusable","false");
+  backdrop.setAttribute("viewBox","0 0 100 100");
+  backdrop.setAttribute("preserveAspectRatio","none");
+  var path = document.createElementNS(svgNS,"path");
+  path.setAttribute("id","ogBackdropPath");
+  path.setAttribute("fill","rgba(3,7,18,.68)");
+  path.setAttribute("fill-rule","evenodd");
+  path.setAttribute("d","M0 0H100V100H0Z");
+  backdrop.appendChild(path);
+
+  var card = onboardNode("section","og-card");
+  card.setAttribute("role","dialog");
+  card.setAttribute("aria-modal","false");
+  card.setAttribute("aria-labelledby","onboardGuideTitle");
+  card.setAttribute("aria-describedby","onboardGuideText");
+
+  var head = onboardNode("div","og-head");
+  var brand = onboardNode("div","og-brand");
+  brand.appendChild(onboardNode("span","og-mark","A"));
+  var brandCopy = onboardNode("span","og-brand-copy");
+  brandCopy.appendChild(onboardNode("strong","","ANKI DESIGN STUDIO"));
+  brandCopy.appendChild(onboardNode("small","","جولة داخل المعرض • ٦ محطات"));
+  brand.appendChild(brandCopy);
+  var close = onboardNode("button","og-close","×");
+  close.type = "button";
+  close.setAttribute("data-guide-action","close");
+  close.setAttribute("aria-label","إغلاق الجولة");
+  head.appendChild(brand);
+  head.appendChild(close);
+  card.appendChild(head);
+
+  var progress = onboardNode("nav","og-progress");
+  progress.setAttribute("aria-label","محطات الجولة");
+  ONBOARD_STEPS.forEach(function(item,index){
+    var button = onboardNode("button",index <= onbStep ? "done" : "");
+    button.type = "button";
+    button.setAttribute("data-guide-step",String(index));
+    button.setAttribute("aria-label","الانتقال إلى المحطة " + (index+1) + ": " + item.label);
+    button.setAttribute("aria-current",index === onbStep ? "step" : "false");
+    button.appendChild(onboardNode("span",""));
+    progress.appendChild(button);
+  });
+  card.appendChild(progress);
+
+  var meta = onboardNode("div","og-meta");
+  meta.appendChild(onboardNode("span","og-step-label",step.label));
+  meta.appendChild(onboardNode("span","og-count","المحطة " + (onbStep+1) + " من " + ONBOARD_STEPS.length));
+  card.appendChild(meta);
+  var heading = onboardNode("h2","og-title",title);
+  heading.id = "onboardGuideTitle";
+  heading.tabIndex = -1;
+  card.appendChild(heading);
+  var description = onboardNode("p","og-text",body);
+  description.id = "onboardGuideText";
+  description.setAttribute("aria-live","polite");
+  card.appendChild(description);
+
+  var targetBox = onboardNode("div","og-target");
+  targetBox.appendChild(onboardNode("span","og-target-mark","◎"));
+  var targetCopy = onboardNode("span","og-target-copy");
+  targetCopy.appendChild(onboardNode("small","","الأداة الفعلية على الصفحة"));
+  targetCopy.appendChild(onboardNode("strong","",targetLabel));
+  targetBox.appendChild(targetCopy);
+  card.appendChild(targetBox);
+
+  var status = onboardNode("p","og-note",note);
+  status.id = "onboardGuideNote";
+  status.setAttribute("role","status");
+  status.setAttribute("aria-live","polite");
+  card.appendChild(status);
+
+  var footer = onboardNode("div","og-footer");
+  var later = onboardNode("button","og-skip","لاحقًا");
+  later.type = "button";
+  later.setAttribute("data-guide-action","later");
+  footer.appendChild(later);
+  var actions = onboardNode("div","og-actions");
+  if(onbStep > 0){
+    var previous = onboardNode("button","og-btn ghost","السابق");
+    previous.type = "button";
+    previous.setAttribute("data-guide-action","previous");
+    actions.appendChild(previous);
+  }
+  var primary = onboardNode("button","og-btn primary",primaryLabel);
+  primary.type = "button";
+  primary.setAttribute("data-guide-action",primaryAction);
+  actions.appendChild(primary);
+  footer.appendChild(actions);
+  card.appendChild(footer);
+
+  while(root.firstChild)root.removeChild(root.firstChild);
+  root.appendChild(backdrop);
+  root.appendChild(card);
+  if(heading && typeof heading.focus === "function")heading.focus({preventScroll:true});
+}
+function handleOnboardAction(action){
+  if(action === "finish"){closeOnboarding(true);return;}
+  if(action === "close" || action === "later"){closeOnboarding(false);return;}
+  if(action === "previous"){goToOnboardStep(onbStep-1);return;}
+  if(action === "start"){goToOnboardStep(1);return;}
+  if(action === "preview"){goToOnboardStep(2);return;}
+  if(action === "flip"){
+    if(typeof gvFlip === "function")gvFlip();
+    window.setTimeout(function(){if(onboardGuideOpen && onbStep === 2)goToOnboardStep(3);},240);
+    return;
+  }
+  if(action === "audio"){goToOnboardStep(4);return;}
+  if(action === "export"){goToOnboardStep(5);return;}
+  if(action === "review"){
+    var button = document.getElementById("exOpenBtn");
+    if(button)button.click();
+    else if(typeof openExport === "function")openExport();
+    var closeButton = document.querySelector("#exportOverlay .fs-close");
+    if(closeButton)onboardGuideReturnFocus = closeButton;
+    onboardReviewOpened = true;
+    renderOnboardStep();
+    window.setTimeout(scheduleOnboardPosition,120);
   }
 }
+function showOnboarding(){
+  if(onboardGuideOpen)return;
+  onboardGuideReturnFocus = document.activeElement;
+  onboardGuideOpen = true;
+  onboardReviewOpened = false;
+  onboardOpenedBrowser = false;
+  onboardOpenedAudio = false;
+  var launcher = document.getElementById("onboardTourLauncher");
+  if(launcher)launcher.hidden = true;
+  onboardEnsureRoot();
+  goToOnboardStep(0);
+}
+function closeOnboarding(completed){
+  if(!onboardGuideOpen)return;
+  onboardGuideOpen = false;
+  onboardClearSpotlight();
+  var browser = document.getElementById("galleryBrowser");
+  if(onboardOpenedBrowser && browser && browser.classList.contains("open") && typeof closeGalleryBrowser === "function")closeGalleryBrowser();
+  onboardOpenedBrowser = false;
+  var audio = document.getElementById("gAudioPanelBody");
+  if(onboardOpenedAudio && audio && audio.classList.contains("open") && typeof toggleAudioPanel === "function")toggleAudioPanel();
+  onboardOpenedAudio = false;
+  if(onboardGuideRoot && onboardGuideRoot.parentNode)onboardGuideRoot.parentNode.removeChild(onboardGuideRoot);
+  onboardGuideRoot = null;
+  if(completed){
+    var persisted = markOnboardingCompleted();
+    try{
+      if(persisted)sessionStorage.removeItem(ONBOARD_SNOOZE_KEY);
+      else sessionStorage.setItem(ONBOARD_SNOOZE_KEY,"1");
+    }catch(_e){}
+  }else{
+    try{sessionStorage.setItem(ONBOARD_SNOOZE_KEY,"1");}catch(_e){}
+  }
+  var launcher = document.getElementById("onboardTourLauncher");
+  if(launcher)launcher.hidden = false;
+  try{
+    if(onboardGuideReturnFocus && onboardGuideReturnFocus.isConnected && typeof onboardGuideReturnFocus.focus === "function")onboardGuideReturnFocus.focus();
+  }catch(_e){}
+  onboardGuideReturnFocus = null;
+}
+document.addEventListener("click",function(event){
+  if(!onboardGuideOpen)return;
+  var target = event.target;
+  if(!target || !target.closest)return;
+  if(onbStep === 1 && target.closest("#gbGrid .gb-item")){
+    window.setTimeout(function(){if(onboardGuideOpen && onbStep === 1)goToOnboardStep(2);},360);
+    return;
+  }
+  if(onbStep === 2 && target.closest("#gvShowAns,.gv-flip")){
+    window.setTimeout(function(){if(onboardGuideOpen && onbStep === 2)goToOnboardStep(3);},220);
+    return;
+  }
+  if(onbStep === 3 && target.closest("#gvSelectBtn")){
+    window.setTimeout(function(){
+      if(!onboardGuideOpen || onbStep !== 3)return;
+      var note = document.getElementById("onboardGuideNote");
+      var count = (typeof gvSel !== "undefined" && gvSel) ? gvSel.length : 0;
+      if(note)note.textContent = count ? "تم تحديث الاختيار فعليًا. عدد القوالب المحددة الآن: " + count + "." : "أُزيل تحديد القالب الحالي. يمكنك اختياره مجددًا أو متابعة الجولة.";
+    },40);
+    return;
+  }
+  if(onbStep === 4 && target.closest("#gTtsPreviewBtn")){
+    window.setTimeout(function(){
+      if(!onboardGuideOpen || onbStep !== 4)return;
+      var note = document.getElementById("onboardGuideNote");
+      if(note)note.textContent = "بدأت معاينة الصوت بطلب منك. استمع إلى النطق، ثم تابع عندما تنتهي.";
+    },40);
+    return;
+  }
+  if(onbStep === 5 && target.closest("#exOpenBtn")){
+    window.setTimeout(function(){
+      if(onboardGuideOpen && onbStep === 5){
+        var closeButton = document.querySelector("#exportOverlay .fs-close");
+        if(closeButton)onboardGuideReturnFocus = closeButton;
+        onboardReviewOpened = true;
+        renderOnboardStep();
+        scheduleOnboardPosition();
+      }
+    },120);
+  }
+});
+document.addEventListener("keydown",function(event){
+  if(!onboardGuideOpen)return;
+  if(event.key === "Escape"){
+    var exportOverlay = document.getElementById("exportOverlay");
+    if(onbStep === 5 && exportOverlay && exportOverlay.classList.contains("on") && typeof closeExport === "function"){
+      event.preventDefault();
+      closeExport();
+      window.setTimeout(function(){
+        if(onboardGuideOpen && onboardGuideRoot){
+          var heading = onboardGuideRoot.querySelector("#onboardGuideTitle");
+          if(heading && typeof heading.focus === "function")heading.focus({preventScroll:true});
+        }
+      },100);
+      return;
+    }
+    event.preventDefault();closeOnboarding();return;
+  }
+  var target = event.target;
+  var typing = target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.tagName === "SELECT" || target.isContentEditable);
+  if(typing || event.altKey || event.ctrlKey || event.metaKey)return;
+  if(event.key === "ArrowLeft" && onbStep < ONBOARD_STEPS.length-1){event.preventDefault();goToOnboardStep(onbStep+1);}
+  else if(event.key === "ArrowRight" && onbStep > 0){event.preventDefault();goToOnboardStep(onbStep-1);}
+});
+window.addEventListener("resize",scheduleOnboardPosition);
+window.addEventListener("scroll",scheduleOnboardPosition,true);
+var onboardOriginalCloseExport = null;
+if(typeof closeExport === "function" && !window.__ankiGuideWrappedCloseExport){
+  onboardOriginalCloseExport = closeExport;
+  window.closeExport = function(){
+    var result = onboardOriginalCloseExport.apply(this,arguments);
+    if(onboardGuideOpen && onbStep === 5 && onboardReviewOpened){
+      window.setTimeout(function(){
+        var overlay = document.getElementById("exportOverlay");
+        if(!overlay || !overlay.classList.contains("on")){
+          onboardReviewOpened = false;
+          var opener = document.getElementById("exOpenBtn");
+          if(opener)onboardGuideReturnFocus = opener;
+          renderOnboardStep();
+          scheduleOnboardPosition();
+        }
+      },80);
+    }
+    return result;
+  };
+  window.__ankiGuideWrappedCloseExport = true;
+}
 
-(function bindOnboardingKeys(){
-  var overlay=document.getElementById('onboardOverlay');
-  if(!overlay||overlay.dataset.tourBound)return;
-  overlay.dataset.tourBound='1';
-  overlay.addEventListener('click',function(event){if(event.target===overlay)closeOnboarding();});
-  overlay.addEventListener('cancel',function(event){event.preventDefault();closeOnboarding();});
-  document.addEventListener('keydown',function(event){
-    var active=document.getElementById('onboardOverlay');
-    if(!active||(active.style.display==='none'&&!active.open))return;
-    if(event.key==='Escape'){event.preventDefault();closeOnboarding();return;}
-    if(event.altKey||event.ctrlKey||event.metaKey)return;
-    if(event.key==='ArrowLeft'){event.preventDefault();goOnboardingStep(onbStep+1);}
-    else if(event.key==='ArrowRight'){event.preventDefault();goOnboardingStep(onbStep-1);}
-  });
-})();
 
 // ============================================================
 // WHAT'S NEW
@@ -5469,7 +5820,7 @@ function getSmartSuggestions(){
     suggestions.push({icon:'🎨',text:'خلفية غير بيضاء: '+S.cardBg});
   }
   if(S.frenchAnim&&S.frenchAnim!=='none'){
-    suggestions.push({icon:'✨',text:'حركة إنجليزية: '+S.frenchAnim});
+    suggestions.push({icon:'✨',text:'حركة فرنسية: '+S.frenchAnim});
   }
   if(S.cardBgBlur&&S.cardBgBlur>0){
     suggestions.push({icon:'🔮',text:'تمويه: '+S.cardBgBlur+'px'});
@@ -5601,7 +5952,7 @@ function showTransformPanel(){
   html+=rng('frenchTextShadowX','ظل X',-20,20,1,0);
   html+=rng('frenchTextShadowY','ظل Y',-20,20,1,2);
   html+=rng('frenchTextShadowBlur','ظل التمويه',0,20,1,4);
-  html+=clr('frenchTextShadowColor','لون الظل الإنجليزية','rgba(0,0,0,.3)');
+  html+=clr('frenchTextShadowColor','لون الظل الفرنسية','rgba(0,0,0,.3)');
   html+=clr('meaningTextShadowColor','لون الظل العربية','rgba(0,0,0,.3)');
   html+='</div>';
   var panel=document.createElement('div');
@@ -6232,7 +6583,7 @@ function exportAsHTML(){
   html+=generateCardCSS(S);
   html+='\n/* === EXTRACTED INLINE STYLES === */.hdr-actions{display:flex;justify-content:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}.hdr-info{display:flex;justify-content:center;gap:8px;font-size:.55em;color:var(--tx3);align-items:center}.layer-item-inner{display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:var(--br-sm);cursor:pointer;font-size:var(--fs-sm);transition:background .15s}.shadow-layer-controls{flex:1;display:flex;gap:3px;align-items:center;flex-wrap:wrap}/* === CHATGPT FIXES CSS === */:root {  --z-dropdown: 100;  --z-modal: 200;  --z-tooltip: 300;  --z-toast: 400;  --z-overlay: 500;  --transition-fast: 0.15s;  --transition-normal: 0.25s;  --transition-slow: 0.4s;}.ctx-menu { z-index: var(--z-dropdown); }.cmd-palette { z-index: var(--z-modal); }.tip::after { z-index: var(--z-tooltip); }#toast { z-index: var(--z-toast); }.onboard-overlay, .whatsnew-overlay { z-index: var(--z-overlay); }.score-panel { z-index: var(--z-modal); }.acc-b { transition: max-height var(--transition-normal) ease, opacity var(--transition-normal) ease; }.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}</style>\n</head>\n<body>\n';
   html+=renderCardHTML(S);
-  html+='\n<!-- FOOTER -->\n<div class="footer">\n<div class="footer-inner">\n<div>\n<div class="footer-brand"><div class="logo">A</div><h3>Anki Template Gallery</h3></div>\n<p class="footer-desc">معرض قوالب Anki — اختر قالبك، اضبط الصوت، وصدّر رزمتك.</p>\n</div>\n<div>\n<h4>التصنيفات</h4>\n<a href="#">القوالب الاحترافية</a>\n<a href="#">الصوت العربي والإنجليزي</a>\n<a href="#">المعرض الحيّ</a>\n<a href="#">التنزيل الفوري</a>\n</div>\n<div>\n<h4>الدعم</h4>\n<a href="#">دليل الاستخدام</a>\n<a href="#">الأسئلة الشائعة</a>\n<a href="#">تواصل معنا</a>\n</div>\n</div>\n<div class="footer-copy">© 2026 Anki Template Gallery</div>\n</div>\n</body>\n</html>';
+  html+='\n<!-- FOOTER -->\n<div class="footer">\n<div class="footer-inner">\n<div>\n<div class="footer-brand"><div class="logo">A</div><h3>Anki Template Gallery</h3></div>\n<p class="footer-desc">معرض قوالب Anki — اختر قالبك، اضبط الصوت، وصدّر رزمتك.</p>\n</div>\n<div>\n<h4>التصنيفات</h4>\n<a href="#">القوالب الاحترافية</a>\n<a href="#">الصوت العربي والفرنسي</a>\n<a href="#">المعرض الحيّ</a>\n<a href="#">التنزيل الفوري</a>\n</div>\n<div>\n<h4>الدعم</h4>\n<a href="#">دليل الاستخدام</a>\n<a href="#">الأسئلة الشائعة</a>\n<a href="#">تواصل معنا</a>\n</div>\n</div>\n<div class="footer-copy">© 2026 Anki Template Gallery</div>\n</div>\n</body>\n</html>';
   downloadFile(html,'anki-card.html','text/html');
   toast('تم تصدير HTML');
 }
@@ -6339,9 +6690,9 @@ var DOCS={
   cardPadding:'الحشو الداخلي — المسافة بين محتوى البطاقة وحدودها.',
   cardGap:'المسافة بين العناصر — المسافة العمودية بين الكلمة والمعنى والأقسام.',
   cardMinHeight:'الحد الأدنى للارتفاع — ارتفاع البطاقة الأدنى بالبكسل.',
-  frenchColor:'لون الكلمة الإنجليزية — اللون الرئيسي للكلمة.',
-  frenchFontSize:'حجم الخط الإنجليزي — حجم خط الكلمة الإنجليزية.',
-  frenchFontWeight:'وزن الخط الإنجليزي — رفيع (100) إلى سميك (900).',
+  frenchColor:'لون الكلمة الفرنسية — اللون الرئيسي للكلمة.',
+  frenchFontSize:'حجم الخط الفرنسي — حجم خط الكلمة الفرنسية.',
+  frenchFontWeight:'وزن الخط الفرنسي — رفيع (100) إلى سميك (900).',
   meaningColor:'لون المعنى — لون الترجمة العربية.',
   meaningFontSize:'حجم الخط العربي — حجم خط المعنى.',
   meaningFontWeight:'وزن الخط العربي.',
@@ -6350,7 +6701,7 @@ var DOCS={
   effect:'تأثير البطاقة — توهج، نبض، نيون، ساكورا.',
   cardShadow:'ظل البطاقة — يمكنك اختيار ظل جاهز أو بناء ظل مخصص.',
   cardClipPath:'شكل البطاقة — مقصوص بشكل معين، دائري، أو غيره.',
-  fontFrench:'الخط الإنجليزي — الخط المستخدم للكلمة الإنجليزية.',
+  fontFrench:'الخط الفرنسي — الخط المستخدم للكلمة الفرنسية.',
   fontArabic:'الخط العربي — الخط المستخدم للترجمة.',
   previewWidth:'عرض البطاقة — عرض البطاقة بالبكسل.',
   customCSS:'CSS مخصص — أضف أي CSS يدويًا هنا.',
@@ -7010,254 +7361,6 @@ setTimeout(function(){try{setupExportModal();}catch(_e){}},1500);
   </div>
 </div>
 
-<script>
-(function(){
-  var originalOpen=window.openGalleryBrowser;
-  window.openGalleryBrowser=function(){
-    try{if(typeof ensureGalleryDesigns==='function')ensureGalleryDesigns();if(typeof gvCompute==='function')gvCompute();}catch(e){}
-    if(typeof originalOpen==='function')return originalOpen.apply(this,arguments);
-  };
-  var originalFit=window.gvFitFrame;
-  window.gvFitFrame=function(){
-    try{if(typeof originalFit==='function')originalFit.apply(this,arguments);}catch(e){}
-    var frame=document.getElementById('gvFrame'),stage=document.getElementById('gvStage'),wrap=document.getElementById('gvCardWrap');
-    if(!frame||!stage||!wrap)return;
-    var w=Math.max(240,parseFloat(frame.style.width)||440),h=Math.max(240,parseFloat(frame.style.height)||900);
-    var mobile=window.innerWidth<=600,padX=mobile?20:48,padY=mobile?24:44;
-    var aw=Math.max(220,stage.clientWidth-padX),ah=Math.max(260,stage.clientHeight-padY);
-    var scale=Math.min(aw/w,ah/h,1.12);
-    if(!isFinite(scale)||scale<=0)return;
-    wrap.style.transformOrigin='center center';wrap.style.transform='scale('+scale+')';
-    wrap.style.width=w+'px';wrap.style.height=h+'px';
-  };
-  if(typeof window.renderGalleryBrowser==='function'){
-    var originalRender=window.renderGalleryBrowser;
-    window.renderGalleryBrowser=function(){
-      try{if(typeof ensureGalleryDesigns==='function')ensureGalleryDesigns();if(typeof gvCompute==='function')gvCompute();}catch(e){}
-      return originalRender.apply(this,arguments);
-    };
-  }
-})();
-</script>
-
-<style id="anki-tour-v2">
-
-/* Anki Design Studio — onboarding tour v2 */
-#onboardOverlay.onboard-overlay{
-  position:fixed!important;inset:0!important;z-index:10050!important;
-  width:100vw!important;height:100dvh!important;max-width:none!important;max-height:none!important;
-  margin:0!important;padding:18px!important;border:0!important;
-  display:none;align-items:center;justify-content:center;
-  overflow:auto!important;background:
-    radial-gradient(850px 520px at 12% 8%,rgba(124,58,237,.24),transparent 62%),
-    radial-gradient(700px 480px at 90% 95%,rgba(14,165,233,.16),transparent 60%),
-    rgba(5,7,15,.94)!important;color:#f8fafc!important;
-  direction:rtl;
-}
-#onboardOverlay[open]{display:flex!important}
-#onboardOverlay .onboard-box{
-  width:min(1080px,100%)!important;max-width:1080px!important;
-  height:auto!important;max-height:calc(100dvh - 36px)!important;min-height:590px;
-  padding:0!important;margin:auto!important;border:1px solid rgba(255,255,255,.12)!important;
-  border-radius:28px!important;overflow:hidden!important;
-  display:grid!important;grid-template-columns:290px minmax(0,1fr)!important;
-  align-items:stretch!important;justify-content:stretch!important;
-  background:#0d1220!important;
-  box-shadow:0 35px 110px rgba(0,0,0,.58),0 0 0 1px rgba(124,58,237,.12);
-  animation:tourEnter .38s cubic-bezier(.2,.8,.2,1) both!important;
-}
-@keyframes tourEnter{from{opacity:0;transform:translateY(16px) scale(.985)}to{opacity:1;transform:none}}
-#onboardOverlay .tour-rail{
-  position:relative;display:flex;flex-direction:column;gap:26px;
-  padding:32px 24px;background:
-    radial-gradient(300px 220px at 35% 0%,rgba(124,58,237,.24),transparent 75%),
-    linear-gradient(160deg,#171b31,#101524 72%);
-  border-left:1px solid rgba(255,255,255,.08);
-}
-#onboardOverlay .tour-brand{display:flex;align-items:center;gap:12px}
-#onboardOverlay .tour-brand-mark{
-  width:44px;height:44px;display:grid;place-items:center;border-radius:15px;
-  color:white;font-weight:950;font-size:18px;letter-spacing:-1px;
-  background:linear-gradient(140deg,#8b5cf6,#4f46e5 58%,#0ea5e9);
-  box-shadow:0 10px 28px rgba(99,102,241,.34)
-}
-#onboardOverlay .tour-brand-copy b{display:block;font-size:13px;font-weight:900;color:#fff;letter-spacing:.2px}
-#onboardOverlay .tour-brand-copy span{display:block;margin-top:3px;color:#929bb4;font-size:11px}
-#onboardOverlay .tour-rail-intro{padding:18px 0 2px}
-#onboardOverlay .tour-rail-kicker{color:#a78bfa;font-size:10px;font-weight:900;letter-spacing:1.7px}
-#onboardOverlay .tour-rail-title{margin:9px 0 7px;color:#fff;font-size:22px;line-height:1.45;font-weight:950}
-#onboardOverlay .tour-rail-desc{margin:0;color:#9ca8c0;font-size:12px;line-height:1.9}
-#onboardOverlay .tour-route-list{display:grid;gap:10px;margin-top:2px}
-#onboardOverlay .tour-route-item{
-  display:flex;align-items:center;gap:11px;width:100%;padding:10px 11px;
-  color:#8f9ab2;background:transparent;border:1px solid transparent;border-radius:13px;
-  text-align:right;font:inherit;cursor:pointer;transition:background .2s,border-color .2s,color .2s
-}
-#onboardOverlay .tour-route-item:hover{background:rgba(255,255,255,.045);color:#fff}
-#onboardOverlay .tour-route-item.active{color:#fff;background:rgba(139,92,246,.13);border-color:rgba(167,139,250,.32)}
-#onboardOverlay .tour-route-num{
-  display:grid;place-items:center;flex:0 0 28px;height:28px;border-radius:9px;
-  background:rgba(255,255,255,.07);font-size:11px;font-weight:900;color:#aab4ca
-}
-#onboardOverlay .tour-route-item.active .tour-route-num{background:linear-gradient(135deg,#8b5cf6,#4f46e5);color:#fff}
-#onboardOverlay .tour-route-item.done .tour-route-num{background:rgba(16,185,129,.16);color:#6ee7b7}
-#onboardOverlay .tour-route-text{font-size:12px;font-weight:800}
-#onboardOverlay .tour-rail-foot{margin-top:auto;padding-top:18px;border-top:1px solid rgba(255,255,255,.08);color:#818da7;font-size:11px;line-height:1.8}
-#onboardOverlay .tour-rail-foot strong{color:#c4b5fd}
-#onboardOverlay .tour-main{min-width:0;display:flex;flex-direction:column;padding:30px 34px 24px;background:
-  radial-gradient(620px 320px at 96% 0%,rgba(76,29,149,.17),transparent 72%),#0e1422}
-#onboardOverlay .tour-top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:2px 52px 20px 0}
-#onboardOverlay .tour-step-label{display:flex;align-items:center;gap:9px;color:#a6b1c8;font-size:11px;font-weight:900;letter-spacing:.5px}
-#onboardOverlay .tour-step-label i{font-style:normal;color:#c4b5fd}
-#onboardOverlay .tour-progress-copy{color:#8390aa;font-size:11px;font-weight:800;white-space:nowrap}
-#onboardOverlay .tour-progress-track{height:5px;background:rgba(255,255,255,.075);border-radius:99px;overflow:hidden;margin-bottom:28px}
-#onboardOverlay .tour-progress-fill{height:100%;width:0;background:linear-gradient(90deg,#8b5cf6,#6366f1 55%,#22d3ee);border-radius:99px;box-shadow:0 0 18px rgba(139,92,246,.45);transition:width .35s ease}
-#onboardOverlay .tour-content{display:grid;grid-template-columns:minmax(0,.92fr) minmax(280px,1.08fr);gap:28px;align-items:center;flex:1;min-height:0}
-#onboardOverlay .tour-copy{min-width:0;padding:8px 0}
-#onboardOverlay .tour-icon{
-  width:58px;height:58px;display:grid;place-items:center;border-radius:18px;margin-bottom:20px;
-  font-size:26px;color:#e9ddff;background:linear-gradient(145deg,rgba(139,92,246,.24),rgba(14,165,233,.12));
-  border:1px solid rgba(167,139,250,.23);box-shadow:0 12px 30px rgba(76,29,149,.18)
-}
-#onboardOverlay .tour-eyebrow{margin:0 0 8px;color:#a78bfa;font-size:11px;font-weight:950;letter-spacing:1.1px}
-#onboardOverlay .tour-title{margin:0 0 13px;color:#fff;font-size:clamp(25px,3vw,36px);line-height:1.35;font-weight:950;letter-spacing:-.5px}
-#onboardOverlay .tour-text{margin:0;color:#aab5ca;font-size:14px;line-height:2.05;max-width:440px}
-#onboardOverlay .tour-tip{
-  display:flex;align-items:flex-start;gap:10px;margin-top:23px;padding:13px 14px;
-  color:#cbd5e1;background:rgba(30,41,59,.58);border:1px solid rgba(148,163,184,.15);
-  border-radius:14px;font-size:11px;line-height:1.85
-}
-#onboardOverlay .tour-tip b{color:#67e8f9;white-space:nowrap}
-#onboardOverlay .tour-visual{
-  position:relative;min-width:0;min-height:300px;display:grid;place-items:center;
-  padding:22px;border-radius:24px;overflow:hidden;
-  background:
-    radial-gradient(330px 220px at 50% 10%,rgba(124,58,237,.18),transparent 74%),
-    linear-gradient(145deg,#151d32,#111827);
-  border:1px solid rgba(255,255,255,.095);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 20px 60px rgba(0,0,0,.18)
-}
-#onboardOverlay .tour-visual:before,#onboardOverlay .tour-visual:after{
-  content:"";position:absolute;width:140px;height:140px;border:1px solid rgba(167,139,250,.09);border-radius:50%;pointer-events:none
-}
-#onboardOverlay .tour-visual:before{top:-75px;left:-55px}
-#onboardOverlay .tour-visual:after{bottom:-92px;right:-70px;width:190px;height:190px}
-#onboardOverlay .tv-wrap{position:relative;z-index:1;width:min(100%,390px)}
-#onboardOverlay .tv-window{
-  overflow:hidden;border-radius:17px;border:1px solid rgba(255,255,255,.13);
-  background:#0e1525;box-shadow:0 18px 45px rgba(0,0,0,.3)
-}
-#onboardOverlay .tv-bar{height:34px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;background:#1b2438;border-bottom:1px solid rgba(255,255,255,.07)}
-#onboardOverlay .tv-dots{display:flex;gap:4px;direction:ltr}
-#onboardOverlay .tv-dots i{width:6px;height:6px;border-radius:50%;background:#66718b}
-#onboardOverlay .tv-caption{color:#aab6ce;font-size:9px;font-weight:800;letter-spacing:.4px}
-#onboardOverlay .tv-body{padding:18px}
-#onboardOverlay .tv-brandline{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:15px}
-#onboardOverlay .tv-brandline b{color:#f8fafc;font-size:12px}
-#onboardOverlay .tv-pill{padding:5px 9px;border-radius:20px;color:#c4b5fd;background:rgba(139,92,246,.15);font-size:9px;font-weight:900}
-#onboardOverlay .tv-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-#onboardOverlay .tv-stat{padding:12px 8px;border-radius:12px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.07);text-align:center}
-#onboardOverlay .tv-stat strong{display:block;color:#fff;font-size:21px;font-weight:950}
-#onboardOverlay .tv-stat span{display:block;margin-top:4px;color:#8f9bb3;font-size:9px}
-#onboardOverlay .tv-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
-#onboardOverlay .tv-mini-card{min-width:0;padding:13px 7px 10px;border-radius:12px;text-align:center;background:linear-gradient(150deg,#f8fafc,#dbeafe);color:#172033;border:2px solid transparent}
-#onboardOverlay .tv-mini-card.active{border-color:#a78bfa;box-shadow:0 0 0 3px rgba(139,92,246,.16)}
-#onboardOverlay .tv-mini-card i{display:block;font-size:19px;font-style:normal;margin-bottom:8px}
-#onboardOverlay .tv-mini-card b{display:block;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#onboardOverlay .tv-mini-card small{display:block;margin-top:5px;color:#64748b;font-size:8px}
-#onboardOverlay .tv-search{padding:9px 11px;margin-bottom:12px;border-radius:10px;background:rgba(255,255,255,.055);color:#8492ab;font-size:9px}
-#onboardOverlay .tv-flash{
-  min-height:190px;padding:22px;border-radius:16px;display:flex;flex-direction:column;
-  justify-content:center;align-items:center;text-align:center;color:#182033;
-  background:linear-gradient(145deg,#fff,#e8eaff);box-shadow:0 14px 30px rgba(0,0,0,.22)
-}
-#onboardOverlay .tv-flash .tv-word{font-size:clamp(25px,4vw,37px);font-weight:950;letter-spacing:.3px}
-#onboardOverlay .tv-flash .tv-meaning{margin-top:13px;color:#6d4bd1;font-size:19px;font-weight:800}
-#onboardOverlay .tv-flash small{margin-top:19px;color:#64748b;font-size:9px}
-#onboardOverlay .tv-voice-grid{display:grid;gap:10px}
-#onboardOverlay .tv-voice{padding:13px;border:1px solid rgba(255,255,255,.09);border-radius:12px;background:rgba(255,255,255,.045)}
-#onboardOverlay .tv-voice-head{display:flex;align-items:center;justify-content:space-between;gap:8px;color:#e2e8f0;font-size:10px;font-weight:800}
-#onboardOverlay .tv-voice-head span:last-child{color:#a78bfa;font-size:9px}
-#onboardOverlay .tv-wave{height:5px;margin-top:11px;border-radius:9px;background:linear-gradient(90deg,#8b5cf6 0 62%,rgba(255,255,255,.09) 62%);overflow:hidden}
-#onboardOverlay .tv-wave.ar{background:linear-gradient(90deg,#22d3ee 0 78%,rgba(255,255,255,.09) 78%)}
-#onboardOverlay .tv-export{padding:18px;border:1px solid rgba(167,139,250,.22);border-radius:16px;background:rgba(139,92,246,.08);text-align:center}
-#onboardOverlay .tv-export-icon{width:62px;height:62px;margin:0 auto 12px;display:grid;place-items:center;border-radius:19px;color:#fff;font-size:25px;background:linear-gradient(145deg,#8b5cf6,#4f46e5);box-shadow:0 12px 28px rgba(99,102,241,.28)}
-#onboardOverlay .tv-export b{display:block;color:#fff;font-size:18px}
-#onboardOverlay .tv-export span{display:block;margin-top:7px;color:#9aa8c2;font-size:10px}
-#onboardOverlay .tv-checks{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:13px;text-align:right}
-#onboardOverlay .tv-checks span{padding:8px;border-radius:9px;background:rgba(16,185,129,.09);color:#86efac;font-size:9px}
-#onboardOverlay .tour-footer{
-  display:flex;align-items:center;justify-content:space-between;gap:12px;
-  padding-top:22px;margin-top:24px;border-top:1px solid rgba(255,255,255,.08)
-}
-#onboardOverlay .tour-footer-note{color:#7f8ca5;font-size:10px}
-#onboardOverlay .tour-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
-#onboardOverlay .tour-btn{
-  min-height:43px;padding:0 19px;border-radius:12px;border:1px solid rgba(255,255,255,.12);
-  color:#cbd5e1;background:rgba(255,255,255,.045);font:inherit;font-size:12px;font-weight:900;cursor:pointer;
-  transition:transform .18s,border-color .18s,background .18s
-}
-#onboardOverlay .tour-btn:hover{border-color:rgba(167,139,250,.45);background:rgba(255,255,255,.08)}
-#onboardOverlay .tour-btn:active{transform:scale(.97)}
-#onboardOverlay .tour-btn.primary{color:#fff;border-color:transparent;background:linear-gradient(120deg,#7c3aed,#4f46e5 58%,#2563eb);box-shadow:0 9px 24px rgba(79,70,229,.3)}
-#onboardOverlay .tour-btn.primary:hover{filter:brightness(1.1);transform:translateY(-1px)}
-#onboardOverlay .tour-btn.text{border-color:transparent;background:transparent;color:#8f9bb3}
-#onboardOverlay .tour-close{
-  position:absolute;top:18px;left:18px;z-index:5;width:38px;height:38px;border-radius:12px;
-  display:grid;place-items:center;color:#b9c3d8;background:rgba(255,255,255,.055);
-  border:1px solid rgba(255,255,255,.11);font-size:19px;cursor:pointer
-}
-#onboardOverlay .tour-close:hover{color:#fff;background:rgba(239,68,68,.16);border-color:rgba(248,113,113,.35)}
-#onboardOverlay button:focus-visible{outline:2px solid #67e8f9;outline-offset:3px}
-@media(max-width:850px){
-  #onboardOverlay.onboard-overlay{padding:0!important;align-items:stretch}
-  #onboardOverlay .onboard-box{width:100%!important;max-height:100dvh!important;min-height:100dvh;border-radius:0!important;grid-template-columns:1fr!important;grid-template-rows:auto 1fr!important}
-  #onboardOverlay .tour-rail{padding:15px 18px 12px;gap:8px;border-left:0;border-bottom:1px solid rgba(255,255,255,.08)}
-  #onboardOverlay .tour-brand{gap:9px}
-  #onboardOverlay .tour-brand-mark{width:35px;height:35px;border-radius:11px;font-size:15px}
-  #onboardOverlay .tour-brand-copy b{font-size:11px}
-  #onboardOverlay .tour-brand-copy span{font-size:9px}
-  #onboardOverlay .tour-rail-intro,#onboardOverlay .tour-rail-foot{display:none}
-  #onboardOverlay .tour-route-list{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin:6px 0 0}
-  #onboardOverlay .tour-route-item{justify-content:center;padding:5px 2px;border-radius:9px}
-  #onboardOverlay .tour-route-num{width:25px;height:25px;flex-basis:25px;border-radius:8px;font-size:10px}
-  #onboardOverlay .tour-route-text{display:none}
-  #onboardOverlay .tour-main{padding:18px 18px 16px;min-height:0;overflow:auto}
-  #onboardOverlay .tour-top{padding:0 46px 13px 0}
-  #onboardOverlay .tour-progress-track{margin-bottom:16px}
-  #onboardOverlay .tour-content{grid-template-columns:1fr;gap:16px;align-content:start}
-  #onboardOverlay .tour-copy{padding:0}
-  #onboardOverlay .tour-icon{width:43px;height:43px;border-radius:13px;margin-bottom:11px;font-size:20px}
-  #onboardOverlay .tour-title{font-size:25px;margin-bottom:7px}
-  #onboardOverlay .tour-text{font-size:12px;line-height:1.85}
-  #onboardOverlay .tour-tip{margin-top:12px;padding:10px 11px;font-size:10px}
-  #onboardOverlay .tour-visual{min-height:205px;padding:12px;border-radius:17px}
-  #onboardOverlay .tv-wrap{width:min(100%,360px)}
-  #onboardOverlay .tv-body{padding:12px}
-  #onboardOverlay .tv-flash{min-height:125px}
-  #onboardOverlay .tour-footer{margin-top:15px;padding-top:14px;align-items:flex-end}
-  #onboardOverlay .tour-footer-note{display:none}
-  #onboardOverlay .tour-actions{width:100%;display:grid;grid-template-columns:auto 1fr auto}
-  #onboardOverlay .tour-btn{min-height:42px;padding:0 12px;font-size:11px}
-  #onboardOverlay .tour-close{top:12px;left:14px;width:33px;height:33px;border-radius:10px}
-}
-@media(max-width:380px){
-  #onboardOverlay .tour-main{padding:14px 13px 12px}
-  #onboardOverlay .tour-title{font-size:22px}
-  #onboardOverlay .tour-visual{min-height:185px}
-  #onboardOverlay .tour-actions{gap:5px}
-  #onboardOverlay .tour-btn{padding:0 8px}
-}
-@media(prefers-reduced-motion:reduce){
-  #onboardOverlay *,#onboardOverlay *:before,#onboardOverlay *:after{
-    animation:none!important;transition:none!important;scroll-behavior:auto!important
-  }
-}
-#onboardOverlay .tour-tip{display:grid;grid-template-columns:auto 1fr;align-items:start;gap:5px 10px}
-#onboardOverlay .tour-tip .tour-try{grid-column:2;justify-self:start;margin-top:7px;padding:8px 12px;border:1px solid rgba(167,139,250,.38);border-radius:10px;background:rgba(139,92,246,.13);color:#ddd6fe;font:inherit;font-size:11px;font-weight:800;cursor:pointer;transition:background .18s,border-color .18s,transform .18s}
-#onboardOverlay .tour-tip .tour-try:hover{background:rgba(139,92,246,.24);border-color:#a78bfa;transform:translateY(-1px)}
-#onboardOverlay .tour-tip .tour-try:focus-visible{outline:2px solid #c4b5fd;outline-offset:3px}
-@media(max-width:720px){#onboardOverlay .tour-tip .tour-try{grid-column:1/-1}}
-</style>
+<button id="onboardTourLauncher" type="button" onclick="showOnboarding()" aria-label="إعادة فتح الجولة السريعة"><span aria-hidden="true">✦</span><span>الجولة السريعة</span></button>
 </body>
 </html>
