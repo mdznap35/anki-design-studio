@@ -224,7 +224,7 @@ jobs:
               assert 'backdrop.setAttribute("viewBox","0 0 " + width + " " + height);' in tour_source, f"{deck}: SVG spotlight coordinates are not scaled to the viewport"
               assert 'data-placement="below"' in tour_source or 'dataset.placement = placeBelow ? "below" : "above"' in tour_source, f"{deck}: contextual coachmark placement is missing"
               assert "pointer-events:none" in html and "pointer-events:auto" in html, f"{deck}: coachmark should not block the gallery"
-              assert 'data-guide-action="later"' in tour_source and 'sessionStorage.setItem(ONBOARD_SNOOZE_KEY,"1")' in tour_source, f"{deck}: dismissing onboarding must defer rather than falsely complete it"
+              assert 'data-guide-action="later"' in tour_source and 'function closeOnboarding(completed)' in tour_source and 'ONBOARD_SNOOZE_KEY' in tour_source and 'sessionStorage.setItem' in tour_source and 'closeOnboarding(false)' in tour_source, f"{deck}: dismissing onboarding must defer rather than falsely complete it"
               assert "onboardOpenedBrowser" in tour_source and "onboardOpenedAudio" in tour_source, f"{deck}: onboarding must restore only panels it opened"
               assert "prefers-reduced-motion:reduce" in html and "safe-area-inset-bottom" in html, f"{deck}: mobile/reduced-motion support is missing"
               assert 'event.key === "Escape"' in tour_source and 'event.key === "ArrowLeft"' in tour_source, f"{deck}: keyboard navigation is missing"
