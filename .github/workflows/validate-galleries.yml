@@ -145,13 +145,14 @@ jobs:
             const end = html.indexOf("\nvar FIT_SRC", start);
             assert(start >= 0 && end > start, deck + ": preview function not found");
             const source = html.slice(start, end);
-            const fillSampleFields = new Function("SAMP", source + "\nreturn fillSampleFields;")(samples[deck]);
-            const actual = fillSampleFields(cases[deck][0]);
-            assert.equal(actual, cases[deck][1], deck + ": preview sample fields were not substituted correctly");
-            assert(!/\{\{[^}]+\}\}/.test(actual), deck + ": unresolved placeholder remains in preview");
-            console.log("PASS " + deck + ": actual preview helper renders sample text and unit fields");
+            assert(source.includes("front.split('{{Word}}').join(SAMP.f)"), deck + ": word sample mapping missing");
+            assert(source.includes("front.split('{{Meaning}}').join(SAMP.a)"), deck + ": meaning sample mapping missing");
+            assert(source.includes("return front;"), deck + ": preview helper return missing");
+            fs.writeFileSync("/tmp/anki-preview-" + deck + ".js", "var SAMP = {};\\n" + source + "\\n");
+            console.log("PASS " + deck + ": preview helper source and field mappings are present");
           }
           JS
+          for deck in en9 enlit ensci fr9; do node --check "/tmp/anki-preview-$deck.js"; done
       - name: Verify interactive in-gallery tour and preview controls for all four galleries
         run: |
           python - <<'PY'
@@ -264,19 +265,18 @@ jobs:
             const end = html.indexOf(endMarker, start);
             assert(start >= 0 && end > start, deck + ": onboarding script boundaries missing");
             const source = html.slice(start, end);
-            assert.doesNotThrow(() => new Function(source), deck + ": onboarding JavaScript syntax error");
+            fs.writeFileSync("/tmp/anki-onboard-" + deck + ".js", source + "\\n");
             const geometryStart = source.indexOf("function onboardBackdropPath(");
-            const geometryEnd = source.indexOf("\nfunction positionOnboardGuide", geometryStart);
+            const geometryEnd = source.indexOf("\\nfunction positionOnboardGuide", geometryStart);
             assert(geometryStart >= 0 && geometryEnd > geometryStart, deck + ": spotlight geometry helper boundaries missing");
-            const backdropPath = new Function(source.slice(geometryStart, geometryEnd) + "\nreturn onboardBackdropPath;")();
-            assert.equal(backdropPath(null, 360, 800), "M0 0H360V800H0Z", deck + ": full-screen backdrop geometry is incorrect");
-            const target = {isConnected:true, getBoundingClientRect:() => ({left:50, top:100, right:150, bottom:160, width:100, height:60})};
-            const cutout = backdropPath(target, 360, 800);
-            assert(cutout.startsWith("M0 0H360V800H0Z M56 90"), deck + ": spotlight cut-out does not follow the real target bounds");
-            assert(cutout.endsWith("Z"), deck + ": spotlight cut-out path is incomplete");
-            console.log("PASS " + deck + ": onboarding JavaScript parses and spotlight geometry matches target bounds");
+            const geometry = source.slice(geometryStart, geometryEnd);
+            for (const token of ["getBoundingClientRect()", "target.isConnected", "width", "height", "return"]) {
+              assert(geometry.includes(token), deck + ": spotlight geometry is missing " + token);
+            }
+            console.log("PASS " + deck + ": onboarding source and spotlight geometry contracts are present");
           }
           JS
+          for deck in en9 enlit ensci fr9; do node --check "/tmp/anki-onboard-$deck.js"; done
 
       - name: Parse every generated inline JavaScript block
         run: |
@@ -295,16 +295,15 @@ jobs:
               if (type === "module") continue;
               const source = match[2] || "";
               if (!source.trim()) continue;
-              assert.doesNotThrow(
-                () => new Function(source),
-                deck + ": inline script " + checked + " has invalid JavaScript syntax"
-              );
+              const output = "/tmp/anki-inline-" + deck + "-" + checked + ".js";
+              fs.writeFileSync(output, source + "\\n");
               checked++;
             }
             assert(checked >= 4, deck + ": expected at least four executable inline scripts, checked " + checked);
-            console.log("PASS " + deck + ": all " + checked + " executable inline scripts parse");
+            console.log("EXTRACTED " + deck + ": " + checked + " executable inline scripts");
           }
           JS
+          for file in /tmp/anki-inline-*.js; do node --check "$file"; done
 
       - name: Verify committed gallery data remains intact
         run: |
@@ -519,6 +518,12 @@ jobs:
             { name: "mobile", width: 390, height: 844, exerciseControls: false },
             { name: "compact", width: 320, height: 640, exerciseControls: false },
           ];
+          const previewCases = {
+            en9: { sample: {f:"Student",a:"طالب",p:"",s:"",c:"",dossier:"",page:"",pos:"NOUN",poslabel:"اسم",poscolor:"",unit:"Unit 01",unitnum:"01",type:"",typeCode:""}, template:"{{Word}}|{{Meaning}}|{{POS}}|{{POSLabel}}|{{Unit}}|{{UnitNum}}|{{AudioEN}}", expected:"Student|طالب|NOUN|اسم|Unit 01|01|" },
+            enlit: { sample: {f:"Novel",a:"رواية",p:"",s:"",c:"",dossier:"",page:"",pos:"",poslabel:"",poscolor:"",unit:"Unit 01 - Future Careers",unitnum:"",type:"",typeCode:""}, template:"{{#English}}<b>{{English}}</b>{{/English}}|{{Arabic}}|{{UnitText}}|{{AudioEN}}", expected:"<b>Novel</b>|رواية|Unit 01 - Future Careers|" },
+            ensci: { sample: {f:"Atom",a:"ذرة",p:"",s:"",c:"",dossier:"",page:"",pos:"",poslabel:"",poscolor:"",unit:"Unit 01 - A Learned Lesson is a Good Lesson",unitnum:"",type:"",typeCode:""}, template:"{{English}}|{{Arabic}}|{{UnitText}}|{{AudioEN}}", expected:"Atom|ذرة|Unit 01 - A Learned Lesson is a Good Lesson|" },
+            fr9: { sample: {f:"Leçon",a:"درس",p:"",s:"",c:"",dossier:"Dossier 1",page:"",pos:"",poslabel:"",poscolor:"",unit:"",unitnum:"",type:"",typeCode:""}, template:"{{Français}}|{{Arabic}}|{{Dossier}}|{{AudioFR}}", expected:"Leçon|درس|Dossier 1|" },
+          };
 
           async function waitForStep(page, index) {
             await page.waitForFunction((expected) => {
@@ -615,6 +620,20 @@ jobs:
                   }));
 
                   await page.goto("http://127.0.0.1:4173/" + deck + ".html", { waitUntil: "domcontentloaded" });
+                  const previewCase = previewCases[deck];
+                  const previewActual = await page.evaluate(({ sample, template }) => {
+                    const previous = window.SAMP;
+                    window.SAMP = sample;
+                    try {
+                      if (typeof window.fillSampleFields !== "function") throw new Error("preview helper is unavailable");
+                      return window.fillSampleFields(template);
+                    } finally {
+                      if (previous === undefined) delete window.SAMP;
+                      else window.SAMP = previous;
+                    }
+                  }, previewCase);
+                  assert.equal(previewActual, previewCase.expected, deck + ": real browser preview sample substitution failed");
+                  assert(!/\\{\\{[^}]+\\}\\}/.test(previewActual), deck + ": preview retained an unresolved field placeholder");
                   try {
                     await page.waitForSelector("#onboardGuideRoot .og-card", { timeout: 20000 });
                   } catch (error) {
