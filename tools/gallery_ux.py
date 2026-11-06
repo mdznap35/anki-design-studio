@@ -3,6 +3,11 @@ import re
 
 TOUR_CSS = r"""
 #onboardOverlay[hidden]{display:none!important}
+#onboardTourLauncher{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:2147483001;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:10px 16px;border:1px solid rgba(196,181,253,.34);border-radius:999px;background:linear-gradient(110deg,#6d28d9,#4f46e5 58%,#0e7490);color:#fff;font:inherit;font-size:.78rem;font-weight:900;box-shadow:0 12px 30px rgba(30,27,75,.38),0 0 0 1px rgba(255,255,255,.06) inset;cursor:pointer;pointer-events:auto;transition:transform .18s,box-shadow .18s,filter .18s}
+#onboardTourLauncher[hidden]{display:none!important}
+#onboardTourLauncher:hover{transform:translateY(-2px);filter:brightness(1.08);box-shadow:0 16px 36px rgba(30,27,75,.48)}
+#onboardTourLauncher:focus-visible{outline:3px solid #67e8f9;outline-offset:4px}
+@media(max-width:640px){#onboardTourLauncher{right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));min-height:44px;padding:9px 13px;font-size:.72rem}}
 #onboardGuideRoot{position:fixed;inset:0;z-index:2147483000;pointer-events:none;direction:rtl;color:#f8fafc}
 #onboardGuideRoot .og-backdrop{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
 #onboardGuideRoot .og-card{position:fixed;left:12px;right:auto;top:12px;bottom:auto;width:min(430px,calc(100vw - 24px));max-height:min(54dvh,460px);overflow:auto;overscroll-behavior:contain;padding:20px;border:1px solid rgba(167,139,250,.34);border-radius:22px;background:linear-gradient(145deg,rgba(17,21,38,.985),rgba(8,12,25,.99));box-shadow:0 24px 80px rgba(0,0,0,.48),0 0 0 1px rgba(255,255,255,.045) inset,0 0 36px rgba(99,102,241,.12);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);pointer-events:auto;scrollbar-width:thin;z-index:1;animation:ogEnter .24s cubic-bezier(.2,.8,.2,1) both}
