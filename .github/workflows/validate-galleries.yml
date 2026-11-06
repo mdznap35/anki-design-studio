@@ -36,7 +36,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   build-and-verify:
@@ -145,14 +145,15 @@ jobs:
             const end = html.indexOf("\nvar FIT_SRC", start);
             assert(start >= 0 && end > start, deck + ": preview function not found");
             const source = html.slice(start, end);
-            const fillSampleFields = new Function("SAMP", source + "\nreturn fillSampleFields;")(samples[deck]);
-            const actual = fillSampleFields(cases[deck][0]);
-            assert.equal(actual, cases[deck][1], deck + ": preview sample fields were not substituted correctly");
-            assert(!/\{\{[^}]+\}\}/.test(actual), deck + ": unresolved placeholder remains in preview");
-            console.log("PASS " + deck + ": actual preview helper renders sample text and unit fields");
+            assert(source.includes("front.split('{{Word}}').join(SAMP.f)"), deck + ": word sample mapping missing");
+            assert(source.includes("front.split('{{Meaning}}').join(SAMP.a)"), deck + ": meaning sample mapping missing");
+            assert(source.includes("return front;"), deck + ": preview helper return missing");
+            fs.writeFileSync("/tmp/anki-preview-" + deck + ".js", "var SAMP = {};\n" + source + "\n");
+            console.log("PASS " + deck + ": preview helper source and field mappings are present");
           }
           JS
-      - name: Verify polished six-step tour and preview controls for all four galleries
+          for deck in en9 enlit ensci fr9; do node --check "/tmp/anki-preview-$deck.js"; done
+      - name: Verify interactive in-gallery tour and preview controls for all four galleries
         run: |
           python - <<'PY'
           import json
@@ -162,6 +163,12 @@ jobs:
           sys.path.insert(0, "tools")
           from build_galleries import bmatch
 
+          expected_steps = ("start", "library", "preview", "selection", "audio", "export")
+          required_targets = (
+              ".hero-cta-main", "#gbFilters", "#gbGrid", "#gvShowAns",
+              "#gvSelectBtn", "#gTtsPreviewBtn", "#gAudioPanelBody", "#exOpenBtn", ".gb-item",
+              "#exViewSummary",
+          )
           for deck in ("en9", "enlit", "ensci", "fr9"):
               html = (Path("out") / f"{deck}.html").read_text(encoding="utf-8")
               marker = "var EMBEDDED_DESIGNS_100 = "
@@ -171,38 +178,134 @@ jobs:
               assert len(designs) == 100, f"{deck}: expected 100 designs"
               assert all(item.get("pack") == deck for item in designs), f"{deck}: mixed design packs"
 
-              assert len(re.findall(r"\{icon:'", html[html.index("var ONBOARD_STEPS=["):html.index("var onbStep=", html.index("var ONBOARD_STEPS=["))])) == 6, f"{deck}: tour must have six steps"
-              assert f"localStorage.setItem('anki_{deck}_onboarded','1')" in html, f"{deck}: wrong onboarding completion key"
-              assert f"if(!localStorage.getItem('anki_{deck}_onboarded'))setTimeout(showOnboarding,80);" in html, f"{deck}: first-visit tour must be delayed safely"
-              assert "onboardReturnFocus=document.activeElement" in html, f"{deck}: return focus is not captured"
-              assert "document.body.style.overflow=onboardPreviousOverflow" in html, f"{deck}: body scrolling is not restored"
-              assert "e.key==='Tab'" in html and "e.key==='Escape'" in html, f"{deck}: keyboard dialog controls are missing"
-              assert "aria-labelledby=\"onboardStepTitle\"" in html and "aria-valuenow=" in html, f"{deck}: tour accessibility semantics are incomplete"
-              dialog = re.search(r'<dialog[^>]*id="onboardOverlay"[^>]*>', html)
-              assert dialog, f"{deck}: onboarding dialog markup is missing"
-              assert "style=" not in dialog.group(0), f"{deck}: inline display style can hide the open modal"
-              assert '#onboardOverlay.onboard-overlay[open]{display:flex}' in html, f"{deck}: open dialog has no visible display rule"
-              assert "overlay.showModal()" in html, f"{deck}: tour must open as a native modal dialog"
-              assert "overlay.close()" in html, f"{deck}: tour must close through the native dialog lifecycle"
-              assert "overlay.removeAttribute('open')" in html, f"{deck}: non-native dialog fallback is missing"
-              assert "if(!overlay||!overlay.hasAttribute('open'))return;" in html, f"{deck}: keyboard handler must follow the dialog open state"
-              assert "overlay.style.display='flex'" not in html, f"{deck}: dialog is being shown without native modal semantics"
-              assert 'aria-modal="true"' in html, f"{deck}: native modal semantics are not declared"
-              assert "@media(max-width:620px)" in html and "prefers-reduced-motion:reduce" in html, f"{deck}: responsive/reduced-motion styles are missing"
+              tour_start = html.index("var ONBOARD_DECK = ")
+              tour_end = html.index("// ============================================================\n// WHAT'S NEW", tour_start)
+              tour_source = html[tour_start:tour_end]
+              steps_start = tour_source.index("var ONBOARD_STEPS = [")
+              steps_end = tour_source.index("];", steps_start)
+              steps_source = tour_source[steps_start:steps_end]
+              actual_steps = re.findall(r'id:"([a-z]+)"', steps_source)
+              assert actual_steps == list(expected_steps), f"{deck}: wrong guided journey: {actual_steps}"
 
-              assert "gv-fab" not in html, f"{deck}: floating corner flip button remains"
-              assert 'id="fsFlipBtn"' in html, f"{deck}: full-screen flip control was removed"
+              for target in required_targets:
+                  assert target in tour_source, f"{deck}: tour is not anchored to real control {target}"
+                  assert target in html, f"{deck}: required gallery control {target} is missing"
+              for helper in (
+                  "function onboardStepTarget(step)",
+                  "function onboardBackdropPath(target,width,height)",
+                  "function positionOnboardGuide()",
+                  "function scheduleOnboardPosition()",
+                  "function goToOnboardStep(index)",
+                  "function handleOnboardAction(action)",
+                  "function showOnboarding()",
+                  "function closeOnboarding(completed)",
+                  "function isOnboardingCompleted()",
+              ):
+                  assert helper in tour_source, f"{deck}: missing {helper}"
+
+              assert 'ONBOARD_PRIMARY_LANGUAGE = ONBOARD_DECK === "fr9" ? "الفرنسية" : "الإنجليزية";' in tour_source, f"{deck}: audio language is not deck-aware"
+              audio_source = "tas9" if deck == "fr9" else deck
+              expected_audio_status = "fetch(apiBase()+'/api/audio_status?source=" + audio_source + "')"
+              assert html.count(expected_audio_status) == 1, f"{deck}: generated audio-status URL is malformed or duplicated"
+              assert "fetch(apiBase()+'/api/audio_status?source=" + audio_source + ").then" not in html, f"{deck}: audio-status URL is missing its closing quote"
+              assert "100 تصميم فعلي" in tour_source, f"{deck}: library explanation must state the real design count"
+              assert "كيفية الاستيراد" in tour_source and 'id="importGuide"' in html, f"{deck}: post-export Anki import guidance is missing"
+              assert 'setAttribute("aria-live","polite")' in tour_source, f"{deck}: guide announcements are missing"
+              assert 'setAttribute("aria-current"' in tour_source and 'index === onbStep' in tour_source and '"step"' in tour_source and '"false"' in tour_source, f"{deck}: direct accessible step navigation is missing"
+              assert "data-guide-step" in tour_source and "data-guide-action" in tour_source, f"{deck}: guide controls are not wired"
+              assert 'target.closest("#gbGrid .gb-item")' in tour_source, f"{deck}: real template selection does not advance the guide"
+              assert 'target.closest("#gvShowAns,.gv-flip")' in tour_source, f"{deck}: real card flip does not advance the guide"
+              assert 'target.closest("#exOpenBtn")' in tour_source, f"{deck}: export review action is not observed"
+              assert 'status.id = "onboardGuideNote"' in tour_source and 'status.setAttribute("role","status")' in tour_source and 'status.setAttribute("aria-live","polite")' in tour_source, f"{deck}: guide feedback is not announced accessibly"
+              assert 'target.closest("#gvSelectBtn")' in tour_source and 'gvSel.length' in tour_source, f"{deck}: selected-template feedback is missing"
+              assert 'target.closest("#gTtsPreviewBtn")' in tour_source, f"{deck}: manual audio-preview feedback is missing"
+              assert "og-spotlight" in tour_source and "og-spotlight" in html, f"{deck}: real controls are not highlighted"
+              assert 'setAttribute("class","og-backdrop")' in tour_source and 'setAttribute("fill-rule","evenodd")' in tour_source and 'setAttribute("id","ogBackdropPath")' in tour_source, f"{deck}: SVG spotlight aperture is missing"
+              assert "onboardBackdropPath(target,width,height)" in tour_source and "scheduleOnboardPosition" in tour_source, f"{deck}: adaptive spotlight geometry is missing"
+              assert 'backdrop.setAttribute("viewBox","0 0 " + width + " " + height);' in tour_source, f"{deck}: SVG spotlight coordinates are not scaled to the viewport"
+              assert 'data-placement="below"' in tour_source or 'dataset.placement = placeBelow ? "below" : "above"' in tour_source, f"{deck}: contextual coachmark placement is missing"
+              assert "pointer-events:none" in html and "pointer-events:auto" in html, f"{deck}: coachmark should not block the gallery"
+              assert 'setAttribute("data-guide-action","later")' in tour_source and 'function closeOnboarding(completed)' in tour_source and 'ONBOARD_SNOOZE_KEY' in tour_source and 'sessionStorage.setItem' in tour_source and 'closeOnboarding(false)' in tour_source, f"{deck}: dismissing onboarding must defer rather than falsely complete it"
+              assert "onboardOpenedBrowser" in tour_source and "onboardOpenedAudio" in tour_source, f"{deck}: onboarding must restore only panels it opened"
+              assert "prefers-reduced-motion:reduce" in html and "safe-area-inset-bottom" in html, f"{deck}: mobile/reduced-motion support is missing"
+              assert 'event.key === "Escape"' in tour_source and 'event.key === "ArrowLeft"' in tour_source, f"{deck}: keyboard navigation is missing"
+              assert "onboardGuideReturnFocus" in tour_source and "isConnected" in tour_source, f"{deck}: focus restoration is missing"
+              assert 'if(onbStep === 5 && exportOverlay && exportOverlay.classList.contains("on")' in tour_source, f"{deck}: Escape must close export review before leaving the guide"
+              assert 'onboardGuideReturnFocus = closeButton' in tour_source and 'onboardGuideReturnFocus = opener' in tour_source, f"{deck}: export-review focus handoff is incomplete"
+              assert 'localStorage.setItem(ONBOARD_STORAGE_KEY,"1")' in tour_source and "catch(_e)" in tour_source, f"{deck}: safe per-gallery completion state is missing"
+              assert "function renderOnboardVisual" not in tour_source, f"{deck}: fake static tour visuals remain"
+              assert "innerHTML" not in tour_source and "textContent" in tour_source, f"{deck}: onboarding content must use safe DOM text nodes, not HTML string injection"
+              assert "confirmExport(" not in tour_source and "runGenerate(" not in tour_source and "downloadAPKG(" not in tour_source, f"{deck}: onboarding can trigger destructive export work"
+              launcher_marker = '<button id="onboardTourLauncher"'
+              launcher_index = html.rfind(launcher_marker)
+              last_script_close = html.lower().rfind("</script>")
+              last_body_close = html.lower().rfind("</body>")
+              assert html.count(launcher_marker) == 1 and last_script_close < launcher_index < last_body_close, f"{deck}: persistent tour launcher must be a single real document control after scripts"
+              assert 'id="onboardOverlay"' in html and 'hidden aria-hidden="true"' in html, f"{deck}: obsolete modal tour must remain hidden"
+              assert 'id="fsFlipBtn"' in html and 'id="gvShowAns"' in html, f"{deck}: actual preview flip controls are missing"
               assert 'id="loadingMsg"' not in html and "جاري تحميل القوالب..." not in html, f"{deck}: blocking loader remains"
 
               ids = re.findall(r'\bid=["\']([^"\']+)["\']', html)
               duplicates = sorted({value for value in ids if ids.count(value) > 1})
               assert not duplicates, f"{deck}: duplicate HTML IDs: {duplicates}"
-              print(f"PASS {deck}: 100 deck-bound designs, six tour steps, focus/keyboard/accessibility, no corner flip or blocking loader")
+              print(f"PASS {deck}: 100 deck-bound designs, six real in-page guide stops, spotlight, safe export boundary, mobile/accessibility checks")
 
-          print("ALL FOUR GALLERY UX REGRESSION CHECKS PASSED")
+          print("ALL FOUR INTERACTIVE GALLERY TOUR CHECKS PASSED")
           PY
 
-      - name: Verify committed gallery pages stay synchronized with native dialog behavior
+      - name: Syntax-check the generated six-step onboarding scripts
+        run: |
+          node <<'JS'
+          const assert = require("node:assert/strict");
+          const fs = require("node:fs");
+          for (const deck of ["en9", "enlit", "ensci", "fr9"]) {
+            const html = fs.readFileSync("out/" + deck + ".html", "utf8");
+            const start = html.indexOf("var ONBOARD_DECK = ");
+            const endMarker = "// ============================================================\n// WHAT'S NEW";
+            const end = html.indexOf(endMarker, start);
+            assert(start >= 0 && end > start, deck + ": onboarding script boundaries missing");
+            const source = html.slice(start, end);
+            fs.writeFileSync("/tmp/anki-onboard-" + deck + ".js", source + "\n");
+            const geometryStart = source.indexOf("function onboardBackdropPath(");
+            const geometryEnd = source.indexOf("\nfunction positionOnboardGuide", geometryStart);
+            assert(geometryStart >= 0 && geometryEnd > geometryStart, deck + ": spotlight geometry helper boundaries missing");
+            const geometry = source.slice(geometryStart, geometryEnd);
+            for (const token of ["getBoundingClientRect()", "target.isConnected", "width", "height", "return"]) {
+              assert(geometry.includes(token), deck + ": spotlight geometry is missing " + token);
+            }
+            console.log("PASS " + deck + ": onboarding source and spotlight geometry contracts are present");
+          }
+          JS
+          for deck in en9 enlit ensci fr9; do node --check "/tmp/anki-onboard-$deck.js"; done
+
+      - name: Parse every generated inline JavaScript block
+        run: |
+          node <<'JS'
+          const assert = require("node:assert/strict");
+          const fs = require("node:fs");
+          for (const deck of ["en9", "enlit", "ensci", "fr9"]) {
+            const html = fs.readFileSync("out/" + deck + ".html", "utf8");
+            const scriptPattern = /<script\b([^>]*)>([\s\S]*?)<\/script\s*>/gi;
+            let match;
+            let checked = 0;
+            while ((match = scriptPattern.exec(html)) !== null) {
+              const attrs = match[1] || "";
+              const type = (attrs.match(/\btype=["']([^"']+)["']/i) || [])[1] || "";
+              if (type && type !== "module" && !/(java|ecma)script/i.test(type)) continue;
+              if (type === "module") continue;
+              const source = match[2] || "";
+              if (!source.trim()) continue;
+              const output = "/tmp/anki-inline-" + deck + "-" + checked + ".js";
+              fs.writeFileSync(output, source + "\n");
+              checked++;
+            }
+            assert(checked >= 4, deck + ": expected at least four executable inline scripts, checked " + checked);
+            console.log("EXTRACTED " + deck + ": " + checked + " executable inline scripts");
+          }
+          JS
+          for file in /tmp/anki-inline-*.js; do node --check "$file"; done
+
+      - name: Verify committed gallery data remains intact
         run: |
           python - <<'PY'
           import json
@@ -231,21 +334,311 @@ jobs:
               assert len(designs) == 100, f"{deck}: expected 100 committed designs"
               assert all(item.get("pack") == deck for item in designs), f"{deck}: wrong committed deck binding"
               assert all(item.get("fields") for item in designs), f"{deck}: committed field mappings missing"
-              dialogs = [line for line in html.splitlines() if line.startswith("<dialog") and 'id="onboardOverlay"' in line]
-              assert len(dialogs) == 1 and "style=" not in dialogs[0], f"{deck}: missing or hidden inline onboarding dialog"
-              assert "overlay.showModal()" in html and "overlay.close()" in html, f"{deck}: native dialog lifecycle missing"
-              assert "overlay.setAttribute('open','')" in html and "overlay.removeAttribute('open')" in html, f"{deck}: dialog fallback missing"
-              assert "overlay.style.display='flex'" not in html and "overlay.style.display='none'" not in html, f"{deck}: legacy display-based modal remains"
-              assert "#onboardOverlay.onboard-overlay[open]{display:flex}" in html, f"{deck}: open dialog visibility rule missing"
-              assert len(re.findall(r"\{icon:'", html[html.index("var ONBOARD_STEPS=["):html.index("var onbStep=")])) == 6, f"{deck}: tour must have six steps"
-              assert "gv-fab" not in html and 'id="fsFlipBtn"' in html, f"{deck}: obsolete or missing preview flip control"
-              assert 'id="loadingMsg"' not in html and "جاري تحميل القوالب..." not in html, f"{deck}: blocking loader remains"
-              assert f"localStorage.setItem('anki_{deck}_onboarded','1')" in html, f"{deck}: wrong onboarding storage key"
-              ids = re.findall(r'id="([^"]+)"', html)
+              ids = re.findall(r'\bid="([^"]+)"', html)
               assert len(ids) == len(set(ids)), f"{deck}: duplicate HTML IDs"
-              print(f"PASS committed {deck}: 100 deck-bound designs, six-step native tour, clean preview controls")
-          print("ALL COMMITTED GALLERY PAGES PASSED")
+              print(f"PASS committed {deck}: 100 deck-bound designs and intact field mappings")
+          print("ALL COMMITTED GALLERY DATA CHECKS PASSED")
           PY
+      - name: Confirm protected source files were not changed
+        if: always()
+        run: |
+          git diff --exit-code -- index.html bac12.html designs_100.js app.py
+          git diff HEAD^ HEAD --exit-code -- index.html bac12.html designs_100.js app.py
+
+      - name: Install isolated browser QA runtime
+        run: |
+          npm install --prefix /tmp/anki-gallery-browser-qa --no-save --no-package-lock playwright@1.56.1
+          /tmp/anki-gallery-browser-qa/node_modules/.bin/playwright install --with-deps chromium
+
+      - name: Run real-browser visual and interaction checks for all four galleries
+        run: |
+          set -euo pipefail
+          mkdir -p qa-artifacts
+          python -m http.server 4173 --directory out > /tmp/anki-gallery-preview-server.log 2>&1 &
+          echo "$!" > /tmp/anki-gallery-preview-server.pid
+          for attempt in $(seq 1 40); do
+            if curl -fsS http://127.0.0.1:4173/en9.html >/dev/null; then break; fi
+            sleep 0.5
+          done
+          curl -fsS http://127.0.0.1:4173/en9.html >/dev/null
+
+          NODE_PATH=/tmp/anki-gallery-browser-qa/node_modules node <<'JS'
+          const assert = require("node:assert/strict");
+          const fs = require("node:fs");
+          const { chromium } = require("playwright");
+
+          const decks = ["en9", "enlit", "ensci", "fr9"];
+          const viewports = [
+            { name: "desktop", width: 1440, height: 1000, exerciseControls: true },
+            { name: "mobile", width: 390, height: 844, exerciseControls: false },
+            { name: "compact", width: 320, height: 640, exerciseControls: false },
+          ];
+          const previewCases = {
+            en9: { sample: {f:"Student",a:"طالب",p:"",s:"",c:"",dossier:"",page:"",pos:"NOUN",poslabel:"اسم",poscolor:"",unit:"Unit 01",unitnum:"01",type:"",typeCode:""}, template:"{{Word}}|{{Meaning}}|{{POS}}|{{POSLabel}}|{{Unit}}|{{UnitNum}}|{{AudioEN}}", expected:"Student|طالب|NOUN|اسم|Unit 01|01|" },
+            enlit: { sample: {f:"Novel",a:"رواية",p:"",s:"",c:"",dossier:"",page:"",pos:"",poslabel:"",poscolor:"",unit:"Unit 01 - Future Careers",unitnum:"",type:"",typeCode:""}, template:"{{#English}}<b>{{English}}</b>{{/English}}|{{Arabic}}|{{UnitText}}|{{AudioEN}}", expected:"<b>Novel</b>|رواية|Unit 01 - Future Careers|" },
+            ensci: { sample: {f:"Atom",a:"ذرة",p:"",s:"",c:"",dossier:"",page:"",pos:"",poslabel:"",poscolor:"",unit:"Unit 01 - A Learned Lesson is a Good Lesson",unitnum:"",type:"",typeCode:""}, template:"{{English}}|{{Arabic}}|{{UnitText}}|{{AudioEN}}", expected:"Atom|ذرة|Unit 01 - A Learned Lesson is a Good Lesson|" },
+            fr9: { sample: {f:"Leçon",a:"درس",p:"",s:"",c:"",dossier:"Dossier 1",page:"",pos:"",poslabel:"",poscolor:"",unit:"",unitnum:"",type:"",typeCode:""}, template:"{{Français}}|{{Arabic}}|{{Dossier}}|{{AudioFR}}", expected:"Leçon|درس|Dossier 1|" },
+          };
+
+          async function waitForStep(page, index) {
+            await page.waitForFunction((expected) => {
+              const button = document.querySelector(
+                '#onboardGuideRoot .og-progress button[aria-current="step"]'
+              );
+              const target = document.querySelector(".og-spotlight");
+              if (!button || Number(button.getAttribute("data-guide-step")) !== expected || !target) return false;
+              const rect = target.getBoundingClientRect();
+              return rect.width > 0 && rect.height > 0;
+            }, index, { timeout: 10000 });
+          }
+
+          async function inspectStep(page, deck, viewport, index) {
+            await page.evaluate(() => {
+              if (typeof positionOnboardGuide === "function") positionOnboardGuide();
+            });
+            const state = await page.evaluate(() => {
+              const card = document.querySelector("#onboardGuideRoot .og-card");
+              const target = document.querySelector(".og-spotlight");
+              const footer = document.querySelector("#onboardGuideRoot .og-footer");
+              const path = document.querySelector("#ogBackdropPath");
+              if (!card || !target || !footer || !path) return null;
+              const c = card.getBoundingClientRect();
+              const t = target.getBoundingClientRect();
+              const f = footer.getBoundingClientRect();
+              return {
+                card: { left: c.left, top: c.top, right: c.right, bottom: c.bottom, width: c.width, height: c.height, scrollHeight: card.scrollHeight, clientHeight: card.clientHeight },
+                footer: { top: f.top, bottom: f.bottom, left: f.left, right: f.right, width: f.width, height: f.height },
+                target: { left: t.left, top: t.top, right: t.right, bottom: t.bottom, width: t.width, height: t.height },
+                placement: card.dataset.placement,
+                viewBox: path.ownerSVGElement.getAttribute("viewBox"),
+                path: path.getAttribute("d"),
+                viewportWidth: document.documentElement.clientWidth,
+                viewportHeight: window.innerHeight,
+                documentWidth: document.documentElement.scrollWidth
+              };
+            });
+
+            assert(state, deck + "/" + viewport.name + ": active coachmark or spotlight is missing at step " + (index + 1));
+            assert(state.card.width > 0 && state.card.height > 0, deck + "/" + viewport.name + ": coachmark has no rendered size");
+            assert(state.card.left >= -1 && state.card.right <= viewport.width + 1, deck + "/" + viewport.name + ": coachmark escapes horizontal viewport at step " + (index + 1) + " " + JSON.stringify(state.card));
+            assert(state.card.top >= -1 && state.card.bottom <= viewport.height + 1, deck + "/" + viewport.name + ": coachmark escapes vertical viewport at step " + (index + 1) + " " + JSON.stringify(state.card));
+            assert(state.footer.top >= state.card.top - 1 && state.footer.bottom <= state.card.bottom + 1, deck + "/" + viewport.name + ": guide navigation footer is clipped at step " + (index + 1) + " " + JSON.stringify(state.footer));
+            assert(state.target.width > 0 && state.target.height > 0, deck + "/" + viewport.name + ": spotlight target is collapsed at step " + (index + 1));
+            assert.equal(state.viewBox, "0 0 " + viewport.width + " " + viewport.height, deck + "/" + viewport.name + ": spotlight SVG viewBox does not match viewport");
+            assert(state.path && state.path.startsWith("M0 0H"), deck + "/" + viewport.name + ": spotlight aperture path is empty");
+            assert(state.documentWidth <= viewport.width + 1, deck + "/" + viewport.name + ": horizontal page overflow detected (" + state.documentWidth + "px)");
+            const separated = state.card.bottom <= state.target.top + 2 || state.card.top >= state.target.bottom - 2;
+            assert(separated, deck + "/" + viewport.name + ": coachmark overlaps its highlighted control at step " + (index + 1));
+            return state;
+          }
+
+          (async () => {
+            const browser = await chromium.launch({ headless: true, args: ["--no-sandbox", "--disable-dev-shm-usage"] });
+            const report = { browser: "Chromium", decks: {}, failures: [] };
+            try {
+              for (const deck of decks) {
+                report.decks[deck] = {};
+                for (const viewport of viewports) {
+                  const context = await browser.newContext({
+                    viewport: { width: viewport.width, height: viewport.height },
+                    deviceScaleFactor: 1,
+                    reducedMotion: "reduce"
+                  });
+                  const page = await context.newPage();
+                  const pageErrors = [];
+                  let downloads = 0;
+                  page.on("pageerror", error => {
+                    pageErrors.push(error.message);
+                    console.error("BROWSER PAGE ERROR " + deck + "/" + viewport.name + ": " + error.message);
+                  });
+                  page.on("console", message => {
+                    if (message.type() === "error") console.error("BROWSER CONSOLE ERROR " + deck + "/" + viewport.name + ": " + message.text());
+                  });
+                  page.on("download", () => downloads++);
+                  // The static preview server intentionally has no backend API.
+                  // Keep analytics traffic from producing misleading HTTP 501 console errors.
+                  await page.route("**/api/track", route => route.fulfill({ status: 204, body: "" }));
+                  await page.route("**/api/audio_status?*", route => route.fulfill({
+                    status: 200,
+                    contentType: "application/json",
+                    body: JSON.stringify({ total_words: 0, library_words: 0, audio_enabled_default: false, max_generate_words: 250 })
+                  }));
+                  await page.route("**/api/tts_voices?*", route => route.fulfill({
+                    status: 200,
+                    contentType: "application/json",
+                    body: JSON.stringify({ fr: [], ar: [] })
+                  }));
+                  await page.route("**/api/cached_voices*", route => route.fulfill({
+                    status: 200,
+                    contentType: "application/json",
+                    body: JSON.stringify({ fr: [], ar: [] })
+                  }));
+
+                  await page.goto("http://127.0.0.1:4173/" + deck + ".html", { waitUntil: "domcontentloaded" });
+                  const previewCase = previewCases[deck];
+                  const previewActual = await page.evaluate(({ sample, template }) => {
+                    const previous = window.SAMP;
+                    window.SAMP = sample;
+                    try {
+                      if (typeof window.fillSampleFields !== "function") throw new Error("preview helper is unavailable");
+                      return window.fillSampleFields(template);
+                    } finally {
+                      if (previous === undefined) delete window.SAMP;
+                      else window.SAMP = previous;
+                    }
+                  }, previewCase);
+                  assert.equal(previewActual, previewCase.expected, deck + ": real browser preview sample substitution failed");
+                  assert(!/\\{\\{[^}]+\\}\\}/.test(previewActual), deck + ": preview retained an unresolved field placeholder");
+                  try {
+                    await page.waitForSelector("#onboardGuideRoot .og-card", { timeout: 20000 });
+                  } catch (error) {
+                    const diagnostics = await page.evaluate(() => ({
+                      title: document.title,
+                      url: location.href,
+                      bodyText: (document.body && document.body.innerText || "").slice(0, 500),
+                      launcherCount: document.querySelectorAll("#onboardTourLauncher").length,
+                      initAppType: typeof initApp,
+                      showOnboardingType: typeof showOnboarding,
+                      onboardState: typeof onboardGuideOpen === "undefined" ? "undefined" : String(onboardGuideOpen),
+                      scripts: Array.from(document.scripts).map(script => ({ src: script.src, type: script.type, length: script.textContent.length })).slice(-8)
+                    }));
+                    throw new Error("Tour did not mount for " + deck + "/" + viewport.name + ": " + JSON.stringify(diagnostics) + "; " + error.message);
+                  }
+                  // The guide creates its card before the first animation-frame
+                  // positions the spotlight. Wait for the initial target just as
+                  // we do after explicit step navigation below.
+                  await waitForStep(page, 0);
+
+                  const steps = [];
+                  for (let index = 0; index < 6; index++) {
+                    if (index > 0) {
+                      await page.locator('[data-guide-step="' + index + '"]').click();
+                      await waitForStep(page, index);
+                    }
+
+                    const state = await inspectStep(page, deck, viewport, index);
+                    steps.push({ step: index + 1, placement: state.placement, card: state.card, target: state.target });
+                    await page.screenshot({
+                      path: "qa-artifacts/" + deck + "-" + viewport.name + "-step-" + (index + 1) + ".png",
+                      fullPage: false
+                    });
+                  }
+
+                  if (viewport.exerciseControls) {
+                    await page.locator('[data-guide-step="1"]').click();
+                    await waitForStep(page, 1);
+                    await page.locator("#gbGrid .gb-item").first().click({ timeout: 10000 });
+                    await page.waitForFunction(() => window.onbStep === 2, null, { timeout: 10000 });
+                    await waitForStep(page, 2);
+                    await inspectStep(page, deck, viewport, 2);
+
+                    await page.locator("#gvShowAns").click({ timeout: 10000 });
+                    await page.waitForFunction(() => window.onbStep === 3, null, { timeout: 10000 });
+                    await waitForStep(page, 3);
+                    await page.locator("#gvSelectBtn").click({ timeout: 10000 });
+                    await page.waitForFunction(() => {
+                      const note = document.getElementById("onboardGuideNote");
+                      return note && /تم تحديث الاختيار فعليًا|أُزيل تحديد القالب الحالي/.test(note.textContent);
+                    }, null, { timeout: 10000 });
+
+                    await page.locator('[data-guide-step="5"]').click();
+                    await waitForStep(page, 5);
+                    await page.locator('[data-guide-action="review"]').click();
+                    await page.waitForFunction(() => {
+                      const overlay = document.getElementById("exportOverlay");
+                      return overlay && overlay.classList.contains("on");
+                    }, null, { timeout: 10000 });
+                    await page.keyboard.press("Escape");
+                    await page.waitForFunction(() => {
+                      const overlay = document.getElementById("exportOverlay");
+                      return !overlay || !overlay.classList.contains("on");
+                    }, null, { timeout: 10000 });
+                    assert(await page.locator("#onboardGuideRoot .og-card").count() === 1, deck + ": Escape closed the guide instead of returning from export review");
+
+                    await page.locator('[data-guide-action="later"]').click();
+                    const snoozed = await page.evaluate((key) => ({
+                      completed: localStorage.getItem(key),
+                      snoozed: sessionStorage.getItem(key.replace("_onboarded", "_onboarding_snoozed"))
+                    }), "anki_" + deck + "_onboarded");
+                    assert.equal(snoozed.completed, null, deck + ": Later incorrectly marked the tour completed");
+                    assert.equal(snoozed.snoozed, "1", deck + ": Later did not persist the session snooze");
+
+                    await page.locator("#onboardTourLauncher").click();
+                    await page.waitForSelector("#onboardGuideRoot .og-card");
+                    await page.locator('[data-guide-step="5"]').click();
+                    await waitForStep(page, 5);
+                    await page.locator('[data-guide-action="review"]').click();
+                    await page.waitForFunction(() => {
+                      const overlay = document.getElementById("exportOverlay");
+                      return overlay && overlay.classList.contains("on");
+                    }, null, { timeout: 10000 });
+                    await page.locator('[data-guide-action="finish"]').click();
+                    const completed = await page.evaluate((key) => ({
+                      completed: localStorage.getItem(key),
+                      snoozed: sessionStorage.getItem(key.replace("_onboarded", "_onboarding_snoozed"))
+                    }), "anki_" + deck + "_onboarded");
+                    assert.equal(completed.completed, "1", deck + ": final completion was not persisted");
+                    assert.equal(completed.snoozed, null, deck + ": completion did not clear the snooze");
+                  }
+
+                  assert.deepEqual(pageErrors, [], deck + "/" + viewport.name + ": uncaught browser errors: " + pageErrors.join(" | "));
+                  assert.equal(downloads, 0, deck + "/" + viewport.name + ": onboarding unexpectedly initiated a download");
+                  report.decks[deck][viewport.name] = { steps, pageErrors, downloads };
+                  await context.close();
+                  console.log("BROWSER PASS " + deck + "/" + viewport.name + ": six steps, viewport geometry, spotlight, no overflow, no export download");
+                }
+              }
+              fs.writeFileSync("qa-artifacts/browser-qa-report.json", JSON.stringify(report, null, 2));
+            } catch (error) {
+              report.failures.push(String(error && error.stack || error));
+              fs.writeFileSync("qa-artifacts/browser-qa-report.json", JSON.stringify(report, null, 2));
+              throw error;
+            } finally {
+              await browser.close();
+            }
+          })().catch(error => {
+            console.error(error);
+            process.exitCode = 1;
+          });
+          JS
+
+      - name: Upload isolated gallery preview and browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: anki-gallery-browser-qa
+          path: |
+            out/
+            qa-artifacts/
+          if-no-files-found: warn
+          retention-days: 7
+
+  publish-galleries:
+    if: github.ref == 'refs/heads/main'
+    needs: build-and-verify
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/download-artifact@v4
+        with:
+          name: anki-gallery-browser-qa
+          path: .
+      - name: Re-establish protected French Bac reference for deployment verification
+        run: |
+          set -euo pipefail
+          git fetch origin master
+          git show origin/master:public/index.html > /tmp/anki-french-bac-base.html
+          test -s /tmp/anki-french-bac-base.html
+      - name: Publish verified galleries to GitHub Pages and Render
+        run: |
+          set -euo pipefail
+          test -s out/en9.html && test -s out/enlit.html && test -s out/ensci.html && test -s out/fr9.html
+          test -s qa-artifacts/browser-qa-report.json
+          echo "Using the exact build and browser evidence from the read-only verification job."
       - name: Publish the generated static site for hosting
         if: github.ref == 'refs/heads/main'
         run: |
@@ -391,8 +784,4 @@ jobs:
               assert len(body) > 1000, f"thumbnail {sample}: unexpectedly small ({len(body)} bytes)"
               print(f"LIVE PASS thumbnail {sample}: HTTP 200 image/jpeg ({len(body)} bytes)")
           PY
-      - name: Confirm protected source files were not changed
-        if: always()
-        run: |
-          git diff --exit-code -- index.html bac12.html designs_100.js app.py
-          git diff HEAD^ HEAD --exit-code -- index.html bac12.html designs_100.js app.py
+

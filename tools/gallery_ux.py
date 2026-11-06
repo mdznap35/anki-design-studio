@@ -1,8 +1,553 @@
 """Deterministic UX transforms for the four generated non-Bac gallery pages."""
 import re
 
-TOUR_CSS = "#onboardOverlay.onboard-overlay{position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;margin:0;padding:20px;width:100%;height:100%;max-width:none;max-height:none;border:0;background:radial-gradient(ellipse at 14% 12%,rgba(124,58,237,.28),transparent 42%),radial-gradient(ellipse at 88% 82%,rgba(14,165,233,.19),transparent 42%),rgba(5,7,15,.88);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);color:#f8fafc}\n#onboardOverlay.onboard-overlay[open]{display:flex}\n#onboardOverlay .onboard-box{position:relative;width:min(760px,100%);max-height:min(820px,calc(100dvh - 40px));overflow:auto;margin:0;padding:clamp(22px,4vw,42px);border:1px solid rgba(196,181,253,.24);border-radius:28px;background:linear-gradient(145deg,rgba(23,25,43,.97),rgba(11,15,29,.98));box-shadow:0 35px 100px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.035) inset;animation:obEnter .38s cubic-bezier(.2,.8,.2,1) both}\n#onboardOverlay .onboard-box:before{content:\"\";position:absolute;inset:0 12% auto;height:1px;background:linear-gradient(90deg,transparent,#a78bfa,#67e8f9,transparent);opacity:.85}\n@keyframes obEnter{from{opacity:0;transform:translateY(18px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}\n#onboardOverlay .ob-shell{display:flex;flex-direction:column;gap:22px}\n#onboardOverlay .ob-top{display:flex;align-items:center;justify-content:space-between;gap:12px}\n#onboardOverlay .ob-brand{display:flex;align-items:center;gap:10px;color:#c4b5fd;font-size:.78rem;font-weight:900;letter-spacing:.12em}\n#onboardOverlay .ob-brand-mark{display:grid;place-items:center;width:34px;height:34px;border-radius:11px;background:linear-gradient(135deg,#7c3aed,#0891b2);box-shadow:0 8px 24px rgba(124,58,237,.3);font-size:1rem}\n#onboardOverlay .ob-count{padding:7px 12px;border:1px solid rgba(196,181,253,.18);border-radius:999px;background:rgba(255,255,255,.045);color:#cbd5e1;font-size:.78rem;font-weight:800;font-variant-numeric:tabular-nums}\n#onboardOverlay .ob-close{display:grid;place-items:center;width:38px;height:38px;border:1px solid rgba(255,255,255,.12);border-radius:12px;background:rgba(255,255,255,.045);color:#cbd5e1;font-size:1.15rem;cursor:pointer;transition:background .2s,border-color .2s,transform .2s}\n#onboardOverlay .ob-close:hover{background:rgba(248,113,113,.13);border-color:rgba(248,113,113,.4);transform:rotate(90deg)}\n#onboardOverlay .ob-progress{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:7px}\n#onboardOverlay .ob-progress span{height:5px;border-radius:99px;background:rgba(255,255,255,.1);transition:background .25s,box-shadow .25s}\n#onboardOverlay .ob-progress span.done{background:linear-gradient(90deg,#8b5cf6,#22d3ee);box-shadow:0 0 14px rgba(139,92,246,.3)}\n#onboardOverlay .ob-content{display:grid;grid-template-columns:minmax(150px,.72fr) minmax(0,1.5fr);align-items:center;gap:clamp(18px,4vw,36px);min-height:260px}\n#onboardOverlay .ob-art{position:relative;display:grid;place-items:center;min-height:230px;overflow:hidden;border:1px solid rgba(167,139,250,.2);border-radius:24px;background:radial-gradient(circle at 50% 38%,rgba(139,92,246,.25),transparent 58%),linear-gradient(145deg,rgba(255,255,255,.07),rgba(255,255,255,.015))}\n#onboardOverlay .ob-art:before,#onboardOverlay .ob-art:after{content:\"\";position:absolute;border:1px solid rgba(103,232,249,.14);border-radius:50%;width:170px;height:170px}\n#onboardOverlay .ob-art:after{width:220px;height:220px;border-color:rgba(167,139,250,.1)}\n#onboardOverlay .ob-art-icon{position:relative;z-index:1;display:grid;place-items:center;width:104px;height:104px;border:1px solid rgba(255,255,255,.22);border-radius:30px;background:linear-gradient(145deg,rgba(139,92,246,.95),rgba(8,145,178,.88));box-shadow:0 20px 48px rgba(76,29,149,.4);font-size:2.7rem}\n#onboardOverlay .ob-art-label{position:absolute;bottom:17px;z-index:1;color:#cbd5e1;font-size:.72rem;font-weight:800;letter-spacing:.08em}\n#onboardOverlay .ob-copy{min-width:0;text-align:right}\n#onboardOverlay .ob-kicker{display:inline-flex;align-items:center;gap:7px;margin-bottom:12px;color:#67e8f9;font-size:.76rem;font-weight:900;letter-spacing:.08em}\n#onboardOverlay .ob-kicker:before{content:\"\";width:22px;height:2px;border-radius:2px;background:#67e8f9}\n#onboardOverlay .ob-title{margin:0 0 12px;color:#f8fafc;font-family:var(--font-head);font-size:clamp(1.45rem,4vw,2.15rem);font-weight:950;line-height:1.45;letter-spacing:-.025em}\n#onboardOverlay .ob-text{margin:0;color:#cbd5e1;font-size:clamp(.92rem,2vw,1.02rem);line-height:2}\n#onboardOverlay .ob-tip{display:flex;align-items:flex-start;gap:10px;margin-top:18px;padding:13px 15px;border:1px solid rgba(34,211,238,.17);border-radius:14px;background:rgba(8,145,178,.09);color:#dbeafe;font-size:.83rem;line-height:1.8}\n#onboardOverlay .ob-tip-icon{flex:0 0 auto;color:#67e8f9}\n#onboardOverlay .ob-footer{display:flex;align-items:center;justify-content:space-between;gap:14px;padding-top:18px;border-top:1px solid rgba(255,255,255,.09)}\n#onboardOverlay .ob-nav{display:flex;align-items:center;gap:10px;flex-wrap:wrap}\n#onboardOverlay .ob-btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:46px;padding:11px 22px;border:1px solid rgba(255,255,255,.13);border-radius:13px;font:inherit;font-size:.88rem;font-weight:900;cursor:pointer;transition:transform .18s,box-shadow .18s,background .18s}\n#onboardOverlay .ob-btn:hover{transform:translateY(-2px)}\n#onboardOverlay .ob-btn.primary{border-color:transparent;background:linear-gradient(110deg,#7c3aed,#4f46e5 55%,#0891b2);color:#fff;box-shadow:0 10px 28px rgba(79,70,229,.3)}\n#onboardOverlay .ob-btn.primary:hover{box-shadow:0 14px 34px rgba(79,70,229,.42)}\n#onboardOverlay .ob-btn.ghost{background:rgba(255,255,255,.045);color:#dbeafe}\n#onboardOverlay .ob-btn.ghost:hover{background:rgba(255,255,255,.09)}\n#onboardOverlay .ob-skip{border:0;background:none;color:#94a3b8;font:inherit;font-size:.82rem;cursor:pointer;text-decoration:underline;text-underline-offset:4px}\n#onboardOverlay .ob-skip:hover{color:#e2e8f0}\n#onboardOverlay button:focus-visible{outline:3px solid #67e8f9;outline-offset:3px}\n@media(max-width:620px){\n#onboardOverlay.onboard-overlay{padding:10px}\n#onboardOverlay .onboard-box{max-height:calc(100dvh - 20px);padding:19px 16px;border-radius:22px}\n#onboardOverlay .ob-shell{gap:16px}\n#onboardOverlay .ob-top{gap:8px}\n#onboardOverlay .ob-brand{font-size:.68rem;letter-spacing:.06em}\n#onboardOverlay .ob-content{grid-template-columns:1fr;gap:15px;min-height:0}\n#onboardOverlay .ob-art{min-height:112px;border-radius:18px}\n#onboardOverlay .ob-art:before{width:95px;height:95px}\n#onboardOverlay .ob-art:after{width:130px;height:130px}\n#onboardOverlay .ob-art-icon{width:62px;height:62px;border-radius:19px;font-size:1.8rem}\n#onboardOverlay .ob-art-label{bottom:8px;font-size:.62rem}\n#onboardOverlay .ob-copy{text-align:center}\n#onboardOverlay .ob-kicker{margin-bottom:7px}\n#onboardOverlay .ob-title{font-size:1.38rem;margin-bottom:7px}\n#onboardOverlay .ob-text{font-size:.88rem;line-height:1.8}\n#onboardOverlay .ob-tip{margin-top:11px;padding:10px 11px;text-align:right;font-size:.76rem}\n#onboardOverlay .ob-footer{align-items:stretch;flex-direction:column-reverse;gap:12px;padding-top:13px}\n#onboardOverlay .ob-nav{display:grid;grid-template-columns:1fr 1fr}\n#onboardOverlay .ob-btn{min-height:43px;padding:9px 12px;font-size:.8rem}\n#onboardOverlay .ob-skip{align-self:center}\n}\n@media(prefers-reduced-motion:reduce){#onboardOverlay *,#onboardOverlay *:before,#onboardOverlay *:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}"
-TOUR_JS = "var ONBOARD_STEPS=[\n  {icon:'🚀',label:'مرحبًا بك',title:'خلّينا نجهّز رزمة Anki بطريقة أسهل',text:'هذه جولة قصيرة تعرّفك على أهم أجزاء المعرض: استكشاف التصاميم، فحص البطاقة، اختيار القوالب، إعداد الصوت، ثم تصدير الرزمة.',tip:'لن تغيّر الجولة أي إعدادات أو اختيارات في مشروعك.',art:'ابدأ من هنا'},\n  {icon:'🧭',label:'استكشف المعرض',title:'اعثر على التصميم المناسب بسرعة',text:'تصفّح شبكة القوالب، واستخدم البحث والتصنيفات والمجموعات لتضييق النتائج. يمكنك فتح المعاينة الكبيرة عندما تريد رؤية التصميم بوضوح.',tip:'ابدأ بكلمات بحث قصيرة، ثم جرّب التصنيفات إذا كانت النتائج كثيرة.',art:'بحث • تصنيفات • مجموعات'},\n  {icon:'🪄',label:'افحص البطاقة',title:'شاهد الوجهين قبل الاختيار',text:'افتح معاينة القالب، وتحقق من وضوح النصوص وتوازن الألوان والمسافات. استخدم زر «قلب البطاقة» أسفل المعاينة لرؤية الوجه الآخر.',tip:'لا تعتمد على شكل الوجه الأمامي وحده؛ افحص الوجه الآخر أيضاً.',art:'معاينة الوجهين'},\n  {icon:'🎯',label:'اختر القوالب',title:'حدّد قالبًا واحدًا أو أكثر',text:'اختر التصاميم التي تريد استخدامها في الرزمة. عند تحديد عدة قوالب، يوزّع النظام البطاقات عليها تلقائيًا وفق آلية التوزيع المعتمدة.',tip:'إذا كنت تريد مظهرًا موحّدًا، اكتفِ بمجموعة صغيرة متناسقة من القوالب.',art:'اختيار ذكي'},\n  {icon:'🔊',label:'إعداد الصوت',title:'اضبط الصوت قبل التصدير',text:'انتقل إلى إعدادات الصوت، واختر الخيارات المتاحة للغات الرزمة، ثم جرّب المعاينة الصوتية واضبط السرعة والفواصل عند الحاجة.',tip:'استمع إلى عيّنة قصيرة أولًا قبل إنشاء الرزمة كاملة.',art:'صوت • سرعة • معاينة'},\n  {icon:'📦',label:'أنشئ رُزمتك',title:'صدّر واستورد إلى Anki',text:'راجع اختياراتك وإعدادات التصدير، ثم أنشئ ملف الرزمة بصيغة APKG. بعد تنزيله، افتحه باستخدام Anki لاستيراد البطاقات.',tip:'احتفظ بنسخة من ملف APKG بعد التصدير لتسهيل إعادة الاستيراد أو النقل.',art:'تصدير APKG'}\n];\nvar onbStep=0;\nvar onboardPreviousOverflow='';\nvar onboardReturnFocus=null;\nfunction showOnboarding(){\n  var overlay=document.getElementById('onboardOverlay');\n  if(!overlay)return;\n  onbStep=0;\n  renderOnboardStep();\n  onboardReturnFocus=document.activeElement;\n  onboardPreviousOverflow=document.body.style.overflow||'';\n  document.body.style.overflow='hidden';\n  if(typeof overlay.showModal==='function'){\n    if(!overlay.open)overlay.showModal();\n  }else{\n    overlay.setAttribute('open','');\n  }\n  window.setTimeout(function(){var b=overlay.querySelector('.ob-btn.primary');if(b)b.focus();},40);\n}\nfunction closeOnboarding(){\n  var overlay=document.getElementById('onboardOverlay');\n  if(overlay){\n    if(typeof overlay.close==='function'&&overlay.open)overlay.close();\n    else overlay.removeAttribute('open');\n  }\n  document.body.style.overflow=onboardPreviousOverflow;\n  try{if(onboardReturnFocus&&typeof onboardReturnFocus.focus==='function')onboardReturnFocus.focus();}catch(_e){}\n  onboardReturnFocus=null;\n  try{localStorage.setItem('anki___DECK___onboarded','1');}catch(_e){}\n}\nfunction moveOnboardStep(delta){\n  var next=onbStep+delta;\n  if(next<0)return;\n  if(next>=ONBOARD_STEPS.length){closeOnboarding();return;}\n  onbStep=next;\n  renderOnboardStep();\n  window.setTimeout(function(){\n    var overlay=document.getElementById('onboardOverlay');\n    var target=overlay&&overlay.querySelector('.ob-btn.primary');\n    if(target)target.focus();\n  },0);\n}\nfunction renderOnboardStep(){\n  var box=document.getElementById('onboardBox');\n  if(!box)return;\n  var step=ONBOARD_STEPS[onbStep];\n  if(!step)return;\n  var progress='';\n  ONBOARD_STEPS.forEach(function(_,i){progress+='<span class=\"'+(i<=onbStep?'done':'')+'\"></span>';});\n  var h='<div class=\"ob-shell\" role=\"group\" aria-label=\"خطوات الجولة\">';\n  h+='<div class=\"ob-top\"><div class=\"ob-brand\"><span class=\"ob-brand-mark\">A</span><span>ANKI GALLERY TOUR</span></div><span class=\"ob-count\">الخطوة '+(onbStep+1)+' من '+ONBOARD_STEPS.length+'</span><button class=\"ob-close\" type=\"button\" onclick=\"closeOnboarding()\" aria-label=\"إغلاق الجولة\">×</button></div>';\n  h+='<div class=\"ob-progress\" role=\"progressbar\" aria-label=\"تقدم الجولة\" aria-valuemin=\"1\" aria-valuemax=\"'+ONBOARD_STEPS.length+'\" aria-valuenow=\"'+(onbStep+1)+'\">'+progress+'</div>';\n  h+='<div class=\"ob-content\"><div class=\"ob-art\"><div class=\"ob-art-icon\" aria-hidden=\"true\">'+step.icon+'</div><div class=\"ob-art-label\">'+step.art+'</div></div>';\n  h+='<div class=\"ob-copy\"><div class=\"ob-kicker\">'+step.label+'</div><h2 class=\"ob-title\" id=\"onboardStepTitle\">'+step.title+'</h2><p class=\"ob-text\">'+step.text+'</p><div class=\"ob-tip\"><span class=\"ob-tip-icon\" aria-hidden=\"true\">✦</span><span>'+step.tip+'</span></div></div></div>';\n  h+='<div class=\"ob-footer\"><button class=\"ob-skip\" type=\"button\" onclick=\"closeOnboarding()\">تخطي الجولة</button><div class=\"ob-nav\">';\n  if(onbStep>0)h+='<button class=\"ob-btn ghost\" type=\"button\" onclick=\"moveOnboardStep(-1)\">السابق</button>';\n  if(onbStep<ONBOARD_STEPS.length-1)h+='<button class=\"ob-btn primary\" type=\"button\" onclick=\"moveOnboardStep(1)\">التالي <span aria-hidden=\"true\">←</span></button>';\n  else h+='<button class=\"ob-btn primary\" type=\"button\" onclick=\"closeOnboarding()\">إنهاء الجولة <span aria-hidden=\"true\">✓</span></button>';\n  h+='</div></div></div>';\n  box.innerHTML=h;\n  box.setAttribute('aria-labelledby','onboardStepTitle');\n}\ndocument.addEventListener('keydown',function(e){\n  var overlay=document.getElementById('onboardOverlay');\n  if(!overlay||!overlay.hasAttribute('open'))return;\n  if(e.key==='Escape'){e.preventDefault();closeOnboarding();return;}\n  if(e.key==='Tab'){\n    var focusable=Array.prototype.slice.call(overlay.querySelectorAll(\n      'button:not([disabled]),a[href],input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex=\"-1\"])'\n    )).filter(function(el){return !!(el.offsetWidth||el.offsetHeight||el.getClientRects().length);});\n    if(!focusable.length){e.preventDefault();return;}\n    var first=focusable[0],last=focusable[focusable.length-1];\n    if(e.shiftKey&&(document.activeElement===first||document.activeElement===overlay)){\n      e.preventDefault();last.focus();\n    }else if(!e.shiftKey&&document.activeElement===last){\n      e.preventDefault();first.focus();\n    }\n    return;\n  }\n  var target=e.target;\n  var typing=target&&(target.tagName==='INPUT'||target.tagName==='TEXTAREA'||target.tagName==='SELECT'||target.isContentEditable);\n  if(typing||e.altKey||e.ctrlKey||e.metaKey)return;\n  if(e.key==='ArrowLeft'){e.preventDefault();moveOnboardStep(1);}\n  else if(e.key==='ArrowRight'&&onbStep>0){e.preventDefault();moveOnboardStep(-1);}\n});\n\n"
+TOUR_CSS = r"""
+#onboardOverlay[hidden]{display:none!important}
+#onboardTourLauncher{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:2147483001;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:10px 16px;border:1px solid rgba(196,181,253,.34);border-radius:999px;background:linear-gradient(110deg,#6d28d9,#4f46e5 58%,#0e7490);color:#fff;font:inherit;font-size:.78rem;font-weight:900;box-shadow:0 12px 30px rgba(30,27,75,.38),0 0 0 1px rgba(255,255,255,.06) inset;cursor:pointer;pointer-events:auto;transition:transform .18s,box-shadow .18s,filter .18s}
+#onboardTourLauncher[hidden]{display:none!important}
+#onboardTourLauncher:hover{transform:translateY(-2px);filter:brightness(1.08);box-shadow:0 16px 36px rgba(30,27,75,.48)}
+#onboardTourLauncher:focus-visible{outline:3px solid #67e8f9;outline-offset:4px}
+@media(max-width:640px){#onboardTourLauncher{right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));min-height:44px;padding:9px 13px;font-size:.72rem}}
+#onboardGuideRoot{position:fixed;inset:0;z-index:2147483000;pointer-events:none;direction:rtl;color:#f8fafc}
+#onboardGuideRoot .og-backdrop{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+#onboardGuideRoot .og-card{position:fixed;left:12px;right:auto;top:12px;bottom:auto;width:min(430px,calc(100vw - 24px));max-height:min(54dvh,460px);overflow:auto;overscroll-behavior:contain;padding:20px;border:1px solid rgba(167,139,250,.34);border-radius:22px;background:linear-gradient(145deg,rgba(17,21,38,.985),rgba(8,12,25,.99));box-shadow:0 24px 80px rgba(0,0,0,.48),0 0 0 1px rgba(255,255,255,.045) inset,0 0 36px rgba(99,102,241,.12);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);pointer-events:auto;scrollbar-width:thin;z-index:1;animation:ogEnter .24s cubic-bezier(.2,.8,.2,1) both}
+#onboardGuideRoot .og-card:after{content:"";position:absolute;left:var(--og-arrow-x,50%);width:12px;height:12px;background:#111526;border:1px solid rgba(167,139,250,.34);transform:translateX(-50%) rotate(45deg);pointer-events:none}
+#onboardGuideRoot .og-card[data-placement="below"]:after{top:-7px;border-right:0;border-bottom:0}
+#onboardGuideRoot .og-card[data-placement="above"]:after{bottom:-7px;border-left:0;border-top:0}
+#onboardGuideRoot .og-card[data-placement="center"]:after{display:none}
+#onboardGuideRoot .og-card:before{content:"";position:absolute;inset:0 16% auto;height:1px;background:linear-gradient(90deg,transparent,#a78bfa,#67e8f9,transparent);pointer-events:none}
+@keyframes ogEnter{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+#onboardGuideRoot .og-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:15px}
+#onboardGuideRoot .og-brand{display:flex;align-items:center;gap:9px;min-width:0}
+#onboardGuideRoot .og-mark{display:grid;place-items:center;flex:0 0 auto;width:33px;height:33px;border:1px solid rgba(167,139,250,.36);border-radius:11px;background:linear-gradient(135deg,#6d28d9,#0e7490);font-size:.88rem;font-weight:950;box-shadow:0 7px 18px rgba(79,70,229,.2)}
+#onboardGuideRoot .og-brand-copy{display:grid;gap:2px;min-width:0}
+#onboardGuideRoot .og-brand-copy strong{color:#e9e6ff;font-size:.7rem;font-weight:950;letter-spacing:.09em}
+#onboardGuideRoot .og-brand-copy small{color:#9ca3b8;font-size:.65rem}
+#onboardGuideRoot .og-close{display:grid;place-items:center;flex:0 0 auto;width:36px;height:36px;border:1px solid rgba(255,255,255,.12);border-radius:11px;background:rgba(255,255,255,.045);color:#dbe3f3;font-size:1.15rem;cursor:pointer}
+#onboardGuideRoot .og-close:hover{background:rgba(248,113,113,.14);border-color:rgba(248,113,113,.4)}
+#onboardGuideRoot .og-progress{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;margin:0 0 14px}
+#onboardGuideRoot .og-progress button{display:block;min-width:0;padding:7px 0;border:0;background:transparent;cursor:pointer}
+#onboardGuideRoot .og-progress button span{display:block;height:5px;border-radius:99px;background:rgba(255,255,255,.13);transition:background .2s,box-shadow .2s}
+#onboardGuideRoot .og-progress button.done span{background:linear-gradient(90deg,#8b5cf6,#22d3ee)}
+#onboardGuideRoot .og-progress button[aria-current="step"] span{background:linear-gradient(90deg,#8b5cf6,#22d3ee);box-shadow:0 0 0 2px rgba(103,232,249,.22),0 0 14px rgba(34,211,238,.2)}
+#onboardGuideRoot .og-progress button:focus-visible,#onboardGuideRoot button:focus-visible{outline:3px solid #67e8f9;outline-offset:3px;border-radius:7px}
+#onboardGuideRoot .og-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+#onboardGuideRoot .og-step-label{color:#67e8f9;font-size:.72rem;font-weight:950}
+#onboardGuideRoot .og-count{color:#9ca3b8;font-size:.69rem;font-variant-numeric:tabular-nums}
+#onboardGuideRoot .og-title{margin:0 0 9px;color:#fff;font-family:var(--font-head,inherit);font-size:clamp(1.13rem,2.5vw,1.42rem);font-weight:950;line-height:1.5}
+#onboardGuideRoot .og-text{margin:0;color:#d0d6e5;font-size:.84rem;line-height:1.9}
+#onboardGuideRoot .og-target{display:flex;align-items:center;gap:10px;margin-top:13px;padding:10px 12px;border:1px solid rgba(103,232,249,.18);border-radius:13px;background:rgba(8,145,178,.09)}
+#onboardGuideRoot .og-target-mark{display:grid;place-items:center;flex:0 0 auto;width:27px;height:27px;border-radius:9px;background:rgba(34,211,238,.12);color:#67e8f9;font-weight:950}
+#onboardGuideRoot .og-target-copy{display:grid;gap:2px;min-width:0}
+#onboardGuideRoot .og-target-copy small{color:#94a3b8;font-size:.63rem}
+#onboardGuideRoot .og-target-copy strong{color:#e0f2fe;font-size:.76rem;font-weight:900}
+#onboardGuideRoot .og-note{margin-top:9px;color:#aebbd0;font-size:.7rem;line-height:1.75}
+#onboardGuideRoot .og-footer{position:sticky;bottom:-13px;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:10px;margin:15px -13px -13px;padding:13px 13px 13px;border-top:1px solid rgba(255,255,255,.09);background:linear-gradient(180deg,rgba(8,12,25,.9),rgba(8,12,25,.995));backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+#onboardGuideRoot .og-skip{border:0;background:none;color:#9ca3b8;font:inherit;font-size:.73rem;text-decoration:underline;text-underline-offset:4px;cursor:pointer}
+#onboardGuideRoot .og-skip:hover{color:#e2e8f0}
+#onboardGuideRoot .og-actions{display:flex;align-items:center;gap:8px}
+#onboardGuideRoot .og-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;padding:9px 15px;border:1px solid rgba(255,255,255,.13);border-radius:12px;font:inherit;font-size:.77rem;font-weight:900;cursor:pointer;transition:transform .16s,box-shadow .16s,background .16s}
+#onboardGuideRoot .og-btn:hover{transform:translateY(-1px)}
+#onboardGuideRoot .og-btn.primary{border-color:transparent;background:linear-gradient(110deg,#6d28d9,#4f46e5 58%,#0e7490);color:#fff;box-shadow:0 9px 22px rgba(79,70,229,.25)}
+#onboardGuideRoot .og-btn.ghost{background:rgba(255,255,255,.045);color:#dbeafe}
+body .og-spotlight{position:relative!important;z-index:2147482998!important;outline:3px solid #67e8f9!important;outline-offset:6px!important;border-radius:14px!important;box-shadow:0 0 0 9px rgba(34,211,238,.15),0 16px 48px rgba(0,0,0,.28)!important;transition:outline-color .18s,box-shadow .18s}
+@media(max-width:640px){
+#onboardGuideRoot .og-card{width:min(420px,calc(100vw - 24px));max-height:min(54dvh,440px);padding:16px;border-radius:19px}
+#onboardGuideRoot .og-head{margin-bottom:11px}
+#onboardGuideRoot .og-brand-copy strong{font-size:.65rem}
+#onboardGuideRoot .og-brand-copy small{font-size:.6rem}
+#onboardGuideRoot .og-meta{margin-bottom:6px}
+#onboardGuideRoot .og-title{font-size:1.08rem;margin-bottom:7px}
+#onboardGuideRoot .og-text{font-size:.77rem;line-height:1.8}
+#onboardGuideRoot .og-target{margin-top:10px;padding:8px 10px}
+#onboardGuideRoot .og-note{font-size:.66rem}
+#onboardGuideRoot .og-footer{margin-top:11px;padding-top:10px}
+#onboardGuideRoot .og-btn{min-height:40px;padding:8px 11px;font-size:.72rem}
+}
+@media(max-width:360px){
+#onboardGuideRoot .og-card{padding:13px}
+#onboardGuideRoot .og-brand-copy small{display:none}
+#onboardGuideRoot .og-title{font-size:1rem}
+#onboardGuideRoot .og-text{font-size:.73rem}
+#onboardGuideRoot .og-actions{gap:5px}
+}
+@media(prefers-reduced-motion:reduce){
+#onboardGuideRoot *,#onboardGuideRoot *:before,#onboardGuideRoot *:after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+}
+"""
+
+TOUR_JS = r"""
+var ONBOARD_DECK = "__DECK__";
+var ONBOARD_PRIMARY_LANGUAGE = ONBOARD_DECK === "fr9" ? "الفرنسية" : "الإنجليزية";
+var ONBOARD_STORAGE_KEY = "anki_" + ONBOARD_DECK + "_onboarded";
+var ONBOARD_SNOOZE_KEY = "anki_" + ONBOARD_DECK + "_onboarding_snoozed";
+var onboardOpenedBrowser = false;
+var onboardOpenedAudio = false;
+var onboardPositionFrame = 0;
+var onboardScrollingTarget = false;
+var ONBOARD_STEPS = [
+  {id:"start",label:"ابدأ هنا",title:"من القالب إلى رزمة Anki — بخطوات واضحة",text:"هذه ليست نافذة شرح منفصلة. سنمشي داخل المعرض نفسه: افتح المكتبة، جرّب المعاينة، افهم التحديد، اضبط الصوت، ثم راجع إعدادات التصدير. لن تُنشأ أي رزمة أثناء الجولة.",target:".hero-cta-main",targetLabel:"زر «استعرض القوالب»",note:"ستبقى أدوات الصفحة قابلة للاستخدام، ويمكنك إغلاق الجولة أو إعادة فتحها متى شئت."},
+  {id:"library",label:"المكتبة",title:"استكشف القوالب الحقيقية — لا صورًا تجريبية",text:"هذه المكتبة تضم 100 تصميم فعلي. استخدم التصنيفات لتقليل الخيارات، وتصفّح البطاقات، ثم اضغط تصميمًا لترى معاينته الحقيقية في الصفحة. اختيار بطاقة من المكتبة يبدّل المعاينة فقط؛ لا يضيف قالبًا إلى رُزمتك ولا ينشئ ملفًا.",target:"#gbGrid .gb-item",fallback:"#gbFilters",targetLabel:"بطاقة حقيقية من شبكة القوالب",note:"جرّب اختيار قالب من الشبكة؛ ستنتقل الجولة تلقائيًا إلى معاينته."},
+  {id:"preview",label:"المعاينة",title:"افحص البطاقة كما ستظهر فعلًا",text:"هذه معاينة القالب الحقيقي داخل إطار البطاقة. راجع وضوح النص والمسافات، وتنقّل بين التصاميم بالأسهم. جرّب زر «قلب البطاقة» لترى الوجه الآخر قبل أن تعتمد التصميم.",target:"#gvShowAns",fallback:"#gvStage",targetLabel:"زر «قلب البطاقة»",note:"قلب البطاقة يغيّر المعاينة فقط، ولا يغيّر محتوى رُزمتك."},
+  {id:"selection",label:"التحديد",title:"اختر القوالب التي تريد استخدامها",text:"زر «تحديد» يضيف القالب الحالي إلى اختياراتك أو يزيله منها. يمكنك تحديد قالب واحد أو عدة قوالب؛ وستظهر حالة الاختيار وعدد القوالب في شريط التحديد. لا يحدث أي تصدير هنا.",target:"#gvSelectBtn",targetLabel:"زر تحديد القالب",note:"الجولة لا تحدّد قوالب نيابةً عنك؛ أي تغيير تجريه هنا يكون باختيارك."},
+  {id:"audio",label:"الصوت",title:"اضبط نطق " + ONBOARD_PRIMARY_LANGUAGE + " والعربية",text:"من هذه اللوحة تختار صوت اللغة الأساسية والعربية، وتعدّل السرعة والنغمة والفواصل. يمكنك تشغيل معاينة الصوت بنفسك عند توفر اتصال مناسب؛ الجولة لن تطلب ملفات صوتية أو تشغّل طلبات شبكة تلقائيًا.",target:"#gTtsPreviewBtn",fallback:"#gAudioPanelBody",targetLabel:"زر معاينة الصوت",note:"للمعرض الفرنسي اللغة الأساسية هي الفرنسية، وللمعارض الإنجليزية هي الإنجليزية."},
+  {id:"export",label:"مراجعة التصدير",title:"راجع الإعدادات قبل إنشاء الرزمة",text:"هذا الزر يفتح مراجعة اسم الرزمة والقوالب والصوت والحجم المتوقع، من دون إنشاء ملف. لا يبدأ إنشاء APKG إلا عندما تضغط «بدء التصدير» بنفسك. بعد تنزيل الملف، ستجد أسفل الصفحة قسم «كيفية الاستيراد» لإضافته إلى Anki على الكمبيوتر أو الهاتف.",target:"#exOpenBtn",targetLabel:"زر «تصدير رزمة Anki»",note:"سنفتح شاشة الملخص عند طلبك، لكننا لن نضغط «بدء التصدير» ولن ننشئ ملفًا ضمن الجولة."}
+];
+var onbStep = 0;
+var onboardGuideOpen = false;
+var onboardGuideRoot = null;
+var onboardGuideReturnFocus = null;
+var onboardActiveTarget = null;
+var onboardReviewOpened = false;
+
+function isOnboardingCompleted(){
+  try{
+    if(localStorage.getItem(ONBOARD_STORAGE_KEY) === "1")return true;
+  }catch(_e){}
+  try{return sessionStorage.getItem(ONBOARD_SNOOZE_KEY) === "1";}
+  catch(_e){return false;}
+}
+function markOnboardingCompleted(){
+  try{localStorage.setItem(ONBOARD_STORAGE_KEY,"1");return true;}
+  catch(_e){return false;}
+}
+function onboardStepTarget(step){
+  if(!step)return null;
+  var selector = (step.id === "export" && onboardReviewOpened) ? "#exViewSummary" : step.target;
+  var target = selector ? document.querySelector(selector) : null;
+  if(!target && step.fallback)target = document.querySelector(step.fallback);
+  return target;
+}
+function onboardClearSpotlight(){
+  if(onboardActiveTarget){
+    onboardActiveTarget.classList.remove("og-spotlight");
+    onboardActiveTarget = null;
+  }
+}
+function onboardEnsureRoot(){
+  if(onboardGuideRoot && onboardGuideRoot.isConnected)return onboardGuideRoot;
+  var legacy = document.getElementById("onboardOverlay");
+  if(legacy){legacy.hidden = true;legacy.setAttribute("aria-hidden","true");}
+  var root = document.createElement("div");
+  root.id = "onboardGuideRoot";
+  root.className = "onboard-guide-root";
+  root.setAttribute("dir","rtl");
+  document.body.appendChild(root);
+  root.addEventListener("click",function(event){
+    var stepButton = event.target.closest ? event.target.closest("[data-guide-step]") : null;
+    if(stepButton){
+      var nextIndex = parseInt(stepButton.getAttribute("data-guide-step"),10);
+      if(Number.isInteger(nextIndex))goToOnboardStep(nextIndex);
+      return;
+    }
+    var actionButton = event.target.closest ? event.target.closest("[data-guide-action]") : null;
+    if(actionButton)handleOnboardAction(actionButton.getAttribute("data-guide-action"));
+  });
+  onboardGuideRoot = root;
+  return root;
+}
+function onboardPrepareStep(index){
+  var browser = document.getElementById("galleryBrowser");
+  if(index === 1){
+    // Ensure the 100 real designs have been mounted before opening the library.
+    // The tour can start before the asynchronous gallery watcher has populated gvList.
+    try{if(typeof ensureGalleryDesigns === "function")ensureGalleryDesigns();}catch(_e){}
+    if(browser && !browser.classList.contains("open") && typeof openGalleryBrowser === "function"){
+      openGalleryBrowser();
+      onboardOpenedBrowser = true;
+    }
+  }else if(onboardOpenedBrowser && browser && browser.classList.contains("open") && typeof closeGalleryBrowser === "function"){
+    closeGalleryBrowser();
+    onboardOpenedBrowser = false;
+  }
+  var audio = document.getElementById("gAudioPanelBody");
+  if(index === 4){
+    if(audio && !audio.classList.contains("open") && typeof toggleAudioPanel === "function"){
+      toggleAudioPanel();
+      onboardOpenedAudio = true;
+    }
+  }else if(onboardOpenedAudio && audio && audio.classList.contains("open") && typeof toggleAudioPanel === "function"){
+    toggleAudioPanel();
+    onboardOpenedAudio = false;
+  }
+}
+function goToOnboardStep(index){
+  var next = Number(index);
+  if(!Number.isInteger(next) || next < 0 || next >= ONBOARD_STEPS.length)return;
+  onboardClearSpotlight();
+  onbStep = next;
+  onboardReviewOpened = false;
+  onboardPrepareStep(next);
+  renderOnboardStep();
+  window.setTimeout(scheduleOnboardPosition,90);
+}
+function onboardBackdropPath(target,width,height){
+  var outer = "M0 0H" + width + "V" + height + "H0Z";
+  if(!target || !target.isConnected)return outer;
+  var rect = target.getBoundingClientRect();
+  if(!rect.width || !rect.height)return outer;
+  var pad = 10;
+  var left = Math.max(0,rect.left-pad);
+  var top = Math.max(0,rect.top-pad);
+  var right = Math.min(width,rect.right+pad);
+  var bottom = Math.min(height,rect.bottom+pad);
+  var radius = Math.min(16,(right-left)/4,(bottom-top)/4);
+  var hole = "M" + (left+radius) + " " + top +
+    "H" + (right-radius) + "Q" + right + " " + top + " " + right + " " + (top+radius) +
+    "V" + (bottom-radius) + "Q" + right + " " + bottom + " " + (right-radius) + " " + bottom +
+    "H" + (left+radius) + "Q" + left + " " + bottom + " " + left + " " + (bottom-radius) +
+    "V" + (top+radius) + "Q" + left + " " + top + " " + (left+radius) + " " + top + "Z";
+  return outer + " " + hole;
+}
+function positionOnboardGuide(){
+  if(!onboardGuideOpen || !onboardGuideRoot)return;
+  onboardClearSpotlight();
+  var step = ONBOARD_STEPS[onbStep];
+  var target = onboardStepTarget(step);
+  var card = onboardGuideRoot.querySelector(".og-card");
+  var path = onboardGuideRoot.querySelector("#ogBackdropPath");
+  var backdrop = onboardGuideRoot.querySelector(".og-backdrop");
+  if(!card || !path || !backdrop)return;
+  var width = Math.max(320,document.documentElement.clientWidth || window.innerWidth || 320);
+  var height = Math.max(320,window.innerHeight || document.documentElement.clientHeight || 320);
+  var reduced = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  backdrop.setAttribute("viewBox","0 0 " + width + " " + height);
+  if(target && target.isConnected){
+    var initialRect = target.getBoundingClientRect();
+    if(!onboardScrollingTarget && (initialRect.top < 76 || initialRect.bottom > height-76)){
+      onboardScrollingTarget = true;
+      try{target.scrollIntoView({behavior:reduced ? "auto" : "smooth",block:"center",inline:"nearest"});}catch(_e){}
+      window.setTimeout(function(){onboardScrollingTarget = false;scheduleOnboardPosition();},reduced ? 40 : 360);
+    }
+    onboardActiveTarget = target;
+    target.classList.add("og-spotlight");
+  }else{
+    target = null;
+  }
+  var rect = target ? target.getBoundingClientRect() : null;
+  path.setAttribute("d",onboardBackdropPath(target,width,height));
+  var margin = 12;
+  var gap = 18;
+  card.style.right = "auto";
+  card.style.bottom = "auto";
+  card.style.left = margin + "px";
+  card.style.top = margin + "px";
+  card.style.width = Math.min(width-24,width <= 640 ? 420 : 430) + "px";
+  card.style.maxHeight = Math.min(height*.54,460) + "px";
+  card.dataset.placement = "center";
+  if(!rect){
+    var centered = card.getBoundingClientRect();
+    card.style.left = Math.max(margin,(width-centered.width)/2) + "px";
+    card.style.top = Math.max(margin,(height-centered.height)/2) + "px";
+    return;
+  }
+  var measured = card.getBoundingClientRect();
+  var availableAbove = Math.max(0,rect.top-margin-gap);
+  var availableBelow = Math.max(0,height-rect.bottom-margin-gap);
+  var placeBelow = availableBelow >= measured.height || availableBelow >= availableAbove;
+  var available = placeBelow ? availableBelow : availableAbove;
+  var maxCardHeight = Math.max(190,Math.min(height*.68,available-8));
+  card.style.maxHeight = maxCardHeight + "px";
+  measured = card.getBoundingClientRect();
+  var top = placeBelow ? rect.bottom+gap : rect.top-measured.height-gap;
+  top = Math.max(margin,Math.min(height-measured.height-margin,top));
+  var left = rect.left + rect.width/2 - measured.width/2;
+  left = Math.max(margin,Math.min(width-measured.width-margin,left));
+  card.style.left = left + "px";
+  card.style.top = top + "px";
+  card.dataset.placement = placeBelow ? "below" : "above";
+  var arrowX = Math.max(22,Math.min(measured.width-22,rect.left+rect.width/2-left));
+  card.style.setProperty("--og-arrow-x",arrowX + "px");
+}
+function scheduleOnboardPosition(){
+  if(!onboardGuideOpen || onboardPositionFrame)return;
+  var request = window.requestAnimationFrame || function(callback){return window.setTimeout(callback,16);};
+  onboardPositionFrame = request(function(){
+    onboardPositionFrame = 0;
+    positionOnboardGuide();
+  });
+}
+function onboardNode(tag,className,text){
+  var node = document.createElement(tag);
+  if(className)node.className = className;
+  if(text !== undefined && text !== null)node.textContent = String(text);
+  return node;
+}
+function renderOnboardStep(){
+  if(!onboardGuideOpen)return;
+  var root = onboardEnsureRoot();
+  var step = ONBOARD_STEPS[onbStep];
+  if(!step)return;
+  var review = step.id === "export" && onboardReviewOpened;
+  var title = review ? "هكذا تبدو مراجعة الرزمة قبل الإنشاء" : step.title;
+  var body = review ? "راجع اسم الرزمة، وعدد القوالب المختارة، وإعدادات الصوت وخيارات التضمين. يمكنك إغلاق النافذة والعودة للتعديل. تذكير: لن يبدأ الإنشاء حتى تضغط زر «بدء التصدير» بنفسك." : step.text;
+  var targetLabel = review ? "ملخص إعدادات الرزمة" : step.targetLabel;
+  var note = review ? "لم نضغط زر بدء التصدير، ولم يُرسل طلب إنشاء APKG." : step.note;
+  var primaryLabel = onbStep === 0 ? "ابدأ الجولة" :
+    onbStep === 1 ? "انتقل إلى المعاينة" :
+    onbStep === 2 ? "جرّب قلب البطاقة" :
+    onbStep === 3 ? "تابع إلى إعدادات الصوت" :
+    onbStep === 4 ? "تابع إلى التصدير" :
+    (review ? "إنهاء الجولة" : "افتح شاشة المراجعة");
+  var primaryAction = onbStep === 0 ? "start" :
+    onbStep === 1 ? "preview" :
+    onbStep === 2 ? "flip" :
+    onbStep === 3 ? "audio" :
+    onbStep === 4 ? "export" :
+    (review ? "finish" : "review");
+
+  var svgNS = "http://www.w3.org/2000/svg";
+  var backdrop = document.createElementNS(svgNS,"svg");
+  backdrop.setAttribute("class","og-backdrop");
+  backdrop.setAttribute("aria-hidden","true");
+  backdrop.setAttribute("focusable","false");
+  backdrop.setAttribute("viewBox","0 0 100 100");
+  backdrop.setAttribute("preserveAspectRatio","none");
+  var path = document.createElementNS(svgNS,"path");
+  path.setAttribute("id","ogBackdropPath");
+  path.setAttribute("fill","rgba(3,7,18,.68)");
+  path.setAttribute("fill-rule","evenodd");
+  path.setAttribute("d","M0 0H100V100H0Z");
+  backdrop.appendChild(path);
+
+  var card = onboardNode("section","og-card");
+  card.setAttribute("role","dialog");
+  card.setAttribute("aria-modal","false");
+  card.setAttribute("aria-labelledby","onboardGuideTitle");
+  card.setAttribute("aria-describedby","onboardGuideText");
+
+  var head = onboardNode("div","og-head");
+  var brand = onboardNode("div","og-brand");
+  brand.appendChild(onboardNode("span","og-mark","A"));
+  var brandCopy = onboardNode("span","og-brand-copy");
+  brandCopy.appendChild(onboardNode("strong","","ANKI DESIGN STUDIO"));
+  brandCopy.appendChild(onboardNode("small","","جولة داخل المعرض • ٦ محطات"));
+  brand.appendChild(brandCopy);
+  var close = onboardNode("button","og-close","×");
+  close.type = "button";
+  close.setAttribute("data-guide-action","close");
+  close.setAttribute("aria-label","إغلاق الجولة");
+  head.appendChild(brand);
+  head.appendChild(close);
+  card.appendChild(head);
+
+  var progress = onboardNode("nav","og-progress");
+  progress.setAttribute("aria-label","محطات الجولة");
+  ONBOARD_STEPS.forEach(function(item,index){
+    var button = onboardNode("button",index <= onbStep ? "done" : "");
+    button.type = "button";
+    button.setAttribute("data-guide-step",String(index));
+    button.setAttribute("aria-label","الانتقال إلى المحطة " + (index+1) + ": " + item.label);
+    button.setAttribute("aria-current",index === onbStep ? "step" : "false");
+    button.appendChild(onboardNode("span",""));
+    progress.appendChild(button);
+  });
+  card.appendChild(progress);
+
+  var meta = onboardNode("div","og-meta");
+  meta.appendChild(onboardNode("span","og-step-label",step.label));
+  meta.appendChild(onboardNode("span","og-count","المحطة " + (onbStep+1) + " من " + ONBOARD_STEPS.length));
+  card.appendChild(meta);
+  var heading = onboardNode("h2","og-title",title);
+  heading.id = "onboardGuideTitle";
+  heading.tabIndex = -1;
+  card.appendChild(heading);
+  var description = onboardNode("p","og-text",body);
+  description.id = "onboardGuideText";
+  description.setAttribute("aria-live","polite");
+  card.appendChild(description);
+
+  var targetBox = onboardNode("div","og-target");
+  targetBox.appendChild(onboardNode("span","og-target-mark","◎"));
+  var targetCopy = onboardNode("span","og-target-copy");
+  targetCopy.appendChild(onboardNode("small","","الأداة الفعلية على الصفحة"));
+  targetCopy.appendChild(onboardNode("strong","",targetLabel));
+  targetBox.appendChild(targetCopy);
+  card.appendChild(targetBox);
+
+  var status = onboardNode("p","og-note",note);
+  status.id = "onboardGuideNote";
+  status.setAttribute("role","status");
+  status.setAttribute("aria-live","polite");
+  card.appendChild(status);
+
+  var footer = onboardNode("div","og-footer");
+  var later = onboardNode("button","og-skip","لاحقًا");
+  later.type = "button";
+  later.setAttribute("data-guide-action","later");
+  footer.appendChild(later);
+  var actions = onboardNode("div","og-actions");
+  if(onbStep > 0){
+    var previous = onboardNode("button","og-btn ghost","السابق");
+    previous.type = "button";
+    previous.setAttribute("data-guide-action","previous");
+    actions.appendChild(previous);
+  }
+  var primary = onboardNode("button","og-btn primary",primaryLabel);
+  primary.type = "button";
+  primary.setAttribute("data-guide-action",primaryAction);
+  actions.appendChild(primary);
+  footer.appendChild(actions);
+  card.appendChild(footer);
+
+  while(root.firstChild)root.removeChild(root.firstChild);
+  root.appendChild(backdrop);
+  root.appendChild(card);
+  if(heading && typeof heading.focus === "function")heading.focus({preventScroll:true});
+}
+function handleOnboardAction(action){
+  if(action === "finish"){closeOnboarding(true);return;}
+  if(action === "close" || action === "later"){closeOnboarding(false);return;}
+  if(action === "previous"){goToOnboardStep(onbStep-1);return;}
+  if(action === "start"){goToOnboardStep(1);return;}
+  if(action === "preview"){goToOnboardStep(2);return;}
+  if(action === "flip"){
+    if(typeof gvFlip === "function")gvFlip();
+    window.setTimeout(function(){if(onboardGuideOpen && onbStep === 2)goToOnboardStep(3);},240);
+    return;
+  }
+  if(action === "audio"){goToOnboardStep(4);return;}
+  if(action === "export"){goToOnboardStep(5);return;}
+  if(action === "review"){
+    var button = document.getElementById("exOpenBtn");
+    if(button)button.click();
+    else if(typeof openExport === "function")openExport();
+    var closeButton = document.querySelector("#exportOverlay .fs-close");
+    if(closeButton)onboardGuideReturnFocus = closeButton;
+    onboardReviewOpened = true;
+    renderOnboardStep();
+    window.setTimeout(scheduleOnboardPosition,120);
+  }
+}
+function showOnboarding(){
+  if(onboardGuideOpen)return;
+  onboardGuideReturnFocus = document.activeElement;
+  onboardGuideOpen = true;
+  onboardReviewOpened = false;
+  onboardOpenedBrowser = false;
+  onboardOpenedAudio = false;
+  var launcher = document.getElementById("onboardTourLauncher");
+  if(launcher)launcher.hidden = true;
+  onboardEnsureRoot();
+  goToOnboardStep(0);
+}
+function closeOnboarding(completed){
+  if(!onboardGuideOpen)return;
+  onboardGuideOpen = false;
+  onboardClearSpotlight();
+  var browser = document.getElementById("galleryBrowser");
+  if(onboardOpenedBrowser && browser && browser.classList.contains("open") && typeof closeGalleryBrowser === "function")closeGalleryBrowser();
+  onboardOpenedBrowser = false;
+  var audio = document.getElementById("gAudioPanelBody");
+  if(onboardOpenedAudio && audio && audio.classList.contains("open") && typeof toggleAudioPanel === "function")toggleAudioPanel();
+  onboardOpenedAudio = false;
+  if(onboardGuideRoot && onboardGuideRoot.parentNode)onboardGuideRoot.parentNode.removeChild(onboardGuideRoot);
+  onboardGuideRoot = null;
+  if(completed){
+    var persisted = markOnboardingCompleted();
+    try{
+      if(persisted)sessionStorage.removeItem(ONBOARD_SNOOZE_KEY);
+      else sessionStorage.setItem(ONBOARD_SNOOZE_KEY,"1");
+    }catch(_e){}
+  }else{
+    try{sessionStorage.setItem(ONBOARD_SNOOZE_KEY,"1");}catch(_e){}
+  }
+  var launcher = document.getElementById("onboardTourLauncher");
+  if(launcher)launcher.hidden = false;
+  try{
+    if(onboardGuideReturnFocus && onboardGuideReturnFocus.isConnected && typeof onboardGuideReturnFocus.focus === "function")onboardGuideReturnFocus.focus();
+  }catch(_e){}
+  onboardGuideReturnFocus = null;
+}
+document.addEventListener("click",function(event){
+  if(!onboardGuideOpen)return;
+  var target = event.target;
+  if(!target || !target.closest)return;
+  if(onbStep === 1 && target.closest("#gbGrid .gb-item")){
+    window.setTimeout(function(){if(onboardGuideOpen && onbStep === 1)goToOnboardStep(2);},360);
+    return;
+  }
+  if(onbStep === 2 && target.closest("#gvShowAns,.gv-flip")){
+    window.setTimeout(function(){if(onboardGuideOpen && onbStep === 2)goToOnboardStep(3);},220);
+    return;
+  }
+  if(onbStep === 3 && target.closest("#gvSelectBtn")){
+    window.setTimeout(function(){
+      if(!onboardGuideOpen || onbStep !== 3)return;
+      var note = document.getElementById("onboardGuideNote");
+      var count = (typeof gvSel !== "undefined" && gvSel) ? gvSel.length : 0;
+      if(note)note.textContent = count ? "تم تحديث الاختيار فعليًا. عدد القوالب المحددة الآن: " + count + "." : "أُزيل تحديد القالب الحالي. يمكنك اختياره مجددًا أو متابعة الجولة.";
+    },40);
+    return;
+  }
+  if(onbStep === 4 && target.closest("#gTtsPreviewBtn")){
+    window.setTimeout(function(){
+      if(!onboardGuideOpen || onbStep !== 4)return;
+      var note = document.getElementById("onboardGuideNote");
+      if(note)note.textContent = "بدأت معاينة الصوت بطلب منك. استمع إلى النطق، ثم تابع عندما تنتهي.";
+    },40);
+    return;
+  }
+  if(onbStep === 5 && target.closest("#exOpenBtn")){
+    window.setTimeout(function(){
+      if(onboardGuideOpen && onbStep === 5){
+        var closeButton = document.querySelector("#exportOverlay .fs-close");
+        if(closeButton)onboardGuideReturnFocus = closeButton;
+        onboardReviewOpened = true;
+        renderOnboardStep();
+        scheduleOnboardPosition();
+      }
+    },120);
+  }
+});
+document.addEventListener("keydown",function(event){
+  if(!onboardGuideOpen)return;
+  if(event.key === "Escape"){
+    var exportOverlay = document.getElementById("exportOverlay");
+    if(onbStep === 5 && exportOverlay && exportOverlay.classList.contains("on") && typeof closeExport === "function"){
+      event.preventDefault();
+      closeExport();
+      window.setTimeout(function(){
+        if(onboardGuideOpen && onboardGuideRoot){
+          var heading = onboardGuideRoot.querySelector("#onboardGuideTitle");
+          if(heading && typeof heading.focus === "function")heading.focus({preventScroll:true});
+        }
+      },100);
+      return;
+    }
+    event.preventDefault();closeOnboarding();return;
+  }
+  var target = event.target;
+  var typing = target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.tagName === "SELECT" || target.isContentEditable);
+  if(typing || event.altKey || event.ctrlKey || event.metaKey)return;
+  if(event.key === "ArrowLeft" && onbStep < ONBOARD_STEPS.length-1){event.preventDefault();goToOnboardStep(onbStep+1);}
+  else if(event.key === "ArrowRight" && onbStep > 0){event.preventDefault();goToOnboardStep(onbStep-1);}
+});
+window.addEventListener("resize",scheduleOnboardPosition);
+window.addEventListener("scroll",scheduleOnboardPosition,true);
+var onboardOriginalCloseExport = null;
+if(typeof closeExport === "function" && !window.__ankiGuideWrappedCloseExport){
+  onboardOriginalCloseExport = closeExport;
+  window.closeExport = function(){
+    var result = onboardOriginalCloseExport.apply(this,arguments);
+    if(onboardGuideOpen && onbStep === 5 && onboardReviewOpened){
+      window.setTimeout(function(){
+        var overlay = document.getElementById("exportOverlay");
+        if(!overlay || !overlay.classList.contains("on")){
+          onboardReviewOpened = false;
+          var opener = document.getElementById("exOpenBtn");
+          if(opener)onboardGuideReturnFocus = opener;
+          renderOnboardStep();
+          scheduleOnboardPosition();
+        }
+      },80);
+    }
+    return result;
+  };
+  window.__ankiGuideWrappedCloseExport = true;
+}
+"""
+
 LOADER_CSS = "/* ============================================================\n   LOADING\n   ============================================================ */\n#loadingMsg{position:fixed;inset:0;z-index:90;display:grid;place-content:center;text-align:center;\n  background:var(--bg)}\n#loadBar{background:var(--ac)}\n#loadPct{color:var(--tx3)}\n"
 OLD_TOUR_CSS = "#onboardOverlay.onboard-overlay{background:radial-gradient(120% 100% at 50% 0%,rgba(139,92,246,.22),transparent 60%),linear-gradient(180deg,#14111d,#0b0a12)}\n#onboardOverlay .onboard-box{width:100vw;max-width:100vw;height:100dvh;max-height:100dvh;border:0;border-radius:0;background:transparent;animation:none;display:flex;align-items:center;justify-content:center;padding:24px}\n#onboardOverlay .ob-full{width:100%;max-width:620px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px}\n#onboardOverlay .ob-medal{display:grid;place-items:center;width:74px;height:74px;border-radius:50%;font-size:1.7rem;font-weight:900;color:#fff;background:linear-gradient(135deg,#7c3aed,#8b5cf6 50%,#0ea5e9);box-shadow:0 18px 44px rgba(124,58,237,.5);margin-bottom:14px}\n#onboardOverlay .ob-title{font-size:clamp(1.5rem,4.5vw,2.3rem);font-weight:900;font-family:var(--font-head);line-height:1.5;margin:0 0 8px;background:linear-gradient(115deg,#e9e2ff,#a78bfa 55%,#67e8f9);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}\n#onboardOverlay .ob-text{font-size:1rem;color:var(--tx2);line-height:2;max-width:540px;margin:0 0 14px}\n#onboardOverlay .ob-nav{display:flex;gap:12px;justify-content:center;margin-top:14px;flex-wrap:wrap}\n#onboardOverlay .ob-btn{padding:12px 40px;font-size:.9em}\n#onboardOverlay .ob-skip{margin-top:16px}\n#onboardOverlay .ob-skip button{background:none;border:none;color:var(--tx3);text-decoration:underline;cursor:pointer;font-size:.8em}\n#onboardOverlay .onboard-steps{justify-content:center}\n"
 LOADER_HTML = "<div id=\"loadingMsg\">\n  <div style=\"font-family:var(--font-mono);font-size:.8em;letter-spacing:1px;color:var(--tx2);margin-bottom:12px;text-transform:uppercase\">جاري تحميل القوالب...</div>\n  <div style=\"width:240px;height:4px;background:var(--s3);border:1px solid var(--bd-strong);border-radius:0;margin:0 auto;overflow:hidden\">\n    <div id=\"loadBar\" style=\"width:0%;height:100%;border-radius:0;transition:width .3s\"></div>\n  </div>\n  <div id=\"loadPct\" style=\"font-family:var(--font-mono);font-size:.62em;color:var(--tx3);margin-top:8px\">0%</div>\n</div>\n"
@@ -20,6 +565,20 @@ def _replace_once(source, old, new, label):
 def apply_gallery_ux(html, deck):
     if deck not in ("en9", "enlit", "ensci", "fr9"):
         raise SystemExit("UX polish is restricted to the four non-Bac galleries")
+
+    # The upstream gallery builder substitutes the per-deck audio-status URL
+    # but omits its closing quote. Repair the exact generated token here,
+    # without changing the protected builder or the French Bac source.
+    audio_source = "tas9" if deck == "fr9" else deck
+    audio_status_bad = "fetch(apiBase()+'/api/audio_status?source=" + audio_source + ")"
+    audio_status_good = "fetch(apiBase()+'/api/audio_status?source=" + audio_source + "')"
+    audio_status_count = html.count(audio_status_bad)
+    if audio_status_count != 1:
+        raise SystemExit(
+            deck + " expected one malformed generated audio-status URL for "
+            + audio_source + ", found " + str(audio_status_count)
+        )
+    html = html.replace(audio_status_bad, audio_status_good, 1)
 
     html = _replace_once(html, LOADER_CSS, "", deck + " loading CSS")
     html = _replace_once(html, LOADER_HTML, "", deck + " loading markup")
@@ -40,8 +599,7 @@ def apply_gallery_ux(html, deck):
     dialog_old = '<dialog class="onboard-overlay" id="onboardOverlay" style="display:none">'
     dialog_new = (
         '<dialog class="onboard-overlay" id="onboardOverlay" '
-        'aria-label="جولة سريعة" aria-labelledby="onboardStepTitle" '
-        'aria-modal="true" onclick="if(event.target===this)closeOnboarding()">'
+        'hidden aria-hidden="true">'
     )
     html = _replace_once(html, dialog_old, dialog_new, deck + " tour dialog semantics")
 
@@ -54,8 +612,17 @@ def apply_gallery_ux(html, deck):
     html = html[:start] + tour_js + "\n\n" + html[end:]
 
     old_init = "if(!localStorage.getItem('anki_" + deck + "_onboarded'))showOnboarding();"
-    new_init = "if(!localStorage.getItem('anki_" + deck + "_onboarded'))setTimeout(showOnboarding,80);"
+    new_init = "if(!isOnboardingCompleted())setTimeout(showOnboarding,180);"
     html = _replace_once(html, old_init, new_init, deck + " delayed first-visit tour")
+
+    launcher_html = '<button id="onboardTourLauncher" type="button" onclick="showOnboarding()" aria-label="إعادة فتح الجولة السريعة"><span aria-hidden="true">✦</span><span>الجولة السريعة</span></button>\n'
+    body_closers = list(re.finditer(r"</body\s*>", html, flags=re.I))
+    if not body_closers:
+        raise SystemExit(deck + " has no closing body tag for the persistent quick-tour launcher")
+    # Generated pages contain HTML fragments inside JavaScript strings, so the
+    # first textual </body> can be inside a script. Use the final document close.
+    body_close = body_closers[-1]
+    html = html[:body_close.start()] + launcher_html + html[body_close.start():]
 
     style_tag = '<style id="gallery-tour-redesign">\n' + TOUR_CSS + '\n</style>\n'
     html, inserted = re.subn(r"</head\s*>", style_tag + "</head>", html, count=1, flags=re.I)
