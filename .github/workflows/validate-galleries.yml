@@ -181,7 +181,11 @@ jobs:
                   assert f"visual:'{visual}'" in tour_source, f"{deck}: missing {visual} step visual"
               assert "function renderOnboardVisual(kind)" in html, f"{deck}: guided illustrations are missing"
               assert "ob-checklist" in html and "ob-outcome" in html and "ob-tip" in html, f"{deck}: instructional hierarchy is incomplete"
-              assert "role=\"progressbar\"" in html and "aria-live=\"polite\"" in html, f"{deck}: progress/status announcements are missing"
+              assert 'role="group" aria-label="التنقل بين خطوات الجولة"' in html and "aria-live=\"polite\"" in html, f"{deck}: step navigation/status announcements are missing"
+              assert 'class="ob-progress-step"' in html and 'aria-current="step"' in html, f"{deck}: accessible direct step navigation is missing"
+              assert "function goToOnboardStep(index)" in html, f"{deck}: direct step navigation handler is missing"
+              assert 'id="onboardTourLauncher"' in html and 'onclick="showOnboarding()"' in html, f"{deck}: persistent tour relaunch control is missing"
+              assert "launcher.hidden=true" in html and "launcher.hidden=false" in html, f"{deck}: tour launcher visibility is not synchronized with the dialog"
               assert "ONBOARD_STORAGE_KEY = \"anki_\" + ONBOARD_DECK + \"_onboarded\"" in html, f"{deck}: deck-specific tour key is missing"
               assert "localStorage.setItem(ONBOARD_STORAGE_KEY,'1')" in html, f"{deck}: completion state is not saved safely"
               assert "function isOnboardingCompleted()" in html and "catch(_e){return false;}" in html, f"{deck}: blocked localStorage must not break the tour"
@@ -191,10 +195,7 @@ jobs:
               assert "document.body.style.overflow=onboardPreviousOverflow" in html, f"{deck}: body scrolling is not restored"
               assert "focusOnboardHeading()" in html, f"{deck}: step changes must announce the new heading"
               assert "e.key==='Tab'" in html and "e.key==='Escape'" in html, f"{deck}: keyboard dialog controls are missing"
-              assert "onboardReturnFocus=document.activeElement" in html, f"{deck}: return focus is not captured"
-              assert "document.body.style.overflow=onboardPreviousOverflow" in html, f"{deck}: body scrolling is not restored"
-              assert "e.key==='Tab'" in html and "e.key==='Escape'" in html, f"{deck}: keyboard dialog controls are missing"
-              assert "aria-labelledby=\"onboardStepTitle\"" in html and "aria-valuenow=" in html, f"{deck}: tour accessibility semantics are incomplete"
+              assert "aria-labelledby=\"onboardStepTitle\"" in html and 'role="group" aria-label="رسم توضيحي:' in html, f"{deck}: tour accessibility semantics are incomplete"
               dialog = re.search(r'<dialog[^>]*id="onboardOverlay"[^>]*>', html)
               assert dialog, f"{deck}: onboarding dialog markup is missing"
               assert "style=" not in dialog.group(0), f"{deck}: inline display style can hide the open modal"
@@ -214,7 +215,9 @@ jobs:
               ids = re.findall(r'\bid=["\']([^"\']+)["\']', html)
               duplicates = sorted({value for value in ids if ids.count(value) > 1})
               assert not duplicates, f"{deck}: duplicate HTML IDs: {duplicates}"
-              print(f"PASS {deck}: 100 deck-bound designs, six tour steps, focus/keyboard/accessibility, no corner flip or blocking loader")
+              assert "#onboardTourLauncher[hidden]{display:none}" in html, f"{deck}: hidden tour launcher can still occupy layout"
+              assert "prefers-reduced-motion:reduce" in html and "obStepEnter" in html, f"{deck}: step transitions/reduced motion are incomplete"
+              print(f"PASS {deck}: 100 deck-bound designs, six guided steps, persistent launcher, keyboard/accessibility, no corner flip or blocking loader")
 
           print("ALL FOUR GALLERY UX REGRESSION CHECKS PASSED")
           PY
