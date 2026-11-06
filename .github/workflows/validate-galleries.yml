@@ -197,7 +197,7 @@ jobs:
                   "function goToOnboardStep(index)",
                   "function handleOnboardAction(action)",
                   "function showOnboarding()",
-                  "function closeOnboarding()",
+                  "function closeOnboarding(completed)",
                   "function isOnboardingCompleted()",
               ):
                   assert helper in tour_source, f"{deck}: missing {helper}"
