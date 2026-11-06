@@ -304,9 +304,6 @@ def build_one(did, spec, base):
         if spec['lang'] == 'en':
             h = replace_fallback_fr(h, json.dumps(EN_POOL, ensure_ascii=False))
         h = rep(h, "'fr-FR-HenriNeural'", "'" + spec['frdef'] + "'", 2, t + 'voice defaults')
-        h = rep(h, "JSON.stringify({fr:pwf,ar:pwa,ttsConfig:cfg})",
-                "JSON.stringify({fr:pwf,ar:pwa,lang:'" + spec['lang'] + "',ttsConfig:cfg})",
-                1, t + 'audio preview language')
         if spec['lang'] == 'en':
             for item in FR2EN_TEXTS:
                 a, b = item[0], item[1]
