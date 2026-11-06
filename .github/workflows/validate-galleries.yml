@@ -453,3 +453,196 @@ jobs:
         run: |
           git diff --exit-code -- index.html bac12.html designs_100.js app.py
           git diff HEAD^ HEAD --exit-code -- index.html bac12.html designs_100.js app.py
+
+      - name: Install isolated browser QA runtime
+        run: |
+          npm install --prefix /tmp/anki-gallery-browser-qa --no-save --no-package-lock playwright@1.56.1
+          /tmp/anki-gallery-browser-qa/node_modules/.bin/playwright install --with-deps chromium
+
+      - name: Run real-browser visual and interaction checks for all four galleries
+        run: |
+          set -euo pipefail
+          mkdir -p qa-artifacts
+          python -m http.server 4173 --directory out > /tmp/anki-gallery-preview-server.log 2>&1 &
+          echo "$!" > /tmp/anki-gallery-preview-server.pid
+          for attempt in $(seq 1 40); do
+            if curl -fsS http://127.0.0.1:4173/en9.html >/dev/null; then break; fi
+            sleep 0.5
+          done
+          curl -fsS http://127.0.0.1:4173/en9.html >/dev/null
+
+          NODE_PATH=/tmp/anki-gallery-browser-qa/node_modules node <<'JS'
+          const assert = require("node:assert/strict");
+          const fs = require("node:fs");
+          const { chromium } = require("playwright");
+
+          const decks = ["en9", "enlit", "ensci", "fr9"];
+          const viewports = [
+            { name: "desktop", width: 1440, height: 1000, exerciseControls: true },
+            { name: "mobile", width: 390, height: 844, exerciseControls: false },
+            { name: "compact", width: 320, height: 640, exerciseControls: false },
+          ];
+
+          async function waitForStep(page, index) {
+            await page.waitForFunction((expected) => {
+              const button = document.querySelector(
+                '#onboardGuideRoot .og-progress button[aria-current="step"]'
+              );
+              return button && Number(button.getAttribute("data-guide-step")) === expected;
+            }, index, { timeout: 10000 });
+            await page.waitForTimeout(100);
+          }
+
+          async function inspectStep(page, deck, viewport, index) {
+            const state = await page.evaluate(() => {
+              const card = document.querySelector("#onboardGuideRoot .og-card");
+              const target = document.querySelector(".og-spotlight");
+              const path = document.querySelector("#ogBackdropPath");
+              if (!card || !target || !path) return null;
+              const c = card.getBoundingClientRect();
+              const t = target.getBoundingClientRect();
+              return {
+                card: { left: c.left, top: c.top, right: c.right, bottom: c.bottom, width: c.width, height: c.height, scrollHeight: card.scrollHeight, clientHeight: card.clientHeight },
+                target: { left: t.left, top: t.top, right: t.right, bottom: t.bottom, width: t.width, height: t.height },
+                placement: card.dataset.placement,
+                viewBox: path.ownerSVGElement.getAttribute("viewBox"),
+                path: path.getAttribute("d"),
+                viewportWidth: document.documentElement.clientWidth,
+                viewportHeight: window.innerHeight,
+                documentWidth: document.documentElement.scrollWidth
+              };
+            });
+
+            assert(state, deck + "/" + viewport.name + ": active coachmark or spotlight is missing at step " + (index + 1));
+            assert(state.card.width > 0 && state.card.height > 0, deck + "/" + viewport.name + ": coachmark has no rendered size");
+            assert(state.card.left >= -1 && state.card.right <= viewport.width + 1, deck + "/" + viewport.name + ": coachmark escapes horizontal viewport at step " + (index + 1) + " " + JSON.stringify(state.card));
+            assert(state.card.top >= -1 && state.card.bottom <= viewport.height + 1, deck + "/" + viewport.name + ": coachmark escapes vertical viewport at step " + (index + 1) + " " + JSON.stringify(state.card));
+            assert(state.target.width > 0 && state.target.height > 0, deck + "/" + viewport.name + ": spotlight target is collapsed at step " + (index + 1));
+            assert.equal(state.viewBox, "0 0 " + viewport.width + " " + viewport.height, deck + "/" + viewport.name + ": spotlight SVG viewBox does not match viewport");
+            assert(state.path && state.path.startsWith("M0 0H"), deck + "/" + viewport.name + ": spotlight aperture path is empty");
+            assert(state.documentWidth <= viewport.width + 1, deck + "/" + viewport.name + ": horizontal page overflow detected (" + state.documentWidth + "px)");
+            const separated = state.card.bottom <= state.target.top + 2 || state.card.top >= state.target.bottom - 2;
+            assert(separated, deck + "/" + viewport.name + ": coachmark overlaps its highlighted control at step " + (index + 1));
+            return state;
+          }
+
+          (async () => {
+            const browser = await chromium.launch({ headless: true, args: ["--no-sandbox", "--disable-dev-shm-usage"] });
+            const report = { browser: "Chromium", decks: {}, failures: [] };
+            try {
+              for (const deck of decks) {
+                report.decks[deck] = {};
+                for (const viewport of viewports) {
+                  const context = await browser.newContext({
+                    viewport: { width: viewport.width, height: viewport.height },
+                    deviceScaleFactor: 1,
+                    reducedMotion: "reduce"
+                  });
+                  const page = await context.newPage();
+                  const pageErrors = [];
+                  let downloads = 0;
+                  page.on("pageerror", error => pageErrors.push(error.message));
+                  page.on("download", () => downloads++);
+
+                  await page.goto("http://127.0.0.1:4173/" + deck + ".html", { waitUntil: "domcontentloaded" });
+                  await page.waitForSelector("#onboardGuideRoot .og-card", { timeout: 20000 });
+
+                  const steps = [];
+                  for (let index = 0; index < 6; index++) {
+                    if (index > 0) {
+                      await page.locator('[data-guide-step="' + index + '"]').click();
+                      await waitForStep(page, index);
+                    }
+
+                    if (viewport.exerciseControls && index === 1) {
+                      await page.locator(".gbGrid .gb-item").first().click({ timeout: 10000 });
+                      await page.waitForFunction(() => window.onbStep === 2, null, { timeout: 10000 });
+                      await waitForStep(page, 2);
+                      index = 2;
+                    } else if (viewport.exerciseControls && index === 2) {
+                      await page.locator("#gvShowAns").click({ timeout: 10000 });
+                      await page.waitForFunction(() => window.onbStep === 3, null, { timeout: 10000 });
+                      await waitForStep(page, 3);
+                      index = 3;
+                      await page.locator("#gvSelectBtn").click({ timeout: 10000 });
+                      await page.waitForTimeout(100);
+                    }
+
+                    const state = await inspectStep(page, deck, viewport, index);
+                    steps.push({ step: index + 1, placement: state.placement, card: state.card, target: state.target });
+                    await page.screenshot({
+                      path: "qa-artifacts/" + deck + "-" + viewport.name + "-step-" + (index + 1) + ".png",
+                      fullPage: false
+                    });
+                  }
+
+                  if (viewport.exerciseControls) {
+                    await page.locator('[data-guide-action="review"]').click();
+                    await page.waitForFunction(() => {
+                      const overlay = document.getElementById("exportOverlay");
+                      return overlay && overlay.classList.contains("on");
+                    }, null, { timeout: 10000 });
+                    await page.keyboard.press("Escape");
+                    await page.waitForFunction(() => {
+                      const overlay = document.getElementById("exportOverlay");
+                      return !overlay || !overlay.classList.contains("on");
+                    }, null, { timeout: 10000 });
+                    assert(await page.locator("#onboardGuideRoot .og-card").count() === 1, deck + ": Escape closed the guide instead of returning from export review");
+
+                    await page.locator('[data-guide-action="later"]').click();
+                    const snoozed = await page.evaluate((key) => ({
+                      completed: localStorage.getItem(key),
+                      snoozed: sessionStorage.getItem(key.replace("_onboarded", "_onboarding_snoozed"))
+                    }), "anki_" + deck + "_onboarded");
+                    assert.equal(snoozed.completed, null, deck + ": Later incorrectly marked the tour completed");
+                    assert.equal(snoozed.snoozed, "1", deck + ": Later did not persist the session snooze");
+
+                    await page.locator("#onboardTourLauncher").click();
+                    await page.waitForSelector("#onboardGuideRoot .og-card");
+                    await page.locator('[data-guide-step="5"]').click();
+                    await waitForStep(page, 5);
+                    await page.locator('[data-guide-action="review"]').click();
+                    await page.waitForFunction(() => {
+                      const overlay = document.getElementById("exportOverlay");
+                      return overlay && overlay.classList.contains("on");
+                    }, null, { timeout: 10000 });
+                    await page.locator('[data-guide-action="finish"]').click();
+                    const completed = await page.evaluate((key) => ({
+                      completed: localStorage.getItem(key),
+                      snoozed: sessionStorage.getItem(key.replace("_onboarded", "_onboarding_snoozed"))
+                    }), "anki_" + deck + "_onboarded");
+                    assert.equal(completed.completed, "1", deck + ": final completion was not persisted");
+                    assert.equal(completed.snoozed, null, deck + ": completion did not clear the snooze");
+                  }
+
+                  assert.deepEqual(pageErrors, [], deck + "/" + viewport.name + ": uncaught browser errors: " + pageErrors.join(" | "));
+                  assert.equal(downloads, 0, deck + "/" + viewport.name + ": onboarding unexpectedly initiated a download");
+                  report.decks[deck][viewport.name] = { steps, pageErrors, downloads };
+                  await context.close();
+                  console.log("BROWSER PASS " + deck + "/" + viewport.name + ": six steps, viewport geometry, spotlight, no overflow, no export download");
+                }
+              }
+              fs.writeFileSync("qa-artifacts/browser-qa-report.json", JSON.stringify(report, null, 2));
+            } catch (error) {
+              report.failures.push(String(error && error.stack || error));
+              fs.writeFileSync("qa-artifacts/browser-qa-report.json", JSON.stringify(report, null, 2));
+              throw error;
+            } finally {
+              await browser.close();
+            }
+          })().catch(error => {
+            console.error(error);
+            process.exitCode = 1;
+          });
+          JS
+
+      - name: Upload isolated gallery preview and browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: anki-gallery-browser-qa
+          path: |
+            out/
+            qa-artifacts/
+          if-no-files-found: warn
+          retention-days: 7
