@@ -208,7 +208,7 @@ function renderOnboardStep(){
       '<h2 class="og-title" id="onboardGuideTitle" tabindex="-1">' + escapeOnboardText(title) + '</h2>' +
       '<p class="og-text" id="onboardGuideText" aria-live="polite">' + escapeOnboardText(body) + '</p>' +
       '<div class="og-target"><span class="og-target-mark" aria-hidden="true">◎</span><span class="og-target-copy"><small>الأداة الفعلية على الصفحة</small><strong>' + escapeOnboardText(targetLabel) + '</strong></span></div>' +
-      '<p class="og-note">' + escapeOnboardText(note) + '</p>' +
+      '<p class="og-note" id="onboardGuideNote" role="status" aria-live="polite">' + escapeOnboardText(note) + '</p>' +
       '<div class="og-footer"><button class="og-skip" type="button" data-guide-action="close">إنهاء / تخطي</button><div class="og-actions">' + previous + '<button class="og-btn primary" type="button" data-guide-action="' + primaryAction + '">' + escapeOnboardText(primaryLabel) + '</button></div></div>' +
     '</section>';
   var heading = root.querySelector("#onboardGuideTitle");
@@ -271,6 +271,23 @@ document.addEventListener("click",function(event){
   }
   if(onbStep === 2 && target.closest("#gvShowAns,.gv-flip")){
     window.setTimeout(function(){if(onboardGuideOpen && onbStep === 2)goToOnboardStep(3);},220);
+    return;
+  }
+  if(onbStep === 3 && target.closest("#gvSelectBtn")){
+    window.setTimeout(function(){
+      if(!onboardGuideOpen || onbStep !== 3)return;
+      var note = document.getElementById("onboardGuideNote");
+      var count = (typeof gvSel !== "undefined" && gvSel) ? gvSel.length : 0;
+      if(note)note.textContent = count ? "تم تحديث الاختيار فعليًا. عدد القوالب المحددة الآن: " + count + "." : "أُزيل تحديد القالب الحالي. يمكنك اختياره مجددًا أو متابعة الجولة.";
+    },40);
+    return;
+  }
+  if(onbStep === 4 && target.closest("#gTtsPreviewBtn")){
+    window.setTimeout(function(){
+      if(!onboardGuideOpen || onbStep !== 4)return;
+      var note = document.getElementById("onboardGuideNote");
+      if(note)note.textContent = "بدأت معاينة الصوت بطلب منك. استمع إلى النطق، ثم تابع عندما تنتهي.";
+    },40);
     return;
   }
   if(onbStep === 5 && target.closest("#exOpenBtn")){
