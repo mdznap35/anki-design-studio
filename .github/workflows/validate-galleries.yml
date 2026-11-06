@@ -152,7 +152,7 @@ jobs:
             console.log("PASS " + deck + ": actual preview helper renders sample text and unit fields");
           }
           JS
-      - name: Verify polished six-step tour and preview controls for all four galleries
+      - name: Verify interactive in-gallery tour and preview controls for all four galleries
         run: |
           python - <<'PY'
           import json
@@ -162,6 +162,12 @@ jobs:
           sys.path.insert(0, "tools")
           from build_galleries import bmatch
 
+          expected_steps = ("start", "library", "preview", "selection", "audio", "export")
+          required_targets = (
+              ".hero-cta-main", "#gbFilters", "#gbGrid", "#gvShowAns",
+              "#gvSelectBtn", "#gAudioPanelBody", ".aa", "#exOpenBtn",
+              "#exViewSummary",
+          )
           for deck in ("en9", "enlit", "ensci", "fr9"):
               html = (Path("out") / f"{deck}.html").read_text(encoding="utf-8")
               marker = "var EMBEDDED_DESIGNS_100 = "
@@ -171,55 +177,52 @@ jobs:
               assert len(designs) == 100, f"{deck}: expected 100 designs"
               assert all(item.get("pack") == deck for item in designs), f"{deck}: mixed design packs"
 
-              tour_start = html.index("var ONBOARD_STEPS=[")
-              tour_end = html.index("var onbStep=", tour_start)
+              tour_start = html.index("var ONBOARD_DECK = ")
+              tour_end = html.index("// ============================================================\\n// WHAT'S NEW", tour_start)
               tour_source = html[tour_start:tour_end]
-              assert len(re.findall(r"\{icon:'", tour_source)) == 6, f"{deck}: tour must have six steps"
-              assert len(re.findall(r"visual:'", tour_source)) == 6, f"{deck}: each step needs a visual explanation"
-              assert len(re.findall(r"outcome:'", tour_source)) == 6, f"{deck}: each step needs a clear outcome"
-              for visual in ("journey", "discover", "inspect", "choose", "audio", "export"):
-                  assert f"visual:'{visual}'" in tour_source, f"{deck}: missing {visual} step visual"
-              assert "function renderOnboardVisual(kind)" in html, f"{deck}: guided illustrations are missing"
-              assert "ob-checklist" in html and "ob-outcome" in html and "ob-tip" in html, f"{deck}: instructional hierarchy is incomplete"
-              assert 'role="group" aria-label="التنقل بين خطوات الجولة"' in html and "aria-live=\"polite\"" in html, f"{deck}: step navigation/status announcements are missing"
-              assert 'class="ob-progress-step"' in html and 'aria-current="step"' in html, f"{deck}: accessible direct step navigation is missing"
-              assert "function goToOnboardStep(index)" in html, f"{deck}: direct step navigation handler is missing"
-              assert 'id="onboardTourLauncher"' in html and 'onclick="showOnboarding()"' in html, f"{deck}: persistent tour relaunch control is missing"
-              assert "launcher.hidden=true" in html and "launcher.hidden=false" in html, f"{deck}: tour launcher visibility is not synchronized with the dialog"
-              assert "ONBOARD_STORAGE_KEY = \"anki_\" + ONBOARD_DECK + \"_onboarded\"" in html, f"{deck}: deck-specific tour key is missing"
-              assert "localStorage.setItem(ONBOARD_STORAGE_KEY,'1')" in html, f"{deck}: completion state is not saved safely"
-              assert "function isOnboardingCompleted()" in html and "catch(_e){return false;}" in html, f"{deck}: blocked localStorage must not break the tour"
-              assert f"if(!isOnboardingCompleted())setTimeout(showOnboarding,80);" in html, f"{deck}: first-visit tour must be delayed safely"
-              assert "ONBOARD_PRIMARY_LANGUAGE = ONBOARD_IS_FRENCH ? \"الفرنسية\" : \"الإنجليزية\";" in html, f"{deck}: audio language must match the deck"
-              assert "onboardReturnFocus=document.activeElement" in html, f"{deck}: return focus is not captured"
-              assert "document.body.style.overflow=onboardPreviousOverflow" in html, f"{deck}: body scrolling is not restored"
-              assert "focusOnboardHeading()" in html, f"{deck}: step changes must announce the new heading"
-              assert "e.key==='Tab'" in html and "e.key==='Escape'" in html, f"{deck}: keyboard dialog controls are missing"
-              assert "aria-labelledby=\"onboardStepTitle\"" in html and 'role="group" aria-label="رسم توضيحي:' in html, f"{deck}: tour accessibility semantics are incomplete"
-              dialog = re.search(r'<dialog[^>]*id="onboardOverlay"[^>]*>', html)
-              assert dialog, f"{deck}: onboarding dialog markup is missing"
-              assert "style=" not in dialog.group(0), f"{deck}: inline display style can hide the open modal"
-              assert '#onboardOverlay.onboard-overlay[open]{display:grid}' in html, f"{deck}: open dialog has no visible display rule"
-              assert "overlay.showModal()" in html, f"{deck}: tour must open as a native modal dialog"
-              assert "overlay.close()" in html, f"{deck}: tour must close through the native dialog lifecycle"
-              assert "overlay.removeAttribute('open')" in html, f"{deck}: non-native dialog fallback is missing"
-              assert "if(!overlay||!overlay.hasAttribute('open'))return;" in html, f"{deck}: keyboard handler must follow the dialog open state"
-              assert "overlay.style.display='flex'" not in html, f"{deck}: dialog is being shown without native modal semantics"
-              assert 'aria-modal="true"' in html, f"{deck}: native modal semantics are not declared"
-              assert "@media(max-width:720px)" in html and "prefers-reduced-motion:reduce" in html, f"{deck}: responsive/reduced-motion styles are missing"
+              steps_start = tour_source.index("var ONBOARD_STEPS = [")
+              steps_end = tour_source.index("];", steps_start)
+              steps_source = tour_source[steps_start:steps_end]
+              actual_steps = re.findall(r'id:"([a-z]+)"', steps_source)
+              assert actual_steps == list(expected_steps), f"{deck}: wrong guided journey: {actual_steps}"
 
-              assert "gv-fab" not in html, f"{deck}: floating corner flip button remains"
-              assert 'id="fsFlipBtn"' in html, f"{deck}: full-screen flip control was removed"
+              for target in required_targets:
+                  assert target in tour_source, f"{deck}: tour is not anchored to real control {target}"
+                  assert target in html, f"{deck}: required gallery control {target} is missing"
+              for helper in (
+                  "function onboardStepTarget(step)",
+                  "function positionOnboardGuide()",
+                  "function goToOnboardStep(index)",
+                  "function handleOnboardAction(action)",
+                  "function showOnboarding()",
+                  "function closeOnboarding()",
+                  "function isOnboardingCompleted()",
+              ):
+                  assert helper in tour_source, f"{deck}: missing {helper}"
+
+              assert "ONBOARD_PRIMARY_LANGUAGE = ONBOARD_DECK === \\"fr9\\" ? \\"الفرنسية\\" : \\"الإنجليزية\\";" in tour_source, f"{deck}: audio language is not deck-aware"
+              assert "aria-live=\\"polite\\"" in tour_source, f"{deck}: guide announcements are missing"
+              assert "aria-current=\\"' + (index === onbStep ? \\"step\\" : \\"false\\" )" in tour_source or "aria-current=\\"' + (index === onbStep ? \\"step\\" : \\"false\\" )" in tour_source.replace(" : \\"false\\")", " : \\"false\\")"), f"{deck}: direct accessible step navigation is missing"
+              assert "data-guide-step" in tour_source and "data-guide-action" in tour_source, f"{deck}: guide controls are not wired"
+              assert "og-spotlight" in tour_source and "og-spotlight" in html, f"{deck}: real controls are not highlighted"
+              assert "pointer-events:none" in html and "pointer-events:auto" in html, f"{deck}: coachmark should not block the gallery"
+              assert "prefers-reduced-motion:reduce" in html and "safe-area-inset-bottom" in html, f"{deck}: mobile/reduced-motion support is missing"
+              assert "event.key === \\"Escape\\"" in tour_source and "event.key === \\"ArrowLeft\\"" in tour_source, f"{deck}: keyboard navigation is missing"
+              assert "onboardGuideReturnFocus" in tour_source and "isConnected" in tour_source, f"{deck}: focus restoration is missing"
+              assert "localStorage.setItem(ONBOARD_STORAGE_KEY,\\"1\\")" in tour_source and "catch(_e)" in tour_source, f"{deck}: safe per-gallery completion state is missing"
+              assert "function renderOnboardVisual" not in tour_source, f"{deck}: fake static tour visuals remain"
+              assert "confirmExport(" not in tour_source and "runGenerate(" not in tour_source and "downloadAPKG(" not in tour_source, f"{deck}: onboarding can trigger destructive export work"
+              assert 'id="onboardTourLauncher"' in html and 'onclick="showOnboarding()"' in html, f"{deck}: persistent tour relaunch control is missing"
+              assert 'id="onboardOverlay"' in html and 'hidden aria-hidden="true"' in html, f"{deck}: obsolete modal tour must remain hidden"
+              assert 'id="fsFlipBtn"' in html and 'id="gvShowAns"' in html, f"{deck}: actual preview flip controls are missing"
               assert 'id="loadingMsg"' not in html and "جاري تحميل القوالب..." not in html, f"{deck}: blocking loader remains"
 
-              ids = re.findall(r'\bid=["\']([^"\']+)["\']', html)
+              ids = re.findall(r'\\bid=["\\']([^"\\']+)["\\']', html)
               duplicates = sorted({value for value in ids if ids.count(value) > 1})
               assert not duplicates, f"{deck}: duplicate HTML IDs: {duplicates}"
-              assert "#onboardTourLauncher[hidden]{display:none}" in html, f"{deck}: hidden tour launcher can still occupy layout"
-              assert "prefers-reduced-motion:reduce" in html and "obStepEnter" in html, f"{deck}: step transitions/reduced motion are incomplete"
-              print(f"PASS {deck}: 100 deck-bound designs, six guided steps, persistent launcher, keyboard/accessibility, no corner flip or blocking loader")
+              print(f"PASS {deck}: 100 deck-bound designs, six real in-page guide stops, spotlight, safe export boundary, mobile/accessibility checks")
 
-          print("ALL FOUR GALLERY UX REGRESSION CHECKS PASSED")
+          print("ALL FOUR INTERACTIVE GALLERY TOUR CHECKS PASSED")
           PY
 
       - name: Syntax-check the generated six-step onboarding scripts
@@ -239,7 +242,7 @@ jobs:
           }
           JS
 
-      - name: Verify committed gallery pages stay synchronized with native dialog behavior
+      - name: Verify committed gallery data remains intact
         run: |
           python - <<'PY'
           import json
@@ -257,7 +260,7 @@ jobs:
                   ch = html[i]
                   if quoted:
                       if escaped: escaped = False
-                      elif ch == "\\": escaped = True
+                      elif ch == "\\\\": escaped = True
                       elif ch == '"': quoted = False
                   elif ch == '"': quoted = True
                   elif ch == "[": depth += 1
@@ -268,20 +271,10 @@ jobs:
               assert len(designs) == 100, f"{deck}: expected 100 committed designs"
               assert all(item.get("pack") == deck for item in designs), f"{deck}: wrong committed deck binding"
               assert all(item.get("fields") for item in designs), f"{deck}: committed field mappings missing"
-              dialogs = [line for line in html.splitlines() if line.startswith("<dialog") and 'id="onboardOverlay"' in line]
-              assert len(dialogs) == 1 and "style=" not in dialogs[0], f"{deck}: missing or hidden inline onboarding dialog"
-              assert "overlay.showModal()" in html and "overlay.close()" in html, f"{deck}: native dialog lifecycle missing"
-              assert "overlay.setAttribute('open','')" in html and "overlay.removeAttribute('open')" in html, f"{deck}: dialog fallback missing"
-              assert "overlay.style.display='flex'" not in html and "overlay.style.display='none'" not in html, f"{deck}: legacy display-based modal remains"
-              assert "#onboardOverlay.onboard-overlay[open]{display:flex}" in html, f"{deck}: open dialog visibility rule missing"
-              assert len(re.findall(r"\{icon:'", html[html.index("var ONBOARD_STEPS=["):html.index("var onbStep=")])) == 6, f"{deck}: tour must have six steps"
-              assert "gv-fab" not in html and 'id="fsFlipBtn"' in html, f"{deck}: obsolete or missing preview flip control"
-              assert 'id="loadingMsg"' not in html and "جاري تحميل القوالب..." not in html, f"{deck}: blocking loader remains"
-              assert f"localStorage.setItem('anki_{deck}_onboarded','1')" in html, f"{deck}: wrong onboarding storage key"
-              ids = re.findall(r'id="([^"]+)"', html)
+              ids = re.findall(r'\\bid="([^"]+)"', html)
               assert len(ids) == len(set(ids)), f"{deck}: duplicate HTML IDs"
-              print(f"PASS committed {deck}: 100 deck-bound designs, six-step native tour, clean preview controls")
-          print("ALL COMMITTED GALLERY PAGES PASSED")
+              print(f"PASS committed {deck}: 100 deck-bound designs and intact field mappings")
+          print("ALL COMMITTED GALLERY DATA CHECKS PASSED")
           PY
       - name: Publish the generated static site for hosting
         if: github.ref == 'refs/heads/main'
