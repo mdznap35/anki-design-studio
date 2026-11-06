@@ -217,6 +217,7 @@ jobs:
               assert "og-spotlight" in tour_source and "og-spotlight" in html, f"{deck}: real controls are not highlighted"
               assert 'class="og-backdrop"' in tour_source and 'fill-rule="evenodd"' in tour_source and 'id="ogBackdropPath"' in tour_source, f"{deck}: SVG spotlight aperture is missing"
               assert "onboardBackdropPath(target,width,height)" in tour_source and "scheduleOnboardPosition" in tour_source, f"{deck}: adaptive spotlight geometry is missing"
+              assert 'backdrop.setAttribute("viewBox","0 0 " + width + " " + height);' in tour_source, f"{deck}: SVG spotlight coordinates are not scaled to the viewport"
               assert 'data-placement="below"' in tour_source or 'dataset.placement = placeBelow ? "below" : "above"' in tour_source, f"{deck}: contextual coachmark placement is missing"
               assert "pointer-events:none" in html and "pointer-events:auto" in html, f"{deck}: coachmark should not block the gallery"
               assert 'data-guide-action="later"' in tour_source and 'sessionStorage.setItem(ONBOARD_SNOOZE_KEY,"1")' in tour_source, f"{deck}: dismissing onboarding must defer rather than falsely complete it"
@@ -255,7 +256,16 @@ jobs:
             assert(start >= 0 && end > start, deck + ": onboarding script boundaries missing");
             const source = html.slice(start, end);
             assert.doesNotThrow(() => new Function(source), deck + ": onboarding JavaScript syntax error");
-            console.log("PASS " + deck + ": generated onboarding JavaScript parses");
+            const geometryStart = source.indexOf("function onboardBackdropPath(");
+            const geometryEnd = source.indexOf("\\nfunction positionOnboardGuide", geometryStart);
+            assert(geometryStart >= 0 && geometryEnd > geometryStart, deck + ": spotlight geometry helper boundaries missing");
+            const backdropPath = new Function(source.slice(geometryStart, geometryEnd) + "\\nreturn onboardBackdropPath;")();
+            assert.equal(backdropPath(null, 360, 800), "M0 0H360V800H0Z", deck + ": full-screen backdrop geometry is incorrect");
+            const target = {isConnected:true, getBoundingClientRect:() => ({left:50, top:100, right:150, bottom:160, width:100, height:60})};
+            const cutout = backdropPath(target, 360, 800);
+            assert(cutout.startsWith("M0 0H360V800H0Z M56 90"), deck + ": spotlight cut-out does not follow the real target bounds");
+            assert(cutout.endsWith("Z"), deck + ": spotlight cut-out path is incomplete");
+            console.log("PASS " + deck + ": onboarding JavaScript parses and spotlight geometry matches target bounds");
           }
           JS
 
