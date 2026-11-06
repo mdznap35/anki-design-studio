@@ -21,7 +21,7 @@ TOUR_CSS = r"""#onboardOverlay.onboard-overlay{position:fixed;inset:0;z-index:99
 #onboardOverlay .ob-progress{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:7px;direction:rtl}
 #onboardOverlay .ob-progress span{height:6px;border-radius:99px;background:rgba(255,255,255,.105);transition:background .22s,box-shadow .22s}
 #onboardOverlay .ob-progress span.done{background:linear-gradient(90deg,#8b5cf6,#22d3ee);box-shadow:0 0 13px rgba(139,92,246,.25)}
-#onboardOverlay .ob-content{display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);align-items:stretch;gap:clamp(18px,3vw,30px);min-height:340px}
+#onboardOverlay .ob-content{display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);align-items:stretch;gap:clamp(18px,3vw,30px);min-height:340px;direction:ltr}
 #onboardOverlay .ob-visual{position:relative;display:grid;place-items:center;min-width:0;min-height:320px;overflow:hidden;padding:22px;border:1px solid rgba(167,139,250,.19);border-radius:24px;background:radial-gradient(circle at 50% 35%,rgba(139,92,246,.2),transparent 57%),linear-gradient(145deg,rgba(255,255,255,.065),rgba(255,255,255,.012))}
 #onboardOverlay .ob-visual:before,#onboardOverlay .ob-visual:after{content:"";position:absolute;border:1px solid rgba(103,232,249,.1);border-radius:50%;width:220px;height:220px;pointer-events:none}
 #onboardOverlay .ob-visual:after{width:300px;height:300px;border-color:rgba(167,139,250,.075)}
@@ -76,7 +76,7 @@ TOUR_CSS = r"""#onboardOverlay.onboard-overlay{position:fixed;inset:0;z-index:99
 #onboardOverlay .ob-export-board small{color:#94a3b8;font-size:.74rem;line-height:1.8}
 #onboardOverlay .ob-export-checks{display:flex;justify-content:center;gap:7px;flex-wrap:wrap}
 #onboardOverlay .ob-export-checks span{padding:7px 9px;border:1px solid rgba(34,211,238,.17);border-radius:999px;background:rgba(8,145,178,.09);color:#a5f3fc;font-size:.67rem;font-weight:800}
-#onboardOverlay .ob-copy{display:flex;flex-direction:column;justify-content:center;min-width:0;text-align:right;padding:4px 0}
+#onboardOverlay .ob-copy{display:flex;flex-direction:column;justify-content:center;min-width:0;text-align:right;padding:4px 0;direction:rtl}
 #onboardOverlay .ob-kicker{display:flex;align-items:center;gap:8px;margin:0 0 12px;color:#67e8f9;font-size:.75rem;font-weight:950;letter-spacing:.02em}
 #onboardOverlay .ob-kicker:before{content:"";width:24px;height:2px;border-radius:2px;background:#67e8f9}
 #onboardOverlay .ob-kicker-icon{display:grid;place-items:center;width:28px;height:28px;border:1px solid rgba(103,232,249,.2);border-radius:9px;background:rgba(8,145,178,.1);font-size:.85rem}
@@ -111,8 +111,8 @@ TOUR_CSS = r"""#onboardOverlay.onboard-overlay{position:fixed;inset:0;z-index:99
 #onboardOverlay .ob-brand-copy small{font-size:.65rem}
 #onboardOverlay .ob-count{padding:7px 9px;font-size:.7rem}
 #onboardOverlay .ob-close{width:38px;height:38px}
-#onboardOverlay .ob-content{grid-template-columns:1fr;gap:14px;min-height:0}
-#onboardOverlay .ob-visual{min-height:205px;padding:16px;border-radius:18px}
+#onboardOverlay .ob-content{grid-template-columns:1fr;grid-template-areas:"copy" "visual";gap:14px;min-height:0}
+#onboardOverlay .ob-visual{grid-area:visual;min-height:205px;padding:16px;border-radius:18px}
 #onboardOverlay .ob-journey{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
 #onboardOverlay .ob-journey-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;min-width:0;padding:10px 5px;text-align:center}
 #onboardOverlay .ob-journey-num{width:30px;height:30px;border-radius:10px}
@@ -120,7 +120,7 @@ TOUR_CSS = r"""#onboardOverlay.onboard-overlay{position:fixed;inset:0;z-index:99
 #onboardOverlay .ob-journey-item small{font-size:.58rem}
 #onboardOverlay .ob-template-sample{min-height:94px}
 #onboardOverlay .ob-face-card{min-height:150px;padding:11px}
-#onboardOverlay .ob-copy{text-align:right}
+#onboardOverlay .ob-copy{grid-area:copy;text-align:right}
 #onboardOverlay .ob-title{font-size:1.4rem;margin-bottom:8px}
 #onboardOverlay .ob-text{font-size:.87rem;line-height:1.8}
 #onboardOverlay .ob-checklist{gap:6px;margin-top:12px}
