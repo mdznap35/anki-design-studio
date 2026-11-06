@@ -16,6 +16,9 @@ on:
       - "tools/capture_gallery_previews.mjs"
       - "tools/capture_gallery_layout_screenshots.mjs"
       - ".github/workflows/publish-galleries.yml"
+      - "app.py"
+      - "tts.py"
+      - "tests/**"
   workflow_dispatch:
 
 permissions:
