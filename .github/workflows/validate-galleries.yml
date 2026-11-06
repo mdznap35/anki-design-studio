@@ -593,6 +593,21 @@ jobs:
                   // The static preview server intentionally has no backend API.
                   // Keep analytics traffic from producing misleading HTTP 501 console errors.
                   await page.route("**/api/track", route => route.fulfill({ status: 204, body: "" }));
+                  await page.route("**/api/audio_status?*", route => route.fulfill({
+                    status: 200,
+                    contentType: "application/json",
+                    body: JSON.stringify({ total_words: 0, library_words: 0, audio_enabled_default: false, max_generate_words: 250 })
+                  }));
+                  await page.route("**/api/tts_voices?*", route => route.fulfill({
+                    status: 200,
+                    contentType: "application/json",
+                    body: JSON.stringify({ fr: [], ar: [] })
+                  }));
+                  await page.route("**/api/cached_voices*", route => route.fulfill({
+                    status: 200,
+                    contentType: "application/json",
+                    body: JSON.stringify({ fr: [], ar: [] })
+                  }));
 
                   await page.goto("http://127.0.0.1:4173/" + deck + ".html", { waitUntil: "domcontentloaded" });
                   try {
@@ -633,7 +648,7 @@ jobs:
                   if (viewport.exerciseControls) {
                     await page.locator('[data-guide-step="1"]').click();
                     await waitForStep(page, 1);
-                    await page.locator(".gbGrid .gb-item").first().click({ timeout: 10000 });
+                    await page.locator("#gbGrid .gb-item").first().click({ timeout: 10000 });
                     await page.waitForFunction(() => window.onbStep === 2, null, { timeout: 10000 });
                     await waitForStep(page, 2);
                     await inspectStep(page, deck, viewport, 2);
