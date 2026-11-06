@@ -171,7 +171,26 @@ jobs:
               assert len(designs) == 100, f"{deck}: expected 100 designs"
               assert all(item.get("pack") == deck for item in designs), f"{deck}: mixed design packs"
 
-              assert len(re.findall(r"\{icon:'", html[html.index("var ONBOARD_STEPS=["):html.index("var onbStep=", html.index("var ONBOARD_STEPS=["))])) == 6, f"{deck}: tour must have six steps"
+              tour_start = html.index("var ONBOARD_STEPS=[")
+              tour_end = html.index("var onbStep=", tour_start)
+              tour_source = html[tour_start:tour_end]
+              assert len(re.findall(r"\{icon:'", tour_source)) == 6, f"{deck}: tour must have six steps"
+              assert len(re.findall(r"visual:'", tour_source)) == 6, f"{deck}: each step needs a visual explanation"
+              assert len(re.findall(r"outcome:'", tour_source)) == 6, f"{deck}: each step needs a clear outcome"
+              for visual in ("journey", "discover", "inspect", "choose", "audio", "export"):
+                  assert f"visual:'{visual}'" in tour_source, f"{deck}: missing {visual} step visual"
+              assert "function renderOnboardVisual(kind)" in html, f"{deck}: guided illustrations are missing"
+              assert "ob-checklist" in html and "ob-outcome" in html and "ob-tip" in html, f"{deck}: instructional hierarchy is incomplete"
+              assert "role=\"progressbar\"" in html and "aria-live=\"polite\"" in html, f"{deck}: progress/status announcements are missing"
+              assert "ONBOARD_STORAGE_KEY = \"anki_\" + ONBOARD_DECK + \"_onboarded\"" in html, f"{deck}: deck-specific tour key is missing"
+              assert "localStorage.setItem(ONBOARD_STORAGE_KEY,'1')" in html, f"{deck}: completion state is not saved safely"
+              assert "function isOnboardingCompleted()" in html and "catch(_e){return false;}" in html, f"{deck}: blocked localStorage must not break the tour"
+              assert f"if(!isOnboardingCompleted())setTimeout(showOnboarding,80);" in html, f"{deck}: first-visit tour must be delayed safely"
+              assert "ONBOARD_PRIMARY_LANGUAGE = ONBOARD_IS_FRENCH ? \"الفرنسية\" : \"الإنجليزية\";" in html, f"{deck}: audio language must match the deck"
+              assert "onboardReturnFocus=document.activeElement" in html, f"{deck}: return focus is not captured"
+              assert "document.body.style.overflow=onboardPreviousOverflow" in html, f"{deck}: body scrolling is not restored"
+              assert "focusOnboardHeading()" in html, f"{deck}: step changes must announce the new heading"
+              assert "e.key==='Tab'" in html and "e.key==='Escape'" in html, f"{deck}: keyboard dialog controls are missing"
               assert f"localStorage.setItem('anki_{deck}_onboarded','1')" in html, f"{deck}: wrong onboarding completion key"
               assert f"if(!localStorage.getItem('anki_{deck}_onboarded'))setTimeout(showOnboarding,80);" in html, f"{deck}: first-visit tour must be delayed safely"
               assert "onboardReturnFocus=document.activeElement" in html, f"{deck}: return focus is not captured"
@@ -181,14 +200,14 @@ jobs:
               dialog = re.search(r'<dialog[^>]*id="onboardOverlay"[^>]*>', html)
               assert dialog, f"{deck}: onboarding dialog markup is missing"
               assert "style=" not in dialog.group(0), f"{deck}: inline display style can hide the open modal"
-              assert '#onboardOverlay.onboard-overlay[open]{display:flex}' in html, f"{deck}: open dialog has no visible display rule"
+              assert '#onboardOverlay.onboard-overlay[open]{display:grid}' in html, f"{deck}: open dialog has no visible display rule"
               assert "overlay.showModal()" in html, f"{deck}: tour must open as a native modal dialog"
               assert "overlay.close()" in html, f"{deck}: tour must close through the native dialog lifecycle"
               assert "overlay.removeAttribute('open')" in html, f"{deck}: non-native dialog fallback is missing"
               assert "if(!overlay||!overlay.hasAttribute('open'))return;" in html, f"{deck}: keyboard handler must follow the dialog open state"
               assert "overlay.style.display='flex'" not in html, f"{deck}: dialog is being shown without native modal semantics"
               assert 'aria-modal="true"' in html, f"{deck}: native modal semantics are not declared"
-              assert "@media(max-width:620px)" in html and "prefers-reduced-motion:reduce" in html, f"{deck}: responsive/reduced-motion styles are missing"
+              assert "@media(max-width:720px)" in html and "prefers-reduced-motion:reduce" in html, f"{deck}: responsive/reduced-motion styles are missing"
 
               assert "gv-fab" not in html, f"{deck}: floating corner flip button remains"
               assert 'id="fsFlipBtn"' in html, f"{deck}: full-screen flip control was removed"
@@ -201,6 +220,23 @@ jobs:
 
           print("ALL FOUR GALLERY UX REGRESSION CHECKS PASSED")
           PY
+
+      - name: Syntax-check the generated six-step onboarding scripts
+        run: |
+          node <<'JS'
+          const assert = require("node:assert/strict");
+          const fs = require("node:fs");
+          for (const deck of ["en9", "enlit", "ensci", "fr9"]) {
+            const html = fs.readFileSync("out/" + deck + ".html", "utf8");
+            const start = html.indexOf("var ONBOARD_DECK = ");
+            const endMarker = "// ============================================================\\n// WHAT'S NEW";
+            const end = html.indexOf(endMarker, start);
+            assert(start >= 0 && end > start, deck + ": onboarding script boundaries missing");
+            const source = html.slice(start, end);
+            assert.doesNotThrow(() => new Function(source), deck + ": onboarding JavaScript syntax error");
+            console.log("PASS " + deck + ": generated onboarding JavaScript parses");
+          }
+          JS
 
       - name: Verify committed gallery pages stay synchronized with native dialog behavior
         run: |
@@ -236,11 +272,11 @@ jobs:
               assert "overlay.showModal()" in html and "overlay.close()" in html, f"{deck}: native dialog lifecycle missing"
               assert "overlay.setAttribute('open','')" in html and "overlay.removeAttribute('open')" in html, f"{deck}: dialog fallback missing"
               assert "overlay.style.display='flex'" not in html and "overlay.style.display='none'" not in html, f"{deck}: legacy display-based modal remains"
-              assert "#onboardOverlay.onboard-overlay[open]{display:flex}" in html, f"{deck}: open dialog visibility rule missing"
+              assert "#onboardOverlay.onboard-overlay[open]{display:grid}" in html, f"{deck}: open dialog visibility rule missing"
               assert len(re.findall(r"\{icon:'", html[html.index("var ONBOARD_STEPS=["):html.index("var onbStep=")])) == 6, f"{deck}: tour must have six steps"
               assert "gv-fab" not in html and 'id="fsFlipBtn"' in html, f"{deck}: obsolete or missing preview flip control"
               assert 'id="loadingMsg"' not in html and "جاري تحميل القوالب..." not in html, f"{deck}: blocking loader remains"
-              assert f"localStorage.setItem('anki_{deck}_onboarded','1')" in html, f"{deck}: wrong onboarding storage key"
+              assert "localStorage.setItem(ONBOARD_STORAGE_KEY,'1')" in html, f"{deck}: wrong onboarding storage key"
               ids = re.findall(r'id="([^"]+)"', html)
               assert len(ids) == len(set(ids)), f"{deck}: duplicate HTML IDs"
               print(f"PASS committed {deck}: 100 deck-bound designs, six-step native tour, clean preview controls")
