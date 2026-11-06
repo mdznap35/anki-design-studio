@@ -524,9 +524,11 @@ jobs:
               const button = document.querySelector(
                 '#onboardGuideRoot .og-progress button[aria-current="step"]'
               );
-              return button && Number(button.getAttribute("data-guide-step")) === expected;
+              const target = document.querySelector(".og-spotlight");
+              if (!button || Number(button.getAttribute("data-guide-step")) !== expected || !target) return false;
+              const rect = target.getBoundingClientRect();
+              return rect.width > 0 && rect.height > 0;
             }, index, { timeout: 10000 });
-            await page.waitForTimeout(100);
           }
 
           async function inspectStep(page, deck, viewport, index) {
