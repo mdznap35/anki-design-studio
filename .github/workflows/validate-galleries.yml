@@ -532,6 +532,9 @@ jobs:
           }
 
           async function inspectStep(page, deck, viewport, index) {
+            await page.evaluate(() => {
+              if (typeof positionOnboardGuide === "function") positionOnboardGuide();
+            });
             const state = await page.evaluate(() => {
               const card = document.querySelector("#onboardGuideRoot .og-card");
               const target = document.querySelector(".og-spotlight");
