@@ -79,6 +79,7 @@ TOUR_CSS = r"""#onboardOverlay.onboard-overlay{position:fixed;inset:0;z-index:99
 #onboardOverlay .ob-copy{display:flex;flex-direction:column;justify-content:center;min-width:0;text-align:right;padding:4px 0}
 #onboardOverlay .ob-kicker{display:flex;align-items:center;gap:8px;margin:0 0 12px;color:#67e8f9;font-size:.75rem;font-weight:950;letter-spacing:.02em}
 #onboardOverlay .ob-kicker:before{content:"";width:24px;height:2px;border-radius:2px;background:#67e8f9}
+#onboardOverlay .ob-kicker-icon{display:grid;place-items:center;width:28px;height:28px;border:1px solid rgba(103,232,249,.2);border-radius:9px;background:rgba(8,145,178,.1);font-size:.85rem}
 #onboardOverlay .ob-title{margin:0 0 12px;color:#f8fafc;font-family:var(--font-head);font-size:clamp(1.45rem,3.2vw,2.15rem);font-weight:950;line-height:1.45;letter-spacing:-.025em}
 #onboardOverlay .ob-text{margin:0;color:#cbd5e1;font-size:clamp(.91rem,1.6vw,1rem);line-height:1.95}
 #onboardOverlay .ob-checklist{display:grid;gap:8px;margin:17px 0 0;padding:0;list-style:none}
@@ -201,7 +202,7 @@ function renderOnboardVisual(kind){
       '<div class="ob-visual-caption">اختر بوعي — ليس بكثرة الاختيارات</div>';
   }
   if(kind==='audio'){
-    return '<div class="ob-audio-board"><div class="ob-audio-row"><span class="ob-audio-icon">♫</span><span class="ob-audio-copy"><strong>الصوت '+primary+'</strong><small>اختر الصوت وجرّب النطق</small></span><span class="ob-play-mark">▶</span></div><div class="ob-audio-row secondary"><span class="ob-audio-icon">ع</span><span class="ob-audio-copy"><strong>الصوت العربية</strong><small>معاينة مستقلة للغة الثانية</small></span><span class="ob-play-mark">▶</span></div><div class="ob-audio-sliders"><span class="ob-slider-line">السرعة <i></i></span><span class="ob-slider-line">النغمة <i></i></span><span class="ob-slider-line">الفواصل <i></i></span></div></div>'+
+    return '<div class="ob-audio-board"><div class="ob-audio-row"><span class="ob-audio-icon">♫</span><span class="ob-audio-copy"><strong>الصوت '+primary+'</strong><small>اختر الصوت وجرّب النطق</small></span><span class="ob-play-mark">▶</span></div><div class="ob-audio-row secondary"><span class="ob-audio-icon">ع</span><span class="ob-audio-copy"><strong>الصوت العربي</strong><small>معاينة مستقلة للغة الثانية</small></span><span class="ob-play-mark">▶</span></div><div class="ob-audio-sliders"><span class="ob-slider-line">السرعة <i></i></span><span class="ob-slider-line">النغمة <i></i></span><span class="ob-slider-line">الفواصل <i></i></span></div></div>'+
       '<div class="ob-visual-caption">اختر الصوت ← استمع ← اضبط ← قرّر تضمينه</div>';
   }
   return '<div class="ob-export-board"><div class="ob-file-icon">APKG</div><strong>رزمة Anki جاهزة للاستيراد</strong><small>راجع القوالب والصوت، أنشئ الملف، ثم افتحه باستخدام Anki.</small><div class="ob-export-checks"><span>✓ القوالب</span><span>✓ الصوت</span><span>✓ التصدير</span></div></div>';
@@ -285,7 +286,7 @@ function renderOnboardStep(){
   h+='<div class="ob-progress" role="progressbar" aria-label="التقدم في الجولة" aria-valuemin="1" aria-valuemax="'+ONBOARD_STEPS.length+'" aria-valuenow="'+(onbStep+1)+'">'+progress+'</div>';
   h+='<p class="ob-sr-only" role="status" aria-live="polite">الخطوة '+(onbStep+1)+' من '+ONBOARD_STEPS.length+': '+escapeOnboardText(step.title)+'</p>';
   h+='<div class="ob-content"><div class="ob-visual" role="img" aria-label="'+escapeOnboardText(step.label)+'">'+renderOnboardVisual(step.visual)+'</div>';
-  h+='<div class="ob-copy"><p class="ob-kicker">'+escapeOnboardText(step.label)+'</p><h2 class="ob-title" id="onboardStepTitle" tabindex="-1">'+escapeOnboardText(step.title)+'</h2><p class="ob-text">'+escapeOnboardText(step.text)+'</p>';
+  h+='<div class="ob-copy"><p class="ob-kicker"><span class="ob-kicker-icon" aria-hidden="true">'+escapeOnboardText(step.icon)+'</span>'+escapeOnboardText(step.label)+'</p><h2 class="ob-title" id="onboardStepTitle" tabindex="-1">'+escapeOnboardText(step.title)+'</h2><p class="ob-text">'+escapeOnboardText(step.text)+'</p>';
   h+='<ul class="ob-checklist">'+checks+'</ul><div class="ob-outcome"><strong>النتيجة:</strong> '+escapeOnboardText(step.outcome)+'</div>';
   h+='<div class="ob-tip"><span class="ob-tip-icon" aria-hidden="true">✦</span><span>'+escapeOnboardText(step.tip)+'</span></div></div></div>';
   h+='<div class="ob-footer"><button class="ob-skip" type="button" onclick="closeOnboarding()">تخطي الجولة</button><div class="ob-nav">';
@@ -373,7 +374,7 @@ def apply_gallery_ux(html, deck):
     html = html[:start] + tour_js + "\n\n" + html[end:]
 
     old_init = "if(!localStorage.getItem('anki_" + deck + "_onboarded'))showOnboarding();"
-    new_init = "if(!localStorage.getItem('anki_" + deck + "_onboarded'))setTimeout(showOnboarding,80);"
+    new_init = "if(!isOnboardingCompleted())setTimeout(showOnboarding,80);"
     html = _replace_once(html, old_init, new_init, deck + " delayed first-visit tour")
 
     style_tag = '<style id="gallery-tour-redesign">\n' + TOUR_CSS + '\n</style>\n'
