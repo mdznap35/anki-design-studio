@@ -5133,17 +5133,48 @@ function showOnboarding(){
   setTimeout(function(){var next=overlay.querySelector('[data-tour-next]');if(next)next.focus();},30);
 }
 
-function closeOnboarding(){
+function closeOnboarding(markDone){
   var overlay=document.getElementById('onboardOverlay');
   if(!overlay)return;
   try{if(overlay.open)overlay.close();}catch(_e){}
   overlay.style.display='none';
   document.body.style.overflow='';
-  try{localStorage.setItem("anki_fr9_onboarded",'1');}catch(_e){}
+  if(markDone!==false){
+    try{localStorage.setItem("anki_fr9_onboarded",'1');}catch(_e){}
+  }
   var previous=tourPreviousFocus;
   tourPreviousFocus=null;
   if(previous&&typeof previous.focus==='function'&&document.contains(previous)){
     try{previous.focus({preventScroll:true});}catch(_e){try{previous.focus();}catch(_e2){}}
+  }
+}
+
+function tourTryStep(){
+  var step=onbStep;
+  closeOnboarding(false);
+  try{
+    if(step===0||step===1){
+      if(typeof openGalleryBrowser==='function')openGalleryBrowser();
+    }else if(step===2){
+      var visible=typeof getFilteredTemplates==='function'?getFilteredTemplates():[];
+      if(visible&&visible.length&&typeof openFullscreen==='function'){
+        curTplIdx=0;
+        openFullscreen();
+      }else if(typeof openGalleryBrowser==='function')openGalleryBrowser();
+    }else if(step===3){
+      var panel=document.querySelector('.aa');
+      if(panel)panel.scrollIntoView({behavior:'smooth',block:'center'});
+      var body=document.getElementById('gAudioPanelBody');
+      if(body&&!body.classList.contains('open')&&typeof toggleAudioPanel==='function')toggleAudioPanel();
+    }else if(step===4){
+      if(typeof openExport==='function')openExport();
+      else{
+        var target=document.getElementById('download');
+        if(target)target.scrollIntoView({behavior:'smooth',block:'start'});
+      }
+    }
+  }catch(error){
+    console.warn('Tour action could not open the target control:',error);
   }
 }
 
@@ -5172,7 +5203,7 @@ function renderOnboardStep(){
   h+='</nav><div class="tour-rail-foot">المعرض الحالي<br><strong>'+TOUR_DECK.name+'</strong><br>كل خطوة تحفظ وقتك وتقلل التجربة العشوائية.</div></aside>';
   h+='<main class="tour-main"><div class="tour-top"><div class="tour-step-label"><i>STEP '+String(onbStep+1).padStart(2,'0')+'</i><span>/</span><span>'+String(total).padStart(2,'0')+'</span></div><div class="tour-progress-copy">'+percent+'٪ مكتمل</div></div>';
   h+='<div class="tour-progress-track" role="progressbar" aria-label="تقدم الجولة" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+percent+'"><div class="tour-progress-fill" style="width:'+percent+'%"></div></div>';
-  h+='<section class="tour-content" aria-live="polite"><div class="tour-copy"><div class="tour-icon" aria-hidden="true">'+step.icon+'</div><p class="tour-eyebrow">'+step.eyebrow+'</p><h1 class="tour-title" id="tourStepTitle">'+step.title+'</h1><p class="tour-text">'+step.text+'</p><div class="tour-tip"><b>نصيحة</b><span>'+step.tip+'</span></div></div>';
+  h+='<section class="tour-content" aria-live="polite"><div class="tour-copy"><div class="tour-icon" aria-hidden="true">'+step.icon+'</div><p class="tour-eyebrow">'+step.eyebrow+'</p><h1 class="tour-title" id="tourStepTitle">'+step.title+'</h1><p class="tour-text">'+step.text+'</p><div class="tour-tip"><b>نصيحة</b><span>'+step.tip+'</span><button type="button" class="tour-try" onclick="tourTryStep()">افتح الأداة وجرّبها ↗</button></div></div>';
   h+='<div class="tour-visual" aria-hidden="true">'+tourVisualForStep(onbStep)+'</div></section>';
   h+='<footer class="tour-footer"><div class="tour-footer-note">خطوة '+(onbStep+1)+' من '+total+' · '+TOUR_DECK.nameAr+'</div><div class="tour-actions">';
   h+='<button type="button" class="tour-btn text" onclick="closeOnboarding()">تخطي الجولة</button>';
@@ -7219,7 +7250,11 @@ setTimeout(function(){try{setupExportModal();}catch(_e){}},1500);
     animation:none!important;transition:none!important;scroll-behavior:auto!important
   }
 }
-
+#onboardOverlay .tour-tip{display:grid;grid-template-columns:auto 1fr;align-items:start;gap:5px 10px}
+#onboardOverlay .tour-tip .tour-try{grid-column:2;justify-self:start;margin-top:7px;padding:8px 12px;border:1px solid rgba(167,139,250,.38);border-radius:10px;background:rgba(139,92,246,.13);color:#ddd6fe;font:inherit;font-size:11px;font-weight:800;cursor:pointer;transition:background .18s,border-color .18s,transform .18s}
+#onboardOverlay .tour-tip .tour-try:hover{background:rgba(139,92,246,.24);border-color:#a78bfa;transform:translateY(-1px)}
+#onboardOverlay .tour-tip .tour-try:focus-visible{outline:2px solid #c4b5fd;outline-offset:3px}
+@media(max-width:720px){#onboardOverlay .tour-tip .tour-try{grid-column:1/-1}}
 </style>
 </body>
 </html>
