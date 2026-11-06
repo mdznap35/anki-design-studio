@@ -203,6 +203,9 @@ jobs:
                   assert helper in tour_source, f"{deck}: missing {helper}"
 
               assert 'ONBOARD_PRIMARY_LANGUAGE = ONBOARD_DECK === "fr9" ? "الفرنسية" : "الإنجليزية";' in tour_source, f"{deck}: audio language is not deck-aware"
+              expected_audio_status = "fetch(apiBase()+'/api/audio_status?source=" + deck + "')"
+              assert html.count(expected_audio_status) == 1, f"{deck}: generated audio-status URL is malformed or duplicated"
+              assert "fetch(apiBase()+'/api/audio_status?source=" + deck + ").then" not in html, f"{deck}: audio-status URL is missing its closing quote"
               assert "100 تصميم فعلي" in tour_source, f"{deck}: library explanation must state the real design count"
               assert "كيفية الاستيراد" in tour_source and 'id="importGuide"' in html, f"{deck}: post-export Anki import guidance is missing"
               assert 'aria-live="polite"' in tour_source, f"{deck}: guide announcements are missing"
@@ -270,6 +273,34 @@ jobs:
             assert(cutout.startsWith("M0 0H360V800H0Z M56 90"), deck + ": spotlight cut-out does not follow the real target bounds");
             assert(cutout.endsWith("Z"), deck + ": spotlight cut-out path is incomplete");
             console.log("PASS " + deck + ": onboarding JavaScript parses and spotlight geometry matches target bounds");
+          }
+          JS
+
+      - name: Parse every generated inline JavaScript block
+        run: |
+          node <<'JS'
+          const assert = require("node:assert/strict");
+          const fs = require("node:fs");
+          for (const deck of ["en9", "enlit", "ensci", "fr9"]) {
+            const html = fs.readFileSync("out/" + deck + ".html", "utf8");
+            const scriptPattern = /<script\b([^>]*)>([\s\S]*?)<\/script\s*>/gi;
+            let match;
+            let checked = 0;
+            while ((match = scriptPattern.exec(html)) !== null) {
+              const attrs = match[1] || "";
+              const type = (attrs.match(/\btype=["']([^"']+)["']/i) || [])[1] || "";
+              if (type && type !== "module" && !/(java|ecma)script/i.test(type)) continue;
+              if (type === "module") continue;
+              const source = match[2] || "";
+              if (!source.trim()) continue;
+              assert.doesNotThrow(
+                () => new Function(source),
+                deck + ": inline script " + checked + " has invalid JavaScript syntax"
+              );
+              checked++;
+            }
+            assert(checked >= 4, deck + ": expected at least four executable inline scripts, checked " + checked);
+            console.log("PASS " + deck + ": all " + checked + " executable inline scripts parse");
           }
           JS
 
