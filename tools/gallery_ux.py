@@ -511,9 +511,13 @@ def apply_gallery_ux(html, deck):
     html = _replace_once(html, old_init, new_init, deck + " delayed first-visit tour")
 
     launcher_html = '<button id="onboardTourLauncher" type="button" onclick="showOnboarding()" aria-label="إعادة فتح الجولة السريعة"><span aria-hidden="true">✦</span><span>الجولة السريعة</span></button>\n'
-    html, launcher_inserted = re.subn(r"</body\s*>", launcher_html + "</body>", html, count=1, flags=re.I)
-    if launcher_inserted != 1:
-        raise SystemExit(deck + " could not add the persistent quick-tour launcher")
+    body_closers = list(re.finditer(r"</body\s*>", html, flags=re.I))
+    if not body_closers:
+        raise SystemExit(deck + " has no closing body tag for the persistent quick-tour launcher")
+    # Generated pages contain HTML fragments inside JavaScript strings, so the
+    # first textual </body> can be inside a script. Use the final document close.
+    body_close = body_closers[-1]
+    html = html[:body_close.start()] + launcher_html + html[body_close.start():]
 
     style_tag = '<style id="gallery-tour-redesign">\n' + TOUR_CSS + '\n</style>\n'
     html, inserted = re.subn(r"</head\s*>", style_tag + "</head>", html, count=1, flags=re.I)
