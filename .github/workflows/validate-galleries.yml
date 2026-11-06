@@ -148,7 +148,7 @@ jobs:
             assert(source.includes("front.split('{{Word}}').join(SAMP.f)"), deck + ": word sample mapping missing");
             assert(source.includes("front.split('{{Meaning}}').join(SAMP.a)"), deck + ": meaning sample mapping missing");
             assert(source.includes("return front;"), deck + ": preview helper return missing");
-            fs.writeFileSync("/tmp/anki-preview-" + deck + ".js", "var SAMP = {};\\n" + source + "\\n");
+            fs.writeFileSync("/tmp/anki-preview-" + deck + ".js", "var SAMP = {};\n" + source + "\n");
             console.log("PASS " + deck + ": preview helper source and field mappings are present");
           }
           JS
@@ -265,9 +265,9 @@ jobs:
             const end = html.indexOf(endMarker, start);
             assert(start >= 0 && end > start, deck + ": onboarding script boundaries missing");
             const source = html.slice(start, end);
-            fs.writeFileSync("/tmp/anki-onboard-" + deck + ".js", source + "\\n");
+            fs.writeFileSync("/tmp/anki-onboard-" + deck + ".js", source + "\n");
             const geometryStart = source.indexOf("function onboardBackdropPath(");
-            const geometryEnd = source.indexOf("\\nfunction positionOnboardGuide", geometryStart);
+            const geometryEnd = source.indexOf("\nfunction positionOnboardGuide", geometryStart);
             assert(geometryStart >= 0 && geometryEnd > geometryStart, deck + ": spotlight geometry helper boundaries missing");
             const geometry = source.slice(geometryStart, geometryEnd);
             for (const token of ["getBoundingClientRect()", "target.isConnected", "width", "height", "return"]) {
@@ -296,7 +296,7 @@ jobs:
               const source = match[2] || "";
               if (!source.trim()) continue;
               const output = "/tmp/anki-inline-" + deck + "-" + checked + ".js";
-              fs.writeFileSync(output, source + "\\n");
+              fs.writeFileSync(output, source + "\n");
               checked++;
             }
             assert(checked >= 4, deck + ": expected at least four executable inline scripts, checked " + checked);
