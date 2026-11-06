@@ -147,6 +147,9 @@ function onboardEnsureRoot(){
 function onboardPrepareStep(index){
   var browser = document.getElementById("galleryBrowser");
   if(index === 1){
+    // Ensure the 100 real designs have been mounted before opening the library.
+    // The tour can start before the asynchronous gallery watcher has populated gvList.
+    try{if(typeof ensureGalleryDesigns === "function")ensureGalleryDesigns();}catch(_e){}
     if(browser && !browser.classList.contains("open") && typeof openGalleryBrowser === "function"){
       openGalleryBrowser();
       onboardOpenedBrowser = true;
