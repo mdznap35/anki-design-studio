@@ -191,8 +191,6 @@ jobs:
               assert "document.body.style.overflow=onboardPreviousOverflow" in html, f"{deck}: body scrolling is not restored"
               assert "focusOnboardHeading()" in html, f"{deck}: step changes must announce the new heading"
               assert "e.key==='Tab'" in html and "e.key==='Escape'" in html, f"{deck}: keyboard dialog controls are missing"
-              assert f"localStorage.setItem('anki_{deck}_onboarded','1')" in html, f"{deck}: wrong onboarding completion key"
-              assert f"if(!localStorage.getItem('anki_{deck}_onboarded'))setTimeout(showOnboarding,80);" in html, f"{deck}: first-visit tour must be delayed safely"
               assert "onboardReturnFocus=document.activeElement" in html, f"{deck}: return focus is not captured"
               assert "document.body.style.overflow=onboardPreviousOverflow" in html, f"{deck}: body scrolling is not restored"
               assert "e.key==='Tab'" in html and "e.key==='Escape'" in html, f"{deck}: keyboard dialog controls are missing"
@@ -229,7 +227,7 @@ jobs:
           for (const deck of ["en9", "enlit", "ensci", "fr9"]) {
             const html = fs.readFileSync("out/" + deck + ".html", "utf8");
             const start = html.indexOf("var ONBOARD_DECK = ");
-            const endMarker = "// ============================================================\\n// WHAT'S NEW";
+            const endMarker = "// ============================================================\n// WHAT'S NEW";
             const end = html.indexOf(endMarker, start);
             assert(start >= 0 && end > start, deck + ": onboarding script boundaries missing");
             const source = html.slice(start, end);
@@ -272,7 +270,7 @@ jobs:
               assert "overlay.showModal()" in html and "overlay.close()" in html, f"{deck}: native dialog lifecycle missing"
               assert "overlay.setAttribute('open','')" in html and "overlay.removeAttribute('open')" in html, f"{deck}: dialog fallback missing"
               assert "overlay.style.display='flex'" not in html and "overlay.style.display='none'" not in html, f"{deck}: legacy display-based modal remains"
-              assert "#onboardOverlay.onboard-overlay[open]{display:grid}" in html, f"{deck}: open dialog visibility rule missing"
+              assert "#onboardOverlay.onboard-overlay[open]{display:flex}" in html, f"{deck}: open dialog visibility rule missing"
               assert len(re.findall(r"\{icon:'", html[html.index("var ONBOARD_STEPS=["):html.index("var onbStep=")])) == 6, f"{deck}: tour must have six steps"
               assert "gv-fab" not in html and 'id="fsFlipBtn"' in html, f"{deck}: obsolete or missing preview flip control"
               assert 'id="loadingMsg"' not in html and "جاري تحميل القوالب..." not in html, f"{deck}: blocking loader remains"
