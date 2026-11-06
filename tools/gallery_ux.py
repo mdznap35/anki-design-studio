@@ -100,175 +100,11 @@ var onboardGuideReturnFocus = null;
 var onboardActiveTarget = null;
 var onboardReviewOpened = false;
 
-function escapeOnboardText(value){
-  return String(value == null ? "" : value).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
-}
-function isOnboardingCompleted(){
-  try{
-    if(localStorage.getItem(ONBOARD_STORAGE_KEY) === "1")return true;
-  }catch(_e){}
-  try{return sessionStorage.getItem(ONBOARD_SNOOZE_KEY) === "1";}
-  catch(_e){return false;}
-}
-function markOnboardingCompleted(){
-  try{localStorage.setItem(ONBOARD_STORAGE_KEY,"1");return true;}
-  catch(_e){return false;}
-}
-function onboardStepTarget(step){
-  if(!step)return null;
-  var selector = (step.id === "export" && onboardReviewOpened) ? "#exViewSummary" : step.target;
-  var target = selector ? document.querySelector(selector) : null;
-  if(!target && step.fallback)target = document.querySelector(step.fallback);
-  return target;
-}
-function onboardClearSpotlight(){
-  if(onboardActiveTarget){
-    onboardActiveTarget.classList.remove("og-spotlight");
-    onboardActiveTarget = null;
-  }
-}
-function onboardEnsureRoot(){
-  if(onboardGuideRoot && onboardGuideRoot.isConnected)return onboardGuideRoot;
-  var legacy = document.getElementById("onboardOverlay");
-  if(legacy){legacy.hidden = true;legacy.setAttribute("aria-hidden","true");}
-  var root = document.createElement("div");
-  root.id = "onboardGuideRoot";
-  root.className = "onboard-guide-root";
-  root.setAttribute("dir","rtl");
-  document.body.appendChild(root);
-  root.addEventListener("click",function(event){
-    var stepButton = event.target.closest ? event.target.closest("[data-guide-step]") : null;
-    if(stepButton){
-      var nextIndex = parseInt(stepButton.getAttribute("data-guide-step"),10);
-      if(Number.isInteger(nextIndex))goToOnboardStep(nextIndex);
-      return;
-    }
-    var actionButton = event.target.closest ? event.target.closest("[data-guide-action]") : null;
-    if(actionButton)handleOnboardAction(actionButton.getAttribute("data-guide-action"));
-  });
-  onboardGuideRoot = root;
-  return root;
-}
-function onboardPrepareStep(index){
-  var browser = document.getElementById("galleryBrowser");
-  if(index === 1){
-    // Ensure the 100 real designs have been mounted before opening the library.
-    // The tour can start before the asynchronous gallery watcher has populated gvList.
-    try{if(typeof ensureGalleryDesigns === "function")ensureGalleryDesigns();}catch(_e){}
-    if(browser && !browser.classList.contains("open") && typeof openGalleryBrowser === "function"){
-      openGalleryBrowser();
-      onboardOpenedBrowser = true;
-    }
-  }else if(onboardOpenedBrowser && browser && browser.classList.contains("open") && typeof closeGalleryBrowser === "function"){
-    closeGalleryBrowser();
-    onboardOpenedBrowser = false;
-  }
-  var audio = document.getElementById("gAudioPanelBody");
-  if(index === 4){
-    if(audio && !audio.classList.contains("open") && typeof toggleAudioPanel === "function"){
-      toggleAudioPanel();
-      onboardOpenedAudio = true;
-    }
-  }else if(onboardOpenedAudio && audio && audio.classList.contains("open") && typeof toggleAudioPanel === "function"){
-    toggleAudioPanel();
-    onboardOpenedAudio = false;
-  }
-}
-function goToOnboardStep(index){
-  var next = Number(index);
-  if(!Number.isInteger(next) || next < 0 || next >= ONBOARD_STEPS.length)return;
-  onboardClearSpotlight();
-  onbStep = next;
-  onboardReviewOpened = false;
-  onboardPrepareStep(next);
-  renderOnboardStep();
-  window.setTimeout(scheduleOnboardPosition,90);
-}
-function onboardBackdropPath(target,width,height){
-  var outer = "M0 0H" + width + "V" + height + "H0Z";
-  if(!target || !target.isConnected)return outer;
-  var rect = target.getBoundingClientRect();
-  if(!rect.width || !rect.height)return outer;
-  var pad = 10;
-  var left = Math.max(0,rect.left-pad);
-  var top = Math.max(0,rect.top-pad);
-  var right = Math.min(width,rect.right+pad);
-  var bottom = Math.min(height,rect.bottom+pad);
-  var radius = Math.min(16,(right-left)/4,(bottom-top)/4);
-  var hole = "M" + (left+radius) + " " + top +
-    "H" + (right-radius) + "Q" + right + " " + top + " " + right + " " + (top+radius) +
-    "V" + (bottom-radius) + "Q" + right + " " + bottom + " " + (right-radius) + " " + bottom +
-    "H" + (left+radius) + "Q" + left + " " + bottom + " " + left + " " + (bottom-radius) +
-    "V" + (top+radius) + "Q" + left + " " + top + " " + (left+radius) + " " + top + "Z";
-  return outer + " " + hole;
-}
-function positionOnboardGuide(){
-  if(!onboardGuideOpen || !onboardGuideRoot)return;
-  onboardClearSpotlight();
-  var step = ONBOARD_STEPS[onbStep];
-  var target = onboardStepTarget(step);
-  var card = onboardGuideRoot.querySelector(".og-card");
-  var path = onboardGuideRoot.querySelector("#ogBackdropPath");
-  var backdrop = onboardGuideRoot.querySelector(".og-backdrop");
-  if(!card || !path || !backdrop)return;
-  var width = Math.max(320,document.documentElement.clientWidth || window.innerWidth || 320);
-  var height = Math.max(320,window.innerHeight || document.documentElement.clientHeight || 320);
-  var reduced = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
-  backdrop.setAttribute("viewBox","0 0 " + width + " " + height);
-  if(target && target.isConnected){
-    var initialRect = target.getBoundingClientRect();
-    if(!onboardScrollingTarget && (initialRect.top < 76 || initialRect.bottom > height-76)){
-      onboardScrollingTarget = true;
-      try{target.scrollIntoView({behavior:reduced ? "auto" : "smooth",block:"center",inline:"nearest"});}catch(_e){}
-      window.setTimeout(function(){onboardScrollingTarget = false;scheduleOnboardPosition();},reduced ? 40 : 360);
-    }
-    onboardActiveTarget = target;
-    target.classList.add("og-spotlight");
-  }else{
-    target = null;
-  }
-  var rect = target ? target.getBoundingClientRect() : null;
-  path.setAttribute("d",onboardBackdropPath(target,width,height));
-  var margin = 12;
-  var gap = 18;
-  card.style.right = "auto";
-  card.style.bottom = "auto";
-  card.style.left = margin + "px";
-  card.style.top = margin + "px";
-  card.style.width = Math.min(width-24,width <= 640 ? 420 : 430) + "px";
-  card.style.maxHeight = Math.min(height*.54,460) + "px";
-  card.dataset.placement = "center";
-  if(!rect){
-    var centered = card.getBoundingClientRect();
-    card.style.left = Math.max(margin,(width-centered.width)/2) + "px";
-    card.style.top = Math.max(margin,(height-centered.height)/2) + "px";
-    return;
-  }
-  var measured = card.getBoundingClientRect();
-  var availableAbove = Math.max(0,rect.top-margin-gap);
-  var availableBelow = Math.max(0,height-rect.bottom-margin-gap);
-  var placeBelow = availableBelow >= measured.height || availableBelow >= availableAbove;
-  var available = placeBelow ? availableBelow : availableAbove;
-  var maxCardHeight = Math.max(190,Math.min(height*.68,available-8));
-  card.style.maxHeight = maxCardHeight + "px";
-  measured = card.getBoundingClientRect();
-  var top = placeBelow ? rect.bottom+gap : rect.top-measured.height-gap;
-  top = Math.max(margin,Math.min(height-measured.height-margin,top));
-  var left = rect.left + rect.width/2 - measured.width/2;
-  left = Math.max(margin,Math.min(width-measured.width-margin,left));
-  card.style.left = left + "px";
-  card.style.top = top + "px";
-  card.dataset.placement = placeBelow ? "below" : "above";
-  var arrowX = Math.max(22,Math.min(measured.width-22,rect.left+rect.width/2-left));
-  card.style.setProperty("--og-arrow-x",arrowX + "px");
-}
-function scheduleOnboardPosition(){
-  if(!onboardGuideOpen || onboardPositionFrame)return;
-  var request = window.requestAnimationFrame || function(callback){return window.setTimeout(callback,16);};
-  onboardPositionFrame = request(function(){
-    onboardPositionFrame = 0;
-    positionOnboardGuide();
-  });
+function onboardNode(tag,className,text){
+  var node = document.createElement(tag);
+  if(className)node.className = className;
+  if(text !== undefined && text !== null)node.textContent = String(text);
+  return node;
 }
 function renderOnboardStep(){
   if(!onboardGuideOpen)return;
@@ -276,10 +112,6 @@ function renderOnboardStep(){
   var step = ONBOARD_STEPS[onbStep];
   if(!step)return;
   var review = step.id === "export" && onboardReviewOpened;
-  var progress = "";
-  ONBOARD_STEPS.forEach(function(item,index){
-    progress += '<button type="button" data-guide-step="' + index + '" class="' + (index <= onbStep ? "done" : "") + '" aria-label="الانتقال إلى المحطة ' + (index+1) + ': ' + escapeOnboardText(item.label) + '" aria-current="' + (index === onbStep ? "step" : "false") + '"><span></span></button>';
-  });
   var title = review ? "هكذا تبدو مراجعة الرزمة قبل الإنشاء" : step.title;
   var body = review ? "راجع اسم الرزمة، وعدد القوالب المختارة، وإعدادات الصوت وخيارات التضمين. يمكنك إغلاق النافذة والعودة للتعديل. تذكير: لن يبدأ الإنشاء حتى تضغط زر «بدء التصدير» بنفسك." : step.text;
   var targetLabel = review ? "ملخص إعدادات الرزمة" : step.targetLabel;
@@ -296,20 +128,104 @@ function renderOnboardStep(){
     onbStep === 3 ? "audio" :
     onbStep === 4 ? "export" :
     (review ? "finish" : "review");
-  var previous = onbStep > 0 ? '<button class="og-btn ghost" type="button" data-guide-action="previous">السابق</button>' : "";
-  root.innerHTML =
-    '<svg class="og-backdrop" aria-hidden="true" focusable="false" viewBox="0 0 100 100" preserveAspectRatio="none"><path id="ogBackdropPath" fill="rgba(3,7,18,.68)" fill-rule="evenodd" d="M0 0H100V100H0Z"/></svg>' +
-    '<section class="og-card" role="dialog" aria-modal="false" aria-labelledby="onboardGuideTitle" aria-describedby="onboardGuideText">' +
-      '<div class="og-head"><div class="og-brand"><span class="og-mark" aria-hidden="true">A</span><span class="og-brand-copy"><strong>ANKI DESIGN STUDIO</strong><small>جولة داخل المعرض • ٦ محطات</small></span></div><button class="og-close" type="button" data-guide-action="close" aria-label="إغلاق الجولة">×</button></div>' +
-      '<nav class="og-progress" aria-label="محطات الجولة">' + progress + '</nav>' +
-      '<div class="og-meta"><span class="og-step-label">' + escapeOnboardText(step.label) + '</span><span class="og-count">المحطة ' + (onbStep+1) + ' من ' + ONBOARD_STEPS.length + '</span></div>' +
-      '<h2 class="og-title" id="onboardGuideTitle" tabindex="-1">' + escapeOnboardText(title) + '</h2>' +
-      '<p class="og-text" id="onboardGuideText" aria-live="polite">' + escapeOnboardText(body) + '</p>' +
-      '<div class="og-target"><span class="og-target-mark" aria-hidden="true">◎</span><span class="og-target-copy"><small>الأداة الفعلية على الصفحة</small><strong>' + escapeOnboardText(targetLabel) + '</strong></span></div>' +
-      '<p class="og-note" id="onboardGuideNote" role="status" aria-live="polite">' + escapeOnboardText(note) + '</p>' +
-      '<div class="og-footer"><button class="og-skip" type="button" data-guide-action="later">لاحقًا</button><div class="og-actions">' + previous + '<button class="og-btn primary" type="button" data-guide-action="' + primaryAction + '">' + escapeOnboardText(primaryLabel) + '</button></div></div>' +
-    '</section>';
-  var heading = root.querySelector("#onboardGuideTitle");
+
+  var svgNS = "http://www.w3.org/2000/svg";
+  var backdrop = document.createElementNS(svgNS,"svg");
+  backdrop.setAttribute("class","og-backdrop");
+  backdrop.setAttribute("aria-hidden","true");
+  backdrop.setAttribute("focusable","false");
+  backdrop.setAttribute("viewBox","0 0 100 100");
+  backdrop.setAttribute("preserveAspectRatio","none");
+  var path = document.createElementNS(svgNS,"path");
+  path.setAttribute("id","ogBackdropPath");
+  path.setAttribute("fill","rgba(3,7,18,.68)");
+  path.setAttribute("fill-rule","evenodd");
+  path.setAttribute("d","M0 0H100V100H0Z");
+  backdrop.appendChild(path);
+
+  var card = onboardNode("section","og-card");
+  card.setAttribute("role","dialog");
+  card.setAttribute("aria-modal","false");
+  card.setAttribute("aria-labelledby","onboardGuideTitle");
+  card.setAttribute("aria-describedby","onboardGuideText");
+
+  var head = onboardNode("div","og-head");
+  var brand = onboardNode("div","og-brand");
+  brand.appendChild(onboardNode("span","og-mark","A"));
+  var brandCopy = onboardNode("span","og-brand-copy");
+  brandCopy.appendChild(onboardNode("strong","","ANKI DESIGN STUDIO"));
+  brandCopy.appendChild(onboardNode("small","","جولة داخل المعرض • ٦ محطات"));
+  brand.appendChild(brandCopy);
+  var close = onboardNode("button","og-close","×");
+  close.type = "button";
+  close.setAttribute("data-guide-action","close");
+  close.setAttribute("aria-label","إغلاق الجولة");
+  head.appendChild(brand);
+  head.appendChild(close);
+  card.appendChild(head);
+
+  var progress = onboardNode("nav","og-progress");
+  progress.setAttribute("aria-label","محطات الجولة");
+  ONBOARD_STEPS.forEach(function(item,index){
+    var button = onboardNode("button",index <= onbStep ? "done" : "");
+    button.type = "button";
+    button.setAttribute("data-guide-step",String(index));
+    button.setAttribute("aria-label","الانتقال إلى المحطة " + (index+1) + ": " + item.label);
+    button.setAttribute("aria-current",index === onbStep ? "step" : "false");
+    button.appendChild(onboardNode("span",""));
+    progress.appendChild(button);
+  });
+  card.appendChild(progress);
+
+  var meta = onboardNode("div","og-meta");
+  meta.appendChild(onboardNode("span","og-step-label",step.label));
+  meta.appendChild(onboardNode("span","og-count","المحطة " + (onbStep+1) + " من " + ONBOARD_STEPS.length));
+  card.appendChild(meta);
+  var heading = onboardNode("h2","og-title",title);
+  heading.id = "onboardGuideTitle";
+  heading.tabIndex = -1;
+  card.appendChild(heading);
+  var description = onboardNode("p","og-text",body);
+  description.id = "onboardGuideText";
+  description.setAttribute("aria-live","polite");
+  card.appendChild(description);
+
+  var targetBox = onboardNode("div","og-target");
+  targetBox.appendChild(onboardNode("span","og-target-mark","◎"));
+  var targetCopy = onboardNode("span","og-target-copy");
+  targetCopy.appendChild(onboardNode("small","","الأداة الفعلية على الصفحة"));
+  targetCopy.appendChild(onboardNode("strong","",targetLabel));
+  targetBox.appendChild(targetCopy);
+  card.appendChild(targetBox);
+
+  var status = onboardNode("p","og-note",note);
+  status.id = "onboardGuideNote";
+  status.setAttribute("role","status");
+  status.setAttribute("aria-live","polite");
+  card.appendChild(status);
+
+  var footer = onboardNode("div","og-footer");
+  var later = onboardNode("button","og-skip","لاحقًا");
+  later.type = "button";
+  later.setAttribute("data-guide-action","later");
+  footer.appendChild(later);
+  var actions = onboardNode("div","og-actions");
+  if(onbStep > 0){
+    var previous = onboardNode("button","og-btn ghost","السابق");
+    previous.type = "button";
+    previous.setAttribute("data-guide-action","previous");
+    actions.appendChild(previous);
+  }
+  var primary = onboardNode("button","og-btn primary",primaryLabel);
+  primary.type = "button";
+  primary.setAttribute("data-guide-action",primaryAction);
+  actions.appendChild(primary);
+  footer.appendChild(actions);
+  card.appendChild(footer);
+
+  while(root.firstChild)root.removeChild(root.firstChild);
+  root.appendChild(backdrop);
+  root.appendChild(card);
   if(heading && typeof heading.focus === "function")heading.focus({preventScroll:true});
 }
 function handleOnboardAction(action){
