@@ -100,6 +100,173 @@ var onboardGuideReturnFocus = null;
 var onboardActiveTarget = null;
 var onboardReviewOpened = false;
 
+function isOnboardingCompleted(){
+  try{
+    if(localStorage.getItem(ONBOARD_STORAGE_KEY) === "1")return true;
+  }catch(_e){}
+  try{return sessionStorage.getItem(ONBOARD_SNOOZE_KEY) === "1";}
+  catch(_e){return false;}
+}
+function markOnboardingCompleted(){
+  try{localStorage.setItem(ONBOARD_STORAGE_KEY,"1");return true;}
+  catch(_e){return false;}
+}
+function onboardStepTarget(step){
+  if(!step)return null;
+  var selector = (step.id === "export" && onboardReviewOpened) ? "#exViewSummary" : step.target;
+  var target = selector ? document.querySelector(selector) : null;
+  if(!target && step.fallback)target = document.querySelector(step.fallback);
+  return target;
+}
+function onboardClearSpotlight(){
+  if(onboardActiveTarget){
+    onboardActiveTarget.classList.remove("og-spotlight");
+    onboardActiveTarget = null;
+  }
+}
+function onboardEnsureRoot(){
+  if(onboardGuideRoot && onboardGuideRoot.isConnected)return onboardGuideRoot;
+  var legacy = document.getElementById("onboardOverlay");
+  if(legacy){legacy.hidden = true;legacy.setAttribute("aria-hidden","true");}
+  var root = document.createElement("div");
+  root.id = "onboardGuideRoot";
+  root.className = "onboard-guide-root";
+  root.setAttribute("dir","rtl");
+  document.body.appendChild(root);
+  root.addEventListener("click",function(event){
+    var stepButton = event.target.closest ? event.target.closest("[data-guide-step]") : null;
+    if(stepButton){
+      var nextIndex = parseInt(stepButton.getAttribute("data-guide-step"),10);
+      if(Number.isInteger(nextIndex))goToOnboardStep(nextIndex);
+      return;
+    }
+    var actionButton = event.target.closest ? event.target.closest("[data-guide-action]") : null;
+    if(actionButton)handleOnboardAction(actionButton.getAttribute("data-guide-action"));
+  });
+  onboardGuideRoot = root;
+  return root;
+}
+function onboardPrepareStep(index){
+  var browser = document.getElementById("galleryBrowser");
+  if(index === 1){
+    // Ensure the 100 real designs have been mounted before opening the library.
+    // The tour can start before the asynchronous gallery watcher has populated gvList.
+    try{if(typeof ensureGalleryDesigns === "function")ensureGalleryDesigns();}catch(_e){}
+    if(browser && !browser.classList.contains("open") && typeof openGalleryBrowser === "function"){
+      openGalleryBrowser();
+      onboardOpenedBrowser = true;
+    }
+  }else if(onboardOpenedBrowser && browser && browser.classList.contains("open") && typeof closeGalleryBrowser === "function"){
+    closeGalleryBrowser();
+    onboardOpenedBrowser = false;
+  }
+  var audio = document.getElementById("gAudioPanelBody");
+  if(index === 4){
+    if(audio && !audio.classList.contains("open") && typeof toggleAudioPanel === "function"){
+      toggleAudioPanel();
+      onboardOpenedAudio = true;
+    }
+  }else if(onboardOpenedAudio && audio && audio.classList.contains("open") && typeof toggleAudioPanel === "function"){
+    toggleAudioPanel();
+    onboardOpenedAudio = false;
+  }
+}
+function goToOnboardStep(index){
+  var next = Number(index);
+  if(!Number.isInteger(next) || next < 0 || next >= ONBOARD_STEPS.length)return;
+  onboardClearSpotlight();
+  onbStep = next;
+  onboardReviewOpened = false;
+  onboardPrepareStep(next);
+  renderOnboardStep();
+  window.setTimeout(scheduleOnboardPosition,90);
+}
+function onboardBackdropPath(target,width,height){
+  var outer = "M0 0H" + width + "V" + height + "H0Z";
+  if(!target || !target.isConnected)return outer;
+  var rect = target.getBoundingClientRect();
+  if(!rect.width || !rect.height)return outer;
+  var pad = 10;
+  var left = Math.max(0,rect.left-pad);
+  var top = Math.max(0,rect.top-pad);
+  var right = Math.min(width,rect.right+pad);
+  var bottom = Math.min(height,rect.bottom+pad);
+  var radius = Math.min(16,(right-left)/4,(bottom-top)/4);
+  var hole = "M" + (left+radius) + " " + top +
+    "H" + (right-radius) + "Q" + right + " " + top + " " + right + " " + (top+radius) +
+    "V" + (bottom-radius) + "Q" + right + " " + bottom + " " + (right-radius) + " " + bottom +
+    "H" + (left+radius) + "Q" + left + " " + bottom + " " + left + " " + (bottom-radius) +
+    "V" + (top+radius) + "Q" + left + " " + top + " " + (left+radius) + " " + top + "Z";
+  return outer + " " + hole;
+}
+function positionOnboardGuide(){
+  if(!onboardGuideOpen || !onboardGuideRoot)return;
+  onboardClearSpotlight();
+  var step = ONBOARD_STEPS[onbStep];
+  var target = onboardStepTarget(step);
+  var card = onboardGuideRoot.querySelector(".og-card");
+  var path = onboardGuideRoot.querySelector("#ogBackdropPath");
+  var backdrop = onboardGuideRoot.querySelector(".og-backdrop");
+  if(!card || !path || !backdrop)return;
+  var width = Math.max(320,document.documentElement.clientWidth || window.innerWidth || 320);
+  var height = Math.max(320,window.innerHeight || document.documentElement.clientHeight || 320);
+  var reduced = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  backdrop.setAttribute("viewBox","0 0 " + width + " " + height);
+  if(target && target.isConnected){
+    var initialRect = target.getBoundingClientRect();
+    if(!onboardScrollingTarget && (initialRect.top < 76 || initialRect.bottom > height-76)){
+      onboardScrollingTarget = true;
+      try{target.scrollIntoView({behavior:reduced ? "auto" : "smooth",block:"center",inline:"nearest"});}catch(_e){}
+      window.setTimeout(function(){onboardScrollingTarget = false;scheduleOnboardPosition();},reduced ? 40 : 360);
+    }
+    onboardActiveTarget = target;
+    target.classList.add("og-spotlight");
+  }else{
+    target = null;
+  }
+  var rect = target ? target.getBoundingClientRect() : null;
+  path.setAttribute("d",onboardBackdropPath(target,width,height));
+  var margin = 12;
+  var gap = 18;
+  card.style.right = "auto";
+  card.style.bottom = "auto";
+  card.style.left = margin + "px";
+  card.style.top = margin + "px";
+  card.style.width = Math.min(width-24,width <= 640 ? 420 : 430) + "px";
+  card.style.maxHeight = Math.min(height*.54,460) + "px";
+  card.dataset.placement = "center";
+  if(!rect){
+    var centered = card.getBoundingClientRect();
+    card.style.left = Math.max(margin,(width-centered.width)/2) + "px";
+    card.style.top = Math.max(margin,(height-centered.height)/2) + "px";
+    return;
+  }
+  var measured = card.getBoundingClientRect();
+  var availableAbove = Math.max(0,rect.top-margin-gap);
+  var availableBelow = Math.max(0,height-rect.bottom-margin-gap);
+  var placeBelow = availableBelow >= measured.height || availableBelow >= availableAbove;
+  var available = placeBelow ? availableBelow : availableAbove;
+  var maxCardHeight = Math.max(190,Math.min(height*.68,available-8));
+  card.style.maxHeight = maxCardHeight + "px";
+  measured = card.getBoundingClientRect();
+  var top = placeBelow ? rect.bottom+gap : rect.top-measured.height-gap;
+  top = Math.max(margin,Math.min(height-measured.height-margin,top));
+  var left = rect.left + rect.width/2 - measured.width/2;
+  left = Math.max(margin,Math.min(width-measured.width-margin,left));
+  card.style.left = left + "px";
+  card.style.top = top + "px";
+  card.dataset.placement = placeBelow ? "below" : "above";
+  var arrowX = Math.max(22,Math.min(measured.width-22,rect.left+rect.width/2-left));
+  card.style.setProperty("--og-arrow-x",arrowX + "px");
+}
+function scheduleOnboardPosition(){
+  if(!onboardGuideOpen || onboardPositionFrame)return;
+  var request = window.requestAnimationFrame || function(callback){return window.setTimeout(callback,16);};
+  onboardPositionFrame = request(function(){
+    onboardPositionFrame = 0;
+    positionOnboardGuide();
+  });
+}
 function onboardNode(tag,className,text){
   var node = document.createElement(tag);
   if(className)node.className = className;
