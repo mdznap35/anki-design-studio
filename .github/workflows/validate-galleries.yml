@@ -215,6 +215,8 @@ jobs:
               assert "prefers-reduced-motion:reduce" in html and "safe-area-inset-bottom" in html, f"{deck}: mobile/reduced-motion support is missing"
               assert 'event.key === "Escape"' in tour_source and 'event.key === "ArrowLeft"' in tour_source, f"{deck}: keyboard navigation is missing"
               assert "onboardGuideReturnFocus" in tour_source and "isConnected" in tour_source, f"{deck}: focus restoration is missing"
+              assert 'if(onbStep === 5 && exportOverlay && exportOverlay.classList.contains("on")' in tour_source, f"{deck}: Escape must close export review before leaving the guide"
+              assert 'onboardGuideReturnFocus = closeButton' in tour_source and 'onboardGuideReturnFocus = opener' in tour_source, f"{deck}: export-review focus handoff is incomplete"
               assert 'localStorage.setItem(ONBOARD_STORAGE_KEY,"1")' in tour_source and "catch(_e)" in tour_source, f"{deck}: safe per-gallery completion state is missing"
               assert "function renderOnboardVisual" not in tour_source, f"{deck}: fake static tour visuals remain"
               assert "confirmExport(" not in tour_source and "runGenerate(" not in tour_source and "downloadAPKG(" not in tour_source, f"{deck}: onboarding can trigger destructive export work"
