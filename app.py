@@ -352,6 +352,9 @@ JOB_SEM = threading.Semaphore(2)
 
 def _settings_hash(config):
     key = {
+        # Bump when APKG template normalization changes so stale broken packages
+        # cannot be served from the per-instance cache.
+        'builder_version': 2,
         'deck': config.get('deckName', ''),
         'designs': config.get('designs'),
         'tts': config.get('ttsConfig'),
@@ -418,10 +421,22 @@ def _build_deck_apkg(deck_name, designs, tts_cfg, include_audio, progress=None, 
     models = []
     for i, d in enumerate(designs):
         name = d.get('name') or f'{i + 1:02d}'
-        fields = d.get('fields') or tts.DEFAULT_FIELDS
         front = d.get('frontHTML', '') or '<div class="french">{{French}}</div>'
         back = d.get('backHTML', '') or front
         css = d.get('css') or ''
+        # Older gallery payloads omit the source design's field list. Infer every
+        # referenced Anki field and merge it with the standard schema; otherwise
+        # templates such as design 41 reference {{Extras}} but the note type only
+        # declares DEFAULT_FIELDS (which contains ExtraRows, not Extras).
+        declared = d.get('fields') or tts.DEFAULT_FIELDS
+        special = {'FrontSide', 'Tags', 'Deck', 'Subdeck', 'Card', 'CardFlag', 'Note', 'Template'}
+        referenced = []
+        for html in (front, back):
+            for raw in re.findall(r'{{\s*(?:[#\^/]\s*)?(?:text:|type:)?\s*([^{}]+?)\s*}}', html):
+                field = raw.strip()
+                if field and field not in special and field not in referenced:
+                    referenced.append(field)
+        fields = list(dict.fromkeys(list(declared) + referenced))
         mid = stable_id('MultiDesign_' + deck_name + '_' + str(i) + '_' + name)
         model = genanki.Model(
             mid, name,
