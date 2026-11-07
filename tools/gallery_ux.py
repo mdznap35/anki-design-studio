@@ -310,7 +310,7 @@ def apply_gallery_ux(html, deck):
     html, count = re.subn(r"</head\s*>", style + "</head>", html, count=1, flags=re.I)
     if count != 1:
         raise SystemExit(deck + ": could not add clean guided-tour styles")
-    for token in ('id="loadingMsg"', "جاري تحميل القوالب...", "class=\\"gv-fab gv-flip\\""):
+    for token in ('id="loadingMsg"', "جاري تحميل القوالب...", 'class="gv-fab gv-flip"'):
         if token in html:
             raise SystemExit(deck + ": obsolete blocking or floating control remains: " + token)
     if 'id="fsFlipBtn"' not in html or 'id="gvShowAns"' not in html:
