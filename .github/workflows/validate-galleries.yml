@@ -417,15 +417,42 @@ jobs:
           };
 
           async function waitForStep(page, index) {
-            await page.waitForFunction((expected) => {
-              const button = document.querySelector(
-                '#onboardGuideRoot .og-progress button[aria-current="step"]'
-              );
-              const target = document.querySelector(".og-spotlight");
-              if (!button || Number(button.getAttribute("data-guide-step")) !== expected || !target) return false;
-              const rect = target.getBoundingClientRect();
-              return rect.width > 0 && rect.height > 0;
-            }, index, { timeout: 10000 });
+            try {
+              await page.waitForFunction((expected) => {
+                const button = document.querySelector(
+                  '#onboardGuideRoot .og-progress button[aria-current="step"]'
+                );
+                const target = document.querySelector(".og-spotlight");
+                if (!button || Number(button.getAttribute("data-guide-step")) !== expected || !target) return false;
+                const rect = target.getBoundingClientRect();
+                return rect.width > 0 && rect.height > 0;
+              }, index, { timeout: 10000 });
+            } catch (error) {
+              const diagnostics = await page.evaluate(() => {
+                const rect = selector => {
+                  const node = document.querySelector(selector);
+                  if (!node) return null;
+                  const r = node.getBoundingClientRect(), s = getComputedStyle(node);
+                  return {x:r.x,y:r.y,width:r.width,height:r.height,display:s.display,visibility:s.visibility};
+                };
+                const current = document.querySelector('#onboardGuideRoot .og-progress button[aria-current="step"]');
+                const candidate = window.onboardStepTarget && window.ONBOARD_STEPS ? window.onboardStepTarget(window.ONBOARD_STEPS[window.onbStep]) : null;
+                return {
+                  step: window.onbStep,
+                  guideOpen: window.onboardGuideOpen,
+                  currentStep: current && current.getAttribute("data-guide-step"),
+                  browserClass: document.getElementById("galleryBrowser") && document.getElementById("galleryBrowser").className,
+                  browser: rect("#galleryBrowser"),
+                  browserHead: rect("#galleryBrowser .gb-head"),
+                  filters: rect("#gbFilters"),
+                  gridCount: document.querySelectorAll("#gbGrid .gb-item").length,
+                  candidate: candidate && {id:candidate.id,className:candidate.className,rect:(()=>{const r=candidate.getBoundingClientRect();return{x:r.x,y:r.y,width:r.width,height:r.height}})()},
+                  spotlightCount: document.querySelectorAll(".og-spotlight").length,
+                  card: rect("#onboardGuideRoot .og-card")
+                };
+              });
+              throw new Error("waitForStep(" + index + ") failed: " + JSON.stringify(diagnostics) + "; " + error.message);
+            }
           }
 
           async function inspectStep(page, deck, viewport, index) {
