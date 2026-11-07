@@ -49,7 +49,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Compile gallery builder
-        run: python -m py_compile tools/build_galleries.py tools/gallery_ux.py
+        run: python -m py_compile tools/build_galleries.py tools/gallery_ux.py tools/gallery_experience.py
       - name: Prepare the protected live French Bac page as a read-only build base
         run: |
           set -euo pipefail
@@ -107,6 +107,12 @@ jobs:
               assert "gallery_imgs/" in html, f"{deck}: shared thumbnail directory missing"
               assert all(item.get("fields") for item in designs), f"{deck}: design fields missing"
               assert all(not any(token in (item.get(key) or "") for token in ("{{ExtraRows}}", "{{Extras}}")) for item in designs for key in ("front", "back", "frontRev", "backRev")), f"{deck}: unbound extra-content placeholder remains"
+              assert html.count('id="gallery-experience-v2"') == 1, f"{deck}: v2 design system missing or duplicated"
+              assert html.count('id="gallery-experience-runtime"') == 1, f"{deck}: v2 runtime missing or duplicated"
+              assert html.count('id="gxWelcome"') == 1, f"{deck}: welcome experience missing or duplicated"
+              assert 'hero.id="gallery-experience-hero"' in html, f"{deck}: gallery hero runtime missing"
+              assert "window.openGalleryWelcome" in html and "window.hasSeenGalleryWelcome" in html, f"{deck}: welcome controls are not wired"
+              assert "setTimeout(function(){if(window.openGalleryWelcome)" in html, f"{deck}: first-visit welcome trigger is missing"
               print(f"PASS {deck}: 100 designs, deck-bound fields, shared thumbnails")
 
           print(f"PASS shared thumbnails: {len(image_files)}")
@@ -489,6 +495,17 @@ jobs:
                   }, previewCase);
                   assert.equal(previewActual, previewCase.expected, deck + ": real browser preview sample substitution failed");
                   assert(!/\\{\\{[^}]+\\}\\}/.test(previewActual), deck + ": preview retained an unresolved field placeholder");
+                  await page.waitForSelector("#gxWelcome:not([hidden])", { timeout: 20000 });
+                  const welcomeMetrics = await page.locator('#gxWelcome .gx-dialog').evaluate(element => {
+                    const rect = element.getBoundingClientRect();
+                    return { width: rect.width, height: rect.height, left: rect.left, top: rect.top, right: rect.right, bottom: rect.bottom };
+                  });
+                  assert(welcomeMetrics.width > 0 && welcomeMetrics.height > 0, deck + "/" + viewport.name + ": welcome experience did not render");
+                  assert(welcomeMetrics.left >= -1 && welcomeMetrics.right <= viewport.width + 1, deck + "/" + viewport.name + ": welcome exceeds horizontal viewport");
+                  assert(welcomeMetrics.top >= -1 && welcomeMetrics.bottom <= viewport.height + 1, deck + "/" + viewport.name + ": welcome exceeds vertical viewport");
+                  assert.equal(await page.locator("#gallery-experience-hero").count(), 1, deck + ": gallery hero is missing");
+                  await page.screenshot({ path: "qa-artifacts/" + deck + "-" + viewport.name + "-welcome.png", fullPage: false });
+                  await page.locator("#gxWelcomeStart").click();
                   try {
                     await page.waitForSelector("#onboardGuideRoot .og-card", { timeout: 20000 });
                   } catch (error) {
@@ -564,6 +581,8 @@ jobs:
                     assert.equal(snoozed.snoozed, "1", deck + ": Later did not persist the session snooze");
 
                     await page.locator("#onboardTourLauncher").click();
+                    await page.waitForSelector("#gxWelcome:not([hidden])");
+                    await page.locator("#gxWelcomeStart").click();
                     await page.waitForSelector("#onboardGuideRoot .og-card");
                     await page.locator('[data-guide-step="5"]').click();
                     await waitForStep(page, 5);
