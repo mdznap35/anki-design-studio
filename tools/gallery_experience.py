@@ -1,922 +1,306 @@
-"""A polished, lightweight design layer for the four generated non-Bac galleries."""
+"""Clean product-led gallery introduction and efficient template browsing."""
 import re
 
-
 EXPERIENCE_CSS = r"""
-:root{
-  --gx-ink:#f5f7ff;--gx-muted:#a9b3c9;--gx-line:rgba(174,190,222,.16);
-  --gx-panel:rgba(15,22,40,.82);--gx-violet:#8b7cff;--gx-cyan:#58d6e7;
-}
-body{
-  background:
-    radial-gradient(ellipse at 6% 2%,rgba(90,76,210,.14),transparent 34%),
-    radial-gradient(ellipse at 96% 18%,rgba(26,155,178,.10),transparent 30%),
-    var(--bg,#0b1020);
-}
-#gallery-experience-hero{
-  position:relative;isolation:isolate;overflow:hidden;margin:clamp(16px,3vw,34px) 0 22px;
-  padding:clamp(22px,4vw,48px);border:1px solid var(--gx-line);border-radius:30px;
-  background:
-    radial-gradient(ellipse at 82% 12%,rgba(94,82,224,.25),transparent 38%),
-    radial-gradient(ellipse at 12% 90%,rgba(28,171,185,.13),transparent 32%),
-    linear-gradient(135deg,rgba(19,27,49,.98),rgba(11,17,33,.96));
-  box-shadow:0 28px 80px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.055);
-}
-#gallery-experience-hero:before{
-  content:"";position:absolute;inset:0;z-index:-1;opacity:.19;pointer-events:none;
-  background-image:linear-gradient(rgba(177,190,225,.10) 1px,transparent 1px),linear-gradient(90deg,rgba(177,190,225,.10) 1px,transparent 1px);
-  background-size:34px 34px;mask-image:linear-gradient(120deg,#000,transparent 72%);
-}
-#gallery-experience-hero .gx-hero-inner{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(250px,.85fr);align-items:center;gap:clamp(20px,4vw,56px);max-width:1320px;margin:auto}
-#gallery-experience-hero .gx-eyebrow{display:inline-flex;align-items:center;gap:9px;margin-bottom:16px;color:#a5b4fc;font-size:.7rem;font-weight:900;letter-spacing:.14em}
-#gallery-experience-hero .gx-eyebrow:before{content:"";width:26px;height:2px;border-radius:9px;background:linear-gradient(90deg,var(--gx-violet),var(--gx-cyan))}
-#gallery-experience-hero h1{max-width:760px;margin:0 0 14px;color:var(--gx-ink);font-size:clamp(1.65rem,4vw,3.05rem);line-height:1.28;font-weight:950;letter-spacing:-.035em}
-#gallery-experience-hero .gx-description{max-width:690px;margin:0;color:#c4cde0;font-size:clamp(.9rem,1.4vw,1.04rem);line-height:2}
-#gallery-experience-hero .gx-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:25px}
-#gallery-experience-hero .gx-action{min-height:48px;display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:0 19px;border:1px solid rgba(183,193,221,.2);border-radius:14px;background:rgba(255,255,255,.055);color:#edf2ff;font:inherit;font-size:.83rem;font-weight:850;cursor:pointer;transition:transform .2s,border-color .2s,background .2s}
-#gallery-experience-hero .gx-action:hover{transform:translateY(-2px);border-color:rgba(122,211,235,.5);background:rgba(255,255,255,.09)}
-#gallery-experience-hero .gx-action.primary{border-color:transparent;background:linear-gradient(110deg,#6754d8,#4b65d5 56%,#087e91);box-shadow:0 12px 28px rgba(76,78,195,.28)}
-#gallery-experience-hero .gx-metrics{display:flex;flex-wrap:wrap;gap:10px;margin-top:25px}
-#gallery-experience-hero .gx-metric{min-width:118px;padding:11px 14px;border:1px solid rgba(178,193,224,.13);border-radius:14px;background:rgba(255,255,255,.035)}
-#gallery-experience-hero .gx-metric strong{display:block;color:#f8fbff;font-size:1.15rem;font-weight:950}
-#gallery-experience-hero .gx-metric span{display:block;margin-top:3px;color:#9faec8;font-size:.68rem;font-weight:750}
-#gallery-experience-hero .gx-art{position:relative;min-height:260px;display:grid;place-items:center;direction:ltr}
-#gallery-experience-hero .gx-art-glow{position:absolute;width:74%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(100,90,236,.28),rgba(42,190,204,.10) 48%,transparent 72%);filter:blur(8px)}
-#gallery-experience-hero .gx-art-card{position:absolute;width:min(74%,270px);min-height:176px;padding:20px;border:1px solid rgba(203,213,240,.24);border-radius:22px;background:linear-gradient(145deg,rgba(35,46,76,.96),rgba(14,23,42,.98));box-shadow:0 30px 70px rgba(0,0,0,.32);display:flex;flex-direction:column;justify-content:space-between}
-#gallery-experience-hero .gx-art-card.back{transform:translate(-26px,18px) rotate(-9deg);opacity:.52}
-#gallery-experience-hero .gx-art-card.mid{transform:translate(18px,7px) rotate(6deg);opacity:.78}
-#gallery-experience-hero .gx-art-card.front{transform:translate(0,-4px);border-color:rgba(135,130,255,.55);background:radial-gradient(ellipse at 100% 0,rgba(98,91,224,.22),transparent 55%),linear-gradient(145deg,#202b4b,#111a30)}
-#gallery-experience-hero .gx-art-kicker{color:#a6b5ff;font-size:.62rem;font-weight:950;letter-spacing:.16em}
-#gallery-experience-hero .gx-art-word{color:#fff;font-size:clamp(1.6rem,3vw,2.35rem);font-weight:950;letter-spacing:-.04em}
-#gallery-experience-hero .gx-art-note{color:#aebbd2;font-size:.72rem}
-#gbFilters{
-  position:relative;z-index:2;display:flex;flex-wrap:wrap;align-items:center;gap:10px;
-  padding:clamp(12px,2vw,18px);border:1px solid var(--gx-line);border-radius:20px;
-  background:rgba(17,25,44,.82);box-shadow:0 14px 38px rgba(0,0,0,.14);
-  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
-}
-#gbFilters input,#gbFilters select,#gbFilters button{
-  min-height:42px;border-radius:12px;transition:border-color .18s,box-shadow .18s,background .18s;
-}
-#gbFilters input:focus-visible,#gbFilters select:focus-visible,#gbFilters button:focus-visible{
-  outline:3px solid rgba(88,214,231,.6);outline-offset:2px;
-}
-#gbGrid{
-  display:grid!important;grid-template-columns:repeat(auto-fill,minmax(min(100%,245px),1fr));
-  align-items:stretch;gap:clamp(13px,1.8vw,22px);margin-top:18px;
-}
-#gbGrid .gb-item{
-  min-width:0;overflow:hidden;border:1px solid rgba(160,177,211,.17)!important;
-  border-radius:20px!important;background:linear-gradient(155deg,rgba(27,38,63,.96),rgba(14,22,39,.98))!important;
-  box-shadow:0 12px 30px rgba(0,0,0,.16)!important;
-  transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease!important;
-}
-#gbGrid .gb-item:hover{
-  transform:translateY(-5px);border-color:rgba(133,139,255,.55)!important;
-  box-shadow:0 22px 44px rgba(0,0,0,.25),0 0 0 1px rgba(133,139,255,.10)!important;
-}
-#gbGrid .gb-item:focus-visible{outline:3px solid rgba(88,214,231,.75);outline-offset:3px}
-#gbGrid .gb-item[data-gx-active="true"]{border-color:rgba(88,214,231,.82)!important;box-shadow:0 0 0 2px rgba(88,214,231,.16),0 18px 38px rgba(0,0,0,.22)!important}
-#gbGrid .gb-item img{max-width:100%;height:auto;object-fit:contain}
-#gbGrid .gb-preview-frame{
-  display:block;position:relative;z-index:0;width:100%;height:auto;aspect-ratio:22/45;
-  min-height:180px;border:0;background:#0e0c16;pointer-events:none;
-}
-#gbGrid .gb-fallback-img{
-  display:none;position:absolute;inset:0;z-index:1;width:100%;height:100%;
-  object-fit:contain;background:#0e0c16;
-}
-#gbGrid .gb-fallback-img[data-show="true"]{display:block}
-#gvStage{
-  overflow:hidden;border:1px solid rgba(165,181,215,.22)!important;border-radius:26px!important;
-  background:radial-gradient(ellipse at 50% 0,rgba(104,92,220,.11),transparent 48%),rgba(13,21,38,.94)!important;
-  box-shadow:0 24px 65px rgba(0,0,0,.22)!important;
-}
-#gvSelectBtn,#exOpenBtn,#gTtsPreviewBtn{
-  min-height:46px!important;padding-inline:18px!important;border-radius:13px!important;
-  font-weight:850!important;transition:transform .18s,filter .18s,box-shadow .18s!important;
-}
-#gvSelectBtn:hover,#exOpenBtn:hover,#gTtsPreviewBtn:hover{transform:translateY(-2px);filter:brightness(1.08)}
-#exportOverlay{backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
-#onboardTourLauncher{
-  min-height:49px!important;padding-inline:18px!important;border-radius:16px!important;
-  background:linear-gradient(115deg,#6855d9,#4e66d9 58%,#087f91)!important;
-  box-shadow:0 14px 34px rgba(51,53,142,.38),0 0 0 1px rgba(255,255,255,.09) inset!important;
-}
-#onboardGuideRoot .og-card{
-  border:1px solid rgba(159,173,221,.28)!important;border-radius:24px!important;
-  background:radial-gradient(ellipse at 90% 0,rgba(110,97,231,.15),transparent 48%),linear-gradient(150deg,rgba(17,25,46,.99),rgba(8,14,28,.99))!important;
-  box-shadow:0 30px 90px rgba(0,0,0,.54),0 0 0 1px rgba(255,255,255,.035) inset,0 0 48px rgba(91,93,222,.10)!important;
-}
-#onboardGuideRoot .og-title{font-size:clamp(1.08rem,2vw,1.35rem);line-height:1.55;letter-spacing:-.02em}
-#onboardGuideRoot .og-progress button span{height:6px;border-radius:20px}
-#onboardGuideRoot .og-btn{min-height:42px;border-radius:12px}
-.gx-lock{overflow:hidden!important}
-#gxWelcome[hidden]{display:none!important}
-#gxWelcome{
-  position:fixed;inset:0;z-index:2147483100;display:grid;place-items:center;
-  padding:clamp(10px,2vw,24px);background:rgba(4,8,19,.84);
-  backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);direction:rtl;
-}
-#gxWelcome .gx-dialog{
-  position:relative;isolation:isolate;display:grid;grid-template-columns:minmax(0,1fr) minmax(310px,.9fr);
-  width:min(1120px,100%);max-height:min(900px,94dvh);overflow:auto;
-  border:1px solid rgba(172,185,225,.24);border-radius:30px;
-  background:radial-gradient(ellipse at 80% 0,rgba(98,91,220,.20),transparent 44%),linear-gradient(140deg,#141d35,#0a1223 72%);
-  box-shadow:0 40px 130px rgba(0,0,0,.65),0 0 0 1px rgba(255,255,255,.04) inset;
-}
-#gxWelcome .gx-close{
-  position:absolute;top:16px;left:16px;z-index:3;width:42px;height:42px;display:grid;place-items:center;
-  border:1px solid rgba(202,214,242,.18);border-radius:13px;background:rgba(255,255,255,.055);
-  color:#e9eeff;font-size:1.25rem;cursor:pointer;
-}
-#gxWelcome .gx-copy{position:relative;z-index:2;display:flex;flex-direction:column;justify-content:center;padding:clamp(26px,5vw,62px)}
-#gxWelcome .gx-kicker{display:inline-flex;align-items:center;gap:9px;color:#a8b5ff;font-size:.68rem;font-weight:950;letter-spacing:.13em}
-#gxWelcome .gx-kicker:before{content:"";width:24px;height:2px;background:linear-gradient(90deg,#8b7cff,#58d6e7)}
-#gxWelcome h2{margin:20px 0 14px;color:#fbfcff;font-size:clamp(1.8rem,4vw,3.1rem);line-height:1.3;font-weight:950;letter-spacing:-.04em}
-#gxWelcome .gx-lead{margin:0;color:#c0cbe0;font-size:.96rem;line-height:2}
-#gxWelcome .gx-points{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:26px 0 0}
-#gxWelcome .gx-point{padding:13px 12px;border:1px solid rgba(174,190,222,.13);border-radius:15px;background:rgba(255,255,255,.035)}
-#gxWelcome .gx-point strong{display:block;color:#f0f3ff;font-size:.77rem;font-weight:900}
-#gxWelcome .gx-point span{display:block;margin-top:5px;color:#94a4c0;font-size:.65rem;line-height:1.7}
-#gxWelcome .gx-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
-#gxWelcome .gx-button{min-height:49px;padding:0 18px;border:1px solid rgba(185,198,230,.20);border-radius:14px;background:rgba(255,255,255,.055);color:#eef2ff;font:inherit;font-size:.8rem;font-weight:900;cursor:pointer}
-#gxWelcome .gx-button.primary{border-color:transparent;background:linear-gradient(110deg,#6b56dc,#5267d9 57%,#078392);box-shadow:0 13px 30px rgba(69,68,170,.32)}
-#gxWelcome .gx-small{margin-top:17px;color:#8392ad;font-size:.68rem;line-height:1.8}
-#gxWelcome .gx-stage{position:relative;min-height:510px;display:grid;place-items:center;overflow:hidden;padding:32px;direction:ltr}
-#gxWelcome .gx-orbit{position:absolute;width:82%;aspect-ratio:1;border:1px solid rgba(145,151,245,.15);border-radius:50%;box-shadow:0 0 0 35px rgba(104,94,217,.025),0 0 0 80px rgba(104,94,217,.02)}
-#gxWelcome .gx-orbit:before,#gxWelcome .gx-orbit:after{content:"";position:absolute;border:1px solid rgba(91,205,220,.12);border-radius:50%;inset:12%}
-#gxWelcome .gx-orbit:after{inset:25%;border-color:rgba(148,138,255,.15)}
-#gxWelcome .gx-stack{position:relative;width:min(100%,360px);height:330px;display:grid;place-items:center}
-#gxWelcome .gx-card{position:absolute;width:88%;height:230px;padding:23px;border:1px solid rgba(186,198,233,.25);border-radius:24px;background:linear-gradient(145deg,#263459,#111b31);box-shadow:0 30px 70px rgba(0,0,0,.38);display:flex;flex-direction:column;justify-content:space-between}
-#gxWelcome .gx-card.back{transform:translate(-31px,22px) rotate(-10deg);opacity:.45}
-#gxWelcome .gx-card.mid{transform:translate(22px,7px) rotate(7deg);opacity:.7}
-#gxWelcome .gx-card.front{transform:translateY(-9px);border-color:rgba(133,139,255,.56);background:radial-gradient(ellipse at 90% 0,rgba(125,110,255,.2),transparent 45%),linear-gradient(150deg,#202d50,#10192d)}
-#gxWelcome .gx-card-top{display:flex;align-items:center;justify-content:space-between;color:#aebcff;font-size:.63rem;font-weight:900;letter-spacing:.12em}
-#gxWelcome .gx-card-word{color:#fff;font-size:2.4rem;font-weight:950;letter-spacing:-.05em}
-#gxWelcome .gx-card-lines{display:grid;gap:7px}
-#gxWelcome .gx-card-lines span{height:5px;border-radius:20px;background:rgba(199,211,241,.20)}
-#gxWelcome .gx-card-lines span:nth-child(2){width:72%}
-#gxWelcome .gx-card-lines span:nth-child(3){width:48%}
-#gxWelcome .gx-stage-label{position:absolute;right:8%;bottom:8%;padding:10px 14px;border:1px solid rgba(157,177,223,.18);border-radius:12px;background:rgba(13,22,40,.74);color:#aebbd4;font-size:.68rem;font-weight:850;direction:rtl}
-#gxWelcome button:focus-visible{outline:3px solid #67e8f9;outline-offset:3px}
+:root{--gx-ink:#f5f8fb;--gx-muted:#a8bacb;--gx-line:rgba(173,195,215,.16);--gx-panel:#11243a;--gx-teal:#77c7bc}
+#gallery-experience-hero{position:relative;isolation:isolate;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(330px,.95fr);align-items:stretch;gap:clamp(24px,4vw,64px);max-width:1480px;margin:clamp(22px,4vw,48px) auto 32px;padding:clamp(28px,5vw,68px);overflow:hidden;border:1px solid rgba(174,197,218,.17);border-radius:28px;background:linear-gradient(120deg,#132940 0%,#102238 52%,#0e1b2c 100%);box-shadow:0 30px 80px rgba(0,0,0,.22)}
+#gallery-experience-hero:before{content:"";position:absolute;z-index:-1;inset:0;background:radial-gradient(ellipse at 8% 100%,rgba(85,173,161,.14),transparent 34%),radial-gradient(ellipse at 85% 5%,rgba(91,132,184,.16),transparent 38%)}
+#gallery-experience-hero .gx-copy{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;min-width:0}
+#gallery-experience-hero .gx-eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:20px;color:#b5cadb;font-size:.68rem;font-weight:900;letter-spacing:.15em}
+#gallery-experience-hero .gx-mark{display:grid;place-items:center;width:32px;height:32px;border:1px solid rgba(158,202,203,.28);border-radius:9px;background:#20485a;color:#b8e5dc;font-size:.83rem}
+#gallery-experience-hero .gx-deck{display:inline-flex;align-items:center;gap:8px;margin-bottom:15px;padding:7px 11px;border:1px solid rgba(173,195,215,.2);border-radius:7px;color:#b7c9d8;font-size:.73rem;font-weight:800}
+#gallery-experience-hero h1{max-width:15ch;margin:0;color:#f7fafc;font-size:clamp(2rem,4vw,3.65rem);font-weight:950;line-height:1.25;letter-spacing:-.045em}
+#gallery-experience-hero .gx-description{max-width:58ch;margin:17px 0 0;color:#c0ceda;font-size:clamp(.91rem,1.25vw,1.05rem);line-height:2}
+#gallery-experience-hero .gx-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:27px}
+#gallery-experience-hero .gx-action{min-height:49px;display:inline-flex;align-items:center;justify-content:center;gap:12px;padding:0 19px;border:1px solid rgba(180,202,221,.23);border-radius:9px;background:rgba(255,255,255,.045);color:#eaf2f8;font:inherit;font-size:.78rem;font-weight:900;cursor:pointer;transition:background .18s,transform .18s,border-color .18s}
+#gallery-experience-hero .gx-action:hover{transform:translateY(-2px);background:rgba(255,255,255,.09);border-color:rgba(122,197,186,.56)}
+#gallery-experience-hero .gx-action.primary{border-color:#4e8d88;background:#337b76;color:white;box-shadow:0 10px 24px rgba(19,102,98,.2)}
+#gallery-experience-hero .gx-action.primary:hover{background:#3e8a83}
+#gallery-experience-hero .gx-facts{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:25px;color:#9fb2c4;font-size:.67rem}
+#gallery-experience-hero .gx-facts span{display:inline-flex;align-items:center;gap:7px}
+#gallery-experience-hero .gx-facts span:before{content:"";width:5px;height:5px;border-radius:50%;background:#72c5b8}
+#gallery-experience-hero .gx-showcase{position:relative;min-width:0;display:grid;grid-template-columns:minmax(0,1fr) 112px;grid-template-rows:auto 1fr auto;gap:12px;padding:17px;border:1px solid rgba(173,195,215,.17);border-radius:18px;background:rgba(6,17,30,.38)}
+#gallery-experience-hero .gx-showcase-head{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:8px;color:#a9bfd0;font-size:.61rem;font-weight:900;letter-spacing:.1em}
+#gallery-experience-hero .gx-live{display:inline-flex;align-items:center;gap:7px;color:#8bcfc2;letter-spacing:0}
+#gallery-experience-hero .gx-live:before{content:"";width:6px;height:6px;border-radius:50%;background:#6cc6b8;box-shadow:0 0 0 4px rgba(108,198,184,.1)}
+#gallery-experience-hero .gx-featured{min-width:0;min-height:270px;overflow:hidden;border:1px solid rgba(171,193,216,.22);border-radius:13px;background:#152c43;box-shadow:0 22px 50px rgba(0,0,0,.25)}
+#gallery-experience-hero .gx-featured iframe{display:block;width:100%;height:100%;min-height:270px;border:0;background:#172b40}
+#gallery-experience-hero .gx-side-previews{display:grid;grid-template-rows:1fr 1fr;gap:12px;min-height:0}
+#gallery-experience-hero .gx-mini{min-height:120px;overflow:hidden;border:1px solid rgba(171,193,216,.17);border-radius:10px;background:#14283e}
+#gallery-experience-hero .gx-mini iframe{display:block;width:100%;height:100%;min-height:120px;border:0;background:#172b40}
+#gallery-experience-hero .gx-showcase-foot{grid-column:1/-1;color:#8ea5b9;font-size:.62rem;line-height:1.7}
+#gbFilters{display:none!important}
+.gallery-browser{background:var(--bg,#0b1020)}
+.gallery-browser .gb-head{min-height:72px;padding:14px clamp(16px,3vw,34px);display:flex;align-items:center;gap:15px;border-bottom:1px solid rgba(170,190,215,.13);background:#101f32}
+.gallery-browser .gb-title{margin:0;color:#f2f6fa;font-size:1rem;font-weight:900}
+.gallery-browser .gb-count{margin-inline-start:auto;color:#a8bdce;font-size:.73rem;font-variant-numeric:tabular-nums}
+.gallery-browser .gb-close{width:40px;height:40px;border-radius:9px;border:1px solid rgba(180,199,219,.18);background:rgba(255,255,255,.04);color:#edf4f9}
+.gallery-browser .gb-bar{min-height:44px;padding:9px clamp(16px,3vw,34px);display:flex;align-items:center;border-bottom:1px solid rgba(170,190,215,.1);background:#0e1b2c}
+.gallery-browser .gb-hint{color:#98aec1;font-size:.69rem;line-height:1.6}
+#gbGrid{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(min(100%,205px),1fr));align-items:stretch;align-content:start;gap:clamp(12px,1.4vw,20px);margin:0;padding:clamp(14px,2vw,26px);overflow:auto;overscroll-behavior:contain;scroll-behavior:smooth}
+#gbGrid .gb-item{position:relative;display:flex;flex-direction:column;min-width:0;min-height:0;overflow:hidden;border:1px solid rgba(169,190,211,.17)!important;border-radius:13px!important;background:#14283e!important;box-shadow:0 8px 24px rgba(0,0,0,.15)!important;transition:transform .2s,border-color .2s,box-shadow .2s!important}
+#gbGrid .gb-item:hover{transform:translateY(-3px);border-color:rgba(117,192,179,.6)!important;box-shadow:0 16px 34px rgba(0,0,0,.24)!important}
+#gbGrid .gb-item:focus-visible{outline:3px solid #6dc1b4;outline-offset:3px}
+#gbGrid .gb-item.on{border-color:#67b9ad!important;box-shadow:0 0 0 2px rgba(103,185,173,.15)!important}
+#gbGrid .gb-num{position:absolute;z-index:2;top:9px;right:9px;display:grid;place-items:center;min-width:28px;height:26px;padding:0 7px;border:1px solid rgba(190,210,225,.18);border-radius:7px;background:rgba(8,20,34,.86);color:#d7e6ef;font-size:.62rem;font-weight:900;font-variant-numeric:tabular-nums}
+#gbGrid .gb-preview-host{position:relative;display:grid;place-items:center;min-height:0;width:100%;aspect-ratio:4/5;overflow:hidden;background:linear-gradient(145deg,#192e45,#101e30)}
+#gbGrid .gb-preview-host iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#14283e;opacity:0;transition:opacity .18s}
+#gbGrid .gb-preview-host.is-ready iframe{opacity:1}
+#gbGrid .gb-preview-loading{padding:14px;color:#7f9ab0;font-size:.63rem;text-align:center}
+#gbGrid .gb-preview-host.is-error .gb-preview-loading{color:#d4b8a2}
+#gbGrid .gb-ov{position:static;display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:42px;padding:8px 11px;border-top:1px solid rgba(174,194,213,.1);background:#12253a;color:#e8f0f6;opacity:1;transform:none}
+#gbGrid .gb-ov-t{font-size:.68rem;font-weight:850}
+#gbGrid .gb-ov-b{color:#80c9bd;font-size:.65rem;font-weight:900}
+#gbGrid .gb-sk{position:absolute;inset:0;z-index:0;display:none!important}
+#gbProgress{background:#64b9ad}
+#gvStage{border-radius:20px!important}
+#gvSelectBtn,#exOpenBtn,#gTtsPreviewBtn{min-height:45px!important;border-radius:10px!important;font-weight:850!important}
 @media(max-width:820px){
-  #gallery-experience-hero .gx-hero-inner{grid-template-columns:1fr}
-  #gallery-experience-hero .gx-art{min-height:220px;grid-row:1}
-  #gxWelcome .gx-dialog{grid-template-columns:1fr;max-height:96dvh}
-  #gxWelcome .gx-stage{min-height:260px;grid-row:1;padding:22px}
-  #gxWelcome .gx-stack{height:220px;width:min(100%,300px)}
-  #gxWelcome .gx-card{height:170px;padding:16px}
-  #gxWelcome .gx-card-word{font-size:1.8rem}
-  #gxWelcome .gx-copy{padding:22px 22px 28px}
-  #gxWelcome h2{margin-top:12px;font-size:1.8rem}
-  #gxWelcome .gx-points{margin-top:18px}
+ #gallery-experience-hero{grid-template-columns:1fr;gap:25px;padding:30px}
+ #gallery-experience-hero .gx-showcase{grid-template-columns:minmax(0,1fr) 94px}
+ #gallery-experience-hero .gx-featured,#gallery-experience-hero .gx-featured iframe{min-height:245px}
 }
-@media(max-width:520px){
-  #gallery-experience-hero{border-radius:22px;padding:22px 18px}
-  #gallery-experience-hero .gx-art{min-height:190px}
-  #gallery-experience-hero .gx-art-card{min-height:145px;padding:15px}
-  #gallery-experience-hero .gx-actions .gx-action{flex:1 1 100%}
-  #gbGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-  #gbGrid .gb-item{border-radius:15px!important}
-  #gxWelcome{padding:8px}
-  #gxWelcome .gx-dialog{border-radius:21px}
-  #gxWelcome .gx-stage{min-height:205px;padding:12px}
-  #gxWelcome .gx-stack{height:180px}
-  #gxWelcome .gx-card{height:142px;padding:13px;border-radius:17px}
-  #gxWelcome .gx-card-word{font-size:1.55rem}
-  #gxWelcome .gx-points{grid-template-columns:1fr;gap:7px}
-  #gxWelcome .gx-point{display:flex;align-items:center;justify-content:space-between;gap:12px}
-  #gxWelcome .gx-point span{margin:0;text-align:left}
-  #gxWelcome .gx-actions{display:grid;grid-template-columns:1fr}
-  #gxWelcome .gx-button{width:100%}
+@media(max-width:560px){
+ #gallery-experience-hero{margin:14px 0 20px;padding:23px 17px;border-radius:19px}
+ #gallery-experience-hero h1{font-size:clamp(1.8rem,8vw,2.4rem)}
+ #gallery-experience-hero .gx-description{font-size:.82rem;line-height:1.85}
+ #gallery-experience-hero .gx-actions{display:grid;grid-template-columns:1fr;width:100%;margin-top:21px}
+ #gallery-experience-hero .gx-action{width:100%;min-height:47px}
+ #gallery-experience-hero .gx-showcase{grid-template-columns:minmax(0,1fr) 76px;gap:8px;padding:10px;border-radius:13px}
+ #gallery-experience-hero .gx-featured,#gallery-experience-hero .gx-featured iframe{min-height:200px}
+ #gallery-experience-hero .gx-mini,#gallery-experience-hero .gx-mini iframe{min-height:94px}
+ #gbGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:12px}
+ #gbGrid .gb-item{border-radius:10px!important}
+ #gbGrid .gb-preview-host{aspect-ratio:4/5}
+ .gallery-browser .gb-head{min-height:60px;padding:10px 13px}
+ .gallery-browser .gb-title{font-size:.85rem}
+ .gallery-browser .gb-hint{font-size:.62rem}
 }
-
-/* Opening v3: a clearer first impression, fully localized and deck-aware. */
-#gallery-experience-hero.gx-hero-v3{
-  margin-block:clamp(18px,3.2vw,38px) 26px;
-  padding:clamp(26px,4.2vw,58px);
-  border-radius:32px;
-  border-color:rgba(173,190,230,.20);
-  background:
-    radial-gradient(ellipse at 16% 82%,rgba(25,190,194,.14),transparent 35%),
-    radial-gradient(ellipse at 88% 8%,rgba(112,94,238,.28),transparent 40%),
-    linear-gradient(132deg,#121d37 0%,#10182e 52%,#0b1428 100%);
+@media(max-width:350px){
+ #gallery-experience-hero .gx-showcase{grid-template-columns:minmax(0,1fr) 64px}
+ #gallery-experience-hero .gx-showcase-foot{font-size:.56rem}
+ #gbGrid{gap:8px;padding:9px}
+ #gbGrid .gb-ov{padding:7px 8px;min-height:38px}
+ #gbGrid .gb-ov-t,#gbGrid .gb-ov-b{font-size:.58rem}
 }
-#gallery-experience-hero.gx-hero-v3 .gx-eyebrow{
-  gap:10px;margin-bottom:12px;color:#bdc7ff;font-size:.78rem;letter-spacing:0;
-}
-#gallery-experience-hero.gx-hero-v3 .gx-brand-mark,
-#gxWelcome .gx-opening-v3 .gx-brand-mark{
-  display:inline-grid;place-items:center;flex:0 0 auto;width:30px;height:30px;
-  border:1px solid rgba(181,190,255,.32);border-radius:10px;
-  background:linear-gradient(135deg,#735fe5,#167f91);color:#fff;
-  font-size:.8rem;font-weight:950;letter-spacing:0;
-  box-shadow:0 7px 18px rgba(83,81,191,.24);
-}
-#gallery-experience-hero.gx-hero-v3 .gx-deck-label,
-#gxWelcome .gx-opening-v3 .gx-deck-label{
-  display:inline-flex;align-items:center;width:max-content;max-width:100%;
-  margin:0 0 14px;padding:7px 12px;border:1px solid rgba(153,177,222,.20);
-  border-radius:999px;background:rgba(255,255,255,.045);
-  color:#b8c7e4;font-size:.76rem;font-weight:850;line-height:1.5;
-}
-#gallery-experience-hero.gx-hero-v3 h1{
-  max-width:720px;margin-bottom:15px;font-size:clamp(1.9rem,4.2vw,3.35rem);
-  line-height:1.35;letter-spacing:-.035em;
-}
-#gallery-experience-hero.gx-hero-v3 .gx-description{
-  max-width:680px;font-size:clamp(.96rem,1.45vw,1.08rem);line-height:2.05;color:#d0d8e9;
-}
-#gallery-experience-hero.gx-hero-v3 .gx-actions{gap:11px;margin-top:27px}
-#gallery-experience-hero.gx-hero-v3 .gx-action{
-  min-height:51px;padding-inline:21px;border-radius:15px;font-size:.86rem;
-}
-#gallery-experience-hero.gx-hero-v3 .gx-metrics{gap:10px;margin-top:28px}
-#gallery-experience-hero.gx-hero-v3 .gx-metric{
-  min-width:132px;padding:12px 14px;border-color:rgba(178,193,224,.16);
-  background:rgba(255,255,255,.045);
-}
-#gallery-experience-hero.gx-hero-v3 .gx-metric strong{font-size:.93rem;line-height:1.55}
-#gallery-experience-hero.gx-hero-v3 .gx-metric span{font-size:.69rem;line-height:1.65}
-#gallery-experience-hero.gx-hero-v3 .gx-art{min-height:300px}
-#gallery-experience-hero.gx-hero-v3 .gx-art-card{
-  width:min(78%,290px);min-height:188px;padding:20px 22px;border-radius:24px;
-}
-#gallery-experience-hero.gx-hero-v3 .gx-art-card.front{
-  min-height:204px;gap:10px;border-color:rgba(143,150,255,.62);
-}
-#gallery-experience-hero.gx-hero-v3 .gx-art-kicker{font-size:.72rem;letter-spacing:0}
-#gallery-experience-hero.gx-hero-v3 .gx-art-word{
-  font-size:clamp(1.6rem,3vw,2.25rem);line-height:1.35;text-align:center;
-}
-#gallery-experience-hero.gx-hero-v3 .gx-art-meaning{
-  display:block;padding-top:9px;border-top:1px solid rgba(206,218,245,.16);
-  color:#c4d1e8;font-size:.92rem;font-weight:800;text-align:center;
-}
-#gxWelcome .gx-dialog.gx-opening-v3{
-  width:min(1180px,100%);max-height:min(880px,94dvh);
-  grid-template-columns:minmax(0,1.08fr) minmax(320px,.92fr);
-  border-color:rgba(183,195,233,.29);border-radius:32px;
-  background:
-    radial-gradient(ellipse at 88% 8%,rgba(103,91,222,.22),transparent 42%),
-    radial-gradient(ellipse at 10% 88%,rgba(17,157,176,.10),transparent 35%),
-    linear-gradient(142deg,#16213c 0%,#101a31 54%,#0a1428 100%);
-}
-#gxWelcome .gx-opening-v3 .gx-copy{padding:clamp(28px,4.6vw,58px)}
-#gxWelcome .gx-opening-v3 .gx-kicker{
-  display:flex;align-items:center;gap:10px;color:#c0c9ff;
-  font-size:.79rem;font-weight:900;letter-spacing:0;line-height:1.5;
-}
-#gxWelcome .gx-opening-v3 .gx-deck-label{margin-top:20px;margin-bottom:0}
-#gxWelcome .gx-opening-v3 h2{
-  max-width:690px;margin:17px 0 13px;font-size:clamp(1.75rem,3.25vw,2.72rem);
-  line-height:1.42;letter-spacing:-.035em;
-}
-#gxWelcome .gx-opening-v3 .gx-lead{
-  max-width:680px;color:#cbd5e8;font-size:.95rem;line-height:2.05;
-}
-#gxWelcome .gx-opening-v3 .gx-points{
-  gap:10px;margin:23px 0 0;
-}
-#gxWelcome .gx-opening-v3 .gx-point{
-  display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;
-  min-height:112px;padding:13px 14px;border-color:rgba(173,191,229,.16);
-  background:linear-gradient(155deg,rgba(255,255,255,.055),rgba(255,255,255,.025));
-}
-#gxWelcome .gx-opening-v3 .gx-point-no{
-  display:block;color:#81dce8;font-size:.67rem;font-weight:950;
-  font-variant-numeric:tabular-nums;letter-spacing:.08em;
-}
-#gxWelcome .gx-opening-v3 .gx-point-copy{display:block;margin-top:9px}
-#gxWelcome .gx-opening-v3 .gx-point strong{font-size:.83rem;color:#f4f6ff}
-#gxWelcome .gx-opening-v3 .gx-point span:not(.gx-point-no){
-  margin-top:5px;color:#aebbd2;font-size:.68rem;line-height:1.75;
-}
-#gxWelcome .gx-opening-v3 .gx-actions{gap:10px;margin-top:25px}
-#gxWelcome .gx-opening-v3 .gx-button{
-  min-height:51px;padding-inline:19px;border-radius:15px;font-size:.84rem;
-  transition:transform .18s,border-color .18s,filter .18s,box-shadow .18s;
-}
-#gxWelcome .gx-opening-v3 .gx-button:hover{transform:translateY(-2px);filter:brightness(1.07)}
-#gxWelcome .gx-opening-v3 .gx-button.primary{
-  background:linear-gradient(112deg,#715ce2,#536bdc 58%,#087f91);
-  box-shadow:0 13px 30px rgba(69,68,170,.30);
-}
-#gxWelcome .gx-opening-v3 .gx-small{margin-top:16px;color:#9eabc1;font-size:.72rem;line-height:1.85}
-#gxWelcome .gx-opening-v3 .gx-stage{
-  min-height:500px;padding:30px 24px;
-  background:
-    radial-gradient(ellipse at 52% 45%,rgba(93,91,226,.17),transparent 56%),
-    linear-gradient(160deg,rgba(255,255,255,.025),rgba(3,10,24,.12));
-}
-#gxWelcome .gx-opening-v3 .gx-stack{width:min(100%,370px);height:340px}
-#gxWelcome .gx-opening-v3 .gx-card{
-  width:88%;height:226px;padding:22px 23px;border-radius:24px;
-}
-#gxWelcome .gx-opening-v3 .gx-card.back{transform:translate(-31px,24px) rotate(-9deg)}
-#gxWelcome .gx-opening-v3 .gx-card.mid{transform:translate(23px,9px) rotate(6deg)}
-#gxWelcome .gx-opening-v3 .gx-card.front{
-  height:245px;transform:translateY(-8px);gap:14px;
-  background:
-    radial-gradient(ellipse at 90% 0,rgba(125,110,255,.23),transparent 48%),
-    linear-gradient(150deg,#202f52,#101a30);
-}
-#gxWelcome .gx-opening-v3 .gx-card-top{font-size:.68rem;letter-spacing:0}
-#gxWelcome .gx-opening-v3 .gx-card-word{
-  direction:ltr;text-align:center;overflow-wrap:anywhere;
-  font-size:clamp(1.9rem,3vw,2.55rem);line-height:1.35;letter-spacing:-.035em;
-}
-#gxWelcome .gx-opening-v3 .gx-card-meaning{
-  display:flex;align-items:center;justify-content:space-between;gap:12px;
-  padding-top:11px;border-top:1px solid rgba(205,217,245,.17);
-}
-#gxWelcome .gx-opening-v3 .gx-card-meaning span{color:#9eacc6;font-size:.72rem}
-#gxWelcome .gx-opening-v3 .gx-card-meaning strong{color:#eef3ff;font-size:1rem;font-weight:900}
-#gxWelcome .gx-opening-v3 .gx-stage-label{
-  right:5%;left:5%;bottom:5%;padding:10px 12px;
-  border-color:rgba(158,183,225,.22);background:rgba(9,17,34,.83);
-  color:#c0cce3;font-size:.7rem;line-height:1.7;text-align:center;
-}
-#gxWelcome .gx-opening-v3 button:focus-visible,
-#gallery-experience-hero.gx-hero-v3 button:focus-visible{
-  outline:3px solid #70e5f0;outline-offset:4px;
-}
-@media(max-width:820px){
-  #gxWelcome .gx-dialog.gx-opening-v3{grid-template-columns:1fr;max-height:96dvh}
-  #gxWelcome .gx-opening-v3 .gx-stage{grid-row:1;min-height:275px;padding:16px 18px 30px}
-  #gxWelcome .gx-opening-v3 .gx-stack{height:220px;width:min(100%,310px)}
-  #gxWelcome .gx-opening-v3 .gx-card{height:166px;padding:15px 17px}
-  #gxWelcome .gx-opening-v3 .gx-card.front{height:180px}
-  #gxWelcome .gx-opening-v3 .gx-card-word{font-size:1.85rem}
-  #gxWelcome .gx-opening-v3 .gx-copy{padding:22px 24px 28px}
-  #gxWelcome .gx-opening-v3 h2{margin-top:13px;font-size:1.82rem}
-  #gxWelcome .gx-opening-v3 .gx-points{margin-top:17px}
-}
-@media(max-width:520px){
-  #gallery-experience-hero.gx-hero-v3{padding:22px 17px;border-radius:23px}
-  #gallery-experience-hero.gx-hero-v3 .gx-art{min-height:205px}
-  #gallery-experience-hero.gx-hero-v3 .gx-art-card{width:min(78%,260px);min-height:155px;padding:15px}
-  #gallery-experience-hero.gx-hero-v3 .gx-art-card.front{min-height:168px}
-  #gallery-experience-hero.gx-hero-v3 .gx-actions .gx-action{flex:1 1 100%}
-  #gallery-experience-hero.gx-hero-v3 .gx-metric{min-width:0;flex:1 1 105px}
-  #gxWelcome .gx-opening-v3 .gx-stage{min-height:235px;padding:10px 10px 29px}
-  #gxWelcome .gx-opening-v3 .gx-stack{height:180px}
-  #gxWelcome .gx-opening-v3 .gx-card{height:142px;padding:13px;border-radius:18px}
-  #gxWelcome .gx-opening-v3 .gx-card.front{height:154px;gap:7px}
-  #gxWelcome .gx-opening-v3 .gx-card-word{font-size:1.52rem}
-  #gxWelcome .gx-opening-v3 .gx-card-meaning{padding-top:6px}
-  #gxWelcome .gx-opening-v3 .gx-card-meaning strong{font-size:.86rem}
-  #gxWelcome .gx-opening-v3 .gx-copy{padding:18px 17px 24px}
-  #gxWelcome .gx-opening-v3 .gx-points{grid-template-columns:1fr;gap:7px}
-  #gxWelcome .gx-opening-v3 .gx-point{display:grid;grid-template-columns:27px minmax(0,1fr);align-items:start;min-height:0;padding:10px 12px}
-  #gxWelcome .gx-opening-v3 .gx-point-copy{margin-top:0}
-  #gxWelcome .gx-opening-v3 .gx-point span:not(.gx-point-no){margin-top:3px}
-  #gxWelcome .gx-opening-v3 .gx-actions{display:grid;grid-template-columns:1fr}
-  #gxWelcome .gx-opening-v3 .gx-button{width:100%}
-}
-
 @media(prefers-reduced-motion:reduce){
-  #gallery-experience-hero *,#gxWelcome *,#gbGrid .gb-item,#onboardTourLauncher{scroll-behavior:auto!important;animation:none!important;transition:none!important}
+ #gallery-experience-hero *,#gbGrid .gb-item{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }
-/* Opening refinement: stronger hierarchy, more direct copy and calmer card rhythm. */
-#gallery-experience-hero .gx-hero-inner{gap:clamp(26px,5vw,72px)}
-#gallery-experience-hero h1{max-width:15ch;letter-spacing:-.035em;line-height:1.22}
-#gallery-experience-hero .gx-description{max-width:58ch;line-height:1.9}
-#gallery-experience-hero .gx-metrics{gap:10px}
-#gallery-experience-hero .gx-metric{border-radius:15px;padding:13px 15px}
-#gallery-experience-hero .gx-actions{gap:10px;flex-wrap:wrap}
-#gallery-experience-hero .gx-action{min-height:48px;border-radius:13px}
-#gxWelcome .gx-opening-v3 .gx-dialog{border-radius:26px}
-#gxWelcome .gx-opening-v3 .gx-copy{gap:0}
-#gxWelcome .gx-opening-v3 .gx-lead{max-width:56ch;line-height:1.9}
-#gxWelcome .gx-opening-v3 .gx-points{gap:9px;margin-top:22px}
-#gxWelcome .gx-opening-v3 .gx-point{border-radius:15px;padding:12px 14px}
-#gxWelcome .gx-opening-v3 .gx-point-no{width:30px;height:30px;border-radius:10px}
-#gxWelcome .gx-opening-v3 .gx-actions{gap:10px;margin-top:22px}
-#gxWelcome .gx-opening-v3 .gx-button{min-height:48px;border-radius:13px}
-#gxWelcome .gx-opening-v3 .gx-small{margin-top:13px;line-height:1.75}
-#gxWelcome .gx-opening-v3 .gx-stage{min-height:430px}
-@media(max-width:760px){#gallery-experience-hero .gx-hero-inner{gap:24px}#gallery-experience-hero h1{max-width:unset}#gxWelcome .gx-opening-v3 .gx-dialog{border-radius:20px;max-height:94dvh}#gxWelcome .gx-opening-v3 .gx-stage{min-height:300px}#gxWelcome .gx-opening-v3 .gx-copy{padding:22px 18px}}
-
-/* Opening v4: a focused product welcome with a genuinely interactive card preview. */
-#gxWelcome{padding:clamp(10px,2.2vw,26px);background:radial-gradient(ellipse at 18% 18%,rgba(77,104,205,.22),transparent 38%),rgba(3,8,20,.88)}
-#gxWelcome .gx-dialog.gx-opening-v4{width:min(1120px,100%);max-height:min(900px,94dvh);overflow:auto;grid-template-columns:minmax(0,1.04fr) minmax(330px,.96fr);border:1px solid rgba(183,198,232,.22);border-radius:28px;background:linear-gradient(140deg,#111d35 0%,#10182c 54%,#0a1325 100%);box-shadow:0 36px 110px rgba(0,0,0,.62),0 0 0 1px rgba(255,255,255,.035) inset}
-#gxWelcome .gx-opening-v4 .gx-copy{padding:clamp(24px,4.2vw,52px);gap:0}
-#gxWelcome .gx-opening-v4 .gx-kicker{font-size:.7rem;letter-spacing:.08em;color:#c7d2fe}
-#gxWelcome .gx-opening-v4 .gx-deck-label{margin-top:19px;margin-bottom:0;padding:7px 12px;border-radius:999px;font-size:.72rem;background:rgba(255,255,255,.045);border-color:rgba(174,190,226,.18)}
-#gxWelcome .gx-opening-v4 h2{max-width:620px;margin:17px 0 12px;font-size:clamp(1.7rem,3.15vw,2.65rem);line-height:1.42;letter-spacing:-.035em}
-#gxWelcome .gx-opening-v4 .gx-lead{max-width:620px;color:#c6d1e3;font-size:.91rem;line-height:1.95}
-#gxWelcome .gx-opening-v4 .gx-points{grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:22px 0 0}
-#gxWelcome .gx-opening-v4 .gx-point{min-width:0;min-height:98px;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;padding:12px;border-radius:14px;border-color:rgba(171,190,229,.14);background:linear-gradient(150deg,rgba(255,255,255,.055),rgba(255,255,255,.018))}
-#gxWelcome .gx-opening-v4 .gx-point-no{margin:0;color:#73d9e7;font-size:.66rem;font-weight:950;letter-spacing:.1em;font-variant-numeric:tabular-nums}
-#gxWelcome .gx-opening-v4 .gx-point-copy{display:grid;gap:4px;margin-top:8px}
-#gxWelcome .gx-opening-v4 .gx-point strong{font-size:.77rem;color:#f1f5ff}
-#gxWelcome .gx-opening-v4 .gx-point span:not(.gx-point-no){margin:0;color:#aebbd0;font-size:.64rem;line-height:1.65}
-#gxWelcome .gx-opening-v4 .gx-actions{display:flex;gap:9px;margin-top:22px}
-#gxWelcome .gx-opening-v4 .gx-button{min-height:48px;padding:0 16px;border-radius:13px;font-size:.78rem}
-#gxWelcome .gx-opening-v4 .gx-button.primary{box-shadow:0 10px 24px rgba(80,83,192,.25)}
-#gxWelcome .gx-opening-v4 .gx-small{margin-top:12px;color:#9aa9c1;font-size:.67rem;line-height:1.75}
-#gxWelcome .gx-opening-v4 .gx-stage{min-height:500px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:34px clamp(20px,3vw,38px);direction:ltr;border-left:1px solid rgba(167,186,225,.10);background:radial-gradient(ellipse at 50% 46%,rgba(83,99,202,.16),transparent 55%),linear-gradient(180deg,rgba(255,255,255,.018),transparent)}
-#gxWelcome .gx-opening-v4 .gx-stage-head,#gxWelcome .gx-opening-v4 .gx-stage-foot{width:min(100%,390px);display:flex;align-items:center;justify-content:space-between;gap:12px}
-#gxWelcome .gx-opening-v4 .gx-stage-head{color:#b8c7e3;font-size:.69rem;font-weight:850}
-#gxWelcome .gx-opening-v4 .gx-face-state{padding:6px 10px;border:1px solid rgba(127,215,230,.2);border-radius:999px;background:rgba(34,211,238,.07);color:#8ee4ef;font-size:.64rem}
-#gxWelcome .gx-opening-v4 .gx-card-scene{width:min(100%,390px);perspective:1100px}
-#gxWelcome .gx-opening-v4 .gx-preview-card{position:relative;width:100%;min-height:286px;transform-style:preserve-3d;transition:transform .62s cubic-bezier(.2,.72,.2,1)}
-#gxWelcome .gx-opening-v4 .gx-preview-card.is-flipped{transform:rotateY(180deg)}
-#gxWelcome .gx-opening-v4 .gx-preview-face{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(20px,3vw,29px);border:1px solid rgba(173,190,234,.24);border-radius:24px;background:radial-gradient(ellipse at 92% 2%,rgba(123,112,255,.22),transparent 48%),linear-gradient(145deg,#25375b,#121e36);box-shadow:0 28px 65px rgba(0,0,0,.36),0 0 0 1px rgba(255,255,255,.035) inset;backface-visibility:hidden;-webkit-backface-visibility:hidden}
-#gxWelcome .gx-opening-v4 .gx-preview-face.back{transform:rotateY(180deg);background:radial-gradient(ellipse at 8% 4%,rgba(36,184,190,.17),transparent 48%),linear-gradient(145deg,#173b4b,#102033)}
-#gxWelcome .gx-opening-v4 .gx-card-label{color:#aab9dc;font-size:.66rem;font-weight:900;letter-spacing:.12em}
-#gxWelcome .gx-opening-v4 .gx-card-word{display:block;margin:20px 0;color:#fff;font-size:clamp(2rem,4vw,3rem);font-weight:950;line-height:1.25;letter-spacing:-.04em;overflow-wrap:anywhere}
-#gxWelcome .gx-opening-v4 .gx-card-hint{display:block;padding-top:14px;border-top:1px solid rgba(216,226,247,.15);color:#b4c2da;font-size:.7rem;line-height:1.7}
-#gxWelcome .gx-opening-v4 .gx-stage-foot{direction:rtl}
-#gxWelcome .gx-opening-v4 .gx-flip-button{min-height:42px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 14px;border:1px solid rgba(126,211,230,.28);border-radius:12px;background:rgba(34,211,238,.09);color:#c9f6fb;font:inherit;font-size:.72rem;font-weight:900;cursor:pointer}
-#gxWelcome .gx-opening-v4 .gx-stage-caption{max-width:190px;color:#8fa0ba;font-size:.62rem;line-height:1.65;text-align:right}
-#gxWelcome .gx-opening-v4 .gx-close{top:13px;left:13px;width:37px;height:37px;border-radius:11px}
-#gxWelcome .gx-opening-v4 button:focus-visible{outline:3px solid #67e8f9;outline-offset:3px}
-#gallery-experience-hero.gx-hero-v3 .gx-art-card.back,#gallery-experience-hero.gx-hero-v3 .gx-art-card.mid{display:none}
-#gallery-experience-hero.gx-hero-v3 .gx-art-card.front{position:relative;width:min(86%,310px);min-height:218px;transform:none;opacity:1}
-@media(max-width:820px){#gxWelcome .gx-dialog.gx-opening-v4{grid-template-columns:1fr;max-height:95dvh}#gxWelcome .gx-opening-v4 .gx-copy{grid-row:1;padding:24px 24px 20px}#gxWelcome .gx-opening-v4 .gx-stage{grid-row:2;min-height:360px;padding:14px 22px 26px;border-left:0;border-top:1px solid rgba(167,186,225,.10)}#gxWelcome .gx-opening-v4 .gx-preview-card{min-height:245px}}
-@media(max-width:520px){#gxWelcome{padding:7px}#gxWelcome .gx-dialog.gx-opening-v4{border-radius:19px;max-height:96dvh}#gxWelcome .gx-opening-v4 .gx-copy{padding:20px 17px 17px}#gxWelcome .gx-opening-v4 h2{font-size:1.55rem;line-height:1.42;margin-top:13px}#gxWelcome .gx-opening-v4 .gx-lead{font-size:.82rem;line-height:1.85}#gxWelcome .gx-opening-v4 .gx-points{gap:6px;margin-top:16px}#gxWelcome .gx-opening-v4 .gx-point{min-height:86px;padding:9px 8px;border-radius:11px}#gxWelcome .gx-opening-v4 .gx-point strong{font-size:.68rem}#gxWelcome .gx-opening-v4 .gx-point span:not(.gx-point-no){font-size:.57rem;line-height:1.55}#gxWelcome .gx-opening-v4 .gx-actions{display:grid;grid-template-columns:1fr;margin-top:17px}#gxWelcome .gx-opening-v4 .gx-button{width:100%;min-height:45px}#gxWelcome .gx-opening-v4 .gx-small{font-size:.62rem;margin-top:9px}#gxWelcome .gx-opening-v4 .gx-stage{min-height:300px;padding:12px 14px 18px;gap:11px}#gxWelcome .gx-opening-v4 .gx-preview-card{min-height:205px}#gxWelcome .gx-opening-v4 .gx-preview-face{padding:18px;border-radius:18px}#gxWelcome .gx-opening-v4 .gx-card-word{font-size:1.85rem}#gxWelcome .gx-opening-v4 .gx-stage-foot{align-items:flex-start}}
-@media(prefers-reduced-motion:reduce){#gxWelcome .gx-opening-v4 .gx-preview-card{transition:none}}
-@media(max-width:360px){
-  #gxWelcome{place-items:start center;padding:6px}
-  #gxWelcome .gx-dialog.gx-opening-v4{width:calc(100vw - 12px);max-height:calc(100dvh - 12px);margin:0 auto;align-content:start;grid-template-columns:1fr;border-radius:16px}
-  #gxWelcome .gx-opening-v4 .gx-copy{grid-row:1;justify-content:flex-start;padding:13px 12px 10px}
-  #gxWelcome .gx-opening-v4 .gx-kicker{font-size:.57rem;gap:6px}
-  #gxWelcome .gx-opening-v4 .gx-kicker:before{width:17px}
-  #gxWelcome .gx-opening-v4 .gx-deck-label{margin-top:8px;padding:5px 8px;font-size:.58rem}
-  #gxWelcome .gx-opening-v4 h2{font-size:1.17rem;line-height:1.25;margin:9px 0 6px}
-  #gxWelcome .gx-opening-v4 .gx-lead{font-size:.64rem;line-height:1.5}
-  #gxWelcome .gx-opening-v4 .gx-points{gap:5px;margin-top:9px}
-  #gxWelcome .gx-opening-v4 .gx-point{min-height:53px;padding:6px;border-radius:9px}
-  #gxWelcome .gx-opening-v4 .gx-point-no{font-size:.55rem}
-  #gxWelcome .gx-opening-v4 .gx-point-copy{gap:3px;margin-top:5px}
-  #gxWelcome .gx-opening-v4 .gx-point strong{font-size:.58rem}
-  #gxWelcome .gx-opening-v4 .gx-point span:not(.gx-point-no){display:none}
-  #gxWelcome .gx-opening-v4 .gx-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px}
-  #gxWelcome .gx-opening-v4 .gx-button{min-height:35px;padding:0 7px;font-size:.62rem;border-radius:9px}
-  #gxWelcome .gx-opening-v4 .gx-small{font-size:.54rem;line-height:1.35;margin-top:6px}
-  #gxWelcome .gx-opening-v4 .gx-stage{grid-row:2;min-height:195px;padding:8px 12px 12px;gap:7px}
-  #gxWelcome .gx-opening-v4 .gx-stage-head{font-size:.58rem}
-  #gxWelcome .gx-opening-v4 .gx-face-state{padding:4px 7px;font-size:.54rem}
-  #gxWelcome .gx-opening-v4 .gx-preview-card{min-height:142px}
-  #gxWelcome .gx-opening-v4 .gx-preview-face{padding:12px;border-radius:14px}
-  #gxWelcome .gx-opening-v4 .gx-card-label{font-size:.54rem}
-  #gxWelcome .gx-opening-v4 .gx-card-word{font-size:1.35rem;margin:8px 0}
-  #gxWelcome .gx-opening-v4 .gx-card-hint{font-size:.53rem;padding-top:7px}
-  #gxWelcome .gx-opening-v4 .gx-stage-foot{gap:7px}
-  #gxWelcome .gx-opening-v4 .gx-flip-button{min-height:32px;padding:0 9px;font-size:.58rem}
-  #gxWelcome .gx-opening-v4 .gx-stage-caption{font-size:.5rem;max-width:150px}
-}
-
-/* Institutional opening v5: concise orientation, evidence-led value, and a live card sample. */
-#gxWelcome{padding:clamp(12px,2vw,28px);background:rgba(5,13,25,.84);backdrop-filter:blur(10px)}
-#gxWelcome .gx-dialog.gx-opening-v5{width:min(1080px,100%);max-height:min(880px,94dvh);overflow:auto;grid-template-columns:minmax(0,1.06fr) minmax(320px,.94fr);border:1px solid rgba(156,177,205,.24);border-radius:20px;background:#101e31;box-shadow:0 34px 100px rgba(0,0,0,.55)}
-#gxWelcome .gx-opening-v5 .gx-copy{padding:clamp(25px,4vw,48px);gap:0;background:linear-gradient(145deg,#13243a,#101e31)}
-#gxWelcome .gx-opening-v5 .gx-kicker{color:#c4d2e5;font-size:.66rem;letter-spacing:.14em}
-#gxWelcome .gx-opening-v5 .gx-brand-mark{border-radius:8px;background:#2d4e70;box-shadow:none}
-#gxWelcome .gx-opening-v5 .gx-deck-label{margin-top:21px;margin-bottom:0;padding:7px 11px;border:1px solid rgba(152,177,207,.2);border-radius:7px;background:rgba(255,255,255,.035);color:#afc2db;font-size:.68rem}
-#gxWelcome .gx-opening-v5 h2{max-width:590px;margin:18px 0 11px;color:#f5f8fc;font-size:clamp(1.75rem,3vw,2.55rem);line-height:1.4;letter-spacing:-.04em}
-#gxWelcome .gx-opening-v5 .gx-lead{max-width:590px;color:#b9c8da;font-size:.86rem;line-height:1.95}
-#gxWelcome .gx-opening-v5 .gx-points{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:23px 0 0}
-#gxWelcome .gx-opening-v5 .gx-point{min-width:0;min-height:90px;display:flex;flex-direction:column;align-items:flex-start;padding:12px;border:1px solid rgba(159,181,210,.13);border-radius:10px;background:#172a42}
-#gxWelcome .gx-opening-v5 .gx-point-no{margin:0;color:#80c9c0;font-size:.62rem;font-weight:900;letter-spacing:.1em}
-#gxWelcome .gx-opening-v5 .gx-point-copy{display:grid;gap:5px;margin-top:8px}
-#gxWelcome .gx-opening-v5 .gx-point strong{color:#edf3fa;font-size:.73rem}
-#gxWelcome .gx-opening-v5 .gx-point span:not(.gx-point-no){color:#9db0c8;font-size:.61rem;line-height:1.6}
-#gxWelcome .gx-opening-v5 .gx-actions{display:flex;gap:9px;margin-top:23px}
-#gxWelcome .gx-opening-v5 .gx-button{min-height:46px;padding:0 16px;border:1px solid rgba(155,181,211,.2);border-radius:9px;background:#1a304a;color:#dce8f5;font-size:.74rem;font-weight:850}
-#gxWelcome .gx-opening-v5 .gx-button.primary{border-color:#416b96;background:#315b85;color:white;box-shadow:none}
-#gxWelcome .gx-opening-v5 .gx-button.primary:hover{background:#3b6c9b}
-#gxWelcome .gx-opening-v5 .gx-small{margin-top:12px;color:#8fa4bd;font-size:.63rem;line-height:1.75}
-#gxWelcome .gx-opening-v5 .gx-stage{min-height:470px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:32px clamp(20px,3vw,38px);direction:ltr;border-left:1px solid rgba(159,181,210,.12);background:#0d192a}
-#gxWelcome .gx-opening-v5 .gx-stage-head,#gxWelcome .gx-opening-v5 .gx-stage-foot{width:min(100%,390px);display:flex;align-items:center;justify-content:space-between;gap:12px}
-#gxWelcome .gx-opening-v5 .gx-stage-head{color:#afc2d9;font-size:.66rem;font-weight:850}
-#gxWelcome .gx-opening-v5 .gx-face-state{padding:5px 9px;border:1px solid rgba(116,199,190,.2);border-radius:6px;background:rgba(67,147,139,.1);color:#9bddd5;font-size:.6rem}
-#gxWelcome .gx-opening-v5 .gx-card-scene{width:min(100%,390px);perspective:1100px}
-#gxWelcome .gx-opening-v5 .gx-preview-card{position:relative;width:100%;min-height:270px;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.2,.72,.2,1)}
-#gxWelcome .gx-opening-v5 .gx-preview-card.is-flipped{transform:rotateY(180deg)}
-#gxWelcome .gx-opening-v5 .gx-preview-face{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(20px,3vw,28px);border:1px solid rgba(166,190,219,.23);border-radius:15px;background:#1b3552;box-shadow:0 24px 55px rgba(0,0,0,.25);backface-visibility:hidden;-webkit-backface-visibility:hidden}
-#gxWelcome .gx-opening-v5 .gx-preview-face.back{transform:rotateY(180deg);background:#173b43}
-#gxWelcome .gx-opening-v5 .gx-card-label{color:#a9c0d8;font-size:.62rem;font-weight:850;letter-spacing:.1em}
-#gxWelcome .gx-opening-v5 .gx-card-word{display:block;margin:20px 0;color:#fff;font-size:clamp(2rem,4vw,3rem);font-weight:900;line-height:1.25;letter-spacing:-.035em;overflow-wrap:anywhere}
-#gxWelcome .gx-opening-v5 .gx-card-hint{display:block;padding-top:13px;border-top:1px solid rgba(216,226,247,.14);color:#b4c5d8;font-size:.66rem;line-height:1.7}
-#gxWelcome .gx-opening-v5 .gx-stage-foot{direction:rtl}
-#gxWelcome .gx-opening-v5 .gx-flip-button{min-height:39px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 13px;border:1px solid rgba(116,199,190,.25);border-radius:8px;background:#17343d;color:#c6eee8;font:inherit;font-size:.68rem;font-weight:850;cursor:pointer}
-#gxWelcome .gx-opening-v5 .gx-stage-caption{max-width:190px;color:#849bb5;font-size:.59rem;line-height:1.65;text-align:right}
-#gxWelcome .gx-opening-v5 .gx-close{top:13px;left:13px;width:34px;height:34px;border:1px solid rgba(173,193,219,.18);border-radius:8px;background:#1a2b40;color:#c5d3e3}
-#gxWelcome .gx-opening-v5 button:focus-visible{outline:2px solid #8dc8e8;outline-offset:3px}
-#gallery-experience-hero.gx-hero-v3 .gx-art-card.back,#gallery-experience-hero.gx-hero-v3 .gx-art-card.mid{display:none}
-#gallery-experience-hero.gx-hero-v3 .gx-art-card.front{position:relative;width:min(86%,310px);min-height:218px;transform:none;opacity:1}
-@media(max-width:820px){#gxWelcome .gx-dialog.gx-opening-v5{grid-template-columns:1fr;max-height:95dvh}#gxWelcome .gx-opening-v5 .gx-copy{grid-row:1;padding:24px 24px 20px}#gxWelcome .gx-opening-v5 .gx-stage{grid-row:2;min-height:330px;padding:14px 22px 24px;border-left:0;border-top:1px solid rgba(159,181,210,.12)}#gxWelcome .gx-opening-v5 .gx-preview-card{min-height:230px}}
-@media(max-width:520px){#gxWelcome{padding:7px}#gxWelcome .gx-dialog.gx-opening-v5{border-radius:14px;max-height:96dvh}#gxWelcome .gx-opening-v5 .gx-copy{padding:19px 16px 16px}#gxWelcome .gx-opening-v5 h2{font-size:1.5rem;line-height:1.4;margin-top:13px}#gxWelcome .gx-opening-v5 .gx-lead{font-size:.79rem;line-height:1.8}#gxWelcome .gx-opening-v5 .gx-points{gap:6px;margin-top:15px}#gxWelcome .gx-opening-v5 .gx-point{min-height:78px;padding:9px 8px;border-radius:8px}#gxWelcome .gx-opening-v5 .gx-point strong{font-size:.66rem}#gxWelcome .gx-opening-v5 .gx-point span:not(.gx-point-no){font-size:.55rem}#gxWelcome .gx-opening-v5 .gx-actions{display:grid;grid-template-columns:1fr;margin-top:16px}#gxWelcome .gx-opening-v5 .gx-button{width:100%;min-height:43px}#gxWelcome .gx-opening-v5 .gx-small{font-size:.6rem}#gxWelcome .gx-opening-v5 .gx-stage{min-height:275px;padding:11px 13px 17px;gap:10px}#gxWelcome .gx-opening-v5 .gx-preview-card{min-height:195px}#gxWelcome .gx-opening-v5 .gx-preview-face{padding:17px;border-radius:13px}#gxWelcome .gx-opening-v5 .gx-card-word{font-size:1.8rem}}
-@media(max-width:360px){#gxWelcome .gx-opening-v5 .gx-copy{padding:13px 12px 10px}#gxWelcome .gx-opening-v5 .gx-kicker{font-size:.55rem}#gxWelcome .gx-opening-v5 .gx-deck-label{margin-top:8px;padding:5px 8px;font-size:.56rem}#gxWelcome .gx-opening-v5 h2{font-size:1.15rem;line-height:1.28;margin:9px 0 6px}#gxWelcome .gx-opening-v5 .gx-lead{font-size:.62rem;line-height:1.48}#gxWelcome .gx-opening-v5 .gx-points{gap:5px;margin-top:9px}#gxWelcome .gx-opening-v5 .gx-point{min-height:50px;padding:6px}#gxWelcome .gx-opening-v5 .gx-point-copy{gap:3px;margin-top:5px}#gxWelcome .gx-opening-v5 .gx-point strong{font-size:.56rem}#gxWelcome .gx-opening-v5 .gx-point span:not(.gx-point-no){display:none}#gxWelcome .gx-opening-v5 .gx-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:9px}#gxWelcome .gx-opening-v5 .gx-button{min-height:34px;padding:0 6px;font-size:.59rem}#gxWelcome .gx-opening-v5 .gx-small{font-size:.52rem;line-height:1.3;margin-top:5px}#gxWelcome .gx-opening-v5 .gx-stage{min-height:185px;padding:7px 11px 10px;gap:6px}#gxWelcome .gx-opening-v5 .gx-preview-card{min-height:132px}#gxWelcome .gx-opening-v5 .gx-preview-face{padding:11px;border-radius:12px}#gxWelcome .gx-opening-v5 .gx-card-label{font-size:.51rem}#gxWelcome .gx-opening-v5 .gx-card-word{font-size:1.3rem;margin:7px 0}#gxWelcome .gx-opening-v5 .gx-card-hint{font-size:.5rem;padding-top:6px}#gxWelcome .gx-opening-v5 .gx-flip-button{min-height:30px;font-size:.56rem;padding:0 8px}#gxWelcome .gx-opening-v5 .gx-stage-caption{font-size:.48rem;max-width:135px}}
-@media(prefers-reduced-motion:reduce){#gxWelcome .gx-opening-v5 .gx-preview-card{transition:none}}
-
-
 """
-
-
-WELCOME_MARKUP = r"""
-<div id="gxWelcome" hidden>
-  <section class="gx-dialog gx-opening-v5" role="dialog" aria-modal="true" aria-labelledby="gxWelcomeTitle" aria-describedby="gxWelcomeLead" tabindex="-1">
-    <button class="gx-close" id="gxWelcomeClose" type="button" aria-label="إغلاق المقدمة">×</button>
-    <div class="gx-copy">
-      <div class="gx-kicker"><span class="gx-brand-mark" aria-hidden="true">A</span><span>ANKI DESIGN STUDIO</span></div>
-      <div class="gx-deck-label" data-gx-deck-label>...</div>
-      <h2 id="gxWelcomeTitle" data-gx-welcome-title>شاهد شكل البطاقة قبل اختيارها.</h2>
-      <p class="gx-lead" id="gxWelcomeLead" data-gx-welcome-lead>افتح أي قالب لترى المفردة ومعناها على وجهي البطاقة. بعدها حدّد التصاميم التي تريدها في رُزمتك.</p>
-      <div class="gx-points" aria-label="طريقة العمل">
-        <div class="gx-point"><span class="gx-point-no">01</span><div class="gx-point-copy"><strong>استكشف</strong><span>تصفّح القوالب المئة في مكتبة واحدة.</span></div></div>
-        <div class="gx-point"><span class="gx-point-no">02</span><div class="gx-point-copy"><strong>عاين</strong><span>شاهد المفردة والمعنى كما سيظهران في Anki.</span></div></div>
-        <div class="gx-point"><span class="gx-point-no">03</span><div class="gx-point-copy"><strong>اختر</strong><span>اختر التصاميم التي تريد إضافتها إلى رُزمتك.</span></div></div>
-      </div>
-      <div class="gx-actions">
-        <button class="gx-button primary" id="gxWelcomeStart" type="button">ابدأ الجولة العملية <span aria-hidden="true">←</span></button>
-        <button class="gx-button" id="gxWelcomeExplore" type="button">تصفّح القوالب</button>
-      </div>
-      <div class="gx-small">سنشرح الأدوات من دون تغيير اختياراتك أو إنشاء ملف نيابةً عنك.</div>
-    </div>
-    <div class="gx-stage">
-      <div class="gx-stage-head"><span>معاينة تفاعلية</span><span class="gx-face-state" id="gxWelcomeFaceState">الوجه الأمامي</span></div>
-      <div class="gx-card-scene">
-        <div class="gx-preview-card" id="gxWelcomePreviewCard">
-          <div class="gx-preview-face front">
-            <span class="gx-card-label">المفردة</span>
-            <strong class="gx-card-word" data-gx-sample-word>Student</strong>
-            <span class="gx-card-hint">اقلب البطاقة لتشاهد وجه المعنى.</span>
-          </div>
-          <div class="gx-preview-face back">
-            <span class="gx-card-label">المعنى بالعربية</span>
-            <strong class="gx-card-word" data-gx-sample-meaning>طالب</strong>
-            <span class="gx-card-hint">هذا هو الوجه الآخر للبطاقة.</span>
-          </div>
-        </div>
-      </div>
-      <div class="gx-stage-foot">
-        <button class="gx-flip-button" id="gxWelcomeFlip" type="button" aria-pressed="false"><span aria-hidden="true">↻</span> اقلب البطاقة</button>
-        <span class="gx-stage-caption">هذه عينة توضيحية؛ ستعاين القوالب الفعلية من المكتبة.</span>
-      </div>
-    </div>
-  </section>
-</div>
-"""
-
 
 EXPERIENCE_JS = r"""
 (function(){
-  "use strict";
-  var deck="__DECK__";
-  var profiles={
-    fr9:{
-      label:"اللغة الفرنسية · الصف التاسع",
-      title:"اكتشف القالب الأنسب لمفردات الفرنسية",
-      description:"تصفّح 100 قالب، وعاين طريقة عرض الكلمة ومعناها، ثم اختر التصاميم التي تريدها في رُزمتك.",
-      welcomeTitle:"شاهد شكل البطاقة قبل اختيارها.",
-      welcomeLead:"في هذا المعرض 100 قالب لمفردات الفرنسية للصف التاسع. افتح أي قالب لترى المفردة ومعناها على وجهي البطاقة، ثم حدّد التصاميم التي تريدها في رُزمتك.",
-      sampleWord:"Leçon",
-      sampleMeaning:"درس"
-    },
-    en9:{
-      label:"اللغة الإنجليزية · الصف التاسع",
-      title:"اختر طريقة العرض المناسبة لمفردات الإنجليزية",
-      description:"تصفّح 100 قالب لمفردات الإنجليزية، وقارن وضوح الكلمة والمعنى، ثم اختر التصاميم التي تناسبك.",
-      welcomeTitle:"شاهد شكل البطاقة قبل اختيارها.",
-      welcomeLead:"في هذا المعرض 100 قالب لمفردات الإنجليزية للصف التاسع. افتح أي قالب لترى المفردة ومعناها على وجهي البطاقة، ثم حدّد التصاميم التي تريدها في رُزمتك.",
-      sampleWord:"Student",
-      sampleMeaning:"طالب"
-    },
-    enlit:{
-      label:"اللغة الإنجليزية · بكالوريا 12 — الفرع الأدبي",
-      title:"اعثر على قالب Anki المناسب لمفردات الإنجليزية.",
-      description:"100 قالب لبطاقات مفردات الإنجليزية. استكشف التصاميم، وافحص وجهي البطاقة، ثم اختر ما تريد استخدامه في رُزمتك.",
-      welcomeTitle:"شاهد شكل البطاقة قبل اختيارها.",
-      welcomeLead:"في هذا المعرض 100 قالب لمفردات الإنجليزية لبكالوريا 12 — الفرع الأدبي. افتح أي قالب لمعاينة وجهي البطاقة، ثم حدّد التصاميم التي تريدها في رُزمتك.",
-      sampleWord:"Achievement",
-      sampleMeaning:"إنجاز"
-    },
-    ensci:{
-      label:"اللغة الإنجليزية · بكالوريا 12 — الفرع العلمي",
-      title:"اعثر على قالب Anki المناسب لمفردات الإنجليزية.",
-      description:"100 قالب لبطاقات مفردات الإنجليزية. استكشف التصاميم، وافحص وجهي البطاقة، ثم اختر ما تريد استخدامه في رُزمتك.",
-      welcomeTitle:"شاهد شكل البطاقة قبل اختيارها.",
-      welcomeLead:"في هذا المعرض 100 قالب لمفردات الإنجليزية لبكالوريا 12 — الفرع العلمي. افتح أي قالب لمعاينة وجهي البطاقة، ثم حدّد التصاميم التي تريدها في رُزمتك.",
-      sampleWord:"Achievement",
-      sampleMeaning:"إنجاز"
-    }
-  };
-  var profile=profiles[deck]||profiles.en9;
-  var welcomeKey="anki_"+deck+"_welcome_seen_v5";
-  var previousFocus=null;
-  var welcomeOpen=false;
-
-  function safeGet(key){
-    try{return localStorage.getItem(key);}catch(_e){return null;}
-  }
-  function safeSet(key,value){
-    try{localStorage.setItem(key,value);}catch(_e){}
-  }
-  function applyProfileCopy(){
-    var assign=function(selector,value){
-      document.querySelectorAll(selector).forEach(function(node){node.textContent=value;});
-    };
-    assign("[data-gx-title]",profile.title);
-    assign("[data-gx-description]",profile.description);
-    assign("[data-gx-deck-label]",profile.label);
-    assign("[data-gx-welcome-title]",profile.welcomeTitle);
-    assign("[data-gx-welcome-lead]",profile.welcomeLead);
-    assign("[data-gx-sample-word]",profile.sampleWord);
-    assign("[data-gx-sample-meaning]",profile.sampleMeaning);
-  }
-
-  function scrollToTarget(target){
-    var node=typeof target==="string"?document.querySelector(target):target;
-    if(!node)return;
-    node.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
-    if(node.matches("button,a,input,select,[tabindex]"))node.focus({preventScroll:true});
-    else{
-      var first=node.querySelector("button,a,input,select,[tabindex]");
-      if(first)first.focus({preventScroll:true});
-    }
-  }
-  function addHero(){
-    var filters=document.getElementById("gbFilters");
-    if(!filters||document.getElementById("gallery-experience-hero"))return;
-    var hero=document.createElement("section");
-    hero.id="gallery-experience-hero";
-    hero.setAttribute("aria-label","مقدمة معرض "+profile.label);
-    hero.classList.add("gx-hero-v3");
-    hero.innerHTML=
-      '<div class="gx-hero-inner">'+
-        '<div class="gx-hero-copy">'+
-          '<div class="gx-eyebrow"><span class="gx-brand-mark" aria-hidden="true">A</span><span>استوديو قوالب Anki</span></div>'+
-          '<div class="gx-deck-label" data-gx-deck-label></div>'+
-          '<h1 data-gx-title></h1>'+
-          '<p class="gx-description" data-gx-description></p>'+
-          '<div class="gx-actions">'+
-            '<button type="button" class="gx-action primary hero-cta-main" data-gx-browse>تصفّح القوالب <span aria-hidden="true">←</span></button>'+
-            '<button type="button" class="gx-action" data-gx-welcome>استكشف طريقة العمل</button>'+
-          '</div>'+
-          '<div class="gx-metrics" aria-label="مزايا المعرض">'+
-            '<div class="gx-metric"><strong>100 تصميم</strong><span>في مكتبة هذا المعرض</span></div>'+
-            '<div class="gx-metric"><strong>معاينة فعلية</strong><span>قبل اعتماد القالب</span></div>'+
-            '<div class="gx-metric"><strong>قرارك أنت</strong><span>لا تحديد ولا تصدير تلقائي</span></div>'+
-          '</div>'+
-        '</div>'+
-        '<div class="gx-art" aria-hidden="true">'+
-          '<div class="gx-art-glow"></div>'+
-          '<div class="gx-art-card back"><span class="gx-art-kicker">الخطوة الأولى</span><span class="gx-art-word">اكتشف</span><span class="gx-art-note">ابحث وصفِّ النتائج</span></div>'+
-          '<div class="gx-art-card mid"><span class="gx-art-kicker">الخطوة الثانية</span><span class="gx-art-word">عاين</span><span class="gx-art-note">افحص تفاصيل التصميم</span></div>'+
-          '<div class="gx-art-card front gx-art-sample"><span class="gx-art-kicker">عينة من المحتوى</span><span class="gx-art-word" data-gx-sample-word>Student</span><span class="gx-art-meaning" data-gx-sample-meaning>طالب</span></div>'+
-        '</div>'+
-      '</div>';
-    var originalHero=document.querySelector("#sec-gal .hero") || (document.querySelector(".hero-cta-main") && document.querySelector(".hero-cta-main").closest(".hero"));
-    if(!originalHero || !originalHero.parentNode)return;
-    originalHero.parentNode.insertBefore(hero,originalHero);
-    originalHero.remove();
-    hero.querySelector("[data-gx-browse]").addEventListener("click",function(){
-      if(typeof window.openGalleryBrowser==="function")window.openGalleryBrowser();
-      else scrollToTarget("#gbGrid");
-    });
-    hero.querySelector("[data-gx-welcome]").addEventListener("click",openGalleryWelcome);
-  }
-
-  function openGalleryWelcome(){
-    var modal=document.getElementById("gxWelcome");
-    if(!modal)return;
-    previousFocus=document.activeElement;
-    modal.hidden=false;
-    document.body.classList.add("gx-lock");
-    welcomeOpen=true;
-    var dialog=modal.querySelector(".gx-dialog");
-    if(dialog)dialog.scrollTop=0;
-    var preview=document.getElementById("gxWelcomePreviewCard");
-    var flip=document.getElementById("gxWelcomeFlip");
-    var faceState=document.getElementById("gxWelcomeFaceState");
-    if(preview)preview.classList.remove("is-flipped");
-    if(flip){flip.setAttribute("aria-pressed","false");flip.innerHTML='<span aria-hidden="true">↻</span> اقلب البطاقة';}
-    if(faceState)faceState.textContent="الوجه الأمامي";
-    var start=document.getElementById("gxWelcomeStart");
-    if(start)start.focus({preventScroll:true});
-  }
-  function closeGalleryWelcome(markSeen){
-    var modal=document.getElementById("gxWelcome");
-    if(!modal)return;
-    if(markSeen)safeSet(welcomeKey,"1");
-    modal.hidden=true;
-    document.body.classList.remove("gx-lock");
-    welcomeOpen=false;
-    if(previousFocus&&previousFocus.isConnected){
-      try{previousFocus.focus({preventScroll:true});}catch(_e){}
-    }
-  }
-  function hasSeenGalleryWelcome(){
-    return safeGet(welcomeKey)==="1";
-  }
-  window.hasSeenGalleryWelcome=hasSeenGalleryWelcome;
-  window.openGalleryWelcome=openGalleryWelcome;
-
-  function init(){
-    addHero();
-    applyProfileCopy();
-    var launcher=document.getElementById("onboardTourLauncher");
-    if(launcher){
-      launcher.setAttribute("onclick","openGalleryWelcome()");
-      launcher.setAttribute("aria-label","فتح المقدمة والجولة التفاعلية");
-      launcher.title="افتح مقدمة المعرض والجولة التفاعلية";
-    }
-    var start=document.getElementById("gxWelcomeStart");
-    var explore=document.getElementById("gxWelcomeExplore");
-    var close=document.getElementById("gxWelcomeClose");
-    var flip=document.getElementById("gxWelcomeFlip");
-    if(flip)flip.addEventListener("click",function(){
-      var preview=document.getElementById("gxWelcomePreviewCard");
-      var faceState=document.getElementById("gxWelcomeFaceState");
-      if(!preview)return;
-      var flipped=preview.classList.toggle("is-flipped");
-      flip.setAttribute("aria-pressed",String(flipped));
-      flip.innerHTML=flipped?'<span aria-hidden="true">↻</span> أظهر المفردة':'<span aria-hidden="true">↻</span> اقلب البطاقة';
-      if(faceState)faceState.textContent=flipped?"وجه المعنى":"الوجه الأمامي";
-    });
-    if(start)start.addEventListener("click",function(){
-      closeGalleryWelcome(true);
-      window.setTimeout(function(){
-        if(typeof window.showOnboarding==="function")window.showOnboarding();
-        else scrollToTarget("#gbGrid");
-      },90);
-    });
-    if(explore)explore.addEventListener("click",function(){
-      closeGalleryWelcome(true);
-      window.setTimeout(function(){
-        if(typeof window.openGalleryBrowser==="function")window.openGalleryBrowser();
-        else scrollToTarget("#gbGrid");
-      },60);
-    });
-    if(close)close.addEventListener("click",function(){closeGalleryWelcome(true);});
-    var grid=document.getElementById("gbGrid");
-    if(grid){
-      grid.addEventListener("click",function(event){
-        var card=event.target.closest(".gb-item");
-        if(!card)return;
-        grid.querySelectorAll('.gb-item[data-gx-active="true"]').forEach(function(item){item.removeAttribute("data-gx-active");});
-        card.setAttribute("data-gx-active","true");
-      });
-    }
-    document.addEventListener("keydown",function(event){
-      if(!welcomeOpen)return;
-      if(event.key==="Escape"){
-        event.preventDefault();
-        closeGalleryWelcome(true);
-        return;
-      }
-      if(event.key!=="Tab")return;
-      var modal=document.getElementById("gxWelcome");
-      var focusable=Array.from(modal.querySelectorAll('button:not([disabled]),a[href],input:not([disabled]),select:not([disabled]),[tabindex]:not([tabindex="-1"])')).filter(function(node){return !node.hidden;});
-      if(!focusable.length)return;
-      var first=focusable[0],last=focusable[focusable.length-1];
-      if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}
-      else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}
-    });
-  }
-  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});
-  else init();
+"use strict";
+var deck="__DECK__";
+var profiles={
+ fr9:{label:"اللغة الفرنسية · الصف التاسع",title:"اختر شكلاً يليق بمفرداتك الفرنسية.",description:"مئة تصميم مختلف لبطاقات المفردات. شاهد القالب الحقيقي، وافحص الوجهين، ثم اعتمد ما يناسب طريقة دراستك.",word:"Leçon",meaning:"درس"},
+ en9:{label:"اللغة الإنجليزية · الصف التاسع",title:"اجعل كل مفردة واضحة من النظرة الأولى.",description:"مئة تصميم لبطاقات مفردات الإنجليزية. استعرضها دون تصنيفات، افتح أي تصميم لمعاينته، ثم اختر القوالب التي تريدها.",word:"Student",meaning:"طالب"},
+ enlit:{label:"بكالوريا 12 · الفرع الأدبي",title:"اختر طريقة عرض مفردات الإنجليزية.",description:"مئة تصميم لبطاقات مفردات الإنجليزية لطلاب بكالوريا 12 — الفرع الأدبي. استعرض التصاميم كما ستظهر على بطاقاتك، ثم اعتمد اختياراتك.",word:"Achievement",meaning:"إنجاز"},
+ ensci:{label:"بكالوريا 12 · الفرع العلمي",title:"اختر طريقة عرض مفردات الإنجليزية.",description:"مئة تصميم لبطاقات مفردات الإنجليزية لطلاب بكالوريا 12 — الفرع العلمي. استعرض التصاميم كما ستظهر على بطاقاتك، ثم اعتمد اختياراتك.",word:"Achievement",meaning:"إنجاز"}
+};
+var profile=profiles[deck]||profiles.en9;
+function text(node,value){if(node)node.textContent=value;}
+function safePreviewSource(template){
+ try{
+  var source=typeof thumbDoc==="function"?thumbDoc(template):buildPreviewDoc(template);
+  var doc=new DOMParser().parseFromString(source,"text/html");
+  doc.querySelectorAll("script,iframe,object,embed,form").forEach(function(node){node.remove();});
+  doc.querySelectorAll("*").forEach(function(node){
+   Array.from(node.attributes).forEach(function(attribute){
+    if(/^on/i.test(attribute.name)||((attribute.name==="href"||attribute.name==="src")&&/^\s*javascript:/i.test(attribute.value)))node.removeAttribute(attribute.name);
+   });
+  });
+  return "<!doctype html>"+doc.documentElement.outerHTML;
+ }catch(_e){return "";}
+}
+function fitFrame(frame){
+ try{
+  var doc=frame.contentDocument;if(!doc||!doc.body)return;
+  var selector='.fitme,.ds-word,.ds-trans,.word,.trans,.meaning,.subtitle,.board-txt,.cfit,.frword,.arword,[class*="-word"],[class*="-trans"],[class*="-sub"],[class*="-txt"]';
+  doc.querySelectorAll(selector).forEach(function(el){
+   var parent=el.parentElement;if(!parent)return;
+   var style=doc.defaultView.getComputedStyle(el),base=parseFloat(el.getAttribute("data-base"))||parseFloat(style.fontSize)||16;
+   var min=Math.max(5,parseFloat(el.getAttribute("data-min"))||8),available=parent.clientWidth-16;
+   if(available<24)return;
+   el.style.whiteSpace="nowrap";el.style.display="inline-block";el.style.maxWidth="none";el.style.fontSize=base+"px";
+   var width=el.scrollWidth;if(width>available)el.style.fontSize=Math.max(min,Math.floor(base*available/width*10)/10)+"px";
+  });
+ }catch(_e){}
+}
+function mountFrame(host,template,title){
+ if(!host||!template)return;
+ var iframe=document.createElement("iframe");iframe.setAttribute("sandbox","allow-same-origin");
+ iframe.setAttribute("loading","lazy");iframe.setAttribute("title",title);
+ iframe.addEventListener("load",function(){
+  var doc=iframe.contentDocument,hasContent=!!(doc&&doc.body&&(doc.body.children.length||(doc.body.textContent||"").trim()));
+  if(hasContent){host.classList.add("is-ready");fitFrame(iframe);if(doc.fonts&&doc.fonts.ready)doc.fonts.ready.then(function(){fitFrame(iframe);}).catch(function(){});}
+  else{host.classList.add("is-error");text(host.querySelector(".gb-preview-loading"),"تعذرت معاينة هذا التصميم");}
+ });
+ iframe.addEventListener("error",function(){host.classList.add("is-error");text(host.querySelector(".gb-preview-loading"),"تعذرت معاينة هذا التصميم");});
+ iframe.srcdoc=safePreviewSource(template);
+ if(!iframe.srcdoc){host.classList.add("is-error");text(host.querySelector(".gb-preview-loading"),"المعاينة غير متاحة");return;}
+ host.appendChild(iframe);
+}
+function addHero(){
+ var section=document.querySelector("#sec-gal");if(!section||document.getElementById("gallery-experience-hero"))return;
+ var oldHero=section.querySelector(".hero");if(!oldHero)return;
+ var hero=document.createElement("section");hero.id="gallery-experience-hero";hero.setAttribute("aria-label","معرض "+profile.label);
+ hero.innerHTML=
+ '<div class="gx-copy">'+
+  '<div class="gx-eyebrow"><span class="gx-mark" aria-hidden="true">A</span><span>ANKI DESIGN STUDIO</span></div>'+
+  '<div class="gx-deck" data-gx-deck></div>'+
+  '<h1 data-gx-title></h1><p class="gx-description" data-gx-description></p>'+
+  '<div class="gx-actions"><button class="gx-action primary hero-cta-main" type="button" data-gx-browse>استعرض القوالب المئة <span aria-hidden="true">←</span></button><button class="gx-action" type="button" data-gx-tour>شاهد الجولة التفاعلية</button></div>'+
+  '<div class="gx-facts"><span>100 تصميم فعلي</span><span>معاينة قبل الاعتماد</span><span>لا تصنيفات ولا فرز</span></div>'+
+ '</div>'+
+ '<div class="gx-showcase" aria-label="معاينات حقيقية من مكتبة القوالب">'+
+  '<div class="gx-showcase-head"><span>من داخل المكتبة</span><span class="gx-live">معاينات فعلية</span></div>'+
+  '<div class="gx-featured gx-preview-host" id="gxPreviewMain"><span class="gb-preview-loading">جارٍ تجهيز المعاينة</span></div>'+
+  '<div class="gx-side-previews"><div class="gx-mini gx-preview-host" id="gxPreviewAlt1"><span class="gb-preview-loading">قالب آخر</span></div><div class="gx-mini gx-preview-host" id="gxPreviewAlt2"><span class="gb-preview-loading">تصميم آخر</span></div></div>'+
+  '<div class="gx-showcase-foot">هذه معاينات من القوالب الفعلية المرتبطة بهذه الرزمة، وليست رسومات توضيحية بديلة.</div>'+
+ '</div>';
+ oldHero.parentNode.insertBefore(hero,oldHero);oldHero.remove();
+ text(hero.querySelector("[data-gx-deck]"),profile.label);
+ text(hero.querySelector("[data-gx-title]"),profile.title);
+ text(hero.querySelector("[data-gx-description]"),profile.description);
+ hero.querySelector("[data-gx-browse]").addEventListener("click",function(){
+  if(typeof ensureGalleryDesigns==="function")ensureGalleryDesigns();
+  if(typeof window.openGalleryBrowser==="function")window.openGalleryBrowser();
+ });
+ hero.querySelector("[data-gx-tour]").addEventListener("click",function(){
+  var launcher=document.getElementById("onboardTourLauncher");if(launcher)launcher.click();
+ });
+}
+function mountShowcase(){
+ try{if(typeof ensureGalleryDesigns==="function")ensureGalleryDesigns();}catch(_e){}
+ var list=(typeof gvList!=="undefined"&&Array.isArray(gvList))?gvList:[];
+ var choices=[0,16,40],hosts=["gxPreviewMain","gxPreviewAlt1","gxPreviewAlt2"];
+ choices.forEach(function(index,i){
+  var host=document.getElementById(hosts[i]);if(!host)return;
+  var template=list[index]||list[i];
+  if(template)mountFrame(host,template,"معاينة فعلية لتصميم "+(index+1));
+ });
+}
+function disableFilters(){
+ try{if(typeof gbFam!=="undefined")gbFam="all";}catch(_e){}
+ window.gbBuildFilters=function(){try{if(typeof gbFam!=="undefined")gbFam="all";}catch(_e){}};
+ window.gbSetFilter=function(){try{if(typeof gbFam!=="undefined")gbFam="all";}catch(_e){};if(typeof renderGalleryBrowser==="function")renderGalleryBrowser();};
+}
+function init(){
+ addHero();disableFilters();mountShowcase();
+ var launcher=document.getElementById("onboardTourLauncher");
+ if(launcher){
+  launcher.textContent="الجولة التفاعلية";launcher.setAttribute("aria-label","ابدأ الجولة التفاعلية");
+  launcher.title="تعرف إلى خطوات المعرض من داخله";
+  launcher.addEventListener("click",function(){if(typeof showOnboarding==="function")showOnboarding();});
+ }
+ var grid=document.getElementById("gbGrid");
+ if(grid)grid.addEventListener("click",function(event){
+  var card=event.target.closest(".gb-item");if(!card)return;
+  grid.querySelectorAll('.gb-item[data-gx-active="true"]').forEach(function(item){item.removeAttribute("data-gx-active");});
+  card.setAttribute("data-gx-active","true");
+ });
+}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});
+else init();
 })();
 """
 
-
 def apply_gallery_experience(html, deck):
-    """Apply the v2 visual system and accessible welcome layer to one target gallery."""
     if deck not in ("en9", "enlit", "ensci", "fr9"):
-        raise SystemExit("Gallery Experience v2 is restricted to the four non-Bac galleries")
-    if 'id="gallery-experience-v2"' in html or 'id="gxWelcome"' in html:
-        raise SystemExit(deck + ": Gallery Experience v2 is already present")
-    for marker in ('id="gbFilters"', 'id="gbGrid"', 'id="onboardTourLauncher"'):
-        if marker not in html:
-            raise SystemExit(deck + ": required gallery anchor is missing: " + marker)
+        raise SystemExit("Gallery experience is restricted to the four non-Bac galleries")
+    if 'id="gallery-experience-v6"' in html:
+        raise SystemExit(deck + ": clean-slate gallery experience is already present")
+    if 'id="gbGrid"' not in html or 'id="onboardTourLauncher"' not in html:
+        raise SystemExit(deck + ": required gallery anchors are missing")
 
-    old_init = "if(!isOnboardingCompleted())setTimeout(showOnboarding,180);"
-    new_init = (
-        "if(!isOnboardingCompleted()&&(!window.hasSeenGalleryWelcome||!window.hasSeenGalleryWelcome()))"
-        "setTimeout(function(){if(window.openGalleryWelcome)window.openGalleryWelcome();},220);"
-    )
-    if html.count(old_init) != 1:
-        raise SystemExit(deck + ": expected one original first-visit onboarding trigger")
-    html = html.replace(old_init, new_init, 1)
+    # Remove color-family chips entirely; the library is one uninterrupted 100-design collection.
+    html, removed = re.subn(r'\s*<div class="gb-tools" id="gbFilters"></div>', "", html, count=1)
+    if removed != 1:
+        raise SystemExit(deck + ": the old filter-strip anchor was not found")
+    html = html.replace("اضغط على أي قالب لاختياره والعودة إلى المعرض", "اضغط على أي قالب لفتح معاينته الكبيرة", 1)
+    html = html.replace("اختيار ←", "معاينة ←")
+    html = html.replace("تم اختيار التصميم ", "تم فتح معاينة التصميم ")
 
-    old_launcher = (
-        '<button id="onboardTourLauncher" type="button" onclick="showOnboarding()" '
-        'aria-label="إعادة فتح الجولة السريعة"><span aria-hidden="true">✦</span>'
-        '<span>الجولة السريعة</span></button>'
-    )
-    new_launcher = (
-        '<button id="onboardTourLauncher" type="button" onclick="openGalleryWelcome()" '
-        'aria-label="فتح المقدمة والجولة التفاعلية"><span aria-hidden="true">✦</span>'
-        '<span>ابدأ الجولة</span></button>'
-    )
-    if html.count(old_launcher) != 1:
-        raise SystemExit(deck + ": expected one persistent onboarding launcher")
-    html = html.replace(old_launcher, new_launcher, 1)
-
-    # Replace the generic shared thumbnails with lazy, isolated renders of
-    # each real template. The existing image remains a failure fallback.
     old_thumb = '<img class="gb-img" data-loading="1" loading="lazy" decoding="async" src="\'+img+\'" alt="تصميم \'+num+\'">'
-    new_thumb = (
-        '<iframe class="gb-preview-frame" loading="lazy" title="معاينة تصميم \'+num+\'" '
-        'sandbox="allow-same-origin"></iframe>'
-        '<img class="gb-fallback-img" loading="lazy" decoding="async" src="\'+img+\'" alt="تصميم \'+num+\'">'
-    )
+    new_thumb = '<div class="gb-preview-host" aria-label="معاينة تصميم '+num+'"><span class="gb-preview-loading">تظهر المعاينة عند الوصول إلى هذا القالب</span></div>'
     if html.count(old_thumb) != 1:
-        raise SystemExit(deck + ": expected one shared gallery thumbnail renderer")
+        raise SystemExit(deck + ": expected one base thumbnail renderer")
     html = html.replace(old_thumb, new_thumb, 1)
-    image_handlers = re.compile(
+
+    handlers = re.compile(
         r"var im=it\.querySelector\('\.gb-img'\);\s*"
         r"im\.addEventListener\('load',function\(\)\{this\.removeAttribute\('data-loading'\);"
         r"var sk=this\.parentNode\.querySelector\('\.gb-sk'\);if\(sk\)sk\.style\.display='none';\}\);\s*"
         r"im\.addEventListener\('error',function\(\)\{this\.removeAttribute\('data-loading'\);"
         r"var sk=this\.parentNode\.querySelector\('\.gb-sk'\);if\(sk\)sk\.style\.display='none';\}\);"
     )
-    frame_handlers = (
-        "var previewFrame=it.querySelector('.gb-preview-frame');"
-        "if(previewFrame){"
+    lazy_mount = (
+        "var previewHost=it.querySelector('.gb-preview-host');"
+        "var previewMounted=false;"
+        "function mountGalleryPreview(){"
+        "if(previewMounted||!previewHost)return;previewMounted=true;"
         "var previewSource=thumbDoc(t);"
         "var previewDocument=new DOMParser().parseFromString(previewSource,'text/html');"
-        "previewDocument.querySelectorAll('script,iframe,object,embed').forEach(function(node){node.remove();});"
+        "previewDocument.querySelectorAll('script,iframe,object,embed,form').forEach(function(node){node.remove();});"
         "previewDocument.querySelectorAll('*').forEach(function(node){Array.from(node.attributes).forEach(function(attribute){"
-        "if(/^on/i.test(attribute.name)||((attribute.name==='href'||attribute.name==='src')&&/^\\s*javascript:/i.test(attribute.value))){node.removeAttribute(attribute.name);}"
+        "if(/^on/i.test(attribute.name)||((attribute.name==='href'||attribute.name==='src')&&/^\\\\s*javascript:/i.test(attribute.value))){node.removeAttribute(attribute.name);}"
         "});});"
-        "previewFrame.srcdoc='<!doctype html>'+previewDocument.documentElement.outerHTML;"
-        "previewFrame.addEventListener('load',function(){"
-        "var doc=this.contentDocument;"
+        "var previewFrame=document.createElement('iframe');previewFrame.className='gb-preview-frame';"
+        "previewFrame.setAttribute('sandbox','allow-same-origin');previewFrame.setAttribute('loading','lazy');"
+        "previewFrame.setAttribute('title','معاينة تصميم '+num);"
+        "previewFrame.addEventListener('load',function(){var doc=this.contentDocument;"
         "var hasContent=doc&&doc.body&&(doc.body.children.length>0||(doc.body.textContent||'').trim().length>0);"
-        "var fallback=this.parentNode.querySelector('.gb-fallback-img');"
-        "if(!hasContent&&fallback)fallback.setAttribute('data-show','true');"
-        "if(hasContent){"
-        "var fitPreview=function(){"
-        "var selector='.fitme,.ds-word,.ds-trans,.word,.trans,.meaning,.subtitle,.board-txt,.cfit,.frword,.arword,[class*=\"-word\"],[class*=\"-trans\"],[class*=\"-sub\"],[class*=\"-txt\"]';"
-        "doc.querySelectorAll(selector).forEach(function(el){"
-        "var p=el.parentElement;if(!p)return;"
-        "var cs=doc.defaultView.getComputedStyle(el);"
-        "var base=parseFloat(el.getAttribute('data-base'))||parseFloat(cs.fontSize)||16;"
-        "var min=parseFloat(el.getAttribute('data-min'))||8;if(min<5)min=5;"
-        "var aw=p.clientWidth-16,ah=p.clientHeight;if(aw<24||ah<16)return;"
-        "el.style.whiteSpace='nowrap';el.style.display='inline-block';el.style.maxWidth='none';el.style.fontSize=base+'px';"
-        "var tw=el.scrollWidth,th=el.scrollHeight;if(tw<=2||th<=2)return;"
-        "var k=Math.min(aw/tw,ah>10?ah/th:1),fs=base;"
-        "if(k<1)fs=Math.max(min,Math.floor(base*k*10)/10);"
-        "el.style.fontSize=fs+'px';var tw2=el.scrollWidth;"
-        "if(tw2>aw&&fs>min){fs=Math.max(min,Math.floor(fs*aw/tw2*10)/10);el.style.fontSize=fs+'px';}"
-        "});};"
-        "fitPreview();"
-        "if(doc.fonts&&doc.fonts.ready)doc.fonts.ready.then(fitPreview).catch(function(){});"
+        "if(hasContent){previewHost.classList.add('is-ready');"
+        "var fitPreview=function(){var selector='.fitme,.ds-word,.ds-trans,.word,.trans,.meaning,.subtitle,.board-txt,.cfit,.frword,.arword,[class*=\\\"-word\\\"],[class*=\\\"-trans\\\"],[class*=\\\"-sub\\\"],[class*=\\\"-txt\\\"]';"
+        "doc.querySelectorAll(selector).forEach(function(el){var p=el.parentElement;if(!p)return;var cs=doc.defaultView.getComputedStyle(el);"
+        "var base=parseFloat(el.getAttribute('data-base'))||parseFloat(cs.fontSize)||16;var min=Math.max(5,parseFloat(el.getAttribute('data-min'))||8);"
+        "var aw=p.clientWidth-16;if(aw<24)return;el.style.whiteSpace='nowrap';el.style.display='inline-block';el.style.maxWidth='none';"
+        "el.style.fontSize=base+'px';var tw=el.scrollWidth;if(tw>aw)el.style.fontSize=Math.max(min,Math.floor(base*aw/tw*10)/10)+'px';});};"
+        "fitPreview();if(doc.fonts&&doc.fonts.ready)doc.fonts.ready.then(fitPreview).catch(function(){});"
+        "}else{previewHost.classList.add('is-error');var label=previewHost.querySelector('.gb-preview-loading');if(label)label.textContent='تعذرت معاينة هذا التصميم';}});"
+        "previewFrame.addEventListener('error',function(){previewHost.classList.add('is-error');"
+        "var label=previewHost.querySelector('.gb-preview-loading');if(label)label.textContent='تعذرت معاينة هذا التصميم';});"
+        "previewFrame.srcdoc='<!doctype html>'+previewDocument.documentElement.outerHTML;previewHost.appendChild(previewFrame);"
         "}"
-        "var sk=this.parentNode.querySelector('.gb-sk');if(sk)sk.style.display='none';"
-        "});"
-        "previewFrame.addEventListener('error',function(){"
-        "var fallback=this.parentNode.querySelector('.gb-fallback-img');"
-        "if(fallback)fallback.setAttribute('data-show','true');"
-        "var sk=this.parentNode.querySelector('.gb-sk');if(sk)sk.style.display='none';"
-        "});}"
+        "if('IntersectionObserver' in window){var previewObserver=new IntersectionObserver(function(entries){entries.forEach(function(entry){"
+        "if(entry.isIntersecting){previewObserver.unobserve(entry.target);mountGalleryPreview();}});},{root:document.getElementById('gbGrid'),rootMargin:'320px 0px',threshold:0.01});"
+        "previewObserver.observe(it);}else if(i<10){mountGalleryPreview();}"
     )
-    html, handler_count = image_handlers.subn(lambda _match: frame_handlers, html, count=1)
-    if handler_count != 1:
-        raise SystemExit(deck + ": could not upgrade gallery cards to live template previews")
+    html, count = handlers.subn(lambda _match: lazy_mount, html, count=1)
+    if count != 1:
+        raise SystemExit(deck + ": could not install viewport-based thumbnail rendering")
 
-    style_tag = '<style id="gallery-experience-v2">\n' + EXPERIENCE_CSS + '\n</style>\n'
-    html, style_count = re.subn(r"</head\s*>", style_tag + "</head>", html, count=1, flags=re.I)
-    if style_count != 1:
-        raise SystemExit(deck + ": could not insert the Gallery Experience v2 stylesheet")
-
+    # The gallery browser keeps all designs visible and always starts from the full set.
+    html = html.replace("var gbCur=0,gbFam='all'", "var gbCur=0,gbFam='all'", 1)
+    css = '<style id="gallery-experience-v6">\\n' + EXPERIENCE_CSS + '\\n</style>\\n'
+    html, inserted = re.subn(r"</head\\s*>", css + "</head>", html, count=1, flags=re.I)
+    if inserted != 1:
+        raise SystemExit(deck + ": could not add the clean gallery visual system")
     js = EXPERIENCE_JS.replace("__DECK__", deck)
-    script_tag = '<script id="gallery-experience-runtime">\n' + js + '\n</script>\n'
-    body_closers = list(re.finditer(r"</body\s*>", html, flags=re.I))
-    if not body_closers:
+    script = '<script id="gallery-experience-runtime-v6">\\n' + js + '\\n</script>\\n'
+    closers = list(re.finditer(r"</body\\s*>", html, flags=re.I))
+    if not closers:
         raise SystemExit(deck + ": missing final body close")
-    body_close = body_closers[-1]
-    launcher_position = html.find(new_launcher)
-    if launcher_position < 0 or html.count(new_launcher) != 1 or launcher_position >= body_close.start():
-        raise SystemExit(deck + ": expected one persistent launcher before the final body close")
-    # Keep the persistent launcher after every script so it remains a genuine
-    # document control and preserves the existing document-order invariant.
-    html = html[:launcher_position] + WELCOME_MARKUP + script_tag + html[launcher_position:]
+    # Runtime after the shared page scripts, before the real tour launcher.
+    launcher = html.find('<button id="onboardTourLauncher"')
+    if launcher < 0 or launcher >= closers[-1].start():
+        raise SystemExit(deck + ": tour launcher insertion point is missing")
+    html = html[:launcher] + script + html[launcher:]
 
     required = (
-        'hero.id="gallery-experience-hero"',
-        'class="gx-dialog gx-opening-v5"',
-        'data-gx-welcome-title',
-        'data-gx-sample-word',
-        'data-gx-sample-meaning',
-        'id="gxWelcomeStart"',
-        'window.hasSeenGalleryWelcome',
-        'window.openGalleryWelcome',
-        'class="gb-preview-frame"',
-        "var previewSource=thumbDoc(t);",
+        'id="gallery-experience-v6"', 'id="gallery-experience-runtime-v6"',
+        'id="gallery-experience-hero"', 'class="gx-action primary hero-cta-main"',
+        'id="gxPreviewMain"', 'id="gxPreviewAlt1"', 'id="gxPreviewAlt2"',
+        'window.gbSetFilter=function()', 'function mountGalleryPreview()',
+        "new IntersectionObserver", "rootMargin:'320px 0px'",
         "previewFrame.srcdoc='<!doctype html>'+previewDocument.documentElement.outerHTML",
-        'class="gx-action primary hero-cta-main"',
-        'originalHero.remove()',
-        'window.openGalleryBrowser'
     )
     for token in required:
         if token not in html:
-            raise SystemExit(deck + ": incomplete Gallery Experience v2 output: " + token)
+            raise SystemExit(deck + ": incomplete gallery experience: " + token)
+    if 'id="gbFilters"' in html or 'class="gb-chip"' in html:
+        raise SystemExit(deck + ": old filter controls remain in generated gallery")
+    if 'id="gxWelcome"' in html or 'id="gxWelcomeStart"' in html:
+        raise SystemExit(deck + ": old blocking welcome modal remains")
     return html
