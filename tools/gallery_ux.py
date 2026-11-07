@@ -124,24 +124,48 @@ body .og-spotlight{position:relative!important;z-index:2147482998!important;outl
   #onboardGuideRoot .og-footer{gap:5px}
   #onboardGuideRoot .og-btn{padding-inline:8px}
 }
+/* Refined coachmark system: readable hierarchy, roomier controls and consistent touch targets. */
+#onboardGuideRoot .og-card{width:min(480px,calc(100vw - 24px));max-height:min(56dvh,520px);padding:clamp(18px,2.2vw,24px);border:1px solid rgba(164,177,224,.34);border-radius:24px;background:radial-gradient(ellipse at 92% 0,rgba(113,104,238,.19),transparent 46%),linear-gradient(148deg,rgba(18,27,49,.995),rgba(7,13,27,.995));box-shadow:0 28px 90px rgba(0,0,0,.56),0 0 0 1px rgba(255,255,255,.04) inset}
+#onboardGuideRoot .og-progress{gap:7px;margin-bottom:18px}
+#onboardGuideRoot .og-progress button{padding:8px 0}
+#onboardGuideRoot .og-progress button span{height:6px;border-radius:99px}
+#onboardGuideRoot .og-meta{margin-bottom:10px}
+#onboardGuideRoot .og-step-label{font-size:.76rem;letter-spacing:.01em}
+#onboardGuideRoot .og-count{font-size:.72rem}
+#onboardGuideRoot .og-title{font-size:clamp(1.18rem,2.2vw,1.48rem);line-height:1.48;letter-spacing:-.025em;margin-bottom:12px}
+#onboardGuideRoot .og-text{font-size:.88rem;line-height:1.85;color:#e0e6f2}
+#onboardGuideRoot .og-target{margin-top:17px;padding:12px 14px;border-radius:15px;background:rgba(34,211,238,.075);border-color:rgba(103,232,249,.22)}
+#onboardGuideRoot .og-target-mark{width:31px;height:31px;border-radius:10px}
+#onboardGuideRoot .og-target-copy small{font-size:.67rem}
+#onboardGuideRoot .og-target-copy strong{font-size:.8rem}
+#onboardGuideRoot .og-note{font-size:.73rem;line-height:1.75;margin-top:12px;color:#bac7db}
+#onboardGuideRoot .og-footer{margin:18px -15px -15px;padding:14px 15px 13px;gap:12px}
+#onboardGuideRoot .og-actions{gap:9px}
+#onboardGuideRoot .og-btn{min-height:46px;padding:10px 17px;border-radius:13px;font-size:.79rem}
+#onboardGuideRoot .og-btn.primary{background:linear-gradient(110deg,#6d5ce7,#4e66d9 58%,#087f91);box-shadow:0 9px 24px rgba(70,75,180,.3)}
+#onboardGuideRoot .og-skip{font-size:.76rem}
+#onboardGuideRoot .og-close{width:38px;height:38px;border-radius:12px}
+@media(max-width:640px){#onboardGuideRoot .og-card{width:calc(100vw - 20px);max-height:min(58dvh,520px);padding:16px;border-radius:21px}#onboardGuideRoot .og-title{font-size:1.12rem;line-height:1.48}#onboardGuideRoot .og-text{font-size:.81rem;line-height:1.8}#onboardGuideRoot .og-target{margin-top:12px;padding:10px 11px}#onboardGuideRoot .og-note{font-size:.69rem}#onboardGuideRoot .og-footer{margin:13px -11px -11px;padding:11px}#onboardGuideRoot .og-btn{min-height:44px;padding:9px 12px;font-size:.74rem}}
+@media(max-width:360px){#onboardGuideRoot .og-card{width:calc(100vw - 16px);padding:13px}#onboardGuideRoot .og-title{font-size:1.04rem}#onboardGuideRoot .og-text{font-size:.75rem}#onboardGuideRoot .og-footer{gap:7px}#onboardGuideRoot .og-btn{padding:8px 9px;font-size:.69rem}}
+
 """
 
 TOUR_JS = r"""
 var ONBOARD_DECK = "__DECK__";
 var ONBOARD_PRIMARY_LANGUAGE = ONBOARD_DECK === "fr9" ? "الفرنسية" : "الإنجليزية";
-var ONBOARD_STORAGE_KEY = "anki_" + ONBOARD_DECK + "_onboarded_v2";
-var ONBOARD_SNOOZE_KEY = "anki_" + ONBOARD_DECK + "_onboarding_snoozed_v2";
+var ONBOARD_STORAGE_KEY = "anki_" + ONBOARD_DECK + "_onboarded_v3";
+var ONBOARD_SNOOZE_KEY = "anki_" + ONBOARD_DECK + "_onboarding_snoozed_v3";
 var onboardOpenedBrowser = false;
 var onboardOpenedAudio = false;
 var onboardPositionFrame = 0;
 
 var ONBOARD_STEPS = [
-  {id:"start",label:"البداية",title:"من مكتبة القوالب إلى رزمة Anki — جولة عملية",text:"في دقائق قليلة ستتعرّف إلى طريقة استكشاف التصاميم، وفحص البطاقة، وتحديد ما يناسبك، ثم مراجعة إعدادات الصوت والتصدير. سنشرح الأدوات الحقيقية داخل المعرض؛ ولن نغيّر اختياراتك أو ننشئ ملفاً نيابةً عنك.",target:".hero-cta-main",targetLabel:"زر تصفّح القوالب",note:"يمكنك الانتقال بين المحطات أو إغلاق الجولة في أي وقت. لا تُحفظ اختيارات جديدة إلا عندما تضغط أنت على أدواتها."},
-  {id:"library",label:"المكتبة",title:"ابدأ من مكتبة التصاميم",text:"تضم المكتبة 100 تصميم فعلي. استخدم تصنيفات الألوان لتصفية القوالب، ثم افتح أي بطاقة لتنتقل إلى معاينتها. فتح البطاقة يعرض القالب فقط؛ ولا يضيفه إلى اختيارات الرزمة.",target:"#gbFilters .gb-chip",fallback:"#galleryBrowser .gb-title",targetLabel:"زر تصنيف القوالب",note:"اختر بطاقة من الشبكة لتنتقل تلقائياً إلى محطة المعاينة، أو استخدم «التالي» لتجاوز التجربة."},
-  {id:"preview",label:"المعاينة",title:"افحص البطاقة قبل اعتمادها",text:"راجع الوجه الأمامي والخلفي، وراقب وضوح المفردة ومعناها وتوزيع العناصر. زر القلب يبدّل الوجه المعروض؛ وهذه معاينة للقالب وليست تعديلاً على محتوى الرزمة.",target:"#gvShowAns",fallback:"#gvStage",targetLabel:"زر قلب البطاقة",note:"اضغط زر القلب بنفسك لتجربة الوجه الآخر، أو تابع إلى محطة التحديد."},
-  {id:"selection",label:"اختيار القوالب",title:"كوّن مجموعة القوالب التي تريدها",text:"زر التحديد يضيف القالب الحالي إلى مجموعتك أو يزيله منها. يمكنك جمع أكثر من تصميم، ثم مراجعة العدد والاختيارات قبل التصدير. الجولة لا تحدّد أي قالب نيابةً عنك.",target:"#gvSelectBtn",targetLabel:"زر تحديد القالب",note:"إذا جرّبت التحديد، يمكنك الضغط عليه مرة أخرى لإلغاء الاختيار. تابع عندما تصبح الصورة واضحة."},
-  {id:"audio",label:"الصوت",title:"اضبط النطق كما تريده",text:"اختر صوت الإنجليزية والعربية، واضبط السرعة والنغمة والفواصل. شغّل معاينة النطق عند رغبتك؛ لن نرسل طلباً صوتياً أو نحمّل شيئاً تلقائياً خلال الجولة.",target:"#gTtsPreviewBtn",fallback:"#gAudioPanelBody",targetLabel:"زر معاينة الصوت",note:"تُستخدم إعدادات الصوت التي تعتمدها عند إنشاء الرزمة. يمكنك تخطي الاستماع والمتابعة مباشرة."},
-  {id:"export",label:"مراجعة الرزمة",title:"راجع كل شيء قبل إنشاء الملف",text:"افتح شاشة المراجعة لتفحص اسم الرزمة، والقوالب المحددة، وإعدادات الصوت، والخيارات المتاحة. هذه الشاشة لا تنشئ الملف؛ إنشاء APKG لا يبدأ إلا عندما تضغط زر بدء التصدير بنفسك. وبعد التنزيل، اتبع قسم «كيفية الاستيراد» أسفل الصفحة لإضافته إلى Anki.",target:"#exOpenBtn",targetLabel:"زر مراجعة وتصدير الرزمة",note:"سنفتح شاشة المراجعة فقط. لن نضغط زر بدء التصدير ولن ننشئ ملفاً أثناء الجولة."}
+  {id:"start",label:"نظرة عامة",title:"من اختيار القالب إلى تجهيز رزمة Anki",text:"تضم هذه المكتبة 100 قالب. سنمرّ معاً على طريقة العثور على تصميم، ومعاينة وجهي البطاقة، واختيار ما يناسبك، ثم ضبط الصوت ومراجعة الرزمة. الجولة تشرح الأدوات الفعلية؛ ولا تختار قوالبك أو تنشئ ملفاً نيابةً عنك.",target:".hero-cta-main",targetLabel:"زر استكشاف القوالب",note:"ستبقى اختياراتك بيدك. يمكنك التنقل بين المحطات أو إغلاق الجولة متى شئت."},
+  {id:"library",label:"مكتبة القوالب",title:"اعثر على التصميم من بين 100 قالب",text:"تُفتح المكتبة لتعرض القوالب الفعلية. استخدم التصنيفات لتصفية النتائج، ثم افتح أي بطاقة لمشاهدة معاينتها. فتح القالب لا يضيفه إلى رُزمتك؛ الاختيار يتم بخطوة منفصلة.",target:"#gbFilters .gb-chip",fallback:"#galleryBrowser .gb-title",targetLabel:"تصنيفات القوالب",note:"افتح أي قالب من الشبكة؛ ستنتقل الجولة تلقائياً إلى معاينته. ويمكنك أيضاً المتابعة دون اختيار."},
+  {id:"preview",label:"معاينة البطاقة",title:"افحص الوجهين قبل أن تختار",text:"هذه معاينة للقالب بمحتوى المفردات، وليست صورة ثابتة. جرّب قلب البطاقة، وتحقق من وضوح الكلمة والمعنى وتوزيع العناصر على الوجهين.",target:"#gvShowAns",fallback:"#gvStage",targetLabel:"زر قلب البطاقة",note:"جرّب زر قلب البطاقة في المعاينة أو استخدم زر الجولة أدناه للانتقال بعد التجربة."},
+  {id:"selection",label:"اختيار القوالب",title:"حدّد ما تريد استخدامه في رُزمتك",text:"عندما يناسبك التصميم، اضغط زر التحديد لإضافته إلى اختياراتك. يمكنك تحديد أكثر من قالب، والضغط مرة أخرى لإلغاء أي اختيار. لن تحدد الجولة أي تصميم تلقائياً.",target:"#gvSelectBtn",targetLabel:"زر تحديد القالب",note:"يمكنك تجربة التحديد بنفسك؛ سيظهر عدد القوالب المختارة بعد تنفيذ اختيارك."},
+  {id:"audio",label:"إعداد الصوت",title:"اضبط النطق بالطريقة التي تناسبك",text:"تتيح لك هذه اللوحة اختيار صوت الإنجليزية والعربية، وتعديل السرعة والنغمة والفواصل، ثم تجربة النطق. لا يبدأ تشغيل المعاينة إلا عندما تطلب ذلك.",target:"#gTtsPreviewBtn",fallback:"#gAudioPanelBody",targetLabel:"زر معاينة النطق",note:"إعدادات الصوت التي تعتمدها هنا تُستخدم عند تجهيز الرزمة. يمكنك تخطي الاستماع ومتابعة الجولة."},
+  {id:"export",label:"مراجعة الرزمة",title:"تأكّد من اختياراتك قبل إنشاء الملف",text:"راجع اسم الرزمة، والقوالب التي حددتها، وإعدادات الصوت والخيارات المتاحة. فتح شاشة المراجعة لا ينشئ الملف؛ لا يبدأ إنشاء APKG إلا إذا ضغطت أنت زر بدء التصدير. وبعد التنزيل، ستجد شرح الاستيراد إلى Anki أسفل الصفحة.",target:"#exOpenBtn",targetLabel:"زر مراجعة الرزمة",note:"سنفتح شاشة المراجعة فقط. لن نضغط بدء التصدير ولن ننشئ ملفاً أثناء الجولة."}
 ];
 var onbStep = 0;
 var onboardGuideOpen = false;
@@ -288,12 +312,12 @@ function positionOnboardGuide(){
   }else target=null;
   var rect=target?target.getBoundingClientRect():null;
   path.setAttribute("d",onboardBackdropPath(target,width,height));
-  card.style.width=Math.min(width-24,width<=640?420:430)+"px";
+  card.style.width=Math.min(width-24,width<=640?440:480)+"px";
   card.style.left="12px";
   card.style.top="12px";
   card.style.right="auto";
   card.style.bottom="auto";
-  card.style.maxHeight=Math.min(height*.42,360)+"px";
+  card.style.maxHeight=Math.min(height*.56,520)+"px";
   card.dataset.placement="center";
   var measured=card.getBoundingClientRect();
   if(!rect){
@@ -347,7 +371,7 @@ function renderOnboardStep(){
   var targetLabel = review ? "ملخص إعدادات الرزمة" : step.targetLabel;
   var note = review ? "لم نضغط زر بدء التصدير، ولم يُرسل طلب إنشاء APKG." : step.note;
   var primaryLabel = onbStep === 0 ? "ابدأ الجولة" :
-    onbStep === 1 ? "تجاوز إلى المعاينة" :
+    onbStep === 1 ? "تابع إلى المعاينة" :
     onbStep === 2 ? "جرّب قلب البطاقة" :
     onbStep === 3 ? "انتقل إلى إعدادات الصوت" :
     onbStep === 4 ? "انتقل إلى مراجعة الرزمة" :
@@ -384,7 +408,7 @@ function renderOnboardStep(){
   brand.appendChild(onboardNode("span","og-mark","A"));
   var brandCopy = onboardNode("span","og-brand-copy");
   brandCopy.appendChild(onboardNode("strong","","ANKI DESIGN STUDIO"));
-  brandCopy.appendChild(onboardNode("small","","جولة داخل المعرض • ٦ محطات"));
+  brandCopy.appendChild(onboardNode("small","","جولة عملية • ٦ محطات"));
   brand.appendChild(brandCopy);
   var close = onboardNode("button","og-close","×");
   close.type = "button";
