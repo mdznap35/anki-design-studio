@@ -53,6 +53,8 @@ EXPERIENCE_CSS = r"""
 #gbGrid .gb-ov-b{color:#80c9bd;font-size:.65rem;font-weight:900}
 #gbGrid .gb-sk{position:absolute;inset:0;z-index:0;display:none!important}
 #gbProgress{background:#64b9ad}
+#gv:not(.gx-visible){display:none!important}
+#gv.gx-visible{display:block!important}
 #gvStage{border-radius:20px!important}
 #gvSelectBtn,#exOpenBtn,#gTtsPreviewBtn{min-height:45px!important;border-radius:10px!important;font-weight:850!important}
 @media(max-width:820px){
@@ -61,16 +63,18 @@ EXPERIENCE_CSS = r"""
  #gallery-experience-hero .gx-featured,#gallery-experience-hero .gx-featured iframe{min-height:245px}
 }
 @media(max-width:560px){
- #gallery-experience-hero{margin:14px 0 20px;padding:23px 17px;border-radius:19px}
- #gallery-experience-hero h1{font-size:clamp(1.8rem,8vw,2.4rem)}
- #gallery-experience-hero .gx-description{font-size:.82rem;line-height:1.85}
- #gallery-experience-hero .gx-actions{display:grid;grid-template-columns:1fr;width:100%;margin-top:21px}
- #gallery-experience-hero .gx-action{width:100%;min-height:47px}
- #gallery-experience-hero .gx-showcase{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:auto minmax(205px,auto) auto auto;gap:9px;padding:11px;border-radius:13px}
+ #gallery-experience-hero{margin:12px 0 16px;padding:18px 14px;border-radius:17px;gap:15px}
+ #gallery-experience-hero h1{font-size:clamp(1.65rem,7.2vw,2.1rem);line-height:1.2}
+ #gallery-experience-hero .gx-description{margin-top:10px;font-size:.78rem;line-height:1.65}
+ #gallery-experience-hero .gx-actions{display:grid;grid-template-columns:1fr;width:100%;gap:6px;margin-top:14px}
+ #gallery-experience-hero .gx-action{width:100%;min-height:43px}
+ #gallery-experience-hero .gx-action:not(.primary){min-height:34px;border-color:transparent;background:transparent;color:#b6c9d8}
+ #gallery-experience-hero .gx-showcase{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:auto minmax(170px,auto) auto auto;gap:8px;padding:8px;border-radius:13px}
  #gallery-experience-hero .gx-featured{grid-column:1/-1}
- #gallery-experience-hero .gx-featured,#gallery-experience-hero .gx-featured iframe{min-height:200px}
+ #gallery-experience-hero .gx-featured,#gallery-experience-hero .gx-featured iframe{min-height:170px}
  #gallery-experience-hero .gx-side-previews{grid-column:1/-1;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:none;gap:9px}
- #gallery-experience-hero .gx-mini,#gallery-experience-hero .gx-mini iframe{min-height:112px}
+ #gallery-experience-hero .gx-mini,#gallery-experience-hero .gx-mini iframe{min-height:86px}
+ #gallery-experience-hero .gx-showcase-foot{display:none}
  #gbGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:12px}
  #gbGrid .gb-item{border-radius:10px!important}
  #gbGrid .gb-preview-host{aspect-ratio:4/5}
@@ -79,9 +83,9 @@ EXPERIENCE_CSS = r"""
  .gallery-browser .gb-hint{font-size:.62rem}
 }
 @media(max-width:350px){
- #gallery-experience-hero .gx-showcase{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;padding:9px}
- #gallery-experience-hero .gx-featured,#gallery-experience-hero .gx-featured iframe{min-height:180px}
- #gallery-experience-hero .gx-mini,#gallery-experience-hero .gx-mini iframe{min-height:96px}
+ #gallery-experience-hero .gx-showcase{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;padding:8px}
+ #gallery-experience-hero .gx-featured,#gallery-experience-hero .gx-featured iframe{min-height:150px}
+ #gallery-experience-hero .gx-mini,#gallery-experience-hero .gx-mini iframe{min-height:76px}
  #gallery-experience-hero .gx-showcase-foot{font-size:.56rem}
  #gbGrid{gap:8px;padding:9px}
  #gbGrid .gb-ov{padding:7px 8px;min-height:38px}
@@ -201,9 +205,10 @@ function init(){
  var grid=document.getElementById("gbGrid");
  if(grid)grid.addEventListener("click",function(event){
   var card=event.target.closest(".gb-item");if(!card)return;
+   var preview=document.getElementById("gv");if(preview)preview.classList.add("gx-visible");
   grid.querySelectorAll('.gb-item[data-gx-active="true"]').forEach(function(item){item.removeAttribute("data-gx-active");});
   card.setAttribute("data-gx-active","true");
- });
+ },true);
 }
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});
 else init();
