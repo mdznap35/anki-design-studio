@@ -9,6 +9,7 @@ on:
     paths:
       - "tools/build_galleries.py"
       - "tools/gallery_ux.py"
+      - "tools/gallery_experience.py"
       - "tools/decks/**/templates.json"
       - "index.html"
       - "render.yaml"
@@ -49,7 +50,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Compile gallery builder
-        run: python -m py_compile tools/build_galleries.py tools/gallery_ux.py
+        run: python -m py_compile tools/build_galleries.py tools/gallery_ux.py tools/gallery_experience.py
       - name: Prepare the protected live French Bac page as a read-only build base
         run: |
           set -euo pipefail
@@ -107,6 +108,22 @@ jobs:
               assert "gallery_imgs/" in html, f"{deck}: shared thumbnail directory missing"
               assert all(item.get("fields") for item in designs), f"{deck}: design fields missing"
               assert all(not any(token in (item.get(key) or "") for token in ("{{ExtraRows}}", "{{Extras}}")) for item in designs for key in ("front", "back", "frontRev", "backRev")), f"{deck}: unbound extra-content placeholder remains"
+              assert html.count('id="gallery-experience-v2"') == 1, f"{deck}: v2 design system missing or duplicated"
+              assert html.count('id="gallery-experience-runtime"') == 1, f"{deck}: v2 runtime missing or duplicated"
+              assert html.count('id="gxWelcome"') == 1, f"{deck}: welcome experience missing or duplicated"
+              assert 'hero.id="gallery-experience-hero"' in html, f"{deck}: gallery hero runtime missing"
+              assert 'class="gb-preview-frame"' in html, f"{deck}: live template preview frame is missing"
+              assert "var previewSource=thumbDoc(t)" in html, f"{deck}: real template render is not wired to gallery cards"
+              assert "previewFrame.srcdoc='<!doctype html>'+previewDocument.documentElement.outerHTML" in html, f"{deck}: sanitized preview HTML is not mounted"
+              assert "new DOMParser().parseFromString(previewSource,'text/html')" in html, f"{deck}: preview sanitizer is missing"
+              assert "querySelectorAll('script,iframe,object,embed')" in html, f"{deck}: unsafe preview elements are not removed"
+              assert "var fitPreview=function()" in html, f"{deck}: preview text fitting routine is missing"
+              assert 'class="gx-action primary hero-cta-main"' in html, f"{deck}: branded hero action is missing or not tour-compatible"
+              assert "originalHero.remove()" in html, f"{deck}: duplicate legacy hero was not removed"
+              assert "window.openGalleryBrowser" in html, f"{deck}: hero/welcome browser entry action is not wired"
+              assert 'document.querySelector("#sec-gal .hero")' in html, f"{deck}: gallery hero is not anchored in the main page section"
+              assert "window.openGalleryWelcome" in html and "window.hasSeenGalleryWelcome" in html, f"{deck}: welcome controls are not wired"
+              assert "setTimeout(function(){if(window.openGalleryWelcome)" in html, f"{deck}: first-visit welcome trigger is missing"
               print(f"PASS {deck}: 100 designs, deck-bound fields, shared thumbnails")
 
           print(f"PASS shared thumbnails: {len(image_files)}")
@@ -446,13 +463,17 @@ jobs:
                   });
                   const page = await context.newPage();
                   const pageErrors = [];
+                  const blockedPreviewScripts = [];
                   let downloads = 0;
                   page.on("pageerror", error => {
                     pageErrors.push(error.message);
                     console.error("BROWSER PAGE ERROR " + deck + "/" + viewport.name + ": " + error.message);
                   });
                   page.on("console", message => {
-                    if (message.type() === "error") console.error("BROWSER CONSOLE ERROR " + deck + "/" + viewport.name + ": " + message.text());
+                    if (message.type() === "error") {
+                      console.error("BROWSER CONSOLE ERROR " + deck + "/" + viewport.name + ": " + message.text());
+                      if (message.text().includes("Blocked script execution in 'about:srcdoc'")) blockedPreviewScripts.push(message.text());
+                    }
                   });
                   page.on("download", () => downloads++);
                   // The static preview server intentionally has no backend API.
@@ -489,6 +510,20 @@ jobs:
                   }, previewCase);
                   assert.equal(previewActual, previewCase.expected, deck + ": real browser preview sample substitution failed");
                   assert(!/\\{\\{[^}]+\\}\\}/.test(previewActual), deck + ": preview retained an unresolved field placeholder");
+                  await page.waitForSelector("#gxWelcome:not([hidden])", { timeout: 20000 });
+                  const welcomeMetrics = await page.locator('#gxWelcome .gx-dialog').evaluate(element => {
+                    const rect = element.getBoundingClientRect();
+                    return { width: rect.width, height: rect.height, left: rect.left, top: rect.top, right: rect.right, bottom: rect.bottom };
+                  });
+                  assert(welcomeMetrics.width > 0 && welcomeMetrics.height > 0, deck + "/" + viewport.name + ": welcome experience did not render");
+                  assert(welcomeMetrics.left >= -1 && welcomeMetrics.right <= viewport.width + 1, deck + "/" + viewport.name + ": welcome exceeds horizontal viewport");
+                  assert(welcomeMetrics.top >= -1 && welcomeMetrics.bottom <= viewport.height + 1, deck + "/" + viewport.name + ": welcome exceeds vertical viewport");
+                  assert.equal(await page.locator("#gallery-experience-hero").count(), 1, deck + ": gallery hero is missing");
+                  assert.equal(await page.locator("#gallery-experience-hero").evaluate(element => element.closest("#galleryBrowser") === null), true, deck + "/" + viewport.name + ": gallery hero was inserted inside the template browser");
+                  assert.equal(await page.locator("#gallery-experience-hero .hero-cta-main").count(), 1, deck + ": hero browse action is missing");
+                  assert.equal(await page.locator("#sec-gal .hero").count(), 0, deck + ": duplicate legacy gallery hero remains");
+                  await page.screenshot({ path: "qa-artifacts/" + deck + "-" + viewport.name + "-welcome.png", fullPage: false });
+                  await page.locator("#gxWelcomeStart").click();
                   try {
                     await page.waitForSelector("#onboardGuideRoot .og-card", { timeout: 20000 });
                   } catch (error) {
@@ -527,6 +562,29 @@ jobs:
                   if (viewport.exerciseControls) {
                     await page.locator('[data-guide-step="1"]').click();
                     await waitForStep(page, 1);
+                    const firstFrame = page.locator("#gbGrid .gb-preview-frame").first();
+                    await firstFrame.waitFor({ state: "attached", timeout: 10000 });
+                    await page.waitForFunction(() => {
+                      const frame = document.querySelector("#gbGrid .gb-preview-frame");
+                      const body = frame && frame.contentDocument && frame.contentDocument.body;
+                      return !!(body && (body.children.length > 0 || (body.textContent || "").trim().length > 0));
+                    }, null, { timeout: 15000 });
+                    const frameText = await firstFrame.evaluate(frame => frame.contentDocument.body.textContent || "");
+                    assert(frameText.includes(previewCase.sample.f), deck + ": gallery thumbnail does not show its deck-specific sample word");
+                    const frameAudit = await firstFrame.evaluate(frame => {
+                      const doc = frame.contentDocument;
+                      const nodes = Array.from(doc.querySelectorAll("*"));
+                      const word = nodes.find(node => node.textContent.trim().length > 0 && /fitme|ds-word|word|frword|arword/.test(node.className && String(node.className)));
+                      return {
+                        scripts: doc.querySelectorAll("script").length,
+                        inlineHandlers: nodes.reduce((count, node) => count + Array.from(node.attributes).filter(attribute => /^on/i.test(attribute.name)).length, 0),
+                        wordWidth: word ? word.scrollWidth : 0,
+                        parentWidth: word && word.parentElement ? word.parentElement.clientWidth : 0
+                      };
+                    });
+                    assert.equal(frameAudit.scripts, 0, deck + ": scripts remain inside sandboxed card preview");
+                    assert.equal(frameAudit.inlineHandlers, 0, deck + ": inline event handlers remain inside card preview");
+                    if (frameAudit.wordWidth > 0) assert(frameAudit.wordWidth <= frameAudit.parentWidth - 14, deck + ": preview sample word still overflows its card slot");
                     await page.locator("#gbGrid .gb-item").first().click({ timeout: 10000 });
                     await page.waitForFunction(() => window.onbStep === 2, null, { timeout: 10000 });
                     await waitForStep(page, 2);
@@ -564,6 +622,8 @@ jobs:
                     assert.equal(snoozed.snoozed, "1", deck + ": Later did not persist the session snooze");
 
                     await page.locator("#onboardTourLauncher").click();
+                    await page.waitForSelector("#gxWelcome:not([hidden])");
+                    await page.locator("#gxWelcomeStart").click();
                     await page.waitForSelector("#onboardGuideRoot .og-card");
                     await page.locator('[data-guide-step="5"]').click();
                     await waitForStep(page, 5);
@@ -579,9 +639,30 @@ jobs:
                     }), "anki_" + deck + "_onboarded");
                     assert.equal(completed.completed, "1", deck + ": final completion was not persisted");
                     assert.equal(completed.snoozed, null, deck + ": completion did not clear the snooze");
+                    await page.locator("#exportOverlay .fs-close").click();
+                    await page.waitForFunction(() => {
+                      const overlay = document.getElementById("exportOverlay");
+                      return !overlay || !overlay.classList.contains("on");
+                    }, null, { timeout: 10000 });
+
+                    await page.locator("#gallery-experience-hero [data-gx-browse]").click();
+                    await page.waitForFunction(() => {
+                      const browser = document.getElementById("galleryBrowser");
+                      return browser && browser.classList.contains("open");
+                    }, null, { timeout: 10000 });
+                    await page.locator("#galleryBrowser .gb-close").click();
+                    await page.locator("#onboardTourLauncher").click();
+                    await page.waitForSelector("#gxWelcome:not([hidden])");
+                    await page.locator("#gxWelcomeExplore").click();
+                    await page.waitForFunction(() => {
+                      const browser = document.getElementById("galleryBrowser");
+                      return browser && browser.classList.contains("open");
+                    }, null, { timeout: 10000 });
+                    await page.locator("#galleryBrowser .gb-close").click();
                   }
 
                   assert.deepEqual(pageErrors, [], deck + "/" + viewport.name + ": uncaught browser errors: " + pageErrors.join(" | "));
+                  assert.deepEqual(blockedPreviewScripts, [], deck + "/" + viewport.name + ": sandboxed preview attempted to execute scripts");
                   assert.equal(downloads, 0, deck + "/" + viewport.name + ": onboarding unexpectedly initiated a download");
                   report.decks[deck][viewport.name] = { steps, pageErrors, downloads };
                   await context.close();
