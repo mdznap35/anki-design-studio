@@ -598,7 +598,7 @@ jobs:
               assert.equal(openingCopy.heroWord, openingCase.word, deck + ": hero sample word does not match the deck");
               assert.equal(openingCopy.heroMeaning, openingCase.meaning, deck + ": hero sample meaning does not match the deck");
               assert.equal(openingCopy.pointCount, 3, deck + ": opening must explain the three core user actions");
-              assert.equal(openingCopy.startLabel, "ابدأ الجولة التفاعلية ←", deck + ": guided tour action label is unclear");
+              assert.equal(openingCopy.startLabel, "ابدأ الجولة العملية ←", deck + ": guided tour action label is unclear");
               assert.equal(openingCopy.exploreLabel, "تصفّح القوالب", deck + ": direct gallery action label is unclear");
               assert.equal(openingCopy.focusId, "gxWelcomeStart", deck + ": opening does not place focus on the primary action");
               await page.locator("#gxWelcomeFlip").click();
