@@ -413,7 +413,10 @@ WELCOME_MARKUP = r"""
     </div>
   </section>
 </div>
-"""EXPERIENCE_JS = r"""
+"""
+
+
+EXPERIENCE_JS = r"""
 (function(){
   "use strict";
   var deck="__DECK__";
