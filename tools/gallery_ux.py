@@ -560,7 +560,7 @@ function renderOnboardStep(){
     var button=onboardNode("button",index<onbStep?"done":(index===onbStep?"current":""));
     button.type="button";button.setAttribute("data-guide-step",String(index));
     button.setAttribute("aria-label","الانتقال إلى المرحلة "+(index+1)+": "+item.label);
-    button.setAttribute("aria-current",index===onbStep?"step":"false");
+    button.setAttribute("aria-current",index === onbStep ? "step" : "false");
     button.appendChild(onboardNode("span","og-progress-index",String(index+1).padStart(2,"0")));
     button.appendChild(onboardNode("span","og-progress-name",item.label));
     progress.appendChild(button);
@@ -584,7 +584,7 @@ function renderOnboardStep(){
   taskCopy.appendChild(onboardNode("strong","",targetLabel));
   task.appendChild(taskCopy);content.appendChild(task);
 
-  var status=onboardNode("p","og-note",note);status.id="onboardGuideNote";
+  var status=onboardNode("p","og-note",note);status.id = "onboardGuideNote";
   status.setAttribute("role","status");status.setAttribute("aria-live","polite");
   content.appendChild(status);card.appendChild(content);
 
