@@ -105,8 +105,8 @@ jobs:
               assert len(designs) == 100, f"{deck}: expected 100 designs, found {len(designs)}"
               expected_nav = (
                   '<a class="hdr-link" href="/en9">إنجليزي 9</a>',
-                  '<a class="hdr-link" href="/enlit">أدب إنجليزي 12</a>',
-                  '<a class="hdr-link" href="/ensci">إنجليزي علمي 12</a>',
+                  '<a class="hdr-link" href="/enlit">إنجليزي بكالوريا أدبي 12</a>',
+                  '<a class="hdr-link" href="/ensci">إنجليزي بكالوريا علمي 12</a>',
                   '<a class="hdr-link" href="/fr9">فرنسي 9</a>',
                   '<a class="hdr-link" href="/bac12">فرنسي بكالوريا 12</a>',
               )
@@ -158,13 +158,13 @@ jobs:
           const samples = {
             en9: { f: "Student", a: "طالب", p: "", s: "", c: "", dossier: "", page: "", pos: "NOUN", poslabel: "اسم", unit: "Unit 01", unitnum: "01" },
             enlit: { f: "Novel", a: "رواية", p: "", s: "", c: "", dossier: "", page: "", pos: "", poslabel: "", unit: "Unit 01 - Future Careers", unitnum: "" },
-            ensci: { f: "Atom", a: "ذرة", p: "", s: "", c: "", dossier: "", page: "", pos: "", poslabel: "", unit: "Unit 01 - A Learned Lesson is a Good Lesson", unitnum: "" },
+            ensci: { f: "Energy", a: "طاقة", p: "", s: "", c: "", dossier: "", page: "", pos: "", poslabel: "", unit: "Unit 01 - A Learned Lesson is a Good Lesson", unitnum: "" },
             fr9: { f: "Leçon", a: "درس", p: "", s: "", c: "", dossier: "Dossier 1", page: "", pos: "", poslabel: "", unit: "", unitnum: "" },
           };
           const cases = {
             en9: ["{{Word}}|{{Meaning}}|{{POS}}|{{POSLabel}}|{{Unit}}|{{UnitNum}}|{{AudioEN}}", "Student|طالب|NOUN|اسم|Unit 01|01|"],
             enlit: ["{{#English}}<b>{{English}}</b>{{/English}}|{{Arabic}}|{{UnitText}}|{{AudioEN}}", "<b>Novel</b>|رواية|Unit 01 - Future Careers|"],
-            ensci: ["{{English}}|{{Arabic}}|{{UnitText}}|{{AudioEN}}", "Atom|ذرة|Unit 01 - A Learned Lesson is a Good Lesson|"],
+            ensci: ["{{English}}|{{Arabic}}|{{UnitText}}|{{AudioEN}}", "Energy|طاقة|Unit 01 - A Learned Lesson is a Good Lesson|"],
             fr9: ["{{Français}}|{{Arabic}}|{{Dossier}}|{{AudioFR}}", "Leçon|درس|Dossier 1|"],
           };
 
@@ -252,7 +252,8 @@ jobs:
               assert 'setAttribute("class","og-backdrop")' in tour_source and 'setAttribute("fill-rule","evenodd")' in tour_source and 'setAttribute("id","ogBackdropPath")' in tour_source, f"{deck}: SVG spotlight aperture is missing"
               assert "onboardBackdropPath(target,width,height)" in tour_source and "scheduleOnboardPosition" in tour_source, f"{deck}: adaptive spotlight geometry is missing"
               assert 'backdrop.setAttribute("viewBox","0 0 " + width + " " + height);' in tour_source, f"{deck}: SVG spotlight coordinates are not scaled to the viewport"
-              assert 'data-placement="below"' in tour_source or 'dataset.placement = placeBelow ? "below" : "above"' in tour_source, f"{deck}: contextual coachmark placement is missing"
+              assert "var candidates=[" in tour_source and "candidateScore=overlap*1000000" in tour_source and "card.dataset.placement=best.name" in tour_source, f"{deck}: collision-aware coachmark placement is missing"
+              assert "var fixedOverlay=target.closest(\".gallery-browser,.help-overlay,.onboard-overlay\")" in tour_source and "targetOutsideViewport=before.top<0||before.bottom>height" in tour_source, f"{deck}: tour must not scroll fixed overlays or repeatedly scroll visible targets"
               assert "pointer-events:none" in html and "pointer-events:auto" in html, f"{deck}: coachmark should not block the gallery"
               assert 'setAttribute("data-guide-action","later")' in tour_source and 'function closeOnboarding(completed)' in tour_source and 'ONBOARD_SNOOZE_KEY' in tour_source and 'sessionStorage.setItem' in tour_source and 'closeOnboarding(false)' in tour_source, f"{deck}: dismissing onboarding must defer rather than falsely complete it"
               assert "onboardOpenedBrowser" in tour_source and "onboardOpenedAudio" in tour_source, f"{deck}: onboarding must restore only panels it opened"
@@ -405,27 +406,54 @@ jobs:
           const previewCases = {
             en9: { sample: {f:"Student",a:"طالب",p:"",s:"",c:"",dossier:"",page:"",pos:"NOUN",poslabel:"اسم",poscolor:"",unit:"Unit 01",unitnum:"01",type:"",typeCode:""}, template:"{{Word}}|{{Meaning}}|{{POS}}|{{POSLabel}}|{{Unit}}|{{UnitNum}}|{{AudioEN}}", expected:"Student|طالب|NOUN|اسم|Unit 01|01|" },
             enlit: { sample: {f:"Novel",a:"رواية",p:"",s:"",c:"",dossier:"",page:"",pos:"",poslabel:"",poscolor:"",unit:"Unit 01 - Future Careers",unitnum:"",type:"",typeCode:""}, template:"{{#English}}<b>{{English}}</b>{{/English}}|{{Arabic}}|{{UnitText}}|{{AudioEN}}", expected:"<b>Novel</b>|رواية|Unit 01 - Future Careers|" },
-            ensci: { sample: {f:"Atom",a:"ذرة",p:"",s:"",c:"",dossier:"",page:"",pos:"",poslabel:"",poscolor:"",unit:"Unit 01 - A Learned Lesson is a Good Lesson",unitnum:"",type:"",typeCode:""}, template:"{{English}}|{{Arabic}}|{{UnitText}}|{{AudioEN}}", expected:"Atom|ذرة|Unit 01 - A Learned Lesson is a Good Lesson|" },
+            ensci: { sample: {f:"Energy",a:"طاقة",p:"",s:"",c:"",dossier:"",page:"",pos:"",poslabel:"",poscolor:"",unit:"Unit 01 - A Learned Lesson is a Good Lesson",unitnum:"",type:"",typeCode:""}, template:"{{English}}|{{Arabic}}|{{UnitText}}|{{AudioEN}}", expected:"Energy|طاقة|Unit 01 - A Learned Lesson is a Good Lesson|" },
             fr9: { sample: {f:"Leçon",a:"درس",p:"",s:"",c:"",dossier:"Dossier 1",page:"",pos:"",poslabel:"",poscolor:"",unit:"",unitnum:"",type:"",typeCode:""}, template:"{{Français}}|{{Arabic}}|{{Dossier}}|{{AudioFR}}", expected:"Leçon|درس|Dossier 1|" },
           };
 
           const openingCases = {
-            fr9: { label:"الفرنسية · الصف التاسع", title:"اكتشف القالب الأنسب لمفردات الفرنسية", welcomeTitle:"اجعل مراجعة الفرنسية أوضح، بدءاً من القالب المناسب.", word:"Leçon", meaning:"درس" },
-            en9: { label:"الإنجليزية · الصف التاسع", title:"اختر طريقة العرض المناسبة لمفردات الإنجليزية", welcomeTitle:"اختر قالباً يجعل مراجعة مفردات الإنجليزية أكثر وضوحاً.", word:"Student", meaning:"طالب" },
-            enlit: { label:"الأدب الإنجليزي · البكالوريا", title:"اعثر على قالب يبرز مفردات الأدب الإنجليزي بوضوح", welcomeTitle:"نظّم مفردات الأدب الإنجليزي بالطريقة التي تناسب مراجعتك.", word:"Novel", meaning:"رواية" },
-            ensci: { label:"الإنجليزية العلمية · البكالوريا", title:"اختر قالباً يوضح المصطلح العلمي ومعناه", welcomeTitle:"امنح المصطلحات العلمية عرضاً واضحاً وسهل المراجعة.", word:"Achievement", meaning:"إنجاز" }
+            fr9: { label:"اللغة الفرنسية · الصف التاسع", title:"اكتشف القالب الأنسب لمفردات الفرنسية", welcomeTitle:"اجعل مراجعة الفرنسية أوضح، بدءاً من القالب المناسب.", word:"Leçon", meaning:"درس" },
+            en9: { label:"اللغة الإنجليزية · الصف التاسع", title:"اختر طريقة العرض المناسبة لمفردات الإنجليزية", welcomeTitle:"اختر قالباً يجعل مراجعة مفردات الإنجليزية أكثر وضوحاً.", word:"Student", meaning:"طالب" },
+            enlit: { label:"اللغة الإنجليزية · بكالوريا أدبي 12", title:"اختر تصميم Anki المناسب لمفردات الإنجليزية — بكالوريا أدبي 12", welcomeTitle:"اختر شكل البطاقة التي ستراجع بها مفردات الإنجليزية.", word:"Novel", meaning:"رواية" },
+            ensci: { label:"اللغة الإنجليزية · بكالوريا علمي 12", title:"اختر تصميم Anki المناسب لمفردات الإنجليزية — بكالوريا علمي 12", welcomeTitle:"اجعل مراجعة مفردات الإنجليزية أوضح وأسهل.", word:"Energy", meaning:"طاقة" }
           };
 
           async function waitForStep(page, index) {
-            await page.waitForFunction((expected) => {
-              const button = document.querySelector(
-                '#onboardGuideRoot .og-progress button[aria-current="step"]'
-              );
-              const target = document.querySelector(".og-spotlight");
-              if (!button || Number(button.getAttribute("data-guide-step")) !== expected || !target) return false;
-              const rect = target.getBoundingClientRect();
-              return rect.width > 0 && rect.height > 0;
-            }, index, { timeout: 10000 });
+            try {
+              await page.waitForFunction((expected) => {
+                const button = document.querySelector(
+                  '#onboardGuideRoot .og-progress button[aria-current="step"]'
+                );
+                const target = document.querySelector(".og-spotlight");
+                if (!button || Number(button.getAttribute("data-guide-step")) !== expected || !target) return false;
+                const rect = target.getBoundingClientRect();
+                return rect.width > 0 && rect.height > 0;
+              }, index, { timeout: 10000 });
+            } catch (error) {
+              const diagnostics = await page.evaluate(() => {
+                const rect = selector => {
+                  const node = document.querySelector(selector);
+                  if (!node) return null;
+                  const r = node.getBoundingClientRect(), s = getComputedStyle(node);
+                  return {x:r.x,y:r.y,width:r.width,height:r.height,display:s.display,visibility:s.visibility};
+                };
+                const current = document.querySelector('#onboardGuideRoot .og-progress button[aria-current="step"]');
+                const candidate = window.onboardStepTarget && window.ONBOARD_STEPS ? window.onboardStepTarget(window.ONBOARD_STEPS[window.onbStep]) : null;
+                return {
+                  step: window.onbStep,
+                  guideOpen: window.onboardGuideOpen,
+                  currentStep: current && current.getAttribute("data-guide-step"),
+                  browserClass: document.getElementById("galleryBrowser") && document.getElementById("galleryBrowser").className,
+                  browser: rect("#galleryBrowser"),
+                  browserHead: rect("#galleryBrowser .gb-head"),
+                  filters: rect("#gbFilters"),
+                  gridCount: document.querySelectorAll("#gbGrid .gb-item").length,
+                  candidate: candidate && {id:candidate.id,className:candidate.className,rect:(()=>{const r=candidate.getBoundingClientRect();return{x:r.x,y:r.y,width:r.width,height:r.height}})()},
+                  spotlightCount: document.querySelectorAll(".og-spotlight").length,
+                  card: rect("#onboardGuideRoot .og-card")
+                };
+              });
+              throw new Error("waitForStep(" + index + ") failed: " + JSON.stringify(diagnostics) + "; " + error.message);
+            }
           }
 
           async function inspectStep(page, deck, viewport, index) {
@@ -463,7 +491,7 @@ jobs:
             assert.equal(state.viewBox, "0 0 " + viewport.width + " " + viewport.height, deck + "/" + viewport.name + ": spotlight SVG viewBox does not match viewport");
             assert(state.path && state.path.startsWith("M0 0H"), deck + "/" + viewport.name + ": spotlight aperture path is empty");
             assert(state.documentWidth <= viewport.width + 1, deck + "/" + viewport.name + ": horizontal page overflow detected (" + state.documentWidth + "px)");
-            const separated = state.card.bottom <= state.target.top + 2 || state.card.top >= state.target.bottom - 2;
+            const separated = state.card.bottom <= state.target.top + 2 || state.card.top >= state.target.bottom - 2 || state.card.right <= state.target.left + 2 || state.card.left >= state.target.right - 2;
             assert(separated, deck + "/" + viewport.name + ": coachmark overlaps its highlighted control at step " + (index + 1));
             return state;
           }
@@ -674,7 +702,7 @@ jobs:
                     const snoozed = await page.evaluate((key) => ({
                       completed: localStorage.getItem(key),
                       snoozed: sessionStorage.getItem(key.replace("_onboarded", "_onboarding_snoozed"))
-                    }), "anki_" + deck + "_onboarded");
+                    }), "anki_" + deck + "_onboarded_v2");
                     assert.equal(snoozed.completed, null, deck + ": Later incorrectly marked the tour completed");
                     assert.equal(snoozed.snoozed, "1", deck + ": Later did not persist the session snooze");
 
@@ -693,7 +721,7 @@ jobs:
                     const completed = await page.evaluate((key) => ({
                       completed: localStorage.getItem(key),
                       snoozed: sessionStorage.getItem(key.replace("_onboarded", "_onboarding_snoozed"))
-                    }), "anki_" + deck + "_onboarded");
+                    }), "anki_" + deck + "_onboarded_v2");
                     assert.equal(completed.completed, "1", deck + ": final completion was not persisted");
                     assert.equal(completed.snoozed, null, deck + ": completion did not clear the snooze");
                     await page.locator("#exportOverlay .fs-close").click();

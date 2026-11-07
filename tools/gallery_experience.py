@@ -392,15 +392,15 @@ WELCOME_MARKUP = r"""
       <h2 id="gxWelcomeTitle" data-gx-welcome-title>اختر التصميم الذي يناسب طريقة دراستك.</h2>
       <p class="gx-lead" id="gxWelcomeLead" data-gx-welcome-lead>يضم هذا المعرض 100 قالب. استكشف التصاميم، وعاين تفاصيل البطاقة، ثم اختر ما يناسبك وراجع اختياراتك قبل إنشاء الرزمة.</p>
       <div class="gx-points" aria-label="مراحل اختيار القالب">
-        <div class="gx-point"><span class="gx-point-no">01</span><div class="gx-point-copy"><strong>اكتشف</strong><span>استخدم البحث والتصفية للوصول إلى التصاميم المناسبة.</span></div></div>
-        <div class="gx-point"><span class="gx-point-no">02</span><div class="gx-point-copy"><strong>عاين</strong><span>افحص شكل البطاقة ومحتواها قبل اعتماد القالب.</span></div></div>
-        <div class="gx-point"><span class="gx-point-no">03</span><div class="gx-point-copy"><strong>اختر</strong><span>اجمع تصاميمك وراجعها قبل إنشاء الرزمة.</span></div></div>
+        <div class="gx-point"><span class="gx-point-no">01</span><div class="gx-point-copy"><strong>استكشف 100 تصميماً</strong><span>ابحث وصفِّ القوالب حتى تصل إلى ما يناسبك.</span></div></div>
+        <div class="gx-point"><span class="gx-point-no">02</span><div class="gx-point-copy"><strong>عاين الوجهين</strong><span>افحص شكل البطاقة قبل اعتماد أي تصميم.</span></div></div>
+        <div class="gx-point"><span class="gx-point-no">03</span><div class="gx-point-copy"><strong>حدّد ثم راجع</strong><span>اختر قوالبك، واضبط الصوت، وراجع الرزمة قبل إنشائها.</span></div></div>
       </div>
       <div class="gx-actions">
         <button class="gx-button primary" id="gxWelcomeStart" type="button">ابدأ الجولة التفاعلية <span aria-hidden="true">←</span></button>
         <button class="gx-button" id="gxWelcomeExplore" type="button">تصفّح القوالب</button>
       </div>
-      <div class="gx-small">كل اختيار بيدك. لا يتم اعتماد قالب أو إنشاء ملف تلقائياً، ويمكنك فتح هذه المقدمة مجدداً من زر الجولة.</div>
+      <div class="gx-small">تصفّح بحرية. لا يُحدَّد أي قالب ولا تُنشأ أي رزمة تلقائياً؛ كل خطوة تنفيذية تبدأ باختيارك.</div>
     </div>
     <div class="gx-stage" aria-hidden="true">
       <div class="gx-orbit"></div>
@@ -409,7 +409,7 @@ WELCOME_MARKUP = r"""
         <div class="gx-card mid"><div class="gx-card-top"><span>الخطوة الثانية</span><span>02</span></div><div class="gx-card-word">عاين</div><div class="gx-card-lines"><span></span><span></span><span></span></div></div>
         <div class="gx-card front gx-card-sample"><div class="gx-card-top"><span>عينة من المحتوى</span><span>03</span></div><div class="gx-card-word" data-gx-sample-word>Student</div><div class="gx-card-meaning"><span>المعنى</span><strong data-gx-sample-meaning>طالب</strong></div></div>
       </div>
-      <div class="gx-stage-label">عينة مفردة من المادة · اختر قالباً لمعاينة تصميمه الفعلي</div>
+      <div class="gx-stage-label">مثال توضيحي · عاين القالب بمحتوى الرزمة الفعلي</div>
     </div>
   </section>
 </div>
@@ -422,7 +422,7 @@ EXPERIENCE_JS = r"""
   var deck="__DECK__";
   var profiles={
     fr9:{
-      label:"الفرنسية · الصف التاسع",
+      label:"اللغة الفرنسية · الصف التاسع",
       title:"اكتشف القالب الأنسب لمفردات الفرنسية",
       description:"تصفّح 100 قالب، وعاين طريقة عرض الكلمة ومعناها، ثم اختر التصاميم التي تريدها في رُزمتك.",
       welcomeTitle:"اجعل مراجعة الفرنسية أوضح، بدءاً من القالب المناسب.",
@@ -431,7 +431,7 @@ EXPERIENCE_JS = r"""
       sampleMeaning:"درس"
     },
     en9:{
-      label:"الإنجليزية · الصف التاسع",
+      label:"اللغة الإنجليزية · الصف التاسع",
       title:"اختر طريقة العرض المناسبة لمفردات الإنجليزية",
       description:"تصفّح 100 قالب لمفردات الإنجليزية، وقارن وضوح الكلمة والمعنى، ثم اختر التصاميم التي تناسبك.",
       welcomeTitle:"اختر قالباً يجعل مراجعة مفردات الإنجليزية أكثر وضوحاً.",
@@ -440,26 +440,26 @@ EXPERIENCE_JS = r"""
       sampleMeaning:"طالب"
     },
     enlit:{
-      label:"الأدب الإنجليزي · البكالوريا",
-      title:"اعثر على قالب يبرز مفردات الأدب الإنجليزي بوضوح",
-      description:"استكشف 100 قالب لمفردات الأدب الإنجليزي، وعاين طريقة عرض المفردة ومعناها قبل اعتماد التصميم.",
-      welcomeTitle:"نظّم مفردات الأدب الإنجليزي بالطريقة التي تناسب مراجعتك.",
-      welcomeLead:"يضم معرض الأدب الإنجليزي للبكالوريا 100 قالب. استكشف التصاميم، وعاين تفاصيل البطاقة، ثم اعتمد ما يناسبك وراجع اختياراتك قبل إنشاء الرزمة.",
+      label:"اللغة الإنجليزية · بكالوريا أدبي 12",
+      title:"اختر تصميم Anki المناسب لمفردات الإنجليزية — بكالوريا أدبي 12",
+      description:"100 تصميم لبطاقات مفردات اللغة الإنجليزية المخصّصة لبكالوريا أدبي 12. قارن وضوح الكلمة ومعناها، وافحص القالب قبل اعتماده.",
+      welcomeTitle:"اختر شكل البطاقة التي ستراجع بها مفردات الإنجليزية.",
+      welcomeLead:"هذا المعرض مخصّص للغة الإنجليزية — بكالوريا أدبي 12. أمامك 100 قالب؛ افتح أي قالب لمعاينة وجهَي البطاقة، ثم حدّد ما يناسبك وراجع إعداداتك قبل إنشاء الرزمة.",
       sampleWord:"Novel",
       sampleMeaning:"رواية"
     },
     ensci:{
-      label:"الإنجليزية العلمية · البكالوريا",
-      title:"اختر قالباً يوضح المصطلح العلمي ومعناه",
-      description:"تصفّح 100 قالب للإنجليزية العلمية، وافحص طريقة عرض المصطلح ومعناه، ثم اختر التصميم الأنسب لمراجعتك.",
-      welcomeTitle:"امنح المصطلحات العلمية عرضاً واضحاً وسهل المراجعة.",
-      welcomeLead:"يضم معرض الإنجليزية العلمية للبكالوريا 100 قالب. استكشف التصاميم، وعاين تفاصيل البطاقة، ثم اعتمد ما يناسبك وراجع اختياراتك قبل إنشاء الرزمة.",
-      sampleWord:"Achievement",
-      sampleMeaning:"إنجاز"
+      label:"اللغة الإنجليزية · بكالوريا علمي 12",
+      title:"اختر تصميم Anki المناسب لمفردات الإنجليزية — بكالوريا علمي 12",
+      description:"100 تصميم لبطاقات مفردات اللغة الإنجليزية المخصّصة لبكالوريا علمي 12. قارن وضوح الكلمة ومعناها، وافحص القالب قبل اعتماده.",
+      welcomeTitle:"اجعل مراجعة مفردات الإنجليزية أوضح وأسهل.",
+      welcomeLead:"هذا المعرض مخصّص للغة الإنجليزية — بكالوريا علمي 12. أمامك 100 قالب؛ افتح أي قالب لمعاينة وجهَي البطاقة، ثم حدّد ما يناسبك وراجع إعداداتك قبل إنشاء الرزمة.",
+      sampleWord:"Energy",
+      sampleMeaning:"طاقة"
     }
   };
   var profile=profiles[deck]||profiles.en9;
-  var welcomeKey="anki_"+deck+"_welcome_seen";
+  var welcomeKey="anki_"+deck+"_welcome_seen_v2";
   var previousFocus=null;
   var welcomeOpen=false;
 
@@ -511,9 +511,9 @@ EXPERIENCE_JS = r"""
             '<button type="button" class="gx-action" data-gx-welcome>استكشف طريقة العمل</button>'+
           '</div>'+
           '<div class="gx-metrics" aria-label="مزايا المعرض">'+
-            '<div class="gx-metric"><strong>100</strong><span>قالب في هذا المعرض</span></div>'+
-            '<div class="gx-metric"><strong>عاين أولاً</strong><span>قبل اعتماد التصميم</span></div>'+
-            '<div class="gx-metric"><strong>أنت تختار</strong><span>لا اختيار أو تصدير تلقائي</span></div>'+
+            '<div class="gx-metric"><strong>100 تصميم</strong><span>في مكتبة هذا المعرض</span></div>'+
+            '<div class="gx-metric"><strong>معاينة فعلية</strong><span>قبل اعتماد القالب</span></div>'+
+            '<div class="gx-metric"><strong>قرارك أنت</strong><span>لا تحديد ولا تصدير تلقائي</span></div>'+
           '</div>'+
         '</div>'+
         '<div class="gx-art" aria-hidden="true">'+

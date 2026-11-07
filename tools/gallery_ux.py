@@ -74,24 +74,74 @@ body .og-spotlight{position:relative!important;z-index:2147482998!important;outl
 @media(prefers-reduced-motion:reduce){
 #onboardGuideRoot *,#onboardGuideRoot *:before,#onboardGuideRoot *:after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
 }
+
+
+/* Guided tour v2: compact coachmark with collision-aware placement. */
+#onboardGuideRoot .og-card{
+  width:min(430px,calc(100vw - 24px));max-height:min(42dvh,360px);
+  padding:clamp(15px,2vw,20px);border:1px solid rgba(151,174,226,.34);
+  border-radius:22px;background:
+    radial-gradient(ellipse at 100% 0,rgba(111,98,239,.17),transparent 48%),
+    linear-gradient(150deg,rgba(18,28,51,.99),rgba(7,13,27,.995));
+  box-shadow:0 28px 84px rgba(0,0,0,.58),0 0 0 1px rgba(255,255,255,.045) inset;
+}
+#onboardGuideRoot .og-card:after{display:none!important}
+#onboardGuideRoot .og-head{margin-bottom:12px}
+#onboardGuideRoot .og-mark{width:36px;height:36px;border-radius:12px}
+#onboardGuideRoot .og-progress{gap:7px;margin-bottom:12px}
+#onboardGuideRoot .og-progress button{padding:5px 0}
+#onboardGuideRoot .og-progress button span{height:6px}
+#onboardGuideRoot .og-meta{margin-bottom:7px}
+#onboardGuideRoot .og-step-label{font-size:.76rem}
+#onboardGuideRoot .og-count{font-size:.7rem}
+#onboardGuideRoot .og-title{font-size:clamp(1.08rem,2vw,1.34rem);line-height:1.48;margin-bottom:8px}
+#onboardGuideRoot .og-text{font-size:.81rem;line-height:1.78;color:#d5deef}
+#onboardGuideRoot .og-target{margin-top:11px;padding:9px 11px;border-color:rgba(103,232,249,.22);background:rgba(8,145,178,.11)}
+#onboardGuideRoot .og-note{margin-top:8px;font-size:.68rem;line-height:1.65}
+#onboardGuideRoot .og-footer{margin:12px -10px -10px;padding:11px 10px 10px;gap:8px}
+#onboardGuideRoot .og-btn{min-height:43px;padding:9px 14px;border-radius:13px}
+#onboardGuideRoot .og-btn.primary{background:linear-gradient(112deg,#6956dc,#4c65d8 58%,#087e91);box-shadow:0 8px 20px rgba(70,75,180,.28)}
+#onboardGuideRoot .og-skip{font-size:.72rem}
+@media(max-width:640px){
+  #onboardGuideRoot .og-card{width:calc(100vw - 20px);max-height:min(42dvh,340px);padding:14px;border-radius:19px}
+  #onboardGuideRoot .og-head{margin-bottom:9px}
+  #onboardGuideRoot .og-brand-copy strong{font-size:.67rem}
+  #onboardGuideRoot .og-brand-copy small{font-size:.6rem}
+  #onboardGuideRoot .og-title{font-size:1.02rem;line-height:1.48}
+  #onboardGuideRoot .og-text{font-size:.75rem;line-height:1.72}
+  #onboardGuideRoot .og-target{margin-top:9px;padding:8px 9px}
+  #onboardGuideRoot .og-target-copy strong{font-size:.72rem}
+  #onboardGuideRoot .og-note{font-size:.64rem}
+  #onboardGuideRoot .og-footer{margin-top:9px;padding-top:9px}
+  #onboardGuideRoot .og-btn{min-height:40px;padding:8px 10px;font-size:.69rem}
+  #onboardGuideRoot .og-skip{font-size:.67rem}
+}
+@media(max-width:360px){
+  #onboardGuideRoot .og-card{padding:11px}
+  #onboardGuideRoot .og-brand-copy small{display:none}
+  #onboardGuideRoot .og-text{font-size:.71rem}
+  #onboardGuideRoot .og-target-copy small{font-size:.58rem}
+  #onboardGuideRoot .og-footer{gap:5px}
+  #onboardGuideRoot .og-btn{padding-inline:8px}
+}
 """
 
 TOUR_JS = r"""
 var ONBOARD_DECK = "__DECK__";
 var ONBOARD_PRIMARY_LANGUAGE = ONBOARD_DECK === "fr9" ? "الفرنسية" : "الإنجليزية";
-var ONBOARD_STORAGE_KEY = "anki_" + ONBOARD_DECK + "_onboarded";
-var ONBOARD_SNOOZE_KEY = "anki_" + ONBOARD_DECK + "_onboarding_snoozed";
+var ONBOARD_STORAGE_KEY = "anki_" + ONBOARD_DECK + "_onboarded_v2";
+var ONBOARD_SNOOZE_KEY = "anki_" + ONBOARD_DECK + "_onboarding_snoozed_v2";
 var onboardOpenedBrowser = false;
 var onboardOpenedAudio = false;
 var onboardPositionFrame = 0;
 var onboardScrollingTarget = false;
 var ONBOARD_STEPS = [
-  {id:"start",label:"ابدأ هنا",title:"من القالب إلى رزمة Anki — بخطوات واضحة",text:"هذه ليست نافذة شرح منفصلة. سنمشي داخل المعرض نفسه: افتح المكتبة، جرّب المعاينة، افهم التحديد، اضبط الصوت، ثم راجع إعدادات التصدير. لن تُنشأ أي رزمة أثناء الجولة.",target:".hero-cta-main",targetLabel:"زر «تصفّح القوالب»",note:"ستبقى أدوات الصفحة قابلة للاستخدام، ويمكنك إغلاق الجولة أو إعادة فتحها متى شئت."},
-  {id:"library",label:"المكتبة",title:"استكشف القوالب الحقيقية — لا صورًا تجريبية",text:"هذه المكتبة تضم 100 تصميم فعلي. استخدم التصنيفات لتقليل الخيارات، وتصفّح البطاقات، ثم اضغط تصميمًا لترى معاينته الحقيقية في الصفحة. اختيار بطاقة من المكتبة يبدّل المعاينة فقط؛ لا يضيف قالبًا إلى رُزمتك ولا ينشئ ملفًا.",target:"#gbGrid .gb-item",fallback:"#gbFilters",targetLabel:"بطاقة حقيقية من شبكة القوالب",note:"جرّب اختيار قالب من الشبكة؛ ستنتقل الجولة تلقائيًا إلى معاينته."},
-  {id:"preview",label:"المعاينة",title:"افحص البطاقة كما ستظهر فعلًا",text:"هذه معاينة القالب الحقيقي داخل إطار البطاقة. راجع وضوح النص والمسافات، وتنقّل بين التصاميم بالأسهم. جرّب زر «قلب البطاقة» لترى الوجه الآخر قبل أن تعتمد التصميم.",target:"#gvShowAns",fallback:"#gvStage",targetLabel:"زر «قلب البطاقة»",note:"قلب البطاقة يغيّر المعاينة فقط، ولا يغيّر محتوى رُزمتك."},
-  {id:"selection",label:"التحديد",title:"اختر القوالب التي تريد استخدامها",text:"زر «تحديد» يضيف القالب الحالي إلى اختياراتك أو يزيله منها. يمكنك تحديد قالب واحد أو عدة قوالب؛ وستظهر حالة الاختيار وعدد القوالب في شريط التحديد. لا يحدث أي تصدير هنا.",target:"#gvSelectBtn",targetLabel:"زر تحديد القالب",note:"الجولة لا تحدّد قوالب نيابةً عنك؛ أي تغيير تجريه هنا يكون باختيارك."},
-  {id:"audio",label:"الصوت",title:"اضبط نطق " + ONBOARD_PRIMARY_LANGUAGE + " والعربية",text:"من هذه اللوحة تختار صوت اللغة الأساسية والعربية، وتعدّل السرعة والنغمة والفواصل. يمكنك تشغيل معاينة الصوت بنفسك عند توفر اتصال مناسب؛ الجولة لن تطلب ملفات صوتية أو تشغّل طلبات شبكة تلقائيًا.",target:"#gTtsPreviewBtn",fallback:"#gAudioPanelBody",targetLabel:"زر معاينة الصوت",note:"للمعرض الفرنسي اللغة الأساسية هي الفرنسية، وللمعارض الإنجليزية هي الإنجليزية."},
-  {id:"export",label:"مراجعة التصدير",title:"راجع الإعدادات قبل إنشاء الرزمة",text:"هذا الزر يفتح مراجعة اسم الرزمة والقوالب والصوت والحجم المتوقع، من دون إنشاء ملف. لا يبدأ إنشاء APKG إلا عندما تضغط «بدء التصدير» بنفسك. بعد تنزيل الملف، ستجد أسفل الصفحة قسم «كيفية الاستيراد» لإضافته إلى Anki على الكمبيوتر أو الهاتف.",target:"#exOpenBtn",targetLabel:"زر «تصدير رزمة Anki»",note:"سنفتح شاشة الملخص عند طلبك، لكننا لن نضغط «بدء التصدير» ولن ننشئ ملفًا ضمن الجولة."}
+  {id:"start",label:"البداية",title:"من مكتبة القوالب إلى رزمة Anki — جولة عملية",text:"في دقائق قليلة ستتعرّف إلى طريقة استكشاف التصاميم، وفحص البطاقة، وتحديد ما يناسبك، ثم مراجعة إعدادات الصوت والتصدير. سنشرح الأدوات الحقيقية داخل المعرض؛ ولن نغيّر اختياراتك أو ننشئ ملفاً نيابةً عنك.",target:".hero-cta-main",targetLabel:"زر تصفّح القوالب",note:"يمكنك الانتقال بين المحطات أو إغلاق الجولة في أي وقت. لا تُحفظ اختيارات جديدة إلا عندما تضغط أنت على أدواتها."},
+  {id:"library",label:"المكتبة",title:"ابدأ من مكتبة التصاميم",text:"تضم المكتبة 100 تصميم فعلي. استخدم تصنيفات الألوان لتصفية القوالب، ثم افتح أي بطاقة لتنتقل إلى معاينتها. فتح البطاقة يعرض القالب فقط؛ ولا يضيفه إلى اختيارات الرزمة.",target:"#gbFilters .gb-chip",fallback:"#galleryBrowser .gb-title",targetLabel:"زر تصنيف القوالب",note:"اختر بطاقة من الشبكة لتنتقل تلقائياً إلى محطة المعاينة، أو استخدم «التالي» لتجاوز التجربة."},
+  {id:"preview",label:"المعاينة",title:"افحص البطاقة قبل اعتمادها",text:"راجع الوجه الأمامي والخلفي، وراقب وضوح المفردة ومعناها وتوزيع العناصر. زر القلب يبدّل الوجه المعروض؛ وهذه معاينة للقالب وليست تعديلاً على محتوى الرزمة.",target:"#gvShowAns",fallback:"#gvStage",targetLabel:"زر قلب البطاقة",note:"اضغط زر القلب بنفسك لتجربة الوجه الآخر، أو تابع إلى محطة التحديد."},
+  {id:"selection",label:"اختيار القوالب",title:"كوّن مجموعة القوالب التي تريدها",text:"زر التحديد يضيف القالب الحالي إلى مجموعتك أو يزيله منها. يمكنك جمع أكثر من تصميم، ثم مراجعة العدد والاختيارات قبل التصدير. الجولة لا تحدّد أي قالب نيابةً عنك.",target:"#gvSelectBtn",targetLabel:"زر تحديد القالب",note:"إذا جرّبت التحديد، يمكنك الضغط عليه مرة أخرى لإلغاء الاختيار. تابع عندما تصبح الصورة واضحة."},
+  {id:"audio",label:"الصوت",title:"اضبط النطق كما تريده",text:"اختر صوت الإنجليزية والعربية، واضبط السرعة والنغمة والفواصل. شغّل معاينة النطق عند رغبتك؛ لن نرسل طلباً صوتياً أو نحمّل شيئاً تلقائياً خلال الجولة.",target:"#gTtsPreviewBtn",fallback:"#gAudioPanelBody",targetLabel:"زر معاينة الصوت",note:"تُستخدم إعدادات الصوت التي تعتمدها عند إنشاء الرزمة. يمكنك تخطي الاستماع والمتابعة مباشرة."},
+  {id:"export",label:"مراجعة الرزمة",title:"راجع كل شيء قبل إنشاء الملف",text:"افتح شاشة المراجعة لتفحص اسم الرزمة، والقوالب المحددة، وإعدادات الصوت، والخيارات المتاحة. هذه الشاشة لا تنشئ الملف؛ إنشاء APKG لا يبدأ إلا عندما تضغط زر بدء التصدير بنفسك. وبعد التنزيل، اتبع قسم «كيفية الاستيراد» أسفل الصفحة لإضافته إلى Anki.",target:"#exOpenBtn",targetLabel:"زر مراجعة وتصدير الرزمة",note:"سنفتح شاشة المراجعة فقط. لن نضغط زر بدء التصدير ولن ننشئ ملفاً أثناء الجولة."}
 ];
 var onbStep = 0;
 var onboardGuideOpen = false;
@@ -111,12 +161,18 @@ function markOnboardingCompleted(){
   try{localStorage.setItem(ONBOARD_STORAGE_KEY,"1");return true;}
   catch(_e){return false;}
 }
+function onboardTargetVisible(node){
+  if(!node||!node.isConnected)return false;
+  var rect=node.getBoundingClientRect();
+  var style=window.getComputedStyle(node);
+  return rect.width>0&&rect.height>0&&style.display!=="none"&&style.visibility!=="hidden";
+}
 function onboardStepTarget(step){
   if(!step)return null;
-  var selector = (step.id === "export" && onboardReviewOpened) ? "#exViewSummary" : step.target;
-  var target = selector ? document.querySelector(selector) : null;
-  if(!target && step.fallback)target = document.querySelector(step.fallback);
-  return target;
+  var selector=(step.id==="export"&&onboardReviewOpened)?"#exViewSummary":step.target;
+  var target=selector?document.querySelector(selector):null;
+  if(!onboardTargetVisible(target)&&step.fallback)target=document.querySelector(step.fallback);
+  return onboardTargetVisible(target)?target:null;
 }
 function onboardClearSpotlight(){
   if(onboardActiveTarget){
@@ -152,9 +208,15 @@ function onboardPrepareStep(index){
     // Ensure the 100 real designs have been mounted before opening the library.
     // The tour can start before the asynchronous gallery watcher has populated gvList.
     try{if(typeof ensureGalleryDesigns === "function")ensureGalleryDesigns();}catch(_e){}
-    if(browser && !browser.classList.contains("open") && typeof openGalleryBrowser === "function"){
-      openGalleryBrowser();
-      onboardOpenedBrowser = true;
+    if(browser && !browser.classList.contains("open")){
+      try{if(typeof gbBuildFilters === "function")gbBuildFilters();}catch(_e){}
+      try{if(typeof renderGalleryBrowser === "function")renderGalleryBrowser();}catch(_e){}
+      try{if(typeof openGalleryBrowser === "function")openGalleryBrowser();}catch(_e){}
+      if(!browser.classList.contains("open")){
+        browser.classList.add("open");
+        try{document.body.style.overflow="hidden";}catch(_e){}
+      }
+      onboardOpenedBrowser = browser.classList.contains("open");
     }
   }else if(onboardOpenedBrowser && browser && browser.classList.contains("open") && typeof closeGalleryBrowser === "function"){
     closeGalleryBrowser();
@@ -179,7 +241,8 @@ function goToOnboardStep(index){
   onboardReviewOpened = false;
   onboardPrepareStep(next);
   renderOnboardStep();
-  window.setTimeout(scheduleOnboardPosition,90);
+  var settleDelay=(next===1||next===2||next===4)?460:90;
+  window.setTimeout(scheduleOnboardPosition,settleDelay);
 }
 function onboardBackdropPath(target,width,height){
   var outer = "M0 0H" + width + "V" + height + "H0Z";
@@ -202,62 +265,64 @@ function onboardBackdropPath(target,width,height){
 function positionOnboardGuide(){
   if(!onboardGuideOpen || !onboardGuideRoot)return;
   onboardClearSpotlight();
-  var step = ONBOARD_STEPS[onbStep];
-  var target = onboardStepTarget(step);
-  var card = onboardGuideRoot.querySelector(".og-card");
-  var path = onboardGuideRoot.querySelector("#ogBackdropPath");
-  var backdrop = onboardGuideRoot.querySelector(".og-backdrop");
-  if(!card || !path || !backdrop)return;
-  var width = Math.max(320,document.documentElement.clientWidth || window.innerWidth || 320);
-  var height = Math.max(320,window.innerHeight || document.documentElement.clientHeight || 320);
-  var reduced = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  var step=ONBOARD_STEPS[onbStep];
+  var target=onboardStepTarget(step);
+  var card=onboardGuideRoot.querySelector(".og-card");
+  var backdrop=onboardGuideRoot.querySelector(".og-backdrop");
+  var path=onboardGuideRoot.querySelector("#ogBackdropPath");
+  if(!card||!backdrop||!path)return;
+  var width=Math.max(320,document.documentElement.clientWidth||window.innerWidth||320);
+  var height=Math.max(320,window.innerHeight||document.documentElement.clientHeight||320);
+  var reduced=!!(window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   backdrop.setAttribute("viewBox","0 0 " + width + " " + height);
-  if(target && target.isConnected){
-    var initialRect = target.getBoundingClientRect();
-    if(!onboardScrollingTarget && (initialRect.top < 76 || initialRect.bottom > height-76)){
-      onboardScrollingTarget = true;
-      try{target.scrollIntoView({behavior:reduced ? "auto" : "smooth",block:"center",inline:"nearest"});}catch(_e){}
-      window.setTimeout(function(){onboardScrollingTarget = false;scheduleOnboardPosition();},reduced ? 40 : 360);
+  if(target&&target.isConnected){
+    var before=target.getBoundingClientRect();
+    var fixedOverlay=target.closest(".gallery-browser,.help-overlay,.onboard-overlay");
+    var targetOutsideViewport=before.top<0||before.bottom>height;
+    if(!fixedOverlay&&!onboardScrollingTarget&&targetOutsideViewport){
+      onboardScrollingTarget=true;
+      try{target.scrollIntoView({behavior:reduced?"auto":"smooth",block:"center",inline:"nearest"});}catch(_e){}
+      window.setTimeout(function(){onboardScrollingTarget=false;scheduleOnboardPosition();},reduced?60:430);
+      return;
     }
-    onboardActiveTarget = target;
+    onboardActiveTarget=target;
     target.classList.add("og-spotlight");
-  }else{
-    target = null;
-  }
-  var rect = target ? target.getBoundingClientRect() : null;
+  }else target=null;
+  var rect=target?target.getBoundingClientRect():null;
   path.setAttribute("d",onboardBackdropPath(target,width,height));
-  var margin = 12;
-  var gap = 18;
-  card.style.right = "auto";
-  card.style.bottom = "auto";
-  card.style.left = margin + "px";
-  card.style.top = margin + "px";
-  card.style.width = Math.min(width-24,width <= 640 ? 420 : 430) + "px";
-  card.style.maxHeight = Math.min(height*.54,460) + "px";
-  card.dataset.placement = "center";
+  card.style.width=Math.min(width-24,width<=640?420:430)+"px";
+  card.style.left="12px";
+  card.style.top="12px";
+  card.style.right="auto";
+  card.style.bottom="auto";
+  card.style.maxHeight=Math.min(height*.42,360)+"px";
+  card.dataset.placement="center";
+  var measured=card.getBoundingClientRect();
   if(!rect){
-    var centered = card.getBoundingClientRect();
-    card.style.left = Math.max(margin,(width-centered.width)/2) + "px";
-    card.style.top = Math.max(margin,(height-centered.height)/2) + "px";
+    card.style.left=Math.max(12,(width-measured.width)/2)+"px";
+    card.style.top=Math.max(12,(height-measured.height)/2)+"px";
     return;
   }
-  var measured = card.getBoundingClientRect();
-  var availableAbove = Math.max(0,rect.top-margin-gap);
-  var availableBelow = Math.max(0,height-rect.bottom-margin-gap);
-  var placeBelow = availableBelow >= measured.height || availableBelow >= availableAbove;
-  var available = placeBelow ? availableBelow : availableAbove;
-  var maxCardHeight = Math.max(190,Math.min(height*.68,available-8));
-  card.style.maxHeight = maxCardHeight + "px";
-  measured = card.getBoundingClientRect();
-  var top = placeBelow ? rect.bottom+gap : rect.top-measured.height-gap;
-  top = Math.max(margin,Math.min(height-measured.height-margin,top));
-  var left = rect.left + rect.width/2 - measured.width/2;
-  left = Math.max(margin,Math.min(width-measured.width-margin,left));
-  card.style.left = left + "px";
-  card.style.top = top + "px";
-  card.dataset.placement = placeBelow ? "below" : "above";
-  var arrowX = Math.max(22,Math.min(measured.width-22,rect.left+rect.width/2-left));
-  card.style.setProperty("--og-arrow-x",arrowX + "px");
+  var margin=12;
+  var candidates=[
+    {left:margin,top:margin,name:"top-left"},
+    {left:width-measured.width-margin,top:margin,name:"top-right"},
+    {left:margin,top:height-measured.height-margin,name:"bottom-left"},
+    {left:width-measured.width-margin,top:height-measured.height-margin,name:"bottom-right"}
+  ];
+  var best=null;
+  candidates.forEach(function(candidate){
+    var left=Math.max(margin,Math.min(width-measured.width-margin,candidate.left));
+    var top=Math.max(margin,Math.min(height-measured.height-margin,candidate.top));
+    var overlapW=Math.max(0,Math.min(left+measured.width,rect.right)-Math.max(left,rect.left));
+    var overlapH=Math.max(0,Math.min(top+measured.height,rect.bottom)-Math.max(top,rect.top));
+    var overlap=overlapW*overlapH;
+    var candidateScore=overlap*1000000+(Math.abs((left+measured.width/2)-(rect.left+rect.width/2))+Math.abs((top+measured.height/2)-(rect.top+rect.height/2)));
+    if(!best||candidateScore<best.score)best={left:left,top:top,name:candidate.name,score:candidateScore};
+  });
+  card.style.left=best.left+"px";
+  card.style.top=best.top+"px";
+  card.dataset.placement=best.name;
 }
 function scheduleOnboardPosition(){
   if(!onboardGuideOpen || onboardPositionFrame)return;
@@ -284,10 +349,10 @@ function renderOnboardStep(){
   var targetLabel = review ? "ملخص إعدادات الرزمة" : step.targetLabel;
   var note = review ? "لم نضغط زر بدء التصدير، ولم يُرسل طلب إنشاء APKG." : step.note;
   var primaryLabel = onbStep === 0 ? "ابدأ الجولة" :
-    onbStep === 1 ? "انتقل إلى المعاينة" :
+    onbStep === 1 ? "تجاوز إلى المعاينة" :
     onbStep === 2 ? "جرّب قلب البطاقة" :
-    onbStep === 3 ? "تابع إلى إعدادات الصوت" :
-    onbStep === 4 ? "تابع إلى التصدير" :
+    onbStep === 3 ? "انتقل إلى إعدادات الصوت" :
+    onbStep === 4 ? "انتقل إلى مراجعة الرزمة" :
     (review ? "إنهاء الجولة" : "افتح شاشة المراجعة");
   var primaryAction = onbStep === 0 ? "start" :
     onbStep === 1 ? "preview" :
