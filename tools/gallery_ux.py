@@ -324,7 +324,7 @@ function positionOnboardGuide(){
   widthOptions.forEach(function(candidateWidth){
     if(best&&best.overlap===0)return;
     card.style.width=candidateWidth+"px";
-    card.style.maxHeight=Math.min(height*.56,520)+"px";
+    card.style.maxHeight=Math.min(height*.42,460)+"px";
     var measured=card.getBoundingClientRect();
     if(!rect){
       best={left:Math.max(margin,(width-measured.width)/2),top:Math.max(margin,(height-measured.height)/2),name:"center",overlap:0};
