@@ -399,6 +399,7 @@ jobs:
                       workspaceHidden:["#gv","#gvStage","#gvShowAns",".gv-progress",".gv-actions","#gvShimmer",".aa","#download","#statusBar","#onboardTourLauncher"].every(selector=>{const node=document.querySelector(selector);return !!node&&getComputedStyle(node).display==="none";}),
                       activeNav:document.querySelectorAll('.hdr-nav .hdr-link[aria-current="page"]').length,
                       heroReady:hero.querySelectorAll(".gx-preview-host.is-ready").length,
+                      heroLoading:hero.querySelectorAll(".gb-preview-loading").length,
                       welcome:!!document.getElementById("gxWelcome"),
                       filters:!!document.getElementById("gbFilters"),
                       overflow:document.documentElement.scrollWidth
@@ -411,6 +412,7 @@ jobs:
                   assert.equal(opening.workspaceHidden,true,deck+": editor, export, status, or floating controls leaked into the opening");
                   assert.equal(opening.activeNav,1,deck+": current gallery is not identified in navigation");
                   assert.equal(opening.heroReady,3,deck+": three real opening previews did not finish rendering");
+                  assert.equal(opening.heroLoading,0,deck+": stale loading labels cover rendered opening previews");
                   assert.equal(opening.welcome,false,deck+": blocking welcome modal remains");
                   assert.equal(opening.filters,false,deck+": filter strip remains");
                   assert(opening.width>0&&opening.height>0,deck+"/"+viewport.name+": opening is not visible");
@@ -427,11 +429,19 @@ jobs:
                     filters:document.querySelectorAll("#galleryBrowser .gb-chip").length,
                     eagerFrames:document.querySelectorAll("#gbGrid .gb-preview-frame").length,
                     totalWidth:document.documentElement.scrollWidth,
-                    firstCard:document.querySelector("#gbGrid .gb-item")?.getBoundingClientRect().toJSON()
+                    firstCard:document.querySelector("#gbGrid .gb-item")?.getBoundingClientRect().toJSON(),
+                    previewLoaderLeaks:document.querySelectorAll("#gbGrid .gb-preview-host.is-ready .gb-preview-loading").length,
+                    headerControlsSeparated:(()=>{
+                      const count=document.getElementById("gbCount")?.getBoundingClientRect();
+                      const close=document.querySelector("#galleryBrowser .gb-close")?.getBoundingClientRect();
+                      return !!count&&!!close&&(count.right<close.left||close.right<count.left);
+                    })()
                   }));
                   assert.equal(library.count,100,deck+": library does not show all 100 designs");
                   assert.equal(library.filters,0,deck+": filter chips are still present");
                   assert(library.eagerFrames>0&&library.eagerFrames<=35,deck+": gallery eagerly mounted too many or no real previews ("+library.eagerFrames+")");
+                  assert.equal(library.previewLoaderLeaks,0,deck+": loading labels remain over rendered gallery previews");
+                  assert.equal(library.headerControlsSeparated,true,deck+": library header count and close control overlap");
                   const iframeInput=await page.evaluate(()=>{const frame=document.querySelector("#gbGrid .gb-preview-frame");return frame?getComputedStyle(frame).pointerEvents:"missing";});
                   assert.equal(iframeInput,"none",deck+": decorative preview iframe intercepts card clicks");
                   assert(library.totalWidth<=viewport.width+1,deck+"/"+viewport.name+": library causes horizontal overflow");
