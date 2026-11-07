@@ -606,6 +606,8 @@ jobs:
               await page.locator("#gxWelcomeFlip").click();
               assert.equal(await page.locator("#gxWelcomePreviewCard").evaluate(node => node.classList.contains("is-flipped")), false, deck + ": welcome preview did not return to the front face");
               assert(openingCopy.copyWidth <= openingCopy.copyClientWidth + 1, deck + "/" + viewport.name + ": opening copy overflows horizontally");
+              const welcomeTitleBox = await page.locator("#gxWelcomeTitle").boundingBox();
+              assert(welcomeTitleBox && welcomeTitleBox.y >= -1 && welcomeTitleBox.y + welcomeTitleBox.height <= viewport.height + 1, deck + "/" + viewport.name + ": welcome headline is not fully visible on first paint");
               assert.equal(await page.locator("#gallery-experience-hero").count(), 1, deck + ": gallery hero is missing");
                   assert.equal(await page.locator("#gallery-experience-hero").evaluate(element => element.closest("#galleryBrowser") === null), true, deck + "/" + viewport.name + ": gallery hero was inserted inside the template browser");
                   assert.equal(await page.locator("#gallery-experience-hero .hero-cta-main").count(), 1, deck + ": hero browse action is missing");
