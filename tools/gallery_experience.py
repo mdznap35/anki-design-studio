@@ -902,7 +902,7 @@ def apply_gallery_experience(html, deck):
 
     required = (
         'hero.id="gallery-experience-hero"',
-        'class="gx-dialog gx-opening-v4"',
+        'class="gx-dialog gx-opening-v5"',
         'data-gx-welcome-title',
         'data-gx-sample-word',
         'data-gx-sample-meaning',
