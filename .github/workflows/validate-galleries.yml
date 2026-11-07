@@ -157,14 +157,14 @@ jobs:
 
           const samples = {
             en9: { f: "Student", a: "طالب", p: "", s: "", c: "", dossier: "", page: "", pos: "NOUN", poslabel: "اسم", unit: "Unit 01", unitnum: "01" },
-            enlit: { f: "Novel", a: "رواية", p: "", s: "", c: "", dossier: "", page: "", pos: "", poslabel: "", unit: "Unit 01 - Future Careers", unitnum: "" },
-            ensci: { f: "Energy", a: "طاقة", p: "", s: "", c: "", dossier: "", page: "", pos: "", poslabel: "", unit: "Unit 01 - A Learned Lesson is a Good Lesson", unitnum: "" },
+            enlit: { f: "Achievement", a: "إنجاز", p: "", s: "", c: "", dossier: "", page: "", pos: "", poslabel: "", unit: "Unit 01 - Future Careers", unitnum: "" },
+            ensci: { f: "Achievement", a: "إنجاز", p: "", s: "", c: "", dossier: "", page: "", pos: "", poslabel: "", unit: "Unit 01 - A Learned Lesson is a Good Lesson", unitnum: "" },
             fr9: { f: "Leçon", a: "درس", p: "", s: "", c: "", dossier: "Dossier 1", page: "", pos: "", poslabel: "", unit: "", unitnum: "" },
           };
           const cases = {
             en9: ["{{Word}}|{{Meaning}}|{{POS}}|{{POSLabel}}|{{Unit}}|{{UnitNum}}|{{AudioEN}}", "Student|طالب|NOUN|اسم|Unit 01|01|"],
-            enlit: ["{{#English}}<b>{{English}}</b>{{/English}}|{{Arabic}}|{{UnitText}}|{{AudioEN}}", "<b>Novel</b>|رواية|Unit 01 - Future Careers|"],
-            ensci: ["{{English}}|{{Arabic}}|{{UnitText}}|{{AudioEN}}", "Energy|طاقة|Unit 01 - A Learned Lesson is a Good Lesson|"],
+            enlit: ["{{#English}}<b>{{English}}</b>{{/English}}|{{Arabic}}|{{UnitText}}|{{AudioEN}}", "<b>Achievement</b>|إنجاز|Unit 01 - Future Careers|"],
+            ensci: ["{{English}}|{{Arabic}}|{{UnitText}}|{{AudioEN}}", "Achievement|إنجاز|Unit 01 - A Learned Lesson is a Good Lesson|"],
             fr9: ["{{Français}}|{{Arabic}}|{{Dossier}}|{{AudioFR}}", "Leçon|درس|Dossier 1|"],
           };
 
@@ -413,8 +413,8 @@ jobs:
           const openingCases = {
             fr9: { label:"اللغة الفرنسية · الصف التاسع", title:"اكتشف القالب الأنسب لمفردات الفرنسية", welcomeTitle:"اجعل مراجعة الفرنسية أوضح، بدءاً من القالب المناسب.", word:"Leçon", meaning:"درس" },
             en9: { label:"اللغة الإنجليزية · الصف التاسع", title:"اختر طريقة العرض المناسبة لمفردات الإنجليزية", welcomeTitle:"اختر قالباً يجعل مراجعة مفردات الإنجليزية أكثر وضوحاً.", word:"Student", meaning:"طالب" },
-            enlit: { label:"اللغة الإنجليزية · بكالوريا أدبي 12", title:"اختر تصميم Anki المناسب لمفردات الإنجليزية — بكالوريا أدبي 12", welcomeTitle:"اختر شكل البطاقة التي ستراجع بها مفردات الإنجليزية.", word:"Novel", meaning:"رواية" },
-            ensci: { label:"اللغة الإنجليزية · بكالوريا علمي 12", title:"اختر تصميم Anki المناسب لمفردات الإنجليزية — بكالوريا علمي 12", welcomeTitle:"اجعل مراجعة مفردات الإنجليزية أوضح وأسهل.", word:"Energy", meaning:"طاقة" }
+            enlit: { label:"اللغة الإنجليزية · بكالوريا 12 — الفرع الأدبي", title:"اعثر على قالب Anki المناسب لمفردات الإنجليزية.", welcomeTitle:"اختر شكل البطاقة قبل أن تبدأ المراجعة.", word:"Achievement", meaning:"إنجاز" },
+            ensci: { label:"اللغة الإنجليزية · بكالوريا 12 — الفرع العلمي", title:"اعثر على قالب Anki المناسب لمفردات الإنجليزية.", welcomeTitle:"اختر شكل البطاقة قبل أن تبدأ المراجعة.", word:"Achievement", meaning:"إنجاز" }
           };
 
           async function waitForStep(page, index) {
@@ -702,7 +702,7 @@ jobs:
                     const snoozed = await page.evaluate((key) => ({
                       completed: localStorage.getItem(key),
                       snoozed: sessionStorage.getItem(key.replace("_onboarded", "_onboarding_snoozed"))
-                    }), "anki_" + deck + "_onboarded_v2");
+                    }), "anki_" + deck + "_onboarded_v3");
                     assert.equal(snoozed.completed, null, deck + ": Later incorrectly marked the tour completed");
                     assert.equal(snoozed.snoozed, "1", deck + ": Later did not persist the session snooze");
 
@@ -721,7 +721,7 @@ jobs:
                     const completed = await page.evaluate((key) => ({
                       completed: localStorage.getItem(key),
                       snoozed: sessionStorage.getItem(key.replace("_onboarded", "_onboarding_snoozed"))
-                    }), "anki_" + deck + "_onboarded_v2");
+                    }), "anki_" + deck + "_onboarded_v3");
                     assert.equal(completed.completed, "1", deck + ": final completion was not persisted");
                     assert.equal(completed.snoozed, null, deck + ": completion did not clear the snooze");
                     await page.locator("#exportOverlay .fs-close").click();
