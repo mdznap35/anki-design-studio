@@ -570,6 +570,8 @@ jobs:
 
                     await page.locator("#onboardTourLauncher").click();
                     await page.waitForSelector("#onboardGuideRoot .og-card");
+                    await page.locator('[data-guide-action="start"]').click();
+                    await waitForStep(page, 1);
                     await page.locator('[data-guide-step="3"]').click();
                     await waitForStep(page, 3);
                     await page.locator('[data-guide-action="review"]').click();
