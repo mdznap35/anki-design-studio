@@ -279,7 +279,7 @@ function positionOnboardGuide(){
   card.style.top="12px";
   card.style.right="auto";
   card.style.bottom="auto";
-  card.style.maxHeight=Math.min(height*.62,560)+"px";
+  card.style.maxHeight=(width<=380?Math.min(height*.44,280):width<=640?Math.min(height*.56,420):Math.min(height*.62,560))+"px";
   card.dataset.placement="center";
   var measured=card.getBoundingClientRect();
   if(!rect){
