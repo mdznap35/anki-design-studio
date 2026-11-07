@@ -265,7 +265,7 @@ EXPERIENCE_JS = r"""
           '<h1 data-gx-title></h1>'+
           '<p class="gx-description" data-gx-description></p>'+
           '<div class="gx-actions">'+
-            '<button type="button" class="gx-action primary" data-gx-browse>استكشف القوالب <span aria-hidden="true">←</span></button>'+
+            '<button type="button" class="gx-action primary hero-cta-main" data-gx-browse>استعرض القوالب <span aria-hidden="true">←</span></button>'+
             '<button type="button" class="gx-action" data-gx-welcome>ابدأ الجولة الافتتاحية</button>'+
           '</div>'+
           '<div class="gx-metrics">'+
@@ -286,7 +286,11 @@ EXPERIENCE_JS = r"""
     var originalHero=document.querySelector("#sec-gal .hero") || (document.querySelector(".hero-cta-main") && document.querySelector(".hero-cta-main").closest(".hero"));
     if(!originalHero || !originalHero.parentNode)return;
     originalHero.parentNode.insertBefore(hero,originalHero);
-    hero.querySelector("[data-gx-browse]").addEventListener("click",function(){scrollToTarget("#gbGrid");});
+    originalHero.remove();
+    hero.querySelector("[data-gx-browse]").addEventListener("click",function(){
+      if(typeof window.openGalleryBrowser==="function")window.openGalleryBrowser();
+      else scrollToTarget("#gbGrid");
+    });
     hero.querySelector("[data-gx-welcome]").addEventListener("click",openGalleryWelcome);
   }
 
@@ -339,7 +343,10 @@ EXPERIENCE_JS = r"""
     });
     if(explore)explore.addEventListener("click",function(){
       closeGalleryWelcome(true);
-      window.setTimeout(function(){scrollToTarget("#gbGrid");},60);
+      window.setTimeout(function(){
+        if(typeof window.openGalleryBrowser==="function")window.openGalleryBrowser();
+        else scrollToTarget("#gbGrid");
+      },60);
     });
     if(close)close.addEventListener("click",function(){closeGalleryWelcome(true);});
     var grid=document.getElementById("gbGrid");
