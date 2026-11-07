@@ -216,7 +216,7 @@ jobs:
               for helper in ("function onboardStepTarget(step)", "function positionOnboardGuide()", "function scheduleOnboardPosition()", "function goToOnboardStep(index)", "function handleOnboardAction(action)", "function showOnboarding()", "function closeOnboarding(completed)", "function isOnboardingCompleted()"):
                   assert helper in tour, f"{deck}: missing guide helper {helper}"
               assert 'ONBOARD_PRIMARY_LANGUAGE = ONBOARD_DECK === "fr9" ? "الفرنسية" : "الإنجليزية";' in tour, f"{deck}: voice language is not deck-aware"
-              assert "100 قالب" in tour, f"{deck}: guide does not explain the complete library"
+              assert "القوالب المئة" in tour, f"{deck}: guide does not explain the complete library"
               assert 'setAttribute("aria-live","polite")' in tour and 'setAttribute("aria-current"' in tour, f"{deck}: guide accessibility states are missing"
               assert "data-guide-step" in tour and "data-guide-action" in tour, f"{deck}: guide navigation is not wired"
               assert 'target.closest("#gbGrid .gb-item")' in tour, f"{deck}: opening a template does not advance the guide"
@@ -226,7 +226,7 @@ jobs:
               assert 'target.closest("#exOpenBtn")' in tour, f"{deck}: export review is not observed"
               assert "og-spotlight" in tour and "og-spotlight" in html, f"{deck}: current action is not highlighted"
               assert "og-backdrop" not in tour and "onboardBackdropPath" not in tour, f"{deck}: obsolete dimming spotlight remains"
-              assert "100 قالب" in tour and "تصنيفات" in tour, f"{deck}: no-filter browsing is not explained"
+              assert "القوالب المئة" in tour and "تصنيفات" in tour, f"{deck}: no-filter browsing is not explained"
               assert "innerHTML" not in tour and "textContent" in tour, f"{deck}: guide must build safe text nodes"
               assert "confirmExport(" not in tour and "runGenerate(" not in tour and "downloadAPKG(" not in tour, f"{deck}: guide can trigger a destructive export"
               assert "function mountGalleryPreview()" in html and "new IntersectionObserver" in html, f"{deck}: template previews are not lazy"
