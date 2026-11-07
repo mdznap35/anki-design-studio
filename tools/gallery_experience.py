@@ -482,7 +482,7 @@ def apply_gallery_experience(html, deck):
         "var sk=this.parentNode.querySelector('.gb-sk');if(sk)sk.style.display='none';"
         "});}"
     )
-    html, handler_count = image_handlers.subn(frame_handlers, html, count=1)
+    html, handler_count = image_handlers.subn(lambda _match: frame_handlers, html, count=1)
     if handler_count != 1:
         raise SystemExit(deck + ": could not upgrade gallery cards to live template previews")
 
