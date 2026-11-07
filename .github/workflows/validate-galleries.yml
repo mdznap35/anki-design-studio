@@ -163,7 +163,7 @@ jobs:
           sys.path.insert(0, "tools")
           from build_galleries import bmatch
 
-          expected_steps = ("start", "library", "preview", "selection", "audio", "export")
+          expected_steps = ("start", "library", "preview", "export")
           required_targets = (
               ".hero-cta-main", "#gbFilters", "#gbGrid", "#gvShowAns",
               "#gvSelectBtn", "#gTtsPreviewBtn", "#gAudioPanelBody", "#exOpenBtn", ".gb-item",
@@ -230,7 +230,7 @@ jobs:
               assert "prefers-reduced-motion:reduce" in html and "safe-area-inset-bottom" in html, f"{deck}: mobile/reduced-motion support is missing"
               assert 'event.key === "Escape"' in tour_source and 'event.key === "ArrowLeft"' in tour_source, f"{deck}: keyboard navigation is missing"
               assert "onboardGuideReturnFocus" in tour_source and "isConnected" in tour_source, f"{deck}: focus restoration is missing"
-              assert 'if(onbStep === 5 && exportOverlay && exportOverlay.classList.contains("on")' in tour_source, f"{deck}: Escape must close export review before leaving the guide"
+              assert 'if(onbStep === 3 && exportOverlay && exportOverlay.classList.contains("on")' in tour_source, f"{deck}: Escape must close export review before leaving the guide"
               assert 'onboardGuideReturnFocus = closeButton' in tour_source and 'onboardGuideReturnFocus = opener' in tour_source, f"{deck}: export-review focus handoff is incomplete"
               assert 'localStorage.setItem(ONBOARD_STORAGE_KEY,"1")' in tour_source and "catch(_e)" in tour_source, f"{deck}: safe per-gallery completion state is missing"
               assert "function renderOnboardVisual" not in tour_source, f"{deck}: fake static tour visuals remain"
@@ -248,7 +248,7 @@ jobs:
               ids = re.findall(r'\bid=["\']([^"\']+)["\']', html)
               duplicates = sorted({value for value in ids if ids.count(value) > 1})
               assert not duplicates, f"{deck}: duplicate HTML IDs: {duplicates}"
-              print(f"PASS {deck}: 100 deck-bound designs, six real in-page guide stops, spotlight, safe export boundary, mobile/accessibility checks")
+              print(f"PASS {deck}: 100 deck-bound designs, four-stage in-page quick-start, spotlight, safe export boundary, mobile/accessibility checks")
 
           print("ALL FOUR INTERACTIVE GALLERY TOUR CHECKS PASSED")
           PY
@@ -510,7 +510,7 @@ jobs:
                   await waitForStep(page, 0);
 
                   const steps = [];
-                  for (let index = 0; index < 6; index++) {
+                  for (let index = 0; index < 4; index++) {
                     if (index > 0) {
                       await page.locator('[data-guide-step="' + index + '"]').click();
                       await waitForStep(page, index);
@@ -533,16 +533,14 @@ jobs:
                     await inspectStep(page, deck, viewport, 2);
 
                     await page.locator("#gvShowAns").click({ timeout: 10000 });
-                    await page.waitForFunction(() => window.onbStep === 3, null, { timeout: 10000 });
-                    await waitForStep(page, 3);
                     await page.locator("#gvSelectBtn").click({ timeout: 10000 });
                     await page.waitForFunction(() => {
                       const note = document.getElementById("onboardGuideNote");
                       return note && /تم تحديث الاختيار فعليًا|أُزيل تحديد القالب الحالي/.test(note.textContent);
                     }, null, { timeout: 10000 });
 
-                    await page.locator('[data-guide-step="5"]').click();
-                    await waitForStep(page, 5);
+                    await page.locator('[data-guide-step="3"]').click();
+                    await waitForStep(page, 3);
                     await page.locator('[data-guide-action="review"]').click();
                     await page.waitForFunction(() => {
                       const overlay = document.getElementById("exportOverlay");
@@ -565,8 +563,8 @@ jobs:
 
                     await page.locator("#onboardTourLauncher").click();
                     await page.waitForSelector("#onboardGuideRoot .og-card");
-                    await page.locator('[data-guide-step="5"]').click();
-                    await waitForStep(page, 5);
+                    await page.locator('[data-guide-step="3"]').click();
+                    await waitForStep(page, 3);
                     await page.locator('[data-guide-action="review"]').click();
                     await page.waitForFunction(() => {
                       const overlay = document.getElementById("exportOverlay");
@@ -585,7 +583,7 @@ jobs:
                   assert.equal(downloads, 0, deck + "/" + viewport.name + ": onboarding unexpectedly initiated a download");
                   report.decks[deck][viewport.name] = { steps, pageErrors, downloads };
                   await context.close();
-                  console.log("BROWSER PASS " + deck + "/" + viewport.name + ": six steps, viewport geometry, spotlight, no overflow, no export download");
+                  console.log("BROWSER PASS " + deck + "/" + viewport.name + ": four stages, viewport geometry, spotlight, no overflow, no export download");
                 }
               }
               fs.writeFileSync("qa-artifacts/browser-qa-report.json", JSON.stringify(report, null, 2));
