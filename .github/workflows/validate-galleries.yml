@@ -253,7 +253,7 @@ jobs:
           print("ALL FOUR INTERACTIVE GALLERY TOUR CHECKS PASSED")
           PY
 
-      - name: Syntax-check the generated six-step onboarding scripts
+      - name: Syntax-check the generated four-stage quick-start scripts
         run: |
           node <<'JS'
           const assert = require("node:assert/strict");
