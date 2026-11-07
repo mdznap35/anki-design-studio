@@ -36,8 +36,8 @@ EN_POOL = [
 
 NAV = (
   '      <a class="hdr-link" href="/en9">إنجليزي 9</a>\n'
-  '      <a class="hdr-link" href="/enlit">إنجليزي بكالوريا أدبي 12</a>\n'
-  '      <a class="hdr-link" href="/ensci">إنجليزي بكالوريا علمي 12</a>\n'
+  '      <a class="hdr-link" href="/enlit">إنجليزي بكالوريا 12 · الفرع الأدبي</a>\n'
+  '      <a class="hdr-link" href="/ensci">إنجليزي بكالوريا 12 · الفرع العلمي</a>\n'
   '      <a class="hdr-link" href="/fr9">فرنسي 9</a>\n'
   '      <a class="hdr-link" href="/bac12">فرنسي بكالوريا 12</a>'
 )
@@ -45,8 +45,8 @@ NAV_OLD_RE = re.compile(r'(      <a class="hdr-link" href="(?:index\.html|galler
 
 SAMPS = {
   'en9':   dict(f='Student', a='طالب', p='', s='', c='', dossier='', page='', pos='NOUN', poslabel='اسم', unit='Unit 01', unitnum='01'),
-  'enlit': dict(f='Novel', a='رواية', p='', s='', c='', dossier='', page='', pos='', poslabel='', unit='Unit 01 - Future Careers', unitnum=''),
-  'ensci': dict(f='Energy', a='طاقة', p='', s='', c='', dossier='', page='', pos='', poslabel='', unit='Unit 01 - A Learned Lesson is a Good Lesson', unitnum=''),
+  'enlit': dict(f='Achievement', a='إنجاز', p='', s='', c='', dossier='', page='', pos='', poslabel='', unit='Unit 01 - Future Careers', unitnum=''),
+  'ensci': dict(f='Achievement', a='إنجاز', p='', s='', c='', dossier='', page='', pos='', poslabel='', unit='Unit 01 - A Learned Lesson is a Good Lesson', unitnum=''),
   'fr9':   dict(f='Leçon', a='درس', p='', s='', c='', dossier='Dossier 1', page='', pos='', poslabel='', unit='', unitnum=''),
 }
 
@@ -77,12 +77,12 @@ DECKS = {
       meta='استكشف 100 قالب لبطاقات مفردات اللغة الإنجليزية للصف التاسع، وعاين التصاميم قبل اختيارها وإعداد رُزمتك.',
       frdef='en-US-GuyNeural', img='gallery_imgs'),
   'enlit': dict(route='/enlit', ffile='enlit.html', lang='en', ws='enlit', deck='English Bac Literary 12',
-      title='معرض قوالب Anki | الإنجليزية — بكالوريا أدبي 12',
-      meta='استكشف 100 قالب لبطاقات مفردات اللغة الإنجليزية المخصّصة لبكالوريا أدبي 12، وعاين التصاميم قبل اختيارها.',
+      title='قوالب Anki لمفردات الإنجليزية | بكالوريا 12 · الفرع الأدبي',
+      meta='استكشف 100 قالب لبطاقات مفردات اللغة الإنجليزية لطلاب بكالوريا 12 — الفرع الأدبي. عاين وجهي البطاقة واختر التصميم المناسب.',
       frdef='en-US-GuyNeural', img='gallery_imgs'),
   'ensci': dict(route='/ensci', ffile='ensci.html', lang='en', ws='ensci', deck='English Bac Scientific 12',
-      title='معرض قوالب Anki | الإنجليزية — بكالوريا علمي 12',
-      meta='استكشف 100 قالب لبطاقات مفردات اللغة الإنجليزية المخصّصة لبكالوريا علمي 12، وعاين التصاميم قبل اختيارها.',
+      title='قوالب Anki لمفردات الإنجليزية | بكالوريا 12 · الفرع العلمي',
+      meta='استكشف 100 قالب لبطاقات مفردات اللغة الإنجليزية لطلاب بكالوريا 12 — الفرع العلمي. عاين وجهي البطاقة واختر التصميم المناسب.',
       frdef='en-US-GuyNeural', img='gallery_imgs'),
   'fr9': dict(route='/fr9', ffile='fr9.html', lang='fr', ws='tas9', deck='French 9',
       title='معرض قوالب Anki | اللغة الفرنسية للصف التاسع',
