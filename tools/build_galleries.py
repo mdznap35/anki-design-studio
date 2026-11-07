@@ -35,11 +35,11 @@ EN_POOL = [
 ]
 
 NAV = (
-  '      <a class="hdr-link" href="/en9">English 9</a>\n'
-  '      <a class="hdr-link" href="/enlit">English Literature 12</a>\n'
-  '      <a class="hdr-link" href="/ensci">English Science 12</a>\n'
-  '      <a class="hdr-link" href="/fr9">French 9</a>\n'
-  '      <a class="hdr-link" href="/bac12">French Bac 12</a>'
+  '      <a class="hdr-link" href="/en9">إنجليزي 9</a>\n'
+  '      <a class="hdr-link" href="/enlit">أدب إنجليزي 12</a>\n'
+  '      <a class="hdr-link" href="/ensci">إنجليزي علمي 12</a>\n'
+  '      <a class="hdr-link" href="/fr9">فرنسي 9</a>\n'
+  '      <a class="hdr-link" href="/bac12">فرنسي بكالوريا 12</a>'
 )
 NAV_OLD_RE = re.compile(r'(      <a class="hdr-link" href="(?:index\.html|gallery-[a-z0-9]+\.html)">.*?</a>\n?)+')
 
@@ -73,20 +73,20 @@ NAMES = {
 
 DECKS = {
   'en9': dict(route='/en9', ffile='en9.html', lang='en', ws='en9', deck='English 9',
-      title='English 9 — Anki Template Gallery',
-      meta='قوالب Anki لمفردات English 9 مع الصوت الإنجليزي والعربي.',
+      title='معرض قوالب Anki | اللغة الإنجليزية للصف التاسع',
+      meta='استكشف 100 قالب لبطاقات مفردات اللغة الإنجليزية للصف التاسع، وعاين التصاميم قبل اختيارها وإعداد رُزمتك.',
       frdef='en-US-GuyNeural', img='gallery_imgs'),
   'enlit': dict(route='/enlit', ffile='enlit.html', lang='en', ws='enlit', deck='English Literature 12',
-      title='English Literature 12 — Anki Template Gallery',
-      meta='قوالب Anki لمفردات English Literature 12 مع الصوت الإنجليزي والعربي.',
+      title='معرض قوالب Anki | الأدب الإنجليزي للبكالوريا',
+      meta='استكشف 100 قالب لمفردات الأدب الإنجليزي للبكالوريا، وعاين طريقة عرض المفردات ومعانيها قبل الاختيار.',
       frdef='en-US-GuyNeural', img='gallery_imgs'),
   'ensci': dict(route='/ensci', ffile='ensci.html', lang='en', ws='ensci', deck='English Science 12',
-      title='English Science 12 — Anki Template Gallery',
-      meta='قوالب Anki لمفردات English Science 12 مع الصوت الإنجليزي والعربي.',
+      title='معرض قوالب Anki | الإنجليزية العلمية للبكالوريا',
+      meta='استكشف 100 قالب لمصطلحات الإنجليزية العلمية للبكالوريا، وعاين التصاميم قبل اعتمادها في رُزمتك.',
       frdef='en-US-GuyNeural', img='gallery_imgs'),
   'fr9': dict(route='/fr9', ffile='fr9.html', lang='fr', ws='tas9', deck='French 9',
-      title='French 9 — Anki Template Gallery',
-      meta='قوالب Anki لمفردات French 9 مع الصوت الفرنسي والعربي.',
+      title='معرض قوالب Anki | اللغة الفرنسية للصف التاسع',
+      meta='استكشف 100 قالب لبطاقات مفردات اللغة الفرنسية للصف التاسع، وعاين التصاميم قبل اختيارها وإعداد رُزمتك.',
       frdef='fr-FR-HenriNeural', img='gallery_imgs'),
   'bac12': dict(route='/bac12', ffile='bac12.html', lang='fr', ws='bac12', deck='French Bac 12',
       title='French Bac 12 — Anki Template Gallery',
@@ -368,6 +368,20 @@ def build_one(did, spec, base):
     else:
         assert n == 1, t + 'nav count %d' % n
         h = h2
+
+    # Normalize the existing route-based header navigation as well as legacy links.
+    nav_labels = {
+        '/en9': 'إنجليزي 9',
+        '/enlit': 'أدب إنجليزي 12',
+        '/ensci': 'إنجليزي علمي 12',
+        '/fr9': 'فرنسي 9',
+        '/bac12': 'فرنسي بكالوريا 12',
+    }
+    for route, label in nav_labels.items():
+        pattern = re.compile(r'(<a class="hdr-link" href="' + re.escape(route) + r'">).*?(</a>)')
+        h, nav_count = pattern.subn(lambda match: match.group(1) + label + match.group(2), h, count=1)
+        if nav_count != 1:
+            raise SystemExit(t + 'expected one header navigation link for ' + route + ', found ' + str(nav_count))
 
     h = rep(h, '<a class="brand" href="index.html" aria-label="الصفحة الرئيسية">',
             '<a class="brand" href="' + spec['route'] + '" aria-label="الصفحة الرئيسية">', 1, t + 'brand')

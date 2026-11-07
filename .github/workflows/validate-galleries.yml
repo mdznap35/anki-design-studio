@@ -103,6 +103,18 @@ jobs:
               end = bmatch(html, start)
               designs = json.loads(html[start:end + 1])
               assert len(designs) == 100, f"{deck}: expected 100 designs, found {len(designs)}"
+              expected_nav = (
+                  '<a class="hdr-link" href="/en9">إنجليزي 9</a>',
+                  '<a class="hdr-link" href="/enlit">أدب إنجليزي 12</a>',
+                  '<a class="hdr-link" href="/ensci">إنجليزي علمي 12</a>',
+                  '<a class="hdr-link" href="/fr9">فرنسي 9</a>',
+                  '<a class="hdr-link" href="/bac12">فرنسي بكالوريا 12</a>',
+              )
+              assert all(link in html for link in expected_nav), f"{deck}: header navigation is not fully localized"
+              assert not any(label in html for label in (
+                  '>English 9</a>', '>English Literature 12</a>', '>English Science 12</a>',
+                  '>French 9</a>', '>French Bac 12</a>'
+              )), f"{deck}: English header navigation labels remain"
               assert all(item.get("pack") == deck for item in designs), f"{deck}: incorrect deck binding"
               assert f"gallery_imgs_{deck}/" not in html, f"{deck}: stale thumbnail directory remains"
               assert "gallery_imgs/" in html, f"{deck}: shared thumbnail directory missing"
@@ -397,6 +409,13 @@ jobs:
             fr9: { sample: {f:"Leçon",a:"درس",p:"",s:"",c:"",dossier:"Dossier 1",page:"",pos:"",poslabel:"",poscolor:"",unit:"",unitnum:"",type:"",typeCode:""}, template:"{{Français}}|{{Arabic}}|{{Dossier}}|{{AudioFR}}", expected:"Leçon|درس|Dossier 1|" },
           };
 
+          const openingCases = {
+            fr9: { label:"الفرنسية · الصف التاسع", title:"اكتشف القالب الأنسب لمفردات الفرنسية", welcomeTitle:"اجعل مراجعة الفرنسية أوضح، بدءاً من القالب المناسب.", word:"Leçon", meaning:"درس" },
+            en9: { label:"الإنجليزية · الصف التاسع", title:"اختر طريقة العرض المناسبة لمفردات الإنجليزية", welcomeTitle:"اختر قالباً يجعل مراجعة مفردات الإنجليزية أكثر وضوحاً.", word:"Student", meaning:"طالب" },
+            enlit: { label:"الأدب الإنجليزي · البكالوريا", title:"اعثر على قالب يبرز مفردات الأدب الإنجليزي بوضوح", welcomeTitle:"نظّم مفردات الأدب الإنجليزي بالطريقة التي تناسب مراجعتك.", word:"Novel", meaning:"رواية" },
+            ensci: { label:"الإنجليزية العلمية · البكالوريا", title:"اختر قالباً يوضح المصطلح العلمي ومعناه", welcomeTitle:"امنح المصطلحات العلمية عرضاً واضحاً وسهل المراجعة.", word:"Achievement", meaning:"إنجاز" }
+          };
+
           async function waitForStep(page, index) {
             await page.waitForFunction((expected) => {
               const button = document.querySelector(
@@ -518,11 +537,49 @@ jobs:
                   assert(welcomeMetrics.width > 0 && welcomeMetrics.height > 0, deck + "/" + viewport.name + ": welcome experience did not render");
                   assert(welcomeMetrics.left >= -1 && welcomeMetrics.right <= viewport.width + 1, deck + "/" + viewport.name + ": welcome exceeds horizontal viewport");
                   assert(welcomeMetrics.top >= -1 && welcomeMetrics.bottom <= viewport.height + 1, deck + "/" + viewport.name + ": welcome exceeds vertical viewport");
-                  assert.equal(await page.locator("#gallery-experience-hero").count(), 1, deck + ": gallery hero is missing");
+                  const openingCase = openingCases[deck];
+              const openingCopy = await page.evaluate(() => {
+                const text = selector => (document.querySelector(selector)?.textContent || "").trim();
+                const welcomeCopy = document.querySelector("#gxWelcome .gx-copy");
+                return {
+                  heroTitle: text("#gallery-experience-hero [data-gx-title]"),
+                  welcomeTitle: text("#gxWelcome [data-gx-welcome-title]"),
+                  deckLabel: text("#gxWelcome [data-gx-deck-label]"),
+                  welcomeLead: text("#gxWelcome [data-gx-welcome-lead]"),
+                  welcomeWord: text("#gxWelcome [data-gx-sample-word]"),
+                  welcomeMeaning: text("#gxWelcome [data-gx-sample-meaning]"),
+                  heroWord: text("#gallery-experience-hero [data-gx-sample-word]"),
+                  heroMeaning: text("#gallery-experience-hero [data-gx-sample-meaning]"),
+                  pointCount: document.querySelectorAll("#gxWelcome .gx-point").length,
+                  startLabel: text("#gxWelcomeStart"),
+                  exploreLabel: text("#gxWelcomeExplore"),
+                  focusId: document.activeElement && document.activeElement.id,
+                  copyWidth: welcomeCopy ? welcomeCopy.scrollWidth : 0,
+                  copyClientWidth: welcomeCopy ? welcomeCopy.clientWidth : 0
+                };
+              });
+              assert.equal(openingCopy.heroTitle, openingCase.title, deck + ": deck-specific hero headline is incorrect");
+              assert.equal(openingCopy.welcomeTitle, openingCase.welcomeTitle, deck + ": deck-specific welcome headline is incorrect");
+              assert.equal(openingCopy.deckLabel, openingCase.label, deck + ": deck label is missing or incorrect");
+              assert(openingCopy.welcomeLead.includes("100 قالب"), deck + ": welcome does not explain the actual gallery size");
+              assert.equal(openingCopy.welcomeWord, openingCase.word, deck + ": welcome sample word does not match the deck");
+              assert.equal(openingCopy.welcomeMeaning, openingCase.meaning, deck + ": welcome sample meaning does not match the deck");
+              assert.equal(openingCopy.heroWord, openingCase.word, deck + ": hero sample word does not match the deck");
+              assert.equal(openingCopy.heroMeaning, openingCase.meaning, deck + ": hero sample meaning does not match the deck");
+              assert.equal(openingCopy.pointCount, 3, deck + ": opening must explain the three core user actions");
+              assert.equal(openingCopy.startLabel, "ابدأ الجولة التفاعلية ←", deck + ": guided tour action label is unclear");
+              assert.equal(openingCopy.exploreLabel, "تصفّح القوالب", deck + ": direct gallery action label is unclear");
+              assert.equal(openingCopy.focusId, "gxWelcomeStart", deck + ": opening does not place focus on the primary action");
+              assert(openingCopy.copyWidth <= openingCopy.copyClientWidth + 1, deck + "/" + viewport.name + ": opening copy overflows horizontally");
+              assert.equal(await page.locator("#gallery-experience-hero").count(), 1, deck + ": gallery hero is missing");
                   assert.equal(await page.locator("#gallery-experience-hero").evaluate(element => element.closest("#galleryBrowser") === null), true, deck + "/" + viewport.name + ": gallery hero was inserted inside the template browser");
                   assert.equal(await page.locator("#gallery-experience-hero .hero-cta-main").count(), 1, deck + ": hero browse action is missing");
                   assert.equal(await page.locator("#sec-gal .hero").count(), 0, deck + ": duplicate legacy gallery hero remains");
                   await page.screenshot({ path: "qa-artifacts/" + deck + "-" + viewport.name + "-welcome.png", fullPage: false });
+                  await page.keyboard.press("Escape");
+                  await page.waitForFunction(() => document.getElementById("gxWelcome").hidden, null, { timeout: 10000 });
+                  await page.locator("#onboardTourLauncher").click();
+                  await page.waitForSelector("#gxWelcome:not([hidden])", { timeout: 10000 });
                   await page.locator("#gxWelcomeStart").click();
                   try {
                     await page.waitForSelector("#onboardGuideRoot .og-card", { timeout: 20000 });
