@@ -8,7 +8,6 @@ import json, os, re, shutil
 from pathlib import Path
 
 from gallery_ux import apply_gallery_ux
-from gallery_experience import apply_gallery_experience
 
 ROOT = Path(os.environ.get('WORKSPACE_ROOT') or Path(__file__).resolve().parents[1])
 # CI can provide the exact live French Bac page as a read-only base. Local runs
@@ -35,18 +34,18 @@ EN_POOL = [
 ]
 
 NAV = (
-  '      <a class="hdr-link" href="/en9">إنجليزي 9</a>\n'
-  '      <a class="hdr-link" href="/enlit">إنجليزي بكالوريا 12 · الفرع الأدبي</a>\n'
-  '      <a class="hdr-link" href="/ensci">إنجليزي بكالوريا 12 · الفرع العلمي</a>\n'
-  '      <a class="hdr-link" href="/fr9">فرنسي 9</a>\n'
-  '      <a class="hdr-link" href="/bac12">فرنسي بكالوريا 12</a>'
+  '      <a class="hdr-link" href="/en9">English 9</a>\n'
+  '      <a class="hdr-link" href="/enlit">English Literature 12</a>\n'
+  '      <a class="hdr-link" href="/ensci">English Science 12</a>\n'
+  '      <a class="hdr-link" href="/fr9">French 9</a>\n'
+  '      <a class="hdr-link" href="/bac12">French Bac 12</a>'
 )
 NAV_OLD_RE = re.compile(r'(      <a class="hdr-link" href="(?:index\.html|gallery-[a-z0-9]+\.html)">.*?</a>\n?)+')
 
 SAMPS = {
   'en9':   dict(f='Student', a='طالب', p='', s='', c='', dossier='', page='', pos='NOUN', poslabel='اسم', unit='Unit 01', unitnum='01'),
-  'enlit': dict(f='Achievement', a='إنجاز', p='', s='', c='', dossier='', page='', pos='', poslabel='', unit='Unit 01 - Future Careers', unitnum=''),
-  'ensci': dict(f='Achievement', a='إنجاز', p='', s='', c='', dossier='', page='', pos='', poslabel='', unit='Unit 01 - A Learned Lesson is a Good Lesson', unitnum=''),
+  'enlit': dict(f='Novel', a='رواية', p='', s='', c='', dossier='', page='', pos='', poslabel='', unit='Unit 01 - Future Careers', unitnum=''),
+  'ensci': dict(f='Atom', a='ذرة', p='', s='', c='', dossier='', page='', pos='', poslabel='', unit='Unit 01 - A Learned Lesson is a Good Lesson', unitnum=''),
   'fr9':   dict(f='Leçon', a='درس', p='', s='', c='', dossier='Dossier 1', page='', pos='', poslabel='', unit='', unitnum=''),
 }
 
@@ -66,27 +65,27 @@ SWAPS = {
 
 NAMES = {
   'en9': ['English 9'],
-  'enlit': ['English Bac Literary 12', 'English Bac Literary 12 (Important Words)'],
-  'ensci': ['English Bac Scientific 12', 'English Bac Scientific 12 (Important Words)'],
+  'enlit': ['English Literature 12', 'English Literature 12 (Important Words)'],
+  'ensci': ['English Science 12', 'English Science 12 (Important Words)'],
   'fr9': ['French 9'],
 }
 
 DECKS = {
   'en9': dict(route='/en9', ffile='en9.html', lang='en', ws='en9', deck='English 9',
-      title='معرض قوالب Anki | اللغة الإنجليزية للصف التاسع',
-      meta='استكشف 100 قالب لبطاقات مفردات اللغة الإنجليزية للصف التاسع، وعاين التصاميم قبل اختيارها وإعداد رُزمتك.',
+      title='English 9 — Anki Template Gallery',
+      meta='قوالب Anki لمفردات English 9 مع الصوت الإنجليزي والعربي.',
       frdef='en-US-GuyNeural', img='gallery_imgs'),
-  'enlit': dict(route='/enlit', ffile='enlit.html', lang='en', ws='enlit', deck='English Bac Literary 12',
-      title='قوالب Anki لمفردات الإنجليزية | بكالوريا 12 · الفرع الأدبي',
-      meta='استكشف 100 قالب لبطاقات مفردات اللغة الإنجليزية لطلاب بكالوريا 12 — الفرع الأدبي. عاين وجهي البطاقة واختر التصميم المناسب.',
+  'enlit': dict(route='/enlit', ffile='enlit.html', lang='en', ws='enlit', deck='English Literature 12',
+      title='English Literature 12 — Anki Template Gallery',
+      meta='قوالب Anki لمفردات English Literature 12 مع الصوت الإنجليزي والعربي.',
       frdef='en-US-GuyNeural', img='gallery_imgs'),
-  'ensci': dict(route='/ensci', ffile='ensci.html', lang='en', ws='ensci', deck='English Bac Scientific 12',
-      title='قوالب Anki لمفردات الإنجليزية | بكالوريا 12 · الفرع العلمي',
-      meta='استكشف 100 قالب لبطاقات مفردات اللغة الإنجليزية لطلاب بكالوريا 12 — الفرع العلمي. عاين وجهي البطاقة واختر التصميم المناسب.',
+  'ensci': dict(route='/ensci', ffile='ensci.html', lang='en', ws='ensci', deck='English Science 12',
+      title='English Science 12 — Anki Template Gallery',
+      meta='قوالب Anki لمفردات English Science 12 مع الصوت الإنجليزي والعربي.',
       frdef='en-US-GuyNeural', img='gallery_imgs'),
   'fr9': dict(route='/fr9', ffile='fr9.html', lang='fr', ws='tas9', deck='French 9',
-      title='معرض قوالب Anki | اللغة الفرنسية للصف التاسع',
-      meta='استكشف 100 قالب لبطاقات مفردات اللغة الفرنسية للصف التاسع، وعاين التصاميم قبل اختيارها وإعداد رُزمتك.',
+      title='French 9 — Anki Template Gallery',
+      meta='قوالب Anki لمفردات French 9 مع الصوت الفرنسي والعربي.',
       frdef='fr-FR-HenriNeural', img='gallery_imgs'),
   'bac12': dict(route='/bac12', ffile='bac12.html', lang='fr', ws='bac12', deck='French Bac 12',
       title='French Bac 12 — Anki Template Gallery',
@@ -369,20 +368,6 @@ def build_one(did, spec, base):
         assert n == 1, t + 'nav count %d' % n
         h = h2
 
-    # Normalize the existing route-based header navigation as well as legacy links.
-    nav_labels = {
-        '/en9': 'إنجليزي 9',
-        '/enlit': 'إنجليزي بكالوريا 12 · الفرع الأدبي',
-        '/ensci': 'إنجليزي بكالوريا 12 · الفرع العلمي',
-        '/fr9': 'فرنسي 9',
-        '/bac12': 'فرنسي بكالوريا 12',
-    }
-    for route, label in nav_labels.items():
-        pattern = re.compile(r'(<a class="hdr-link" href="' + re.escape(route) + r'">).*?(</a>)')
-        h, nav_count = pattern.subn(lambda match: match.group(1) + label + match.group(2), h, count=1)
-        if nav_count != 1:
-            raise SystemExit(t + 'expected one header navigation link for ' + route + ', found ' + str(nav_count))
-
     h = rep(h, '<a class="brand" href="index.html" aria-label="الصفحة الرئيسية">',
             '<a class="brand" href="' + spec['route'] + '" aria-label="الصفحة الرئيسية">', 1, t + 'brand')
 
@@ -410,7 +395,6 @@ def build_one(did, spec, base):
             raise SystemExit('[%s] expected to remove 100 extra buttons, removed %d'
                              % (did, removed_extra_buttons))
     h = apply_gallery_ux(h, did)
-    h = apply_gallery_experience(h, did)
     return h, spec
 
 

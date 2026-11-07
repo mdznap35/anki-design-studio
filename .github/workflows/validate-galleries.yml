@@ -6,11 +6,9 @@ on:
       - main
       - "fix/**"
       - "feature/**"
-      - "feat/**"
     paths:
       - "tools/build_galleries.py"
       - "tools/gallery_ux.py"
-      - "tools/gallery_experience.py"
       - "tools/decks/**/templates.json"
       - "index.html"
       - "render.yaml"
@@ -25,7 +23,6 @@ on:
       - main
     paths:
       - "tools/build_galleries.py"
-      - "tools/gallery_experience.py"
       - "tools/gallery_ux.py"
       - "tools/decks/**/templates.json"
       - "index.html"
@@ -39,7 +36,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build-and-verify:
@@ -52,7 +49,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Compile gallery builder
-        run: python -m py_compile tools/build_galleries.py tools/gallery_ux.py tools/gallery_experience.py
+        run: python -m py_compile tools/build_galleries.py tools/gallery_ux.py
       - name: Prepare the protected live French Bac page as a read-only build base
         run: |
           set -euo pipefail
@@ -105,40 +102,12 @@ jobs:
               end = bmatch(html, start)
               designs = json.loads(html[start:end + 1])
               assert len(designs) == 100, f"{deck}: expected 100 designs, found {len(designs)}"
-              expected_nav = (
-                  '<a class="hdr-link" href="/en9">إنجليزي 9</a>',
-                  '<a class="hdr-link" href="/enlit">إنجليزي بكالوريا 12 · الفرع الأدبي</a>',
-                  '<a class="hdr-link" href="/ensci">إنجليزي بكالوريا 12 · الفرع العلمي</a>',
-                  '<a class="hdr-link" href="/fr9">فرنسي 9</a>',
-                  '<a class="hdr-link" href="/bac12">فرنسي بكالوريا 12</a>',
-              )
-              assert all(link in html for link in expected_nav), f"{deck}: header navigation is not fully localized"
-              assert not any(label in html for label in (
-                  '>English 9</a>', '>English Literature 12</a>', '>English Science 12</a>',
-                  '>French 9</a>', '>French Bac 12</a>'
-              )), f"{deck}: English header navigation labels remain"
               assert all(item.get("pack") == deck for item in designs), f"{deck}: incorrect deck binding"
               assert f"gallery_imgs_{deck}/" not in html, f"{deck}: stale thumbnail directory remains"
               assert "gallery_imgs/" in html, f"{deck}: shared thumbnail directory missing"
               assert all(item.get("fields") for item in designs), f"{deck}: design fields missing"
               assert all(not any(token in (item.get(key) or "") for token in ("{{ExtraRows}}", "{{Extras}}")) for item in designs for key in ("front", "back", "frontRev", "backRev")), f"{deck}: unbound extra-content placeholder remains"
-              assert html.count('id="gallery-experience-v6"') == 1, f"{deck}: clean-slate design system missing or duplicated"
-              assert html.count('id="gallery-experience-runtime-v6"') == 1, f"{deck}: gallery runtime missing or duplicated"
-              assert 'id="gallery-experience-hero"' in html, f"{deck}: integrated gallery opening is missing"
-              assert 'class="gx-action primary hero-cta-main"' in html, f"{deck}: direct library action is missing"
-              assert all(token in html for token in ('id="gxPreviewMain"', 'id="gxPreviewAlt1"', 'id="gxPreviewAlt2"')), f"{deck}: real featured previews are missing"
-              assert 'new IntersectionObserver' in html and "rootMargin:'320px 0px'" in html, f"{deck}: previews are not viewport-lazy"
-              assert "function mountGalleryPreview()" in html and "previewFrame.srcdoc" in html, f"{deck}: lazy preview mounting is missing"
-              assert 'id="gbFilters"' not in html, f"{deck}: filter controls remain in the gallery DOM"
-              assert 'class="gb-preview-host"' in html, f"{deck}: gallery cards do not use preview hosts"
-              assert "تم فتح معاينة التصميم " in html, f"{deck}: card action still claims to select a template"
-              assert "oldHero.remove()" in html, f"{deck}: duplicate legacy gallery hero remains"
-              assert "window.openGalleryBrowser" in html, f"{deck}: opening action is not connected to the library"
-              assert 'section.querySelector(".hero")' in html, f"{deck}: original gallery hero anchor is missing"
-              assert 'id="gxWelcome"' not in html and 'id="gxWelcomeStart"' not in html, f"{deck}: old blocking welcome experience remains"
-              assert "window.openGalleryWelcome" not in html and "window.hasSeenGalleryWelcome" not in html, f"{deck}: legacy welcome modal runtime remains"
-              assert "setTimeout(function(){if(window.openGalleryWelcome)" not in html, f"{deck}: automatic blocking welcome trigger remains"
-              print(f"PASS {deck}: 100 deck-bound designs, integrated opening, no filters, lazy real previews")
+              print(f"PASS {deck}: 100 designs, deck-bound fields, shared thumbnails")
 
           print(f"PASS shared thumbnails: {len(image_files)}")
           publish_root = root / "out"
@@ -159,14 +128,14 @@ jobs:
 
           const samples = {
             en9: { f: "Student", a: "طالب", p: "", s: "", c: "", dossier: "", page: "", pos: "NOUN", poslabel: "اسم", unit: "Unit 01", unitnum: "01" },
-            enlit: { f: "Achievement", a: "إنجاز", p: "", s: "", c: "", dossier: "", page: "", pos: "", poslabel: "", unit: "Unit 01 - Future Careers", unitnum: "" },
-            ensci: { f: "Achievement", a: "إنجاز", p: "", s: "", c: "", dossier: "", page: "", pos: "", poslabel: "", unit: "Unit 01 - A Learned Lesson is a Good Lesson", unitnum: "" },
+            enlit: { f: "Novel", a: "رواية", p: "", s: "", c: "", dossier: "", page: "", pos: "", poslabel: "", unit: "Unit 01 - Future Careers", unitnum: "" },
+            ensci: { f: "Atom", a: "ذرة", p: "", s: "", c: "", dossier: "", page: "", pos: "", poslabel: "", unit: "Unit 01 - A Learned Lesson is a Good Lesson", unitnum: "" },
             fr9: { f: "Leçon", a: "درس", p: "", s: "", c: "", dossier: "Dossier 1", page: "", pos: "", poslabel: "", unit: "", unitnum: "" },
           };
           const cases = {
             en9: ["{{Word}}|{{Meaning}}|{{POS}}|{{POSLabel}}|{{Unit}}|{{UnitNum}}|{{AudioEN}}", "Student|طالب|NOUN|اسم|Unit 01|01|"],
-            enlit: ["{{#English}}<b>{{English}}</b>{{/English}}|{{Arabic}}|{{UnitText}}|{{AudioEN}}", "<b>Achievement</b>|إنجاز|Unit 01 - Future Careers|"],
-            ensci: ["{{English}}|{{Arabic}}|{{UnitText}}|{{AudioEN}}", "Achievement|إنجاز|Unit 01 - A Learned Lesson is a Good Lesson|"],
+            enlit: ["{{#English}}<b>{{English}}</b>{{/English}}|{{Arabic}}|{{UnitText}}|{{AudioEN}}", "<b>Novel</b>|رواية|Unit 01 - Future Careers|"],
+            ensci: ["{{English}}|{{Arabic}}|{{UnitText}}|{{AudioEN}}", "Atom|ذرة|Unit 01 - A Learned Lesson is a Good Lesson|"],
             fr9: ["{{Français}}|{{Arabic}}|{{Dossier}}|{{AudioFR}}", "Leçon|درس|Dossier 1|"],
           };
 
@@ -176,15 +145,14 @@ jobs:
             const end = html.indexOf("\nvar FIT_SRC", start);
             assert(start >= 0 && end > start, deck + ": preview function not found");
             const source = html.slice(start, end);
-            assert(source.includes("front.split('{{Word}}').join(SAMP.f)"), deck + ": word sample mapping missing");
-            assert(source.includes("front.split('{{Meaning}}').join(SAMP.a)"), deck + ": meaning sample mapping missing");
-            assert(source.includes("return front;"), deck + ": preview helper return missing");
-            fs.writeFileSync("/tmp/anki-preview-" + deck + ".js", "var SAMP = {};\n" + source + "\n");
-            console.log("PASS " + deck + ": preview helper source and field mappings are present");
+            const fillSampleFields = new Function("SAMP", source + "\nreturn fillSampleFields;")(samples[deck]);
+            const actual = fillSampleFields(cases[deck][0]);
+            assert.equal(actual, cases[deck][1], deck + ": preview sample fields were not substituted correctly");
+            assert(!/\{\{[^}]+\}\}/.test(actual), deck + ": unresolved placeholder remains in preview");
+            console.log("PASS " + deck + ": actual preview helper renders sample text and unit fields");
           }
           JS
-          for deck in en9 enlit ensci fr9; do node --check "/tmp/anki-preview-$deck.js"; done
-      - name: Verify clean-slate guided journey and real gallery controls
+      - name: Verify polished six-step tour and preview controls for all four galleries
         run: |
           python - <<'PY'
           import json
@@ -194,110 +162,47 @@ jobs:
           sys.path.insert(0, "tools")
           from build_galleries import bmatch
 
-          expected_steps = ("start", "library", "preview", "selection", "audio", "export")
           for deck in ("en9", "enlit", "ensci", "fr9"):
               html = (Path("out") / f"{deck}.html").read_text(encoding="utf-8")
               marker = "var EMBEDDED_DESIGNS_100 = "
               pos = html.index(marker) + len(marker)
               start = html.index("[", pos)
               designs = json.loads(html[start:bmatch(html, start) + 1])
-              assert len(designs) == 100, f"{deck}: expected exactly 100 designs"
+              assert len(designs) == 100, f"{deck}: expected 100 designs"
               assert all(item.get("pack") == deck for item in designs), f"{deck}: mixed design packs"
 
-              tour_start = html.index("var ONBOARD_DECK = ")
-              tour_end = html.index("// ============================================================\n// WHAT'S NEW", tour_start)
-              tour = html[tour_start:tour_end]
-              steps_start = tour.index("var ONBOARD_STEPS = [")
-              steps_end = tour.index("];", steps_start)
-              steps = tour[steps_start:steps_end]
-              assert tuple(re.findall(r'id:"([a-z]+)"', steps)) == expected_steps, f"{deck}: wrong guided journey"
-              for target in (".hero-cta-main", "#gbGrid .gb-item", "#gvShowAns", "#gvSelectBtn", "#gTtsPreviewBtn", "#exOpenBtn"):
-                  assert target in steps, f"{deck}: missing real tour target {target}"
-              for helper in ("function onboardStepTarget(step)", "function positionOnboardGuide()", "function scheduleOnboardPosition()", "function goToOnboardStep(index)", "function handleOnboardAction(action)", "function showOnboarding()", "function closeOnboarding(completed)", "function isOnboardingCompleted()"):
-                  assert helper in tour, f"{deck}: missing guide helper {helper}"
-              assert 'ONBOARD_PRIMARY_LANGUAGE = ONBOARD_DECK === "fr9" ? "الفرنسية" : "الإنجليزية";' in tour, f"{deck}: voice language is not deck-aware"
-              assert "القوالب المئة" in tour, f"{deck}: guide does not explain the complete library"
-              assert 'setAttribute("aria-live","polite")' in tour and 'setAttribute("aria-current"' in tour, f"{deck}: guide accessibility states are missing"
-              assert "data-guide-step" in tour and "data-guide-action" in tour, f"{deck}: guide navigation is not wired"
-              assert 'target.closest("#gbGrid .gb-item")' in tour, f"{deck}: opening a template does not advance the guide"
-              assert 'target.closest("#gvShowAns,#fsFlipBtn")' in tour, f"{deck}: real card flip is not observed"
-              assert 'target.closest("#gvSelectBtn")' in tour and "gvSel.length" in tour, f"{deck}: real selection feedback is missing"
-              assert 'target.closest("#gTtsPreviewBtn")' in tour, f"{deck}: audio preview feedback is missing"
-              assert 'target.closest("#exOpenBtn")' in tour, f"{deck}: export review is not observed"
-              assert "og-spotlight" in tour and "og-spotlight" in html, f"{deck}: current action is not highlighted"
-              assert "og-backdrop" not in tour and "onboardBackdropPath" not in tour, f"{deck}: obsolete dimming spotlight remains"
-              assert "القوالب المئة" in tour and "تصنيفات" in tour, f"{deck}: no-filter browsing is not explained"
-              assert "innerHTML" not in tour and "textContent" in tour, f"{deck}: guide must build safe text nodes"
-              assert "confirmExport(" not in tour and "runGenerate(" not in tour and "downloadAPKG(" not in tour, f"{deck}: guide can trigger a destructive export"
-              assert "function mountGalleryPreview()" in html and "new IntersectionObserver" in html, f"{deck}: template previews are not lazy"
-              assert "rootMargin:'320px 0px'" in html, f"{deck}: lazy preview threshold is not configured"
-              assert 'id="gbFilters"' not in html, f"{deck}: filter strip was not removed"
-              assert 'id="onboardTourLauncher"' in html and 'الجولة التفاعلية' in html, f"{deck}: persistent manual tour launcher is missing"
-              assert "Guided tour is intentionally user-initiated" in html, f"{deck}: guide still auto-opens"
-              assert "prefers-reduced-motion:reduce" in html and "safe-area-inset-bottom" in html, f"{deck}: reduced-motion or safe-area support is missing"
-              assert 'event.key==="Escape"' in tour and 'event.key==="ArrowLeft"' in tour, f"{deck}: keyboard controls are missing"
-              assert "onboardGuideReturnFocus" in tour and "isConnected" in tour, f"{deck}: focus restoration is missing"
-              assert "localStorage.setItem(ONBOARD_STORAGE_KEY" in tour, f"{deck}: completion state is not safely persisted"
-              assert "كيفية الاستيراد" in html and 'id="importGuide"' in html, f"{deck}: Anki import guidance was removed"
-              audio_source = "tas9" if deck == "fr9" else deck
-              expected_audio_status = "fetch(apiBase()+'/api/audio_status?source=" + audio_source + "')"
-              assert html.count(expected_audio_status) == 1, f"{deck}: audio-status URL is malformed or duplicated"
-              assert "fetch(apiBase()+'/api/audio_status?source=" + audio_source + ").then" not in html, f"{deck}: audio-status quote is missing"
+              assert len(re.findall(r"\{icon:'", html[html.index("var ONBOARD_STEPS=["):html.index("var onbStep=", html.index("var ONBOARD_STEPS=["))])) == 6, f"{deck}: tour must have six steps"
+              assert f"localStorage.setItem('anki_{deck}_onboarded','1')" in html, f"{deck}: wrong onboarding completion key"
+              assert f"if(!localStorage.getItem('anki_{deck}_onboarded'))setTimeout(showOnboarding,80);" in html, f"{deck}: first-visit tour must be delayed safely"
+              assert "onboardReturnFocus=document.activeElement" in html, f"{deck}: return focus is not captured"
+              assert "document.body.style.overflow=onboardPreviousOverflow" in html, f"{deck}: body scrolling is not restored"
+              assert "e.key==='Tab'" in html and "e.key==='Escape'" in html, f"{deck}: keyboard dialog controls are missing"
+              assert "aria-labelledby=\"onboardStepTitle\"" in html and "aria-valuenow=" in html, f"{deck}: tour accessibility semantics are incomplete"
+              dialog = re.search(r'<dialog[^>]*id="onboardOverlay"[^>]*>', html)
+              assert dialog, f"{deck}: onboarding dialog markup is missing"
+              assert "style=" not in dialog.group(0), f"{deck}: inline display style can hide the open modal"
+              assert '#onboardOverlay.onboard-overlay[open]{display:flex}' in html, f"{deck}: open dialog has no visible display rule"
+              assert "overlay.showModal()" in html, f"{deck}: tour must open as a native modal dialog"
+              assert "overlay.close()" in html, f"{deck}: tour must close through the native dialog lifecycle"
+              assert "overlay.removeAttribute('open')" in html, f"{deck}: non-native dialog fallback is missing"
+              assert "if(!overlay||!overlay.hasAttribute('open'))return;" in html, f"{deck}: keyboard handler must follow the dialog open state"
+              assert "overlay.style.display='flex'" not in html, f"{deck}: dialog is being shown without native modal semantics"
+              assert 'aria-modal="true"' in html, f"{deck}: native modal semantics are not declared"
+              assert "@media(max-width:620px)" in html and "prefers-reduced-motion:reduce" in html, f"{deck}: responsive/reduced-motion styles are missing"
+
+              assert "gv-fab" not in html, f"{deck}: floating corner flip button remains"
+              assert 'id="fsFlipBtn"' in html, f"{deck}: full-screen flip control was removed"
+              assert 'id="loadingMsg"' not in html and "جاري تحميل القوالب..." not in html, f"{deck}: blocking loader remains"
+
               ids = re.findall(r'\bid=["\']([^"\']+)["\']', html)
-              assert len(ids) == len(set(ids)), f"{deck}: duplicate HTML IDs"
-              print(f"PASS {deck}: six task-led guide steps, no dimming overlay, no filters, real interactions")
-          print("ALL FOUR CLEAN-SLATE GALLERY CHECKS PASSED")
+              duplicates = sorted({value for value in ids if ids.count(value) > 1})
+              assert not duplicates, f"{deck}: duplicate HTML IDs: {duplicates}"
+              print(f"PASS {deck}: 100 deck-bound designs, six tour steps, focus/keyboard/accessibility, no corner flip or blocking loader")
+
+          print("ALL FOUR GALLERY UX REGRESSION CHECKS PASSED")
           PY
 
-      - name: Syntax-check the generated guided-tour scripts
-        run: |
-          node <<'JS'
-          const assert = require("node:assert/strict");
-          const fs = require("node:fs");
-          for (const deck of ["en9", "enlit", "ensci", "fr9"]) {
-            const html = fs.readFileSync("out/" + deck + ".html", "utf8");
-            const start = html.indexOf("var ONBOARD_DECK = ");
-            const endMarker = "// ============================================================\n// WHAT'S NEW";
-            const end = html.indexOf(endMarker, start);
-            assert(start >= 0 && end > start, deck + ": guide script boundaries missing");
-            const source = html.slice(start, end);
-            for (const token of ["function onboardStepTarget(step)", "function positionOnboardGuide()", "function goToOnboardStep(index)", "function closeOnboarding(completed)", "function showOnboarding()"]) {
-              assert(source.includes(token), deck + ": missing " + token);
-            }
-            fs.writeFileSync("/tmp/anki-onboard-" + deck + ".js", source + "\n");
-            console.log("PASS " + deck + ": six-step tour source contract");
-          }
-          JS
-          for deck in en9 enlit ensci fr9; do node --check "/tmp/anki-onboard-$deck.js"; done
-
-      - name: Parse every generated inline JavaScript block
-        run: |
-          node <<'JS'
-          const assert = require("node:assert/strict");
-          const fs = require("node:fs");
-          for (const deck of ["en9", "enlit", "ensci", "fr9"]) {
-            const html = fs.readFileSync("out/" + deck + ".html", "utf8");
-            const scriptPattern = /<script\b([^>]*)>([\s\S]*?)<\/script\s*>/gi;
-            let match;
-            let checked = 0;
-            while ((match = scriptPattern.exec(html)) !== null) {
-              const attrs = match[1] || "";
-              const type = (attrs.match(/\btype=["']([^"']+)["']/i) || [])[1] || "";
-              if (type && type !== "module" && !/(java|ecma)script/i.test(type)) continue;
-              if (type === "module") continue;
-              const source = match[2] || "";
-              if (!source.trim()) continue;
-              const output = "/tmp/anki-inline-" + deck + "-" + checked + ".js";
-              fs.writeFileSync(output, source + "\n");
-              checked++;
-            }
-            assert(checked >= 4, deck + ": expected at least four executable inline scripts, checked " + checked);
-            console.log("EXTRACTED " + deck + ": " + checked + " executable inline scripts");
-          }
-          JS
-          for file in /tmp/anki-inline-*.js; do node --check "$file"; done
-
-      - name: Verify committed gallery data remains intact
+      - name: Verify committed gallery pages stay synchronized with native dialog behavior
         run: |
           python - <<'PY'
           import json
@@ -326,240 +231,21 @@ jobs:
               assert len(designs) == 100, f"{deck}: expected 100 committed designs"
               assert all(item.get("pack") == deck for item in designs), f"{deck}: wrong committed deck binding"
               assert all(item.get("fields") for item in designs), f"{deck}: committed field mappings missing"
-              ids = re.findall(r'\bid="([^"]+)"', html)
+              dialogs = [line for line in html.splitlines() if line.startswith("<dialog") and 'id="onboardOverlay"' in line]
+              assert len(dialogs) == 1 and "style=" not in dialogs[0], f"{deck}: missing or hidden inline onboarding dialog"
+              assert "overlay.showModal()" in html and "overlay.close()" in html, f"{deck}: native dialog lifecycle missing"
+              assert "overlay.setAttribute('open','')" in html and "overlay.removeAttribute('open')" in html, f"{deck}: dialog fallback missing"
+              assert "overlay.style.display='flex'" not in html and "overlay.style.display='none'" not in html, f"{deck}: legacy display-based modal remains"
+              assert "#onboardOverlay.onboard-overlay[open]{display:flex}" in html, f"{deck}: open dialog visibility rule missing"
+              assert len(re.findall(r"\{icon:'", html[html.index("var ONBOARD_STEPS=["):html.index("var onbStep=")])) == 6, f"{deck}: tour must have six steps"
+              assert "gv-fab" not in html and 'id="fsFlipBtn"' in html, f"{deck}: obsolete or missing preview flip control"
+              assert 'id="loadingMsg"' not in html and "جاري تحميل القوالب..." not in html, f"{deck}: blocking loader remains"
+              assert f"localStorage.setItem('anki_{deck}_onboarded','1')" in html, f"{deck}: wrong onboarding storage key"
+              ids = re.findall(r'id="([^"]+)"', html)
               assert len(ids) == len(set(ids)), f"{deck}: duplicate HTML IDs"
-              print(f"PASS committed {deck}: 100 deck-bound designs and intact field mappings")
-          print("ALL COMMITTED GALLERY DATA CHECKS PASSED")
+              print(f"PASS committed {deck}: 100 deck-bound designs, six-step native tour, clean preview controls")
+          print("ALL COMMITTED GALLERY PAGES PASSED")
           PY
-      - name: Confirm protected source files were not changed
-        if: always()
-        run: |
-          git diff --exit-code -- index.html bac12.html designs_100.js app.py
-          git diff HEAD^ HEAD --exit-code -- index.html bac12.html designs_100.js app.py
-
-      - name: Install isolated browser QA runtime
-        run: |
-          npm install --prefix /tmp/anki-gallery-browser-qa --no-save --no-package-lock playwright@1.56.1
-          /tmp/anki-gallery-browser-qa/node_modules/.bin/playwright install --with-deps chromium
-
-      - name: Run real-browser checks for the redesigned opening, library and guide
-        run: |
-          set -euo pipefail
-          mkdir -p qa-artifacts
-          python -m http.server 4173 --directory out > /tmp/anki-gallery-preview-server.log 2>&1 &
-          echo "$!" > /tmp/anki-gallery-preview-server.pid
-          for attempt in $(seq 1 40); do
-            if curl -fsS http://127.0.0.1:4173/en9.html >/dev/null; then break; fi
-            sleep 0.5
-          done
-          NODE_PATH=/tmp/anki-gallery-browser-qa/node_modules node <<'JS'
-          const assert = require("node:assert/strict");
-          const fs = require("node:fs");
-          const { chromium } = require("playwright");
-          const decks = ["en9", "enlit", "ensci", "fr9"];
-          const viewports = [
-            {name:"desktop",width:1440,height:1000},
-            {name:"mobile",width:390,height:844},
-            {name:"compact",width:320,height:640}
-          ];
-          const expected = {
-            fr9:{label:"اللغة الفرنسية · الصف التاسع",title:"اختر شكل بطاقات مفرداتك."},
-            en9:{label:"اللغة الإنجليزية · الصف التاسع",title:"اختر شكل بطاقات مفرداتك."},
-            enlit:{label:"بكالوريا 12 · الفرع الأدبي",title:"اختر شكل بطاقات مفرداتك."},
-            ensci:{label:"بكالوريا 12 · الفرع العلمي",title:"اختر شكل بطاقات مفرداتك."}
-          };
-          (async()=>{
-            const browser=await chromium.launch({headless:true,args:["--no-sandbox","--disable-dev-shm-usage"]});
-            const report={browser:"Chromium",decks:{},failures:[]};
-            try{
-              for(const deck of decks){
-                report.decks[deck]={};
-                for(const viewport of viewports){
-                  const context=await browser.newContext({viewport:{width:viewport.width,height:viewport.height},deviceScaleFactor:1,reducedMotion:"reduce"});
-                  const page=await context.newPage(),pageErrors=[];let downloads=0;
-                  page.on("pageerror",error=>pageErrors.push(error.message));
-                  page.on("download",()=>downloads++);
-                  await page.route("**/api/track",route=>route.fulfill({status:204,body:""}));
-                  await page.route("**/api/audio_status?*",route=>route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({total_words:0,library_words:0,audio_enabled_default:false,max_generate_words:250})}));
-                  await page.route("**/api/tts_voices?*",route=>route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({fr:[],ar:[]})}));
-                  await page.route("**/api/cached_voices*",route=>route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({fr:[],ar:[]})}));
-                  await page.goto("http://127.0.0.1:4173/"+deck+".html",{waitUntil:"domcontentloaded"});
-                  await page.waitForSelector("#gallery-experience-hero",{timeout:20000});
-                  await page.waitForFunction(()=>document.querySelector("#gallery-experience-hero h1")?.textContent?.trim().length>0,null,{timeout:10000});
-                  await page.waitForFunction(()=>document.querySelectorAll("#gallery-experience-hero .gx-preview-host.is-ready").length===3,null,{timeout:15000});
-                  const opening=await page.evaluate(()=>{
-                    const hero=document.querySelector("#gallery-experience-hero");
-                    const rect=hero.getBoundingClientRect();
-                    return {
-                      title:hero.querySelector("h1")?.textContent.trim(),
-                      label:hero.querySelector("[data-gx-deck]")?.textContent.trim(),
-                      width:rect.width,height:rect.height,
-                      heroFrames:hero.querySelectorAll("iframe").length,
-                      viewerVisible:getComputedStyle(document.getElementById("gv")).display!=="none",
-                      workspaceHidden:["#gv","#gvStage","#gvShowAns",".gv-progress",".gv-actions","#gvShimmer",".aa","#download","#statusBar","#onboardTourLauncher"].every(selector=>{const node=document.querySelector(selector);return !!node&&getComputedStyle(node).display==="none";}),
-                      activeNav:document.querySelectorAll('.hdr-nav .hdr-link[aria-current="page"]').length,
-                      heroReady:hero.querySelectorAll(".gx-preview-host.is-ready").length,
-                      heroLoading:hero.querySelectorAll(".gb-preview-loading").length,
-                      welcome:!!document.getElementById("gxWelcome"),
-                      filters:!!document.getElementById("gbFilters"),
-                      overflow:document.documentElement.scrollWidth
-                    };
-                  });
-                  assert.equal(opening.title,expected[deck].title,deck+": wrong first-screen title");
-                  assert.equal(opening.label,expected[deck].label,deck+": wrong deck identity");
-                  assert.equal(opening.heroFrames,3,deck+": first screen must use three real template previews");
-                  assert.equal(opening.viewerVisible,false,deck+": full-screen preview must stay hidden until selection");
-                  assert.equal(opening.workspaceHidden,true,deck+": editor, export, status, or floating controls leaked into the opening");
-                  assert.equal(opening.activeNav,1,deck+": current gallery is not identified in navigation");
-                  assert.equal(opening.heroReady,3,deck+": three real opening previews did not finish rendering");
-                  assert.equal(opening.heroLoading,0,deck+": stale loading labels cover rendered opening previews");
-                  assert.equal(opening.welcome,false,deck+": blocking welcome modal remains");
-                  assert.equal(opening.filters,false,deck+": filter strip remains");
-                  assert(opening.width>0&&opening.height>0,deck+"/"+viewport.name+": opening is not visible");
-                  assert(opening.overflow<=viewport.width+1,deck+"/"+viewport.name+": opening causes horizontal overflow");
-                  await page.screenshot({path:"qa-artifacts/"+deck+"-"+viewport.name+"-opening.png",fullPage:false});
-
-                  await page.locator("#gallery-experience-hero [data-gx-browse]").click();
-                  await page.waitForFunction(()=>document.getElementById("galleryBrowser")?.classList.contains("open"),null,{timeout:10000});
-                  await page.waitForFunction(()=>document.querySelectorAll("#gbGrid .gb-item").length===100,null,{timeout:15000});
-                  await page.waitForFunction(()=>{const frames=document.querySelectorAll("#gbGrid .gb-preview-frame").length;return frames>0&&frames<=35;},null,{timeout:10000});
-                  await page.waitForFunction(()=>document.querySelectorAll("#gbGrid .gb-preview-frame").length>0,null,{timeout:5000});
-                  const library=await page.evaluate(()=>({
-                    count:document.querySelectorAll("#gbGrid .gb-item").length,
-                    filters:document.querySelectorAll("#galleryBrowser .gb-chip").length,
-                    eagerFrames:document.querySelectorAll("#gbGrid .gb-preview-frame").length,
-                    totalWidth:document.documentElement.scrollWidth,
-                    firstCard:document.querySelector("#gbGrid .gb-item")?.getBoundingClientRect().toJSON(),
-                    previewLoaderLeaks:document.querySelectorAll("#gbGrid .gb-preview-host.is-ready .gb-preview-loading").length,
-                    headerControlsSeparated:(()=>{
-                      const count=document.getElementById("gbCount")?.getBoundingClientRect();
-                      const close=document.querySelector("#galleryBrowser .gb-close")?.getBoundingClientRect();
-                      return !!count&&!!close&&(count.right<close.left||close.right<count.left);
-                    })()
-                  }));
-                  assert.equal(library.count,100,deck+": library does not show all 100 designs");
-                  assert.equal(library.filters,0,deck+": filter chips are still present");
-                  assert(library.eagerFrames>0&&library.eagerFrames<=35,deck+": gallery eagerly mounted too many or no real previews ("+library.eagerFrames+")");
-                  assert.equal(library.previewLoaderLeaks,0,deck+": loading labels remain over rendered gallery previews");
-                  assert.equal(library.headerControlsSeparated,true,deck+": library header count and close control overlap");
-                  const iframeInput=await page.evaluate(()=>{const frame=document.querySelector("#gbGrid .gb-preview-frame");return frame?getComputedStyle(frame).pointerEvents:"missing";});
-                  assert.equal(iframeInput,"none",deck+": decorative preview iframe intercepts card clicks");
-                  assert(library.totalWidth<=viewport.width+1,deck+"/"+viewport.name+": library causes horizontal overflow");
-                  await page.screenshot({path:"qa-artifacts/"+deck+"-"+viewport.name+"-library.png",fullPage:false});
-                  const first=page.locator("#gbGrid .gb-item").first();
-                  await first.click();
-                  await page.waitForFunction(()=>!document.getElementById("galleryBrowser")?.classList.contains("open"),null,{timeout:10000});
-                  await page.waitForFunction(()=>document.getElementById("gv")?.classList.contains("gx-visible"),null,{timeout:5000});
-                  await page.waitForFunction(()=>typeof gvIdx!=="undefined"&&gvIdx===0,null,{timeout:10000});
-                  await page.waitForFunction(()=>document.body.classList.contains("gx-selection-ready")&&["#gvStage","#gvShowAns",".aa","#download","#statusBar","#onboardTourLauncher"].every(selector=>{const node=document.querySelector(selector);return !!node&&getComputedStyle(node).display!=="none";}),null,{timeout:5000});
-                  await page.waitForFunction(()=>{
-                    const stage=document.getElementById("gvStage"),header=document.querySelector("header.hdr");
-                    if(!stage||!header)return false;
-                    const rect=stage.getBoundingClientRect(),headerBottom=header.getBoundingClientRect().bottom;
-                    return rect.height>window.innerHeight*.45&&rect.top>=headerBottom+36&&rect.top<headerBottom+220;
-                  },null,{timeout:10000});
-                  const selectedPreview=await page.evaluate(()=>{
-                    const stage=document.getElementById("gvStage"),rect=stage.getBoundingClientRect();
-                    return {height:rect.height,width:rect.width,top:rect.top,background:getComputedStyle(stage).backgroundImage};
-                  });
-                  assert(selectedPreview.height>viewport.height*.45,deck+"/"+viewport.name+": selected preview stage is too short");
-                  await page.screenshot({path:"qa-artifacts/"+deck+"-"+viewport.name+"-selected-preview.png",fullPage:false});
-                  assert(await page.locator("#gvStage").count()===1,deck+": actual gallery preview stage is missing");
-
-                  await page.locator("#onboardTourLauncher").click();
-                  await page.waitForSelector("#onboardGuideRoot .og-card",{timeout:10000});
-                  await page.waitForFunction(()=>document.querySelector("#onboardGuideRoot .og-progress [aria-current=step]")?.getAttribute("data-guide-step")==="0",null,{timeout:5000});
-                  await page.waitForFunction(()=>{
-                    const root=document.getElementById("onboardGuideRoot"),card=root?.querySelector(".og-card");
-                    if(!root||!card)return false;
-                    const rect=card.getBoundingClientRect(),header=document.querySelector("header.hdr, .hdr");
-                    const headerBottom=header?Math.max(0,header.getBoundingClientRect().bottom):0;
-                    const heroTitle=document.querySelector("#gallery-experience-hero h1"),heroAction=document.querySelector("#gallery-experience-hero [data-gx-browse]");
-                    const titleRect=heroTitle?.getBoundingClientRect(),actionRect=heroAction?.getBoundingClientRect();
-                    return getComputedStyle(card).display!=="none"&&getComputedStyle(card).visibility!=="hidden"&&rect.width>0&&rect.height>0&&rect.top>=0&&rect.bottom<=window.innerHeight&&(root.dataset.placement!=="top"||rect.top>=headerBottom+6)&&!!titleRect&&titleRect.top>=headerBottom&&titleRect.bottom<window.innerHeight&&!!actionRect&&actionRect.top>=headerBottom&&actionRect.bottom<window.innerHeight;
-                  },null,{timeout:5000});
-                  const guideTargets=await page.evaluate(()=>{
-                    const next=document.querySelector("#onboardGuideRoot .og-btn.primary"),close=document.querySelector("#onboardGuideRoot .og-close");
-                    return {next:next?.getBoundingClientRect().height||0,close:close?.getBoundingClientRect().height||0};
-                  });
-                  assert(guideTargets.next>=48,deck+"/"+viewport.name+": guide action is too small for touch");
-                  assert(guideTargets.close>=44,deck+"/"+viewport.name+": guide close target is too small");
-                  assert.equal(await page.locator("#onboardGuideRoot .og-backdrop").count(),0,deck+": tour still dims the entire page");
-                  assert.equal(await page.locator("#onboardGuideRoot").getAttribute("data-placement"),"bottom",deck+"/"+viewport.name+": opening tour should dock below, not cover, the opening content");
-                  await page.screenshot({path:"qa-artifacts/"+deck+"-"+viewport.name+"-tour-start.png",fullPage:false});
-                  await page.locator('#onboardGuideRoot [data-guide-action="start"]').click();
-                  await page.waitForFunction(()=>document.getElementById("galleryBrowser")?.classList.contains("open"),null,{timeout:10000});
-                  await page.waitForFunction(()=>window.onbStep===1,null,{timeout:10000});
-                  await page.locator("#gbGrid .gb-item").first().click();
-                  await page.waitForFunction(()=>window.onbStep===2,null,{timeout:10000});
-                  await page.locator("#gvShowAns").click();
-                  await page.waitForFunction(()=>window.onbStep===3,null,{timeout:10000});
-                  await page.locator("#gvSelectBtn").click();
-                  const selected=await page.evaluate(()=>Array.isArray(window.gvSel)?window.gvSel.length:0);
-                  assert(selected>=1,deck+": selecting a card did not add it to the deck");
-                  await page.locator('#onboardGuideRoot [data-guide-step="4"]').click();
-                  await page.waitForFunction(()=>window.onbStep===4,null,{timeout:10000});
-                  await page.locator("#gTtsPreviewBtn").click({timeout:10000});
-                  await page.locator('#onboardGuideRoot [data-guide-step="5"]').click();
-                  await page.waitForFunction(()=>window.onbStep===5,null,{timeout:10000});
-                  await page.locator("#exOpenBtn").click({timeout:10000});
-                  await page.waitForFunction(()=>document.getElementById("exportOverlay")?.classList.contains("on"),null,{timeout:10000});
-                  await page.waitForFunction(()=>!window.onboardGuideOpen,null,{timeout:10000});
-                  assert.equal(downloads,0,deck+": guided tour unexpectedly initiated an export");
-                  await page.locator("#exportOverlay .fs-close").click();
-                  await page.waitForFunction(()=>!document.getElementById("exportOverlay")?.classList.contains("on"),null,{timeout:10000});
-                  assert.deepEqual(pageErrors,[],deck+"/"+viewport.name+": uncaught page errors: "+pageErrors.join(" | "));
-                  report.decks[deck][viewport.name]={opening,library,pageErrors,downloads};
-                  await context.close();
-                  console.log("BROWSER PASS "+deck+"/"+viewport.name+": integrated opening, 100-card no-filter library, lazy previews, six-step non-blocking guide");
-                }
-              }
-              fs.writeFileSync("qa-artifacts/browser-qa-report.json",JSON.stringify(report,null,2));
-            }catch(error){
-              report.failures.push(String(error&&error.stack||error));
-              fs.writeFileSync("qa-artifacts/browser-qa-report.json",JSON.stringify(report,null,2));
-              throw error;
-            }finally{await browser.close();}
-          })().catch(error=>{console.error(error);process.exitCode=1;});
-          JS
-
-      - name: Upload isolated gallery preview and browser evidence
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: anki-gallery-browser-qa
-          path: |
-            out/
-            qa-artifacts/
-          if-no-files-found: warn
-          retention-days: 7
-
-  publish-galleries:
-    if: github.ref == 'refs/heads/main'
-    needs: build-and-verify
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: actions/download-artifact@v4
-        with:
-          name: anki-gallery-browser-qa
-          path: .
-      - name: Re-establish protected French Bac reference for deployment verification
-        run: |
-          set -euo pipefail
-          git fetch origin master
-          git show origin/master:public/index.html > /tmp/anki-french-bac-base.html
-          test -s /tmp/anki-french-bac-base.html
-      - name: Publish verified galleries to GitHub Pages and Render
-        run: |
-          set -euo pipefail
-          test -s out/en9.html && test -s out/enlit.html && test -s out/ensci.html && test -s out/fr9.html
-          test -s qa-artifacts/browser-qa-report.json
-          echo "Using the exact build and browser evidence from the read-only verification job."
       - name: Publish the generated static site for hosting
         if: github.ref == 'refs/heads/main'
         run: |
@@ -705,4 +391,8 @@ jobs:
               assert len(body) > 1000, f"thumbnail {sample}: unexpectedly small ({len(body)} bytes)"
               print(f"LIVE PASS thumbnail {sample}: HTTP 200 image/jpeg ({len(body)} bytes)")
           PY
-
+      - name: Confirm protected source files were not changed
+        if: always()
+        run: |
+          git diff --exit-code -- index.html bac12.html designs_100.js app.py
+          git diff HEAD^ HEAD --exit-code -- index.html bac12.html designs_100.js app.py

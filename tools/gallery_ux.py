@@ -1,344 +1,78 @@
-"""Clean, task-led onboarding for the four generated non-Bac galleries."""
+"""Deterministic UX transforms for the four generated non-Bac gallery pages."""
 import re
 
-TOUR_CSS = r"""
-#onboardTourLauncher{position:fixed;z-index:2147483001;right:22px;bottom:20px;display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 18px;border:1px solid rgba(177,196,219,.22);border-radius:999px;background:#18334b;color:#f4f8fc;font:inherit;font-size:.78rem;font-weight:850;box-shadow:0 12px 34px rgba(5,14,27,.28);cursor:pointer;transition:background .18s,transform .18s}
-#onboardTourLauncher:hover{background:#244c68;transform:translateY(-2px)}
-#onboardTourLauncher:focus-visible,#onboardGuideRoot button:focus-visible{outline:3px solid #62c7bc;outline-offset:3px}
-#onboardTourLauncher[hidden]{display:none!important}
-#onboardGuideRoot{position:fixed;inset:0;z-index:2147483000;pointer-events:none;direction:rtl;color:#f5f8fb}
-#onboardGuideRoot .og-card{position:absolute;left:50%;top:var(--og-safe-top,82px);bottom:auto;width:min(760px,calc(100vw - 28px));max-height:min(320px,42dvh);overflow:auto;transform:translateX(-50%);padding:15px 18px 13px;border:1px solid rgba(161,190,211,.28);border-radius:16px;background:#10243a;box-shadow:0 18px 58px rgba(0,0,0,.32);pointer-events:auto;scrollbar-width:thin}
-#onboardGuideRoot[data-placement="top"] .og-card{top:var(--og-safe-top,82px);bottom:auto}
-#onboardGuideRoot[data-placement="bottom"] .og-card{bottom:max(24px,env(safe-area-inset-bottom,0px));top:auto}
-#onboardGuideRoot .og-head{display:flex;align-items:center;gap:12px;margin-bottom:9px}
-#onboardGuideRoot .og-brand{display:flex;align-items:center;gap:9px;min-width:0}
-#onboardGuideRoot .og-mark{display:grid;place-items:center;width:31px;height:31px;flex:0 0 auto;border-radius:9px;background:#28506b;color:#e9f7f6;font-size:.76rem;font-weight:950}
-#onboardGuideRoot .og-brand-copy{display:grid;gap:2px}
-#onboardGuideRoot .og-brand-copy strong{font-size:.64rem;letter-spacing:.12em;color:#e8f0f6}
-#onboardGuideRoot .og-brand-copy small{font-size:.61rem;color:#91a8bc}
-#onboardGuideRoot .og-meta{margin-inline-start:auto;color:#a9c1d1;font-size:.65rem}
-#onboardGuideRoot .og-close{width:44px;height:44px;min-width:44px;border:1px solid rgba(190,211,228,.2);border-radius:8px;background:transparent;color:#dce8f1;font-size:1rem;cursor:pointer}
-#onboardGuideRoot .og-progress{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px;margin:0 0 10px}
-#onboardGuideRoot .og-progress button{min-width:0;padding:0;border:0;background:transparent;cursor:pointer}
-#onboardGuideRoot .og-progress button span{display:block;height:3px;border-radius:8px;background:rgba(200,218,233,.18)}
-#onboardGuideRoot .og-progress button.done span{background:#5aafa5}
-#onboardGuideRoot .og-progress button[aria-current="step"] span{height:4px;background:#81c9be}
-#onboardGuideRoot .og-content{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:5px 20px}
-#onboardGuideRoot .og-step-label{color:#80c9bd;font-size:.66rem;font-weight:850}
-#onboardGuideRoot .og-title{margin:2px 0 3px;color:#f8fbfd;font-size:clamp(1rem,1.8vw,1.27rem);font-weight:900;line-height:1.45}
-#onboardGuideRoot .og-text{grid-column:1;margin:0;color:#c0cedb;font-size:.75rem;line-height:1.75}
-#onboardGuideRoot .og-target{grid-column:1;margin:4px 0 0;color:#8fa9bf;font-size:.65rem}
-#onboardGuideRoot .og-note{grid-column:1;margin:4px 0 0;color:#8bc7be;font-size:.65rem;line-height:1.6}
-#onboardGuideRoot .og-footer{grid-column:2;grid-row:1 / span 4;display:flex;align-items:center;gap:7px}
-#onboardGuideRoot .og-actions{display:flex;gap:7px}
-#onboardGuideRoot .og-btn{min-height:48px;padding:0 13px;border:1px solid rgba(182,205,225,.2);border-radius:9px;background:#1a354e;color:#eaf2f8;font:inherit;font-size:.69rem;font-weight:850;cursor:pointer}
-#onboardGuideRoot .og-btn.primary{border-color:#477b7b;background:#2b7774;color:#fff}
-#onboardGuideRoot .og-skip{border:0;background:transparent;color:#9cb0c2;font:inherit;font-size:.65rem;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
-body .og-spotlight{position:relative!important;z-index:2147482998!important;outline:2px solid #69c2b6!important;outline-offset:4px!important;box-shadow:0 0 0 7px rgba(91,183,170,.14)!important;border-radius:10px!important}
-@media(max-width:640px){
- #onboardTourLauncher{right:12px;bottom:max(12px,env(safe-area-inset-bottom,0px));min-height:44px;padding:0 14px}
- #onboardGuideRoot .og-card{width:calc(100vw - 20px);max-height:min(300px,42dvh);padding:12px;border-radius:13px}
- #onboardGuideRoot .og-head{margin-bottom:7px}
- #onboardGuideRoot .og-content{grid-template-columns:minmax(0,1fr);gap:3px}
- #onboardGuideRoot .og-footer{grid-column:1;grid-row:auto;justify-content:space-between;margin-top:8px}
- #onboardGuideRoot .og-title{font-size:.98rem}
- #onboardGuideRoot .og-text{font-size:.7rem;line-height:1.6}
- #onboardGuideRoot .og-target,#onboardGuideRoot .og-note{font-size:.61rem}
- #onboardGuideRoot .og-btn{min-height:48px;padding:0 13px;font-size:.68rem}
-}
-@media(prefers-reduced-motion:reduce){#onboardGuideRoot *,#onboardTourLauncher{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
-"""
+TOUR_CSS = "#onboardOverlay.onboard-overlay{position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;margin:0;padding:20px;width:100%;height:100%;max-width:none;max-height:none;border:0;background:radial-gradient(ellipse at 14% 12%,rgba(124,58,237,.28),transparent 42%),radial-gradient(ellipse at 88% 82%,rgba(14,165,233,.19),transparent 42%),rgba(5,7,15,.88);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);color:#f8fafc}\n#onboardOverlay.onboard-overlay[open]{display:flex}\n#onboardOverlay .onboard-box{position:relative;width:min(760px,100%);max-height:min(820px,calc(100dvh - 40px));overflow:auto;margin:0;padding:clamp(22px,4vw,42px);border:1px solid rgba(196,181,253,.24);border-radius:28px;background:linear-gradient(145deg,rgba(23,25,43,.97),rgba(11,15,29,.98));box-shadow:0 35px 100px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.035) inset;animation:obEnter .38s cubic-bezier(.2,.8,.2,1) both}\n#onboardOverlay .onboard-box:before{content:\"\";position:absolute;inset:0 12% auto;height:1px;background:linear-gradient(90deg,transparent,#a78bfa,#67e8f9,transparent);opacity:.85}\n@keyframes obEnter{from{opacity:0;transform:translateY(18px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}\n#onboardOverlay .ob-shell{display:flex;flex-direction:column;gap:22px}\n#onboardOverlay .ob-top{display:flex;align-items:center;justify-content:space-between;gap:12px}\n#onboardOverlay .ob-brand{display:flex;align-items:center;gap:10px;color:#c4b5fd;font-size:.78rem;font-weight:900;letter-spacing:.12em}\n#onboardOverlay .ob-brand-mark{display:grid;place-items:center;width:34px;height:34px;border-radius:11px;background:linear-gradient(135deg,#7c3aed,#0891b2);box-shadow:0 8px 24px rgba(124,58,237,.3);font-size:1rem}\n#onboardOverlay .ob-count{padding:7px 12px;border:1px solid rgba(196,181,253,.18);border-radius:999px;background:rgba(255,255,255,.045);color:#cbd5e1;font-size:.78rem;font-weight:800;font-variant-numeric:tabular-nums}\n#onboardOverlay .ob-close{display:grid;place-items:center;width:38px;height:38px;border:1px solid rgba(255,255,255,.12);border-radius:12px;background:rgba(255,255,255,.045);color:#cbd5e1;font-size:1.15rem;cursor:pointer;transition:background .2s,border-color .2s,transform .2s}\n#onboardOverlay .ob-close:hover{background:rgba(248,113,113,.13);border-color:rgba(248,113,113,.4);transform:rotate(90deg)}\n#onboardOverlay .ob-progress{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:7px}\n#onboardOverlay .ob-progress span{height:5px;border-radius:99px;background:rgba(255,255,255,.1);transition:background .25s,box-shadow .25s}\n#onboardOverlay .ob-progress span.done{background:linear-gradient(90deg,#8b5cf6,#22d3ee);box-shadow:0 0 14px rgba(139,92,246,.3)}\n#onboardOverlay .ob-content{display:grid;grid-template-columns:minmax(150px,.72fr) minmax(0,1.5fr);align-items:center;gap:clamp(18px,4vw,36px);min-height:260px}\n#onboardOverlay .ob-art{position:relative;display:grid;place-items:center;min-height:230px;overflow:hidden;border:1px solid rgba(167,139,250,.2);border-radius:24px;background:radial-gradient(circle at 50% 38%,rgba(139,92,246,.25),transparent 58%),linear-gradient(145deg,rgba(255,255,255,.07),rgba(255,255,255,.015))}\n#onboardOverlay .ob-art:before,#onboardOverlay .ob-art:after{content:\"\";position:absolute;border:1px solid rgba(103,232,249,.14);border-radius:50%;width:170px;height:170px}\n#onboardOverlay .ob-art:after{width:220px;height:220px;border-color:rgba(167,139,250,.1)}\n#onboardOverlay .ob-art-icon{position:relative;z-index:1;display:grid;place-items:center;width:104px;height:104px;border:1px solid rgba(255,255,255,.22);border-radius:30px;background:linear-gradient(145deg,rgba(139,92,246,.95),rgba(8,145,178,.88));box-shadow:0 20px 48px rgba(76,29,149,.4);font-size:2.7rem}\n#onboardOverlay .ob-art-label{position:absolute;bottom:17px;z-index:1;color:#cbd5e1;font-size:.72rem;font-weight:800;letter-spacing:.08em}\n#onboardOverlay .ob-copy{min-width:0;text-align:right}\n#onboardOverlay .ob-kicker{display:inline-flex;align-items:center;gap:7px;margin-bottom:12px;color:#67e8f9;font-size:.76rem;font-weight:900;letter-spacing:.08em}\n#onboardOverlay .ob-kicker:before{content:\"\";width:22px;height:2px;border-radius:2px;background:#67e8f9}\n#onboardOverlay .ob-title{margin:0 0 12px;color:#f8fafc;font-family:var(--font-head);font-size:clamp(1.45rem,4vw,2.15rem);font-weight:950;line-height:1.45;letter-spacing:-.025em}\n#onboardOverlay .ob-text{margin:0;color:#cbd5e1;font-size:clamp(.92rem,2vw,1.02rem);line-height:2}\n#onboardOverlay .ob-tip{display:flex;align-items:flex-start;gap:10px;margin-top:18px;padding:13px 15px;border:1px solid rgba(34,211,238,.17);border-radius:14px;background:rgba(8,145,178,.09);color:#dbeafe;font-size:.83rem;line-height:1.8}\n#onboardOverlay .ob-tip-icon{flex:0 0 auto;color:#67e8f9}\n#onboardOverlay .ob-footer{display:flex;align-items:center;justify-content:space-between;gap:14px;padding-top:18px;border-top:1px solid rgba(255,255,255,.09)}\n#onboardOverlay .ob-nav{display:flex;align-items:center;gap:10px;flex-wrap:wrap}\n#onboardOverlay .ob-btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:46px;padding:11px 22px;border:1px solid rgba(255,255,255,.13);border-radius:13px;font:inherit;font-size:.88rem;font-weight:900;cursor:pointer;transition:transform .18s,box-shadow .18s,background .18s}\n#onboardOverlay .ob-btn:hover{transform:translateY(-2px)}\n#onboardOverlay .ob-btn.primary{border-color:transparent;background:linear-gradient(110deg,#7c3aed,#4f46e5 55%,#0891b2);color:#fff;box-shadow:0 10px 28px rgba(79,70,229,.3)}\n#onboardOverlay .ob-btn.primary:hover{box-shadow:0 14px 34px rgba(79,70,229,.42)}\n#onboardOverlay .ob-btn.ghost{background:rgba(255,255,255,.045);color:#dbeafe}\n#onboardOverlay .ob-btn.ghost:hover{background:rgba(255,255,255,.09)}\n#onboardOverlay .ob-skip{border:0;background:none;color:#94a3b8;font:inherit;font-size:.82rem;cursor:pointer;text-decoration:underline;text-underline-offset:4px}\n#onboardOverlay .ob-skip:hover{color:#e2e8f0}\n#onboardOverlay button:focus-visible{outline:3px solid #67e8f9;outline-offset:3px}\n@media(max-width:620px){\n#onboardOverlay.onboard-overlay{padding:10px}\n#onboardOverlay .onboard-box{max-height:calc(100dvh - 20px);padding:19px 16px;border-radius:22px}\n#onboardOverlay .ob-shell{gap:16px}\n#onboardOverlay .ob-top{gap:8px}\n#onboardOverlay .ob-brand{font-size:.68rem;letter-spacing:.06em}\n#onboardOverlay .ob-content{grid-template-columns:1fr;gap:15px;min-height:0}\n#onboardOverlay .ob-art{min-height:112px;border-radius:18px}\n#onboardOverlay .ob-art:before{width:95px;height:95px}\n#onboardOverlay .ob-art:after{width:130px;height:130px}\n#onboardOverlay .ob-art-icon{width:62px;height:62px;border-radius:19px;font-size:1.8rem}\n#onboardOverlay .ob-art-label{bottom:8px;font-size:.62rem}\n#onboardOverlay .ob-copy{text-align:center}\n#onboardOverlay .ob-kicker{margin-bottom:7px}\n#onboardOverlay .ob-title{font-size:1.38rem;margin-bottom:7px}\n#onboardOverlay .ob-text{font-size:.88rem;line-height:1.8}\n#onboardOverlay .ob-tip{margin-top:11px;padding:10px 11px;text-align:right;font-size:.76rem}\n#onboardOverlay .ob-footer{align-items:stretch;flex-direction:column-reverse;gap:12px;padding-top:13px}\n#onboardOverlay .ob-nav{display:grid;grid-template-columns:1fr 1fr}\n#onboardOverlay .ob-btn{min-height:43px;padding:9px 12px;font-size:.8rem}\n#onboardOverlay .ob-skip{align-self:center}\n}\n@media(prefers-reduced-motion:reduce){#onboardOverlay *,#onboardOverlay *:before,#onboardOverlay *:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}"
+TOUR_JS = "var ONBOARD_STEPS=[\n  {icon:'🚀',label:'مرحبًا بك',title:'خلّينا نجهّز رزمة Anki بطريقة أسهل',text:'هذه جولة قصيرة تعرّفك على أهم أجزاء المعرض: استكشاف التصاميم، فحص البطاقة، اختيار القوالب، إعداد الصوت، ثم تصدير الرزمة.',tip:'لن تغيّر الجولة أي إعدادات أو اختيارات في مشروعك.',art:'ابدأ من هنا'},\n  {icon:'🧭',label:'استكشف المعرض',title:'اعثر على التصميم المناسب بسرعة',text:'تصفّح شبكة القوالب، واستخدم البحث والتصنيفات والمجموعات لتضييق النتائج. يمكنك فتح المعاينة الكبيرة عندما تريد رؤية التصميم بوضوح.',tip:'ابدأ بكلمات بحث قصيرة، ثم جرّب التصنيفات إذا كانت النتائج كثيرة.',art:'بحث • تصنيفات • مجموعات'},\n  {icon:'🪄',label:'افحص البطاقة',title:'شاهد الوجهين قبل الاختيار',text:'افتح معاينة القالب، وتحقق من وضوح النصوص وتوازن الألوان والمسافات. استخدم زر «قلب البطاقة» أسفل المعاينة لرؤية الوجه الآخر.',tip:'لا تعتمد على شكل الوجه الأمامي وحده؛ افحص الوجه الآخر أيضاً.',art:'معاينة الوجهين'},\n  {icon:'🎯',label:'اختر القوالب',title:'حدّد قالبًا واحدًا أو أكثر',text:'اختر التصاميم التي تريد استخدامها في الرزمة. عند تحديد عدة قوالب، يوزّع النظام البطاقات عليها تلقائيًا وفق آلية التوزيع المعتمدة.',tip:'إذا كنت تريد مظهرًا موحّدًا، اكتفِ بمجموعة صغيرة متناسقة من القوالب.',art:'اختيار ذكي'},\n  {icon:'🔊',label:'إعداد الصوت',title:'اضبط الصوت قبل التصدير',text:'انتقل إلى إعدادات الصوت، واختر الخيارات المتاحة للغات الرزمة، ثم جرّب المعاينة الصوتية واضبط السرعة والفواصل عند الحاجة.',tip:'استمع إلى عيّنة قصيرة أولًا قبل إنشاء الرزمة كاملة.',art:'صوت • سرعة • معاينة'},\n  {icon:'📦',label:'أنشئ رُزمتك',title:'صدّر واستورد إلى Anki',text:'راجع اختياراتك وإعدادات التصدير، ثم أنشئ ملف الرزمة بصيغة APKG. بعد تنزيله، افتحه باستخدام Anki لاستيراد البطاقات.',tip:'احتفظ بنسخة من ملف APKG بعد التصدير لتسهيل إعادة الاستيراد أو النقل.',art:'تصدير APKG'}\n];\nvar onbStep=0;\nvar onboardPreviousOverflow='';\nvar onboardReturnFocus=null;\nfunction showOnboarding(){\n  var overlay=document.getElementById('onboardOverlay');\n  if(!overlay)return;\n  onbStep=0;\n  renderOnboardStep();\n  onboardReturnFocus=document.activeElement;\n  onboardPreviousOverflow=document.body.style.overflow||'';\n  document.body.style.overflow='hidden';\n  if(typeof overlay.showModal==='function'){\n    if(!overlay.open)overlay.showModal();\n  }else{\n    overlay.setAttribute('open','');\n  }\n  window.setTimeout(function(){var b=overlay.querySelector('.ob-btn.primary');if(b)b.focus();},40);\n}\nfunction closeOnboarding(){\n  var overlay=document.getElementById('onboardOverlay');\n  if(overlay){\n    if(typeof overlay.close==='function'&&overlay.open)overlay.close();\n    else overlay.removeAttribute('open');\n  }\n  document.body.style.overflow=onboardPreviousOverflow;\n  try{if(onboardReturnFocus&&typeof onboardReturnFocus.focus==='function')onboardReturnFocus.focus();}catch(_e){}\n  onboardReturnFocus=null;\n  try{localStorage.setItem('anki___DECK___onboarded','1');}catch(_e){}\n}\nfunction moveOnboardStep(delta){\n  var next=onbStep+delta;\n  if(next<0)return;\n  if(next>=ONBOARD_STEPS.length){closeOnboarding();return;}\n  onbStep=next;\n  renderOnboardStep();\n  window.setTimeout(function(){\n    var overlay=document.getElementById('onboardOverlay');\n    var target=overlay&&overlay.querySelector('.ob-btn.primary');\n    if(target)target.focus();\n  },0);\n}\nfunction renderOnboardStep(){\n  var box=document.getElementById('onboardBox');\n  if(!box)return;\n  var step=ONBOARD_STEPS[onbStep];\n  if(!step)return;\n  var progress='';\n  ONBOARD_STEPS.forEach(function(_,i){progress+='<span class=\"'+(i<=onbStep?'done':'')+'\"></span>';});\n  var h='<div class=\"ob-shell\" role=\"group\" aria-label=\"خطوات الجولة\">';\n  h+='<div class=\"ob-top\"><div class=\"ob-brand\"><span class=\"ob-brand-mark\">A</span><span>ANKI GALLERY TOUR</span></div><span class=\"ob-count\">الخطوة '+(onbStep+1)+' من '+ONBOARD_STEPS.length+'</span><button class=\"ob-close\" type=\"button\" onclick=\"closeOnboarding()\" aria-label=\"إغلاق الجولة\">×</button></div>';\n  h+='<div class=\"ob-progress\" role=\"progressbar\" aria-label=\"تقدم الجولة\" aria-valuemin=\"1\" aria-valuemax=\"'+ONBOARD_STEPS.length+'\" aria-valuenow=\"'+(onbStep+1)+'\">'+progress+'</div>';\n  h+='<div class=\"ob-content\"><div class=\"ob-art\"><div class=\"ob-art-icon\" aria-hidden=\"true\">'+step.icon+'</div><div class=\"ob-art-label\">'+step.art+'</div></div>';\n  h+='<div class=\"ob-copy\"><div class=\"ob-kicker\">'+step.label+'</div><h2 class=\"ob-title\" id=\"onboardStepTitle\">'+step.title+'</h2><p class=\"ob-text\">'+step.text+'</p><div class=\"ob-tip\"><span class=\"ob-tip-icon\" aria-hidden=\"true\">✦</span><span>'+step.tip+'</span></div></div></div>';\n  h+='<div class=\"ob-footer\"><button class=\"ob-skip\" type=\"button\" onclick=\"closeOnboarding()\">تخطي الجولة</button><div class=\"ob-nav\">';\n  if(onbStep>0)h+='<button class=\"ob-btn ghost\" type=\"button\" onclick=\"moveOnboardStep(-1)\">السابق</button>';\n  if(onbStep<ONBOARD_STEPS.length-1)h+='<button class=\"ob-btn primary\" type=\"button\" onclick=\"moveOnboardStep(1)\">التالي <span aria-hidden=\"true\">←</span></button>';\n  else h+='<button class=\"ob-btn primary\" type=\"button\" onclick=\"closeOnboarding()\">إنهاء الجولة <span aria-hidden=\"true\">✓</span></button>';\n  h+='</div></div></div>';\n  box.innerHTML=h;\n  box.setAttribute('aria-labelledby','onboardStepTitle');\n}\ndocument.addEventListener('keydown',function(e){\n  var overlay=document.getElementById('onboardOverlay');\n  if(!overlay||!overlay.hasAttribute('open'))return;\n  if(e.key==='Escape'){e.preventDefault();closeOnboarding();return;}\n  if(e.key==='Tab'){\n    var focusable=Array.prototype.slice.call(overlay.querySelectorAll(\n      'button:not([disabled]),a[href],input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex=\"-1\"])'\n    )).filter(function(el){return !!(el.offsetWidth||el.offsetHeight||el.getClientRects().length);});\n    if(!focusable.length){e.preventDefault();return;}\n    var first=focusable[0],last=focusable[focusable.length-1];\n    if(e.shiftKey&&(document.activeElement===first||document.activeElement===overlay)){\n      e.preventDefault();last.focus();\n    }else if(!e.shiftKey&&document.activeElement===last){\n      e.preventDefault();first.focus();\n    }\n    return;\n  }\n  var target=e.target;\n  var typing=target&&(target.tagName==='INPUT'||target.tagName==='TEXTAREA'||target.tagName==='SELECT'||target.isContentEditable);\n  if(typing||e.altKey||e.ctrlKey||e.metaKey)return;\n  if(e.key==='ArrowLeft'){e.preventDefault();moveOnboardStep(1);}\n  else if(e.key==='ArrowRight'&&onbStep>0){e.preventDefault();moveOnboardStep(-1);}\n});\n\n"
+LOADER_CSS = "/* ============================================================\n   LOADING\n   ============================================================ */\n#loadingMsg{position:fixed;inset:0;z-index:90;display:grid;place-content:center;text-align:center;\n  background:var(--bg)}\n#loadBar{background:var(--ac)}\n#loadPct{color:var(--tx3)}\n"
+OLD_TOUR_CSS = "#onboardOverlay.onboard-overlay{background:radial-gradient(120% 100% at 50% 0%,rgba(139,92,246,.22),transparent 60%),linear-gradient(180deg,#14111d,#0b0a12)}\n#onboardOverlay .onboard-box{width:100vw;max-width:100vw;height:100dvh;max-height:100dvh;border:0;border-radius:0;background:transparent;animation:none;display:flex;align-items:center;justify-content:center;padding:24px}\n#onboardOverlay .ob-full{width:100%;max-width:620px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px}\n#onboardOverlay .ob-medal{display:grid;place-items:center;width:74px;height:74px;border-radius:50%;font-size:1.7rem;font-weight:900;color:#fff;background:linear-gradient(135deg,#7c3aed,#8b5cf6 50%,#0ea5e9);box-shadow:0 18px 44px rgba(124,58,237,.5);margin-bottom:14px}\n#onboardOverlay .ob-title{font-size:clamp(1.5rem,4.5vw,2.3rem);font-weight:900;font-family:var(--font-head);line-height:1.5;margin:0 0 8px;background:linear-gradient(115deg,#e9e2ff,#a78bfa 55%,#67e8f9);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}\n#onboardOverlay .ob-text{font-size:1rem;color:var(--tx2);line-height:2;max-width:540px;margin:0 0 14px}\n#onboardOverlay .ob-nav{display:flex;gap:12px;justify-content:center;margin-top:14px;flex-wrap:wrap}\n#onboardOverlay .ob-btn{padding:12px 40px;font-size:.9em}\n#onboardOverlay .ob-skip{margin-top:16px}\n#onboardOverlay .ob-skip button{background:none;border:none;color:var(--tx3);text-decoration:underline;cursor:pointer;font-size:.8em}\n#onboardOverlay .onboard-steps{justify-content:center}\n"
+LOADER_HTML = "<div id=\"loadingMsg\">\n  <div style=\"font-family:var(--font-mono);font-size:.8em;letter-spacing:1px;color:var(--tx2);margin-bottom:12px;text-transform:uppercase\">جاري تحميل القوالب...</div>\n  <div style=\"width:240px;height:4px;background:var(--s3);border:1px solid var(--bd-strong);border-radius:0;margin:0 auto;overflow:hidden\">\n    <div id=\"loadBar\" style=\"width:0%;height:100%;border-radius:0;transition:width .3s\"></div>\n  </div>\n  <div id=\"loadPct\" style=\"font-family:var(--font-mono);font-size:.62em;color:var(--tx3);margin-top:8px\">0%</div>\n</div>\n"
+FLIP_CSS = ".gv-fabs{position:absolute;top:14px;left:14px;z-index:5;display:flex;flex-direction:column;gap:8px}\n.gv-fab{position:absolute;top:14px;left:14px;width:42px;height:42px;border-radius:2px;font-size:1.1rem;display:grid;place-items:center;\n  background:var(--bg-1);border:1px solid var(--bd-strong);color:var(--tx);transition:var(--t-f);z-index:5}\n.gv-fab.gv-flip{top:64px}\n.gv-fab:hover{border-color:var(--ac);color:var(--ac)}\n"
+FLIP_EXTRA_CSS = ".gv-fab{font-size:1.3rem}"
+FLIP_THEME_CSS = "/* 17) أزرار عائمة بتدرّج عند المرور */\n.gv-fab:hover{background:linear-gradient(135deg,var(--ac),var(--ac3));color:#fff;border-color:transparent;transform:scale(1.06)}\n"
+FLIP_HTML = "<button class=\"gv-fab gv-flip\" onclick=\"gvFlip()\" title=\"قلب البطاقة\" aria-label=\"قلب البطاقة\"><svg width=\"1.1em\" height=\"1.1em\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"1 4 1 10 7 10\"/><path d=\"M3.51 15a9 9 0 1 0 2.13-9.36L1 10\"/></svg></button>"
 
-TOUR_JS = r"""
-var ONBOARD_DECK = "__DECK__";
-var ONBOARD_PRIMARY_LANGUAGE = ONBOARD_DECK === "fr9" ? "الفرنسية" : "الإنجليزية";
-var ONBOARD_STORAGE_KEY = "anki_" + ONBOARD_DECK + "_onboarded_v6";
-var ONBOARD_SNOOZE_KEY = "anki_" + ONBOARD_DECK + "_onboarding_snoozed_v6";
-var ONBOARD_STEPS = [
-  {id:"start",label:"الدخول",title:"ابدأ من مكتبة التصاميم",text:"افتح المكتبة لتشاهد القوالب المئة كما هي، في شبكة واحدة واضحة. لا توجد تصنيفات أو قوائم فرز تقطع عليك الاستعراض.",target:".hero-cta-main",targetLabel:"فتح مكتبة القوالب",note:"لن يتغير أي اختيار في رُزمتك عند فتح المكتبة."},
-  {id:"library",label:"الاستعراض",title:"اختر تصميماً لتفحصه",text:"تصفّح الشبكة كاملة. اضغط على أي بطاقة لفتح معاينتها الكبيرة؛ فتح المعاينة لا يعني اعتماد القالب.",target:"#gbGrid .gb-item",targetLabel:"أي بطاقة في شبكة القوالب",note:"كل القوالب المئة متاحة في هذه الشبكة."},
-  {id:"preview",label:"المعاينة",title:"افحص وجهي البطاقة",text:"راجع طريقة ظهور المفردة والمعنى، ثم اقلب البطاقة من زرها الحقيقي. انتبه إلى وضوح النص والمسافات وترتيب العناصر.",target:"#gvShowAns",fallback:"#fsFlipBtn",targetLabel:"زر قلب البطاقة",note:"هذه معاينة للقالب وليست تغييراً في بيانات المفردات."},
-  {id:"selection",label:"الاعتماد",title:"أضف التصميم الذي اخترته",text:"بعد أن ترتاح إلى شكل البطاقة، استخدم زر التحديد. يمكنك العودة إلى المعرض وفحص تصاميم أخرى قبل المتابعة.",target:"#gvSelectBtn",targetLabel:"زر تحديد القالب",note:"التحديد وحده هو الذي يضيف القالب إلى اختيارات رُزمتك."},
-  {id:"audio",label:"الصوت",title:"استمع إلى النطق",text:"افتح إعدادات الصوت، اختر الصوت المناسب لـ" + ONBOARD_PRIMARY_LANGUAGE + " والعربية، ثم اطلب معاينة النطق بنفسك.",target:"#gTtsPreviewBtn",fallback:"#gAudioPanelBody",targetLabel:"معاينة الصوت",note:"لا يبدأ أي تشغيل صوتي من دون ضغطك."},
-  {id:"export",label:"المراجعة",title:"راجع الرزمة قبل إنشائها",text:"افتح شاشة المراجعة لتتحقق من القوالب والصوت والإعدادات. هذه الجولة لا تنشئ ملفاً ولا تبدأ التصدير.",target:"#exOpenBtn",targetLabel:"فتح مراجعة الرزمة",note:"لن يبدأ إنشاء APKG إلا من زر التصدير الذي تضغطه بنفسك."}
-];
-var onbStep = 0;
-var onboardGuideOpen = false;
-var onboardGuideRoot = null;
-var onboardGuideReturnFocus = null;
-var onboardActiveTarget = null;
-var onboardOpenedBrowser = false;
-var onboardOpenedAudio = false;
-var onboardPositionFrame = 0;
-
-function isOnboardingCompleted(){try{return localStorage.getItem(ONBOARD_STORAGE_KEY)==="1";}catch(_e){return false;}}
-function onboardStepTarget(step){
-  if(!step)return null;
-  var selectors=[step.target,step.fallback].filter(Boolean);
-  for(var i=0;i<selectors.length;i++){
-    var node=document.querySelector(selectors[i]);
-    if(node&&node.getClientRects().length)return node;
-  }
-  return null;
-}
-function onboardClearSpotlight(){
-  if(onboardActiveTarget)onboardActiveTarget.classList.remove("og-spotlight");
-  onboardActiveTarget=null;
-}
-function onboardEnsureRoot(){
-  if(onboardGuideRoot&&onboardGuideRoot.isConnected)return onboardGuideRoot;
-  var root=document.createElement("div");
-  root.id="onboardGuideRoot";root.setAttribute("dir","rtl");root.setAttribute("role","presentation");root.dataset.placement="top";
-  document.body.appendChild(root);
-  root.addEventListener("click",function(event){
-    var stepButton=event.target.closest?event.target.closest("[data-guide-step]"):null;
-    if(stepButton){var next=parseInt(stepButton.getAttribute("data-guide-step"),10);if(Number.isInteger(next))goToOnboardStep(next);return;}
-    var action=event.target.closest?event.target.closest("[data-guide-action]"):null;
-    if(action)handleOnboardAction(action.getAttribute("data-guide-action"));
-  });
-  onboardGuideRoot=root;return root;
-}
-function onboardPrepareStep(index){
-  if(index>=2)document.body.classList.add("gx-selection-ready");
-  var preview=document.getElementById("gv");
-  if(index>=2&&preview)preview.classList.add("gx-visible");
-  var browser=document.getElementById("galleryBrowser");
-  if(index===1&&browser&&!browser.classList.contains("open")){
-    try{if(typeof ensureGalleryDesigns==="function")ensureGalleryDesigns();}catch(_e){}
-    try{if(typeof gbBuildFilters==="function")gbBuildFilters();}catch(_e){}
-    try{if(typeof renderGalleryBrowser==="function")renderGalleryBrowser();}catch(_e){}
-    try{if(typeof openGalleryBrowser==="function")openGalleryBrowser();}catch(_e){}
-    onboardOpenedBrowser=browser.classList.contains("open");
-  }else if(index!==1&&onboardOpenedBrowser&&browser&&browser.classList.contains("open")&&typeof closeGalleryBrowser==="function"){
-    closeGalleryBrowser();onboardOpenedBrowser=false;
-  }
-  var audio=document.getElementById("gAudioPanelBody");
-  if(index===4&&audio&&!audio.classList.contains("open")&&typeof toggleAudioPanel==="function"){
-    toggleAudioPanel();onboardOpenedAudio=true;
-  }else if(index!==4&&onboardOpenedAudio&&audio&&audio.classList.contains("open")&&typeof toggleAudioPanel==="function"){
-    toggleAudioPanel();onboardOpenedAudio=false;
-  }
-}
-function onboardNode(tag,className,value){
-  var node=document.createElement(tag);if(className)node.className=className;
-  if(value!==undefined&&value!==null)node.textContent=String(value);
-  return node;
-}
-function renderOnboardStep(){
-  if(!onboardGuideOpen)return;
-  var root=onboardEnsureRoot(),step=ONBOARD_STEPS[onbStep];
-  var card=onboardNode("section","og-card");card.setAttribute("role","dialog");card.setAttribute("aria-modal","false");
-  card.setAttribute("aria-labelledby","onboardGuideTitle");card.setAttribute("aria-describedby","onboardGuideText");
-  var head=onboardNode("header","og-head"),brand=onboardNode("div","og-brand");
-  brand.appendChild(onboardNode("span","og-mark","A"));
-  var brandCopy=onboardNode("span","og-brand-copy");brandCopy.appendChild(onboardNode("strong","","ANKI DESIGN STUDIO"));
-  brandCopy.appendChild(onboardNode("small","","دليل داخل المعرض"));brand.appendChild(brandCopy);
-  head.appendChild(brand);head.appendChild(onboardNode("span","og-meta","المرحلة "+(onbStep+1)+" من "+ONBOARD_STEPS.length));
-  var close=onboardNode("button","og-close","×");close.type="button";close.setAttribute("aria-label","إغلاق الجولة");close.setAttribute("data-guide-action","close");head.appendChild(close);card.appendChild(head);
-  var progress=onboardNode("nav","og-progress");progress.setAttribute("aria-label","مراحل الجولة");
-  ONBOARD_STEPS.forEach(function(item,index){
-    var button=onboardNode("button",index<onbStep?"done":"");button.type="button";
-    button.setAttribute("data-guide-step",String(index));button.setAttribute("aria-label","المرحلة "+(index+1)+": "+item.label);
-    button.setAttribute("aria-current",index===onbStep?"step":"false");button.appendChild(onboardNode("span","", ""));progress.appendChild(button);
-  });card.appendChild(progress);
-  var content=onboardNode("div","og-content");content.appendChild(onboardNode("span","og-step-label",step.label));
-  var title=onboardNode("h2","og-title",step.title);title.id="onboardGuideTitle";title.tabIndex=-1;content.appendChild(title);
-  var description=onboardNode("p","og-text",step.text);description.id="onboardGuideText";description.setAttribute("aria-live","polite");content.appendChild(description);
-  content.appendChild(onboardNode("p","og-target","المكان الذي ستستخدمه: "+step.targetLabel));
-  var note=onboardNode("p","og-note",step.note);note.id="onboardGuideNote";note.setAttribute("role","status");note.setAttribute("aria-live","polite");content.appendChild(note);
-  var footer=onboardNode("footer","og-footer"),skip=onboardNode("button","og-skip","إنهاء الجولة");
-  skip.type="button";skip.setAttribute("data-guide-action","close");footer.appendChild(skip);
-  var actions=onboardNode("div","og-actions");
-  if(onbStep>0){var back=onboardNode("button","og-btn","السابق");back.type="button";back.setAttribute("data-guide-action","previous");actions.appendChild(back);}
-  var next=onboardNode("button","og-btn primary",onbStep===0?"افتح المكتبة":(onbStep===5?"إنهاء":"التالي"));
-  next.type="button";next.setAttribute("data-guide-action",onbStep===0?"start":(onbStep===5?"finish":"next"));actions.appendChild(next);
-  footer.appendChild(actions);content.appendChild(footer);card.appendChild(content);
-  root.replaceChildren(card);title.focus({preventScroll:true});
-}
-function positionOnboardGuide(){
-  if(!onboardGuideOpen||!onboardGuideRoot)return;
-  var header=document.querySelector("header.hdr, .hdr");
-  var headerBottom=header?Math.max(0,header.getBoundingClientRect().bottom):70;
-  onboardGuideRoot.style.setProperty("--og-safe-top",Math.ceil(Math.max(12,headerBottom+12))+"px");
-  onboardClearSpotlight();
-  var target=onboardStepTarget(ONBOARD_STEPS[onbStep]);
-  if(target){
-    var context=onbStep===0?target.closest("#gallery-experience-hero"):null;
-    if(context){
-      var contextRect=context.getBoundingClientRect();
-      if(contextRect.top<headerBottom+12){
-        var html=document.documentElement,body=document.body;
-        var htmlScroll=html.style.scrollBehavior,bodyScroll=body.style.scrollBehavior;
-        html.style.scrollBehavior="auto";body.style.scrollBehavior="auto";
-        try{window.scrollTo(0,Math.max(0,window.scrollY+contextRect.top-headerBottom-12));}
-        finally{html.style.scrollBehavior=htmlScroll;body.style.scrollBehavior=bodyScroll;}
-      }
-    }
-    var before=target.getBoundingClientRect();
-    var targetOutsideViewport=before.top<0||before.bottom>window.innerHeight;
-    if(targetOutsideViewport){
-      var scrollStyles=[],ancestor=target;
-      while(ancestor&&ancestor.nodeType===1){
-        scrollStyles.push([ancestor,ancestor.style.scrollBehavior]);
-        ancestor.style.scrollBehavior="auto";
-        ancestor=ancestor.parentElement;
-      }
-      try{target.scrollIntoView({behavior:"auto",block:"center",inline:"nearest"});}
-      finally{for(var restoreIndex=scrollStyles.length-1;restoreIndex>=0;restoreIndex--)scrollStyles[restoreIndex][0].style.scrollBehavior=scrollStyles[restoreIndex][1];}
-    }
-    onboardActiveTarget=target;target.classList.add("og-spotlight");
-    var rect=target.getBoundingClientRect();
-    onboardGuideRoot.dataset.placement=onbStep===0?"bottom":(rect.top>window.innerHeight*.48?"top":"bottom");
-  }else onboardGuideRoot.dataset.placement="bottom";
-}
-function scheduleOnboardPosition(){
-  if(!onboardGuideOpen||onboardPositionFrame)return;
-  var raf=window.requestAnimationFrame||function(cb){return window.setTimeout(cb,16);};
-  onboardPositionFrame=raf(function(){onboardPositionFrame=0;positionOnboardGuide();});
-}
-function goToOnboardStep(index){
-  var next=Number(index);if(!Number.isInteger(next)||next<0||next>=ONBOARD_STEPS.length)return;
-  onboardClearSpotlight();onbStep=next;onboardPrepareStep(next);renderOnboardStep();
-  positionOnboardGuide();
-  window.setTimeout(scheduleOnboardPosition,90);
-}
-function showOnboarding(){
-  if(onboardGuideOpen)return;
-  onboardGuideReturnFocus=document.activeElement;onboardGuideOpen=true;
-  var launcher=document.getElementById("onboardTourLauncher");if(launcher)launcher.hidden=true;
-  onboardEnsureRoot();goToOnboardStep(0);
-}
-function closeOnboarding(completed){
-  if(!onboardGuideOpen)return;
-  onboardGuideOpen=false;onboardClearSpotlight();
-  var browser=document.getElementById("galleryBrowser");
-  if(onboardOpenedBrowser&&browser&&browser.classList.contains("open")&&typeof closeGalleryBrowser==="function")closeGalleryBrowser();
-  onboardOpenedBrowser=false;
-  var audio=document.getElementById("gAudioPanelBody");
-  if(onboardOpenedAudio&&audio&&audio.classList.contains("open")&&typeof toggleAudioPanel==="function")toggleAudioPanel();
-  onboardOpenedAudio=false;
-  if(completed){try{localStorage.setItem(ONBOARD_STORAGE_KEY,"1");sessionStorage.removeItem(ONBOARD_SNOOZE_KEY);}catch(_e){}}
-  else{try{sessionStorage.setItem(ONBOARD_SNOOZE_KEY,"1");}catch(_e){}}
-  if(onboardGuideRoot&&onboardGuideRoot.parentNode)onboardGuideRoot.parentNode.removeChild(onboardGuideRoot);
-  onboardGuideRoot=null;
-  var launcher=document.getElementById("onboardTourLauncher");if(launcher)launcher.hidden=false;
-  if(onboardGuideReturnFocus&&onboardGuideReturnFocus.isConnected&&typeof onboardGuideReturnFocus.focus==="function"){
-    try{onboardGuideReturnFocus.focus({preventScroll:true});}catch(_e){}
-  }
-  onboardGuideReturnFocus=null;
-}
-function handleOnboardAction(action){
-  if(action==="close"){closeOnboarding(false);return;}
-  if(action==="finish"){closeOnboarding(true);return;}
-  if(action==="previous"){goToOnboardStep(onbStep-1);return;}
-  if(action==="start"){
-    var browse=document.querySelector(".hero-cta-main");if(browse)browse.click();
-    else if(typeof openGalleryBrowser==="function")openGalleryBrowser();
-    if(onboardGuideOpen)goToOnboardStep(1);return;
-  }
-  if(action==="next"){goToOnboardStep(Math.min(ONBOARD_STEPS.length-1,onbStep+1));return;}
-  if(action==="review"){
-    var review=document.getElementById("exOpenBtn");if(review)review.click();
-  }
-}
-document.addEventListener("click",function(event){
-  if(!onboardGuideOpen||!event.target||!event.target.closest)return;
-  var target=event.target;
-  if(onbStep===0&&target.closest(".hero-cta-main")){
-    window.setTimeout(function(){if(onboardGuideOpen&&onbStep===0)goToOnboardStep(1);},180);return;
-  }
-  if(onbStep===1&&target.closest("#gbGrid .gb-item")){
-    window.setTimeout(function(){if(onboardGuideOpen&&onbStep===1)goToOnboardStep(2);},180);return;
-  }
-  if(onbStep===2&&target.closest("#gvShowAns,#fsFlipBtn")){
-    window.setTimeout(function(){if(onboardGuideOpen&&onbStep===2)goToOnboardStep(3);},100);return;
-  }
-  if(onbStep===3&&target.closest("#gvSelectBtn")){
-    window.setTimeout(function(){
-      var note=document.getElementById("onboardGuideNote");
-      var count=(typeof gvSel!=="undefined"&&gvSel)?gvSel.length:0;
-      if(note)note.textContent=count?"تم تحديث اختيار القوالب فعلياً. العدد الحالي: "+count+".":"لم يُحدد هذا القالب؛ يمكنك تحديده أو المتابعة.";
-    },40);return;
-  }
-  if(onbStep===4&&target.closest("#gTtsPreviewBtn")){
-    var note=document.getElementById("onboardGuideNote");if(note)note.textContent="طلبت معاينة الصوت بنفسك. استمع ثم تابع.";return;
-  }
-  if(onbStep===5&&target.closest("#exOpenBtn")){
-    window.setTimeout(function(){if(onboardGuideOpen)closeOnboarding(true);},120);
-  }
-});
-document.addEventListener("keydown",function(event){
-  if(!onboardGuideOpen)return;
-  if(event.key==="Escape"){event.preventDefault();closeOnboarding(false);return;}
-  if(event.key==="ArrowLeft"&&onbStep<ONBOARD_STEPS.length-1){event.preventDefault();goToOnboardStep(onbStep+1);}
-  else if(event.key==="ArrowRight"&&onbStep>0){event.preventDefault();goToOnboardStep(onbStep-1);}
-});
-window.addEventListener("resize",scheduleOnboardPosition);
-window.addEventListener("scroll",scheduleOnboardPosition,true);
-"""
-
-LOADER_CSS = """/* ============================================================
-   LOADING
-   ============================================================ */
-#loadingMsg{position:fixed;inset:0;z-index:90;display:grid;place-content:center;text-align:center;
-  background:var(--bg)}
-#loadBar{background:var(--ac)}
-#loadPct{color:var(--tx3)}
-"""
-LOADER_HTML = """<div id="loadingMsg">
-  <div style="font-family:var(--font-mono);font-size:.8em;letter-spacing:1px;color:var(--tx2);margin-bottom:12px;text-transform:uppercase">جاري تحميل القوالب...</div>
-  <div style="width:240px;height:4px;background:var(--s3);border:1px solid var(--bd-strong);border-radius:0;margin:0 auto;overflow:hidden">
-    <div id="loadBar" style="width:0%;height:100%;border-radius:0;transition:width .3s"></div>
-  </div>
-  <div id="loadPct" style="font-family:var(--font-mono);font-size:.62em;color:var(--tx3);margin-top:8px">0%</div>
-</div>
-"""
-FLIP_HTML = '<button class="gv-fab gv-flip" onclick="gvFlip()" title="قلب البطاقة" aria-label="قلب البطاقة"><svg width="1.1em" height="1.1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg></button>'
+def _replace_once(source, old, new, label):
+    count = source.count(old)
+    if count != 1:
+        raise SystemExit("%s: expected one exact match, found %d" % (label, count))
+    return source.replace(old, new, 1)
 
 def apply_gallery_ux(html, deck):
     if deck not in ("en9", "enlit", "ensci", "fr9"):
-        raise SystemExit("Onboarding transform is restricted to the four non-Bac galleries")
-    audio_source = "tas9" if deck == "fr9" else deck
-    bad = "fetch(apiBase()+'/api/audio_status?source=" + audio_source + ")"
-    good = "fetch(apiBase()+'/api/audio_status?source=" + audio_source + "')"
-    if html.count(bad) != 1:
-        raise SystemExit(deck + ": expected one malformed generated audio-status URL")
-    html = html.replace(bad, good, 1)
-    if html.count(LOADER_HTML) != 1:
-        raise SystemExit(deck + ": blocking loader markup changed unexpectedly")
-    html = html.replace(LOADER_HTML, "", 1)
-    html = html.replace(LOADER_CSS, "", 1)
-    if html.count(FLIP_HTML) > 1:
-        raise SystemExit(deck + ": duplicate floating flip controls")
-    html = html.replace(FLIP_HTML, "", 1)
-    old_dialog = '<dialog class="onboard-overlay" id="onboardOverlay" style="display:none">'
-    new_dialog = '<dialog class="onboard-overlay" id="onboardOverlay" hidden aria-hidden="true">'
-    if html.count(old_dialog) != 1:
-        raise SystemExit(deck + ": legacy onboarding dialog anchor is missing")
-    html = html.replace(old_dialog, new_dialog, 1)
+        raise SystemExit("UX polish is restricted to the four non-Bac galleries")
+
+    html = _replace_once(html, LOADER_CSS, "", deck + " loading CSS")
+    html = _replace_once(html, LOADER_HTML, "", deck + " loading markup")
+    html = _replace_once(html, FLIP_CSS, "", deck + " floating flip CSS")
+    html = _replace_once(html, FLIP_EXTRA_CSS, "", deck + " floating flip extra CSS")
+    theme_css_count = html.count(FLIP_THEME_CSS)
+    if theme_css_count > 1:
+        raise SystemExit(deck + " found duplicate legacy floating flip hover rules")
+    if theme_css_count == 1:
+        html = html.replace(FLIP_THEME_CSS, "", 1)
+    flip_button_count = html.count(FLIP_HTML)
+    if flip_button_count > 1:
+        raise SystemExit(deck + " expected at most one floating corner flip button, found %d" % flip_button_count)
+    if flip_button_count:
+        html = html.replace(FLIP_HTML, "", 1)
+    html = _replace_once(html, OLD_TOUR_CSS, "", deck + " legacy tour CSS")
+
+    dialog_old = '<dialog class="onboard-overlay" id="onboardOverlay" style="display:none">'
+    dialog_new = (
+        '<dialog class="onboard-overlay" id="onboardOverlay" '
+        'aria-label="جولة سريعة" aria-labelledby="onboardStepTitle" '
+        'aria-modal="true" onclick="if(event.target===this)closeOnboarding()">'
+    )
+    html = _replace_once(html, dialog_old, dialog_new, deck + " tour dialog semantics")
+
+    tour_js = TOUR_JS.replace("__DECK__", deck)
     start = html.find("var ONBOARD_STEPS=[")
-    marker = "// ============================================================\n// WHAT'S NEW"
-    end = html.find(marker, start)
+    end_marker = "// ============================================================\n// WHAT'S NEW"
+    end = html.find(end_marker, start)
     if start < 0 or end < 0:
-        raise SystemExit(deck + ": could not locate original onboarding script")
-    html = html[:start] + TOUR_JS.replace("__DECK__", deck) + "\n\n" + html[end:]
+        raise SystemExit(deck + " could not locate the original onboarding block")
+    html = html[:start] + tour_js + "\n\n" + html[end:]
+
     old_init = "if(!localStorage.getItem('anki_" + deck + "_onboarded'))showOnboarding();"
-    if html.count(old_init) != 1:
-        raise SystemExit(deck + ": first-visit blocking tour trigger changed unexpectedly")
-    html = html.replace(old_init, "/* Guided tour is intentionally user-initiated. */", 1)
-    launcher = '<button id="onboardTourLauncher" type="button" onclick="showOnboarding()" aria-label="ابدأ الجولة التفاعلية"><span aria-hidden="true">↗</span><span>الجولة التفاعلية</span></button>\n'
-    closers = list(re.finditer(r"</body\s*>", html, flags=re.I))
-    if not closers:
-        raise SystemExit(deck + ": missing document body close")
-    position = closers[-1].start()
-    html = html[:position] + launcher + html[position:]
-    style = '<style id="gallery-tour-redesign">\n' + TOUR_CSS + '\n</style>\n'
-    html, count = re.subn(r"</head\s*>", style + "</head>", html, count=1, flags=re.I)
-    if count != 1:
-        raise SystemExit(deck + ": could not add clean guided-tour styles")
-    for token in ('id="loadingMsg"', "جاري تحميل القوالب...", 'class="gv-fab gv-flip"'):
-        if token in html:
-            raise SystemExit(deck + ": obsolete blocking or floating control remains: " + token)
-    if 'id="fsFlipBtn"' not in html or 'id="gvShowAns"' not in html:
-        raise SystemExit(deck + ": actual card flip controls are missing")
+    new_init = "if(!localStorage.getItem('anki_" + deck + "_onboarded'))setTimeout(showOnboarding,80);"
+    html = _replace_once(html, old_init, new_init, deck + " delayed first-visit tour")
+
+    style_tag = '<style id="gallery-tour-redesign">\n' + TOUR_CSS + '\n</style>\n'
+    html, inserted = re.subn(r"</head\s*>", style_tag + "</head>", html, count=1, flags=re.I)
+    if inserted != 1:
+        raise SystemExit(deck + " could not insert the tour stylesheet into the document head")
+
+    residuals = []
+    for token in ("gv-fab", 'id="loadingMsg"'):
+        cursor = 0
+        while len(residuals) < 8:
+            position = html.find(token, cursor)
+            if position < 0:
+                break
+            residuals.append((token, html[max(0, position - 70):position + 150]))
+            cursor = position + len(token)
+    if residuals:
+        raise SystemExit(deck + " UX transform left a removed control or loader behind: " + repr(residuals))
+    if 'id="fsFlipBtn"' not in html:
+        raise SystemExit(deck + " full-screen flip control was unexpectedly removed")
     return html
