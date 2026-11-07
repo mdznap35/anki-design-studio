@@ -166,6 +166,35 @@ body.gx-selection-ready #onboardTourLauncher{display:inline-flex}
 @media(prefers-reduced-motion:reduce){
  #gallery-experience-hero *,#gbGrid .gb-item{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }
+
+/* Final visual and layout corrections: keep the gallery viewport-bound and
+   style the actual preview-stage descendants (the legacy viewer wrapper
+   closes before its stage in the generated source markup). */
+:root{
+ --bg:#0b1422;--bg-1:#112137;--bg-2:#162940;--bg-3:#1d344d;--bg-deep:#07111e;
+ --surface:rgba(121,190,182,.05);--surface-2:rgba(121,190,182,.09);--surface-3:rgba(121,190,182,.14);
+ --bd:rgba(166,196,211,.16);--bd-strong:rgba(166,196,211,.34);
+ --tx:#f4f8fb;--tx2:#bdccd8;--tx3:#8da3b4;
+ --ac:#4d9993;--ac2:#87cec2;--ac3:#77b9d5;
+ --grad:linear-gradient(135deg,#367f79 0%,#285d75 100%);--grad-soft:rgba(77,153,147,.16);--grad-text:#8bd4c8;
+ --glow:rgba(77,153,147,.28);--glow-cy:rgba(119,185,213,.14);
+ --s1:#0b1422;--s2:#162940;--s3:#1d344d;--grid:rgba(121,190,182,.04)
+}
+.gallery-browser,#galleryBrowser{width:100vw!important;max-width:100vw!important;min-width:0!important;overflow:hidden!important}
+.gallery-browser .gb-head,.gallery-browser .gb-bar{width:100%;max-width:100%;min-width:0;flex:0 0 auto}
+#gbGrid{flex:1 1 0%!important;width:100%!important;max-width:100%!important;min-width:0!important;grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr))!important;overflow-x:hidden!important}
+#gvStage .gv-arrow{width:48px;height:48px;border-radius:14px!important;background:#1b3a52!important;color:#edf6f8!important;border:1px solid rgba(113,190,181,.38)!important;box-shadow:0 8px 24px rgba(4,20,34,.36)!important;filter:none!important}
+#gvStage .gv-arrow:hover{background:#28546a!important;border-color:#79c6ba!important;box-shadow:0 12px 28px rgba(4,20,34,.42)!important;filter:none!important}
+#gvStage .gv-arrow:active{transform:translateY(-50%) scale(.96)!important}
+#gvStage .gv-cardwrap{border:1px solid rgba(151,191,194,.28)!important;border-radius:16px!important;background:#10243a!important;box-shadow:0 28px 72px rgba(0,0,0,.36)!important}
+#gvFrame,.gv-stage .gv-frame{border:0!important;border-radius:15px!important;background:#10243a!important;box-shadow:none!important}
+#gvShowAns{min-height:50px;margin:14px auto 0;border:1px solid rgba(111,190,180,.38)!important;background:linear-gradient(120deg,#286d70,#214e67)!important;color:#f4fbfa!important;box-shadow:0 8px 22px rgba(6,36,47,.16)!important}
+.gv-actions{padding:18px 20px;background:#10243a!important;border-top:1px solid rgba(173,195,215,.14)!important}
+.gv-actions .gv-act{min-height:50px;border-radius:10px!important}
+.gv-actions .gv-act.primary{background:linear-gradient(120deg,#286d70,#214e67)!important;border-color:#4f9991!important;color:#f4fbfa!important}
+.gv-actions .gv-act.ghost{background:#18344b!important;color:#e0ebf2!important;border-color:rgba(173,195,215,.2)!important}
+@media(max-width:560px){#galleryBrowser,.gallery-browser{width:100vw!important;max-width:100vw!important}#gbGrid{flex:1 1 0%!important;min-width:0!important}}
+
 """
 
 EXPERIENCE_JS = r"""
