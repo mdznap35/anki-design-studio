@@ -74,19 +74,19 @@ NAMES = {
 DECKS = {
   'en9': dict(route='/en9', ffile='en9.html', lang='en', ws='en9', deck='English 9',
       title='معرض قوالب Anki | اللغة الإنجليزية للصف التاسع',
-      meta='استكشف 100 قالب لبطاقات مفردات اللغة الإنجليزية للصف التاسع، وعاين التصاميم قبل اختيارها وإعداد رُزمتك.'
+      meta='استكشف 100 قالب لبطاقات مفردات اللغة الإنجليزية للصف التاسع، وعاين التصاميم قبل اختيارها وإعداد رُزمتك.',
       frdef='en-US-GuyNeural', img='gallery_imgs'),
   'enlit': dict(route='/enlit', ffile='enlit.html', lang='en', ws='enlit', deck='English Literature 12',
       title='معرض قوالب Anki | الأدب الإنجليزي للبكالوريا',
-      meta='استكشف 100 قالب لمفردات الأدب الإنجليزي للبكالوريا، وعاين طريقة عرض المفردات ومعانيها قبل الاختيار.'
+      meta='استكشف 100 قالب لمفردات الأدب الإنجليزي للبكالوريا، وعاين طريقة عرض المفردات ومعانيها قبل الاختيار.',
       frdef='en-US-GuyNeural', img='gallery_imgs'),
   'ensci': dict(route='/ensci', ffile='ensci.html', lang='en', ws='ensci', deck='English Science 12',
       title='معرض قوالب Anki | الإنجليزية العلمية للبكالوريا',
-      meta='استكشف 100 قالب لمصطلحات الإنجليزية العلمية للبكالوريا، وعاين التصاميم قبل اعتمادها في رُزمتك.'
+      meta='استكشف 100 قالب لمصطلحات الإنجليزية العلمية للبكالوريا، وعاين التصاميم قبل اعتمادها في رُزمتك.',
       frdef='en-US-GuyNeural', img='gallery_imgs'),
   'fr9': dict(route='/fr9', ffile='fr9.html', lang='fr', ws='tas9', deck='French 9',
       title='معرض قوالب Anki | اللغة الفرنسية للصف التاسع',
-      meta='استكشف 100 قالب لبطاقات مفردات اللغة الفرنسية للصف التاسع، وعاين التصاميم قبل اختيارها وإعداد رُزمتك.'
+      meta='استكشف 100 قالب لبطاقات مفردات اللغة الفرنسية للصف التاسع، وعاين التصاميم قبل اختيارها وإعداد رُزمتك.',
       frdef='fr-FR-HenriNeural', img='gallery_imgs'),
   'bac12': dict(route='/bac12', ffile='bac12.html', lang='fr', ws='bac12', deck='French Bac 12',
       title='French Bac 12 — Anki Template Gallery',
