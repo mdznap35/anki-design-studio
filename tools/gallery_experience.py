@@ -383,7 +383,7 @@ def apply_gallery_experience(html, deck):
 
     old_init = "if(!isOnboardingCompleted())setTimeout(showOnboarding,180);"
     new_init = (
-        "if(!isOnboardingCompleted()&&!window.hasSeenGalleryWelcome())"
+        "if(!isOnboardingCompleted()&&(!window.hasSeenGalleryWelcome||!window.hasSeenGalleryWelcome()))"
         "setTimeout(function(){if(window.openGalleryWelcome)window.openGalleryWelcome();},220);"
     )
     if html.count(old_init) != 1:
@@ -418,7 +418,7 @@ def apply_gallery_experience(html, deck):
     html = html[:body_close.start()] + WELCOME_MARKUP + script_tag + html[body_close.start():]
 
     required = (
-        'id="gallery-experience-hero"',
+        'hero.id="gallery-experience-hero"',
         'id="gxWelcomeStart"',
         'window.hasSeenGalleryWelcome',
         'window.openGalleryWelcome'
