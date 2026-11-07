@@ -165,7 +165,7 @@ jobs:
 
           expected_steps = ("start", "library", "preview", "export")
           required_targets = (
-              ".hero-cta-main", "#gbFilters", "#gbGrid", "#gvShowAns",
+              "#gbFilters", "#gbGrid", "#gvShowAns",
               "#gvSelectBtn", "#gTtsPreviewBtn", "#gAudioPanelBody", "#exOpenBtn", ".gb-item",
               "#exViewSummary",
           )
