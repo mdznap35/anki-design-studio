@@ -291,23 +291,23 @@ def apply_gallery_ux(html, deck):
         raise SystemExit(deck + ": legacy onboarding dialog anchor is missing")
     html = html.replace(old_dialog, new_dialog, 1)
     start = html.find("var ONBOARD_STEPS=[")
-    marker = "// ============================================================\\n// WHAT'S NEW"
+    marker = "// ============================================================\n// WHAT'S NEW"
     end = html.find(marker, start)
     if start < 0 or end < 0:
         raise SystemExit(deck + ": could not locate original onboarding script")
-    html = html[:start] + TOUR_JS.replace("__DECK__", deck) + "\\n\\n" + html[end:]
+    html = html[:start] + TOUR_JS.replace("__DECK__", deck) + "\n\n" + html[end:]
     old_init = "if(!localStorage.getItem('anki_" + deck + "_onboarded'))showOnboarding();"
     if html.count(old_init) != 1:
         raise SystemExit(deck + ": first-visit blocking tour trigger changed unexpectedly")
     html = html.replace(old_init, "/* Guided tour is intentionally user-initiated. */", 1)
-    launcher = '<button id="onboardTourLauncher" type="button" onclick="showOnboarding()" aria-label="ابدأ الجولة التفاعلية"><span aria-hidden="true">↗</span><span>الجولة التفاعلية</span></button>\\n'
-    closers = list(re.finditer(r"</body\\s*>", html, flags=re.I))
+    launcher = '<button id="onboardTourLauncher" type="button" onclick="showOnboarding()" aria-label="ابدأ الجولة التفاعلية"><span aria-hidden="true">↗</span><span>الجولة التفاعلية</span></button>\n'
+    closers = list(re.finditer(r"</body\s*>", html, flags=re.I))
     if not closers:
         raise SystemExit(deck + ": missing document body close")
     position = closers[-1].start()
     html = html[:position] + launcher + html[position:]
-    style = '<style id="gallery-tour-redesign">\\n' + TOUR_CSS + '\\n</style>\\n'
-    html, count = re.subn(r"</head\\s*>", style + "</head>", html, count=1, flags=re.I)
+    style = '<style id="gallery-tour-redesign">\n' + TOUR_CSS + '\n</style>\n'
+    html, count = re.subn(r"</head\s*>", style + "</head>", html, count=1, flags=re.I)
     if count != 1:
         raise SystemExit(deck + ": could not add clean guided-tour styles")
     for token in ('id="loadingMsg"', "جاري تحميل القوالب...", "class=\\"gv-fab gv-flip\\""):
