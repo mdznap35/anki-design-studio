@@ -165,7 +165,16 @@ function positionOnboardGuide(){
   if(target){
     var before=target.getBoundingClientRect();
     var targetOutsideViewport=before.top<0||before.bottom>window.innerHeight;
-    if(targetOutsideViewport)target.scrollIntoView({behavior:"auto",block:"center",inline:"nearest"});
+    if(targetOutsideViewport){
+      var scrollStyles=[],ancestor=target;
+      while(ancestor&&ancestor.nodeType===1){
+        scrollStyles.push([ancestor,ancestor.style.scrollBehavior]);
+        ancestor.style.scrollBehavior="auto";
+        ancestor=ancestor.parentElement;
+      }
+      try{target.scrollIntoView({behavior:"auto",block:"center",inline:"nearest"});}
+      finally{for(var restoreIndex=scrollStyles.length-1;restoreIndex>=0;restoreIndex--)scrollStyles[restoreIndex][0].style.scrollBehavior=scrollStyles[restoreIndex][1];}
+    }
     onboardActiveTarget=target;target.classList.add("og-spotlight");
     var rect=target.getBoundingClientRect();
     onboardGuideRoot.dataset.placement=rect.top>window.innerHeight*.48?"top":"bottom";
