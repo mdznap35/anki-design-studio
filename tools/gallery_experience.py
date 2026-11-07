@@ -31,11 +31,11 @@ EXPERIENCE_CSS = r"""
 #gallery-experience-hero .gx-showcase-foot{grid-column:1/-1;color:#8ea5b9;font-size:.62rem;line-height:1.7}
 #gbFilters{display:none!important}
 .gallery-browser{background:var(--bg,#0b1020)}
-.gallery-browser .gb-head{min-height:72px;padding:14px clamp(16px,3vw,34px);display:flex;align-items:center;gap:15px;border-bottom:1px solid rgba(170,190,215,.13);background:#101f32}
-.gallery-browser .gb-title{margin:0;color:#f2f6fa;font-size:1rem;font-weight:900}
+.gallery-browser .gb-head{min-height:72px;padding:14px clamp(16px,3vw,34px);display:grid;grid-template-columns:minmax(0,1fr) auto 44px;align-items:center;column-gap:14px;border-bottom:1px solid rgba(170,190,215,.13);background:#101f32}
+.gallery-browser .gb-title{margin:0;min-width:0;color:#f2f6fa;font-size:1rem;font-weight:900}
 .hdr-nav .hdr-link[aria-current="page"]{color:#f3fbfa;border-color:rgba(117,192,179,.38);background:rgba(92,169,158,.12);box-shadow:inset 0 -2px #72c5b8}
-.gallery-browser .gb-count{margin-inline-start:auto;color:#a8bdce;font-size:.73rem;font-variant-numeric:tabular-nums}
-.gallery-browser .gb-close{width:40px;height:40px;border-radius:9px;border:1px solid rgba(180,199,219,.18);background:rgba(255,255,255,.04);color:#edf4f9}
+.gallery-browser .gb-count{margin:0;justify-self:center;color:#a8bdce;font-size:.73rem;font-variant-numeric:tabular-nums;white-space:nowrap}
+.gallery-browser .gb-close{grid-column:3;justify-self:start;width:44px;height:44px;border-radius:9px;border:1px solid rgba(180,199,219,.18);background:rgba(255,255,255,.04);color:#edf4f9}
 .gallery-browser .gb-bar{min-height:44px;padding:9px clamp(16px,3vw,34px);display:flex;align-items:center;border-bottom:1px solid rgba(170,190,215,.1);background:#0e1b2c}
 .gallery-browser .gb-hint{color:#98aec1;font-size:.69rem;line-height:1.6}
 #gbGrid{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr));align-items:stretch;align-content:start;gap:clamp(12px,1.4vw,20px);margin:0;padding:clamp(14px,2vw,26px);overflow:auto;overscroll-behavior:contain;scroll-behavior:smooth}
@@ -48,6 +48,7 @@ EXPERIENCE_CSS = r"""
 #gbGrid .gb-preview-host iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#14283e;opacity:0;pointer-events:none;transition:opacity .18s}
 #gbGrid .gb-preview-host.is-ready iframe{opacity:1}
 #gbGrid .gb-preview-loading{padding:14px;color:#7f9ab0;font-size:.63rem;text-align:center}
+body:has(#galleryBrowser.open) #onboardTourLauncher{display:none!important}
 #gbGrid .gb-preview-host.is-error .gb-preview-loading{color:#d4b8a2}
 #gbGrid .gb-ov{position:static;display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:42px;padding:8px 11px;border-top:1px solid rgba(174,194,213,.1);background:#12253a;color:#e8f0f6;opacity:1;transform:none}
 #gbGrid .gb-ov-t{font-size:.68rem;font-weight:850}
@@ -153,7 +154,7 @@ function mountFrame(host,template,title){
  iframe.setAttribute("loading","lazy");iframe.setAttribute("title",title);
  iframe.addEventListener("load",function(){
   var doc=iframe.contentDocument,hasContent=!!(doc&&doc.body&&(doc.body.children.length||(doc.body.textContent||"").trim()));
-  if(hasContent){host.classList.add("is-ready");fitFrame(iframe);if(doc.fonts&&doc.fonts.ready)doc.fonts.ready.then(function(){fitFrame(iframe);}).catch(function(){});}
+  if(hasContent){host.classList.add("is-ready");var loading=host.querySelector(".gb-preview-loading");if(loading)loading.remove();fitFrame(iframe);if(doc.fonts&&doc.fonts.ready)doc.fonts.ready.then(function(){fitFrame(iframe);}).catch(function(){});}
   else{host.classList.add("is-error");text(host.querySelector(".gb-preview-loading"),"تعذرت معاينة هذا التصميم");}
  });
  iframe.addEventListener("error",function(){host.classList.add("is-error");text(host.querySelector(".gb-preview-loading"),"تعذرت معاينة هذا التصميم");});
@@ -291,6 +292,7 @@ def apply_gallery_experience(html, deck):
         "previewFrame.addEventListener('load',function(){var doc=this.contentDocument;"
         "var hasContent=doc&&doc.body&&(doc.body.children.length>0||(doc.body.textContent||'').trim().length>0);"
         "if(hasContent){previewHost.classList.add('is-ready');"
+        "var loading=previewHost.querySelector('.gb-preview-loading');if(loading)loading.remove();"
         "var fitPreview=function(){var selector='.fitme,.ds-word,.ds-trans,.word,.trans,.meaning,.subtitle,.board-txt,.cfit,.frword,.arword,[class*=\\\"-word\\\"],[class*=\\\"-trans\\\"],[class*=\\\"-sub\\\"],[class*=\\\"-txt\\\"]';"
         "doc.querySelectorAll(selector).forEach(function(el){var p=el.parentElement;if(!p)return;var cs=doc.defaultView.getComputedStyle(el);"
         "var base=parseFloat(el.getAttribute('data-base'))||parseFloat(cs.fontSize)||16;var min=Math.max(5,parseFloat(el.getAttribute('data-min'))||8);"
