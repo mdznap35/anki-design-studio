@@ -394,7 +394,7 @@ jobs:
                       label:hero.querySelector("[data-gx-deck]")?.textContent.trim(),
                       width:rect.width,height:rect.height,
                       heroFrames:hero.querySelectorAll("iframe").length,
-viewerVisible:getComputedStyle(document.getElementById("gv")).display!=="none",
+                      viewerVisible:getComputedStyle(document.getElementById("gv")).display!=="none",
                       welcome:!!document.getElementById("gxWelcome"),
                       filters:!!document.getElementById("gbFilters"),
                       overflow:document.documentElement.scrollWidth
@@ -403,7 +403,7 @@ viewerVisible:getComputedStyle(document.getElementById("gv")).display!=="none",
                   assert.equal(opening.title,expected[deck].title,deck+": wrong first-screen title");
                   assert.equal(opening.label,expected[deck].label,deck+": wrong deck identity");
                   assert.equal(opening.heroFrames,3,deck+": first screen must use three real template previews");
-assert.equal(opening.viewerVisible,false,deck+": full-screen preview stage must stay hidden until a template is selected");
+                  assert.equal(opening.viewerVisible,false,deck+": full-screen preview stage must stay hidden until a template is selected");
                   assert.equal(opening.welcome,false,deck+": blocking welcome modal remains");
                   assert.equal(opening.filters,false,deck+": filter strip remains");
                   assert(opening.width>0&&opening.height>0,deck+"/"+viewport.name+": opening is not visible");
@@ -413,7 +413,7 @@ assert.equal(opening.viewerVisible,false,deck+": full-screen preview stage must 
                   await page.locator("#gallery-experience-hero [data-gx-browse]").click();
                   await page.waitForFunction(()=>document.getElementById("galleryBrowser")?.classList.contains("open"),null,{timeout:10000});
                   await page.waitForFunction(()=>document.querySelectorAll("#gbGrid .gb-item").length===100,null,{timeout:15000});
-await page.waitForFunction(()=>document.querySelectorAll("#gbGrid .gb-preview-frame").length>0,null,{timeout:5000});
+                  await page.waitForFunction(()=>document.querySelectorAll("#gbGrid .gb-preview-frame").length>0,null,{timeout:5000});
                   const library=await page.evaluate(()=>({
                     count:document.querySelectorAll("#gbGrid .gb-item").length,
                     filters:document.querySelectorAll("#galleryBrowser .gb-chip").length,
@@ -431,7 +431,7 @@ await page.waitForFunction(()=>document.querySelectorAll("#gbGrid .gb-preview-fr
                   const first=page.locator("#gbGrid .gb-item").first();
                   await first.click();
                   await page.waitForFunction(()=>!document.getElementById("galleryBrowser")?.classList.contains("open"),null,{timeout:10000});
-await page.waitForFunction(()=>document.getElementById("gv")?.classList.contains("gx-visible"),null,{timeout:5000});
+                  await page.waitForFunction(()=>document.getElementById("gv")?.classList.contains("gx-visible"),null,{timeout:5000});
                   await page.waitForFunction(()=>typeof gvIdx!=="undefined"&&gvIdx===0,null,{timeout:10000});
                   assert(await page.locator("#gvStage").count()===1,deck+": actual gallery preview stage is missing");
 
