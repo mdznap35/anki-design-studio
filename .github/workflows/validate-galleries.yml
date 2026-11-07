@@ -124,7 +124,7 @@ jobs:
               assert html.count('id="gallery-experience-v2"') == 1, f"{deck}: v2 design system missing or duplicated"
               assert html.count('id="gallery-experience-runtime"') == 1, f"{deck}: v2 runtime missing or duplicated"
               assert html.count('id="gxWelcome"') == 1, f"{deck}: welcome experience missing or duplicated"
-              assert 'class="gx-dialog gx-opening-v4"' in html and 'id="gxWelcomeFlip"' in html, f"{deck}: interactive opening v4 is missing"
+              assert 'class="gx-dialog gx-opening-v5"' in html and 'id="gxWelcomeFlip"' in html, f"{deck}: interactive opening v4 is missing"
               assert 'hero.id="gallery-experience-hero"' in html, f"{deck}: gallery hero runtime missing"
               assert 'class="gb-preview-frame"' in html, f"{deck}: live template preview frame is missing"
               assert "var previewSource=thumbDoc(t)" in html, f"{deck}: real template render is not wired to gallery cards"
@@ -711,7 +711,7 @@ jobs:
                     const snoozed = await page.evaluate((key) => ({
                       completed: localStorage.getItem(key),
                       snoozed: sessionStorage.getItem(key.replace("_onboarded", "_onboarding_snoozed"))
-                    }), "anki_" + deck + "_onboarded_v4");
+                    }), "anki_" + deck + "_onboarded_v5");
                     assert.equal(snoozed.completed, null, deck + ": Later incorrectly marked the tour completed");
                     assert.equal(snoozed.snoozed, "1", deck + ": Later did not persist the session snooze");
 
@@ -730,7 +730,7 @@ jobs:
                     const completed = await page.evaluate((key) => ({
                       completed: localStorage.getItem(key),
                       snoozed: sessionStorage.getItem(key.replace("_onboarded", "_onboarding_snoozed"))
-                    }), "anki_" + deck + "_onboarded_v4");
+                    }), "anki_" + deck + "_onboarded_v5");
                     assert.equal(completed.completed, "1", deck + ": final completion was not persisted");
                     assert.equal(completed.snoozed, null, deck + ": completion did not clear the snooze");
                     await page.locator("#exportOverlay .fs-close").click();
