@@ -134,7 +134,7 @@ jobs:
               assert "تم فتح معاينة التصميم " in html, f"{deck}: card action still claims to select a template"
               assert "oldHero.remove()" in html, f"{deck}: duplicate legacy gallery hero remains"
               assert "window.openGalleryBrowser" in html, f"{deck}: opening action is not connected to the library"
-              assert 'document.querySelector("#sec-gal .hero")' in html, f"{deck}: original gallery hero anchor is missing"
+              assert 'section.querySelector(".hero")' in html, f"{deck}: original gallery hero anchor is missing"
               assert 'id="gxWelcome"' not in html and 'id="gxWelcomeStart"' not in html, f"{deck}: old blocking welcome experience remains"
               assert "window.openGalleryWelcome" not in html and "window.hasSeenGalleryWelcome" not in html, f"{deck}: legacy welcome modal runtime remains"
               assert "setTimeout(function(){if(window.openGalleryWelcome)" not in html, f"{deck}: automatic blocking welcome trigger remains"
