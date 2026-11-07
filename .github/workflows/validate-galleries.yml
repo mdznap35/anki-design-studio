@@ -9,6 +9,7 @@ on:
     paths:
       - "tools/build_galleries.py"
       - "tools/gallery_ux.py"
+      - "tools/gallery_experience.py"
       - "tools/decks/**/templates.json"
       - "index.html"
       - "render.yaml"
