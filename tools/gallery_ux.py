@@ -177,8 +177,7 @@ var onboardReviewOpened = false;
 function isOnboardingCompleted(){
   try{
     if(localStorage.getItem(ONBOARD_STORAGE_KEY) === "1")return true;
-  }catch(_e){}
-  try{return sessionStorage.getItem(ONBOARD_SNOOZE_KEY) === "1";}
+  }catch(_e){}  try{return sessionStorage.getItem(ONBOARD_SNOOZE_KEY) === "1";}
   catch(_e){return false;}
 }
 function markOnboardingCompleted(){
@@ -299,8 +298,21 @@ function positionOnboardGuide(){
   var height=Math.max(320,window.innerHeight||document.documentElement.clientHeight||320);
   backdrop.setAttribute("viewBox","0 0 " + width + " " + height);
   if(target&&target.isConnected){
-    var before=target.getBoundingClientRect();
     var fixedOverlay=target.closest(".gallery-browser,.help-overlay,.onboard-overlay");
+    var before=target.getBoundingClientRect();
+    // Audio controls live inside a wide settings panel. Move the active
+    // control near the top of the viewport so the coachmark can occupy the
+    // opposite (lower) zone instead of covering the control.
+    if(step.id==="audio"&&!fixedOverlay){
+      try{
+        target.scrollIntoView({behavior:"instant",block:"start",inline:"nearest"});
+        var audioRect=target.getBoundingClientRect();
+        window.scrollBy(0,audioRect.top-112);
+      }catch(_e){
+        try{target.scrollIntoView({behavior:"auto",block:"start",inline:"nearest"});}catch(_e2){}
+      }
+      before=target.getBoundingClientRect();
+    }
     var targetOutsideViewport=before.top<0||before.bottom>height;
     if(!fixedOverlay&&targetOutsideViewport){
       try{target.scrollIntoView({behavior:"instant",block:"center",inline:"nearest"});}
@@ -357,8 +369,7 @@ function positionOnboardGuide(){
     card.style.left=best.left+"px";
     card.style.top=best.top+"px";
     card.dataset.placement=best.name;
-  }
-}
+  }}
 function scheduleOnboardPosition(){
   if(!onboardGuideOpen || onboardPositionFrame)return;
   var request = window.requestAnimationFrame || function(callback){return window.setTimeout(callback,16);};
@@ -537,8 +548,7 @@ function closeOnboarding(completed){
   onboardClearSpotlight();
   var browser = document.getElementById("galleryBrowser");
   if(onboardOpenedBrowser && browser && browser.classList.contains("open") && typeof closeGalleryBrowser === "function")closeGalleryBrowser();
-  onboardOpenedBrowser = false;
-  var audio = document.getElementById("gAudioPanelBody");
+  onboardOpenedBrowser = false;  var audio = document.getElementById("gAudioPanelBody");
   if(onboardOpenedAudio && audio && audio.classList.contains("open") && typeof toggleAudioPanel === "function")toggleAudioPanel();
   onboardOpenedAudio = false;
   if(onboardGuideRoot && onboardGuideRoot.parentNode)onboardGuideRoot.parentNode.removeChild(onboardGuideRoot);
