@@ -326,7 +326,13 @@ function positionOnboardGuide(){
     return;
   }
   var margin=12;
+  var centeredLeft=Math.max(margin,(width-measured.width)/2);
+  var centeredTop=Math.max(margin,(height-measured.height)/2);
   var candidates=[
+    {left:centeredLeft,top:margin,name:"top-center"},
+    {left:centeredLeft,top:height-measured.height-margin,name:"bottom-center"},
+    {left:margin,top:centeredTop,name:"middle-left"},
+    {left:width-measured.width-margin,top:centeredTop,name:"middle-right"},
     {left:margin,top:margin,name:"top-left"},
     {left:width-measured.width-margin,top:margin,name:"top-right"},
     {left:margin,top:height-measured.height-margin,name:"bottom-left"},
