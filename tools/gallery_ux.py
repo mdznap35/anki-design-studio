@@ -511,7 +511,11 @@ document.addEventListener("click",function(event){
     return;
   }
   if(onbStep === 2 && target.closest("#gvShowAns,.gv-flip")){
-    window.setTimeout(function(){if(onboardGuideOpen && onbStep === 2)goToOnboardStep(3);},220);
+    window.setTimeout(function(){
+      if(!onboardGuideOpen || onbStep !== 2)return;
+      var note = document.getElementById("onboardGuideNote");
+      if(note)note.textContent = "قلبت البطاقة فعليًا؛ يمكنك الآن تحديد القالب أو تجربة الصوت أو متابعة مراجعة الرزمة.";
+    },40);
     return;
   }
   if(onbStep === 2 && target.closest("#gvSelectBtn")){
