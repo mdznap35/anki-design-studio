@@ -413,6 +413,7 @@ jobs:
                   await page.locator("#gallery-experience-hero [data-gx-browse]").click();
                   await page.waitForFunction(()=>document.getElementById("galleryBrowser")?.classList.contains("open"),null,{timeout:10000});
                   await page.waitForFunction(()=>document.querySelectorAll("#gbGrid .gb-item").length===100,null,{timeout:15000});
+                  await page.waitForFunction(()=>{const frames=document.querySelectorAll("#gbGrid .gb-preview-frame").length;return frames>0&&frames<=35;},null,{timeout:10000});
                   await page.waitForFunction(()=>document.querySelectorAll("#gbGrid .gb-preview-frame").length>0,null,{timeout:5000});
                   const library=await page.evaluate(()=>({
                     count:document.querySelectorAll("#gbGrid .gb-item").length,
