@@ -105,8 +105,8 @@ jobs:
               assert len(designs) == 100, f"{deck}: expected 100 designs, found {len(designs)}"
               expected_nav = (
                   '<a class="hdr-link" href="/en9">إنجليزي 9</a>',
-                  '<a class="hdr-link" href="/enlit">إنجليزي بكالوريا أدبي 12</a>',
-                  '<a class="hdr-link" href="/ensci">إنجليزي بكالوريا علمي 12</a>',
+                  '<a class="hdr-link" href="/enlit">إنجليزي بكالوريا 12 · الفرع الأدبي</a>',
+                  '<a class="hdr-link" href="/ensci">إنجليزي بكالوريا 12 · الفرع العلمي</a>',
                   '<a class="hdr-link" href="/fr9">فرنسي 9</a>',
                   '<a class="hdr-link" href="/bac12">فرنسي بكالوريا 12</a>',
               )
