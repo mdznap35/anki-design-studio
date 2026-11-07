@@ -468,7 +468,7 @@ WELCOME_MARKUP = r"""
       <div class="gx-card-scene">
         <div class="gx-preview-card" id="gxWelcomePreviewCard">
           <div class="gx-preview-face front">
-            <span class="gx-card-label">ENGLISH WORD</span>
+            <span class="gx-card-label">المفردة</span>
             <strong class="gx-card-word" data-gx-sample-word>Student</strong>
             <span class="gx-card-hint">جرّب قلب البطاقة لرؤية الوجه الآخر.</span>
           </div>
@@ -623,7 +623,7 @@ EXPERIENCE_JS = r"""
     if(flip){flip.setAttribute("aria-pressed","false");flip.innerHTML='<span aria-hidden="true">↻</span> اقلب البطاقة';}
     if(faceState)faceState.textContent="الوجه الأمامي";
     var start=document.getElementById("gxWelcomeStart");
-    if(start)start.focus();
+    if(start)start.focus({preventScroll:true});
   }
   function closeGalleryWelcome(markSeen){
     var modal=document.getElementById("gxWelcome");
