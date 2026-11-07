@@ -434,11 +434,11 @@ def apply_gallery_experience(html, deck):
         raise SystemExit(deck + ": expected one shared gallery thumbnail renderer")
     html = html.replace(old_thumb, new_thumb, 1)
     image_handlers = re.compile(
-        r"var im=it\\.querySelector\\('\.gb-img'\\);\\s*"
-        r"im\\.addEventListener\\('load',function\\(\\)\\{this\\.removeAttribute\\('data-loading'\\);"
-        r"var sk=this\\.parentNode\\.querySelector\\('\.gb-sk'\\);if\\(sk\\)sk\\.style\\.display='none';\\}\\);\\s*"
-        r"im\\.addEventListener\\('error',function\\(\\)\\{this\\.removeAttribute\\('data-loading'\\);"
-        r"var sk=this\\.parentNode\\.querySelector\\('\.gb-sk'\\);if\\(sk\\)sk\\.style\\.display='none';\\}\\);"
+        r"var im=it\.querySelector\('\.gb-img'\);\s*"
+        r"im\.addEventListener\('load',function\(\)\{this\.removeAttribute\('data-loading'\);"
+        r"var sk=this\.parentNode\.querySelector\('\.gb-sk'\);if\(sk\)sk\.style\.display='none';\}\);\s*"
+        r"im\.addEventListener\('error',function\(\)\{this\.removeAttribute\('data-loading'\);"
+        r"var sk=this\.parentNode\.querySelector\('\.gb-sk'\);if\(sk\)sk\.style\.display='none';\}\);"
     )
     frame_handlers = (
         "var previewFrame=it.querySelector('.gb-preview-frame');"
