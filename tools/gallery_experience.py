@@ -377,7 +377,7 @@ def apply_gallery_experience(html, deck):
         raise SystemExit("Gallery Experience v2 is restricted to the four non-Bac galleries")
     if 'id="gallery-experience-v2"' in html or 'id="gxWelcome"' in html:
         raise SystemExit(deck + ": Gallery Experience v2 is already present")
-    for marker in ('id="gbFilters"', 'id="gbGrid"', 'id="gvStage"', 'id="onboardTourLauncher"'):
+    for marker in ('id="gbFilters"', 'id="gbGrid"', 'id="onboardTourLauncher"'):
         if marker not in html:
             raise SystemExit(deck + ": required gallery anchor is missing: " + marker)
 
