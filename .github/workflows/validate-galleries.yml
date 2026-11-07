@@ -111,6 +111,11 @@ jobs:
               assert html.count('id="gallery-experience-runtime"') == 1, f"{deck}: v2 runtime missing or duplicated"
               assert html.count('id="gxWelcome"') == 1, f"{deck}: welcome experience missing or duplicated"
               assert 'hero.id="gallery-experience-hero"' in html, f"{deck}: gallery hero runtime missing"
+              assert 'class="gb-preview-frame"' in html, f"{deck}: live template preview frame is missing"
+              assert "previewFrame.srcdoc=thumbDoc(t)" in html, f"{deck}: real template render is not wired to gallery cards"
+              assert 'class="gx-action primary hero-cta-main"' in html, f"{deck}: branded hero action is missing or not tour-compatible"
+              assert "originalHero.remove()" in html, f"{deck}: duplicate legacy hero was not removed"
+              assert "window.openGalleryBrowser" in html, f"{deck}: hero/welcome browser entry action is not wired"
               assert 'document.querySelector("#sec-gal .hero")' in html, f"{deck}: gallery hero is not anchored in the main page section"
               assert "window.openGalleryWelcome" in html and "window.hasSeenGalleryWelcome" in html, f"{deck}: welcome controls are not wired"
               assert "setTimeout(function(){if(window.openGalleryWelcome)" in html, f"{deck}: first-visit welcome trigger is missing"
@@ -506,6 +511,8 @@ jobs:
                   assert(welcomeMetrics.top >= -1 && welcomeMetrics.bottom <= viewport.height + 1, deck + "/" + viewport.name + ": welcome exceeds vertical viewport");
                   assert.equal(await page.locator("#gallery-experience-hero").count(), 1, deck + ": gallery hero is missing");
                   assert.equal(await page.locator("#gallery-experience-hero").evaluate(element => element.closest("#galleryBrowser") === null), true, deck + "/" + viewport.name + ": gallery hero was inserted inside the template browser");
+                  assert.equal(await page.locator("#gallery-experience-hero .hero-cta-main").count(), 1, deck + ": hero browse action is missing");
+                  assert.equal(await page.locator("#sec-gal .hero").count(), 0, deck + ": duplicate legacy gallery hero remains");
                   await page.screenshot({ path: "qa-artifacts/" + deck + "-" + viewport.name + "-welcome.png", fullPage: false });
                   await page.locator("#gxWelcomeStart").click();
                   try {
@@ -546,6 +553,15 @@ jobs:
                   if (viewport.exerciseControls) {
                     await page.locator('[data-guide-step="1"]').click();
                     await waitForStep(page, 1);
+                    const firstFrame = page.locator("#gbGrid .gb-preview-frame").first();
+                    await firstFrame.waitFor({ state: "attached", timeout: 10000 });
+                    await page.waitForFunction(() => {
+                      const frame = document.querySelector("#gbGrid .gb-preview-frame");
+                      const body = frame && frame.contentDocument && frame.contentDocument.body;
+                      return !!(body && (body.children.length > 0 || (body.textContent || "").trim().length > 0));
+                    }, null, { timeout: 15000 });
+                    const frameText = await firstFrame.evaluate(frame => frame.contentDocument.body.textContent || "");
+                    assert(frameText.includes(previewCase.sample.f), deck + ": gallery thumbnail does not show its deck-specific sample word");
                     await page.locator("#gbGrid .gb-item").first().click({ timeout: 10000 });
                     await page.waitForFunction(() => window.onbStep === 2, null, { timeout: 10000 });
                     await waitForStep(page, 2);
@@ -600,6 +616,21 @@ jobs:
                     }), "anki_" + deck + "_onboarded");
                     assert.equal(completed.completed, "1", deck + ": final completion was not persisted");
                     assert.equal(completed.snoozed, null, deck + ": completion did not clear the snooze");
+
+                    await page.locator("#gallery-experience-hero [data-gx-browse]").click();
+                    await page.waitForFunction(() => {
+                      const browser = document.getElementById("galleryBrowser");
+                      return browser && browser.classList.contains("open");
+                    }, null, { timeout: 10000 });
+                    await page.locator("#galleryBrowser .gb-close").click();
+                    await page.locator("#onboardTourLauncher").click();
+                    await page.waitForSelector("#gxWelcome:not([hidden])");
+                    await page.locator("#gxWelcomeExplore").click();
+                    await page.waitForFunction(() => {
+                      const browser = document.getElementById("galleryBrowser");
+                      return browser && browser.classList.contains("open");
+                    }, null, { timeout: 10000 });
+                    await page.locator("#galleryBrowser .gb-close").click();
                   }
 
                   assert.deepEqual(pageErrors, [], deck + "/" + viewport.name + ": uncaught browser errors: " + pageErrors.join(" | "));
