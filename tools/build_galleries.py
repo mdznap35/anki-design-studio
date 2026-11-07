@@ -369,6 +369,20 @@ def build_one(did, spec, base):
         assert n == 1, t + 'nav count %d' % n
         h = h2
 
+    # Normalize the existing route-based header navigation as well as legacy links.
+    nav_labels = {
+        '/en9': 'إنجليزي 9',
+        '/enlit': 'أدب إنجليزي 12',
+        '/ensci': 'إنجليزي علمي 12',
+        '/fr9': 'فرنسي 9',
+        '/bac12': 'فرنسي بكالوريا 12',
+    }
+    for route, label in nav_labels.items():
+        pattern = re.compile(r'(<a class="hdr-link" href="' + re.escape(route) + r'">).*?(</a>)')
+        h, nav_count = pattern.subn(lambda match: match.group(1) + label + match.group(2), h, count=1)
+        if nav_count != 1:
+            raise SystemExit(t + 'expected one header navigation link for ' + route + ', found ' + str(nav_count))
+
     h = rep(h, '<a class="brand" href="index.html" aria-label="الصفحة الرئيسية">',
             '<a class="brand" href="' + spec['route'] + '" aria-label="الصفحة الرئيسية">', 1, t + 'brand')
 
