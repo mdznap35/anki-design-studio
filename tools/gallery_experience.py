@@ -392,15 +392,15 @@ WELCOME_MARKUP = r"""
       <h2 id="gxWelcomeTitle" data-gx-welcome-title>اختر التصميم الذي يناسب طريقة دراستك.</h2>
       <p class="gx-lead" id="gxWelcomeLead" data-gx-welcome-lead>يضم هذا المعرض 100 قالب. استكشف التصاميم، وعاين تفاصيل البطاقة، ثم اختر ما يناسبك وراجع اختياراتك قبل إنشاء الرزمة.</p>
       <div class="gx-points" aria-label="مراحل اختيار القالب">
-        <div class="gx-point"><span class="gx-point-no">01</span><div class="gx-point-copy"><strong>استكشف 100 تصميماً</strong><span>ابحث وصفِّ القوالب حتى تصل إلى ما يناسبك.</span></div></div>
-        <div class="gx-point"><span class="gx-point-no">02</span><div class="gx-point-copy"><strong>عاين الوجهين</strong><span>افحص شكل البطاقة قبل اعتماد أي تصميم.</span></div></div>
-        <div class="gx-point"><span class="gx-point-no">03</span><div class="gx-point-copy"><strong>حدّد ثم راجع</strong><span>اختر قوالبك، واضبط الصوت، وراجع الرزمة قبل إنشائها.</span></div></div>
+        <div class="gx-point"><span class="gx-point-no">01</span><div class="gx-point-copy"><strong>تصفّح المكتبة</strong><span>استخدم البحث والتصنيفات للوصول إلى القوالب المناسبة من بين 100 تصميم.</span></div></div>
+        <div class="gx-point"><span class="gx-point-no">02</span><div class="gx-point-copy"><strong>اختبر البطاقة</strong><span>شاهد الوجهين وتأكد من وضوح الكلمة والمعنى قبل الاختيار.</span></div></div>
+        <div class="gx-point"><span class="gx-point-no">03</span><div class="gx-point-copy"><strong>اعتمد اختياراتك</strong><span>اجمع القوالب التي تريدها، واضبط الصوت، وراجع الرزمة قبل إنشائها.</span></div></div>
       </div>
       <div class="gx-actions">
-        <button class="gx-button primary" id="gxWelcomeStart" type="button">ابدأ الجولة التفاعلية <span aria-hidden="true">←</span></button>
-        <button class="gx-button" id="gxWelcomeExplore" type="button">تصفّح القوالب</button>
+        <button class="gx-button primary" id="gxWelcomeStart" type="button">ابدأ الجولة <span aria-hidden="true">←</span></button>
+        <button class="gx-button" id="gxWelcomeExplore" type="button">تصفّح 100 قالب</button>
       </div>
-      <div class="gx-small">تصفّح بحرية. لا يُحدَّد أي قالب ولا تُنشأ أي رزمة تلقائياً؛ كل خطوة تنفيذية تبدأ باختيارك.</div>
+      <div class="gx-small">الجولة إرشادية فقط؛ لا تضيف قوالب إلى اختياراتك ولا تنشئ رزمة دون إجراء منك.</div>
     </div>
     <div class="gx-stage" aria-hidden="true">
       <div class="gx-orbit"></div>
@@ -409,7 +409,7 @@ WELCOME_MARKUP = r"""
         <div class="gx-card mid"><div class="gx-card-top"><span>الخطوة الثانية</span><span>02</span></div><div class="gx-card-word">عاين</div><div class="gx-card-lines"><span></span><span></span><span></span></div></div>
         <div class="gx-card front gx-card-sample"><div class="gx-card-top"><span>عينة من المحتوى</span><span>03</span></div><div class="gx-card-word" data-gx-sample-word>Student</div><div class="gx-card-meaning"><span>المعنى</span><strong data-gx-sample-meaning>طالب</strong></div></div>
       </div>
-      <div class="gx-stage-label">مثال توضيحي · عاين القالب بمحتوى الرزمة الفعلي</div>
+      <div class="gx-stage-label">مثال توضيحي من مفردات الرزمة</div>
     </div>
   </section>
 </div>
@@ -440,20 +440,20 @@ EXPERIENCE_JS = r"""
       sampleMeaning:"طالب"
     },
     enlit:{
-      label:"اللغة الإنجليزية · بكالوريا أدبي 12",
-      title:"اختر تصميم Anki المناسب لمفردات الإنجليزية — بكالوريا أدبي 12",
-      description:"100 تصميم لبطاقات مفردات اللغة الإنجليزية المخصّصة لبكالوريا أدبي 12. قارن وضوح الكلمة ومعناها، وافحص القالب قبل اعتماده.",
-      welcomeTitle:"اختر شكل البطاقة التي ستراجع بها مفردات الإنجليزية.",
-      welcomeLead:"هذا المعرض مخصّص للغة الإنجليزية — بكالوريا أدبي 12. أمامك 100 قالب؛ افتح أي قالب لمعاينة وجهَي البطاقة، ثم حدّد ما يناسبك وراجع إعداداتك قبل إنشاء الرزمة.",
+      label:"اللغة الإنجليزية · بكالوريا — الشعبة الأدبية",
+      title:"قوالب Anki لمفردات اللغة الإنجليزية — بكالوريا، الشعبة الأدبية",
+      description:"تصفّح 100 قالب لمفردات اللغة الإنجليزية في بكالوريا الشعبة الأدبية. قارن وضوح البطاقة وجرّب معاينتها قبل اختيار تصاميم رُزمتك.",
+      welcomeTitle:"ابدأ باختيار شكل البطاقات التي ستراجع بها مفردات الإنجليزية.",
+      welcomeLead:"هذا المعرض مخصّص لمفردات اللغة الإنجليزية في بكالوريا الشعبة الأدبية. أمامك 100 قالب؛ تصفّحها، وافتح أي قالب لمعاينة وجهي البطاقة، ثم حدّد اختياراتك وراجع إعدادات الرزمة قبل إنشائها.",
       sampleWord:"Novel",
       sampleMeaning:"رواية"
     },
     ensci:{
-      label:"اللغة الإنجليزية · بكالوريا علمي 12",
-      title:"اختر تصميم Anki المناسب لمفردات الإنجليزية — بكالوريا علمي 12",
-      description:"100 تصميم لبطاقات مفردات اللغة الإنجليزية المخصّصة لبكالوريا علمي 12. قارن وضوح الكلمة ومعناها، وافحص القالب قبل اعتماده.",
-      welcomeTitle:"اجعل مراجعة مفردات الإنجليزية أوضح وأسهل.",
-      welcomeLead:"هذا المعرض مخصّص للغة الإنجليزية — بكالوريا علمي 12. أمامك 100 قالب؛ افتح أي قالب لمعاينة وجهَي البطاقة، ثم حدّد ما يناسبك وراجع إعداداتك قبل إنشاء الرزمة.",
+      label:"اللغة الإنجليزية · بكالوريا — الشعبة العلمية",
+      title:"قوالب Anki لمفردات اللغة الإنجليزية — بكالوريا، الشعبة العلمية",
+      description:"تصفّح 100 قالب لمفردات اللغة الإنجليزية في بكالوريا الشعبة العلمية. قارن وضوح البطاقة وجرّب معاينتها قبل اختيار تصاميم رُزمتك.",
+      welcomeTitle:"ابدأ باختيار شكل البطاقات التي ستراجع بها مفردات الإنجليزية.",
+      welcomeLead:"هذا المعرض مخصّص لمفردات اللغة الإنجليزية في بكالوريا الشعبة العلمية. أمامك 100 قالب؛ تصفّحها، وافتح أي قالب لمعاينة وجهي البطاقة، ثم حدّد اختياراتك وراجع إعدادات الرزمة قبل إنشائها.",
       sampleWord:"Energy",
       sampleMeaning:"طاقة"
     }
@@ -518,9 +518,9 @@ EXPERIENCE_JS = r"""
         '</div>'+
         '<div class="gx-art" aria-hidden="true">'+
           '<div class="gx-art-glow"></div>'+
-          '<div class="gx-art-card back"><span class="gx-art-kicker">الخطوة الأولى</span><span class="gx-art-word">اكتشف</span><span class="gx-art-note">ابحث وصفِّ النتائج</span></div>'+
-          '<div class="gx-art-card mid"><span class="gx-art-kicker">الخطوة الثانية</span><span class="gx-art-word">عاين</span><span class="gx-art-note">افحص تفاصيل التصميم</span></div>'+
-          '<div class="gx-art-card front gx-art-sample"><span class="gx-art-kicker">عينة من المحتوى</span><span class="gx-art-word" data-gx-sample-word>Student</span><span class="gx-art-meaning" data-gx-sample-meaning>طالب</span></div>'+
+          '<div class="gx-art-card back"><span class="gx-art-kicker">01 · المكتبة</span><span class="gx-art-word">اكتشف</span><span class="gx-art-note">ابحث بين 100 قالب</span></div>'+
+          '<div class="gx-art-card mid"><span class="gx-art-kicker">02 · المعاينة</span><span class="gx-art-word">اختبر</span><span class="gx-art-note">شاهد وجهي البطاقة</span></div>'+
+          '<div class="gx-art-card front gx-art-sample"><span class="gx-art-kicker">مثال من الرزمة</span><span class="gx-art-word" data-gx-sample-word>Student</span><span class="gx-art-meaning" data-gx-sample-meaning>طالب</span></div>'+
         '</div>'+
       '</div>';
     var originalHero=document.querySelector("#sec-gal .hero") || (document.querySelector(".hero-cta-main") && document.querySelector(".hero-cta-main").closest(".hero"));
