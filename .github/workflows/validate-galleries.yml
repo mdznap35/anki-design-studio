@@ -6,6 +6,7 @@ on:
       - main
       - "fix/**"
       - "feature/**"
+      - "feat/**"
     paths:
       - "tools/build_galleries.py"
       - "tools/gallery_ux.py"
@@ -123,6 +124,7 @@ jobs:
               assert html.count('id="gallery-experience-v2"') == 1, f"{deck}: v2 design system missing or duplicated"
               assert html.count('id="gallery-experience-runtime"') == 1, f"{deck}: v2 runtime missing or duplicated"
               assert html.count('id="gxWelcome"') == 1, f"{deck}: welcome experience missing or duplicated"
+              assert 'class="gx-dialog gx-opening-v4"' in html and 'id="gxWelcomeFlip"' in html, f"{deck}: interactive opening v4 is missing"
               assert 'hero.id="gallery-experience-hero"' in html, f"{deck}: gallery hero runtime missing"
               assert 'class="gb-preview-frame"' in html, f"{deck}: live template preview frame is missing"
               assert "var previewSource=thumbDoc(t)" in html, f"{deck}: real template render is not wired to gallery cards"
@@ -411,10 +413,10 @@ jobs:
           };
 
           const openingCases = {
-            fr9: { label:"اللغة الفرنسية · الصف التاسع", title:"اكتشف القالب الأنسب لمفردات الفرنسية", welcomeTitle:"اجعل مراجعة الفرنسية أوضح، بدءاً من القالب المناسب.", word:"Leçon", meaning:"درس" },
-            en9: { label:"اللغة الإنجليزية · الصف التاسع", title:"اختر طريقة العرض المناسبة لمفردات الإنجليزية", welcomeTitle:"اختر قالباً يجعل مراجعة مفردات الإنجليزية أكثر وضوحاً.", word:"Student", meaning:"طالب" },
-            enlit: { label:"اللغة الإنجليزية · بكالوريا 12 — الفرع الأدبي", title:"اعثر على قالب Anki المناسب لمفردات الإنجليزية.", welcomeTitle:"اختر شكل البطاقة قبل أن تبدأ المراجعة.", word:"Achievement", meaning:"إنجاز" },
-            ensci: { label:"اللغة الإنجليزية · بكالوريا 12 — الفرع العلمي", title:"اعثر على قالب Anki المناسب لمفردات الإنجليزية.", welcomeTitle:"اختر شكل البطاقة قبل أن تبدأ المراجعة.", word:"Achievement", meaning:"إنجاز" }
+            fr9: { label:"اللغة الفرنسية · الصف التاسع", title:"اكتشف القالب الأنسب لمفردات الفرنسية", welcomeTitle:"اختر طريقة عرض مفردات الفرنسية.", word:"Leçon", meaning:"درس" },
+            en9: { label:"اللغة الإنجليزية · الصف التاسع", title:"اختر طريقة العرض المناسبة لمفردات الإنجليزية", welcomeTitle:"اختر طريقة عرض مفردات الإنجليزية.", word:"Student", meaning:"طالب" },
+            enlit: { label:"اللغة الإنجليزية · بكالوريا 12 — الفرع الأدبي", title:"اعثر على قالب Anki المناسب لمفردات الإنجليزية.", welcomeTitle:"اختر طريقة عرض مفردات الإنجليزية للفرع الأدبي.", word:"Achievement", meaning:"إنجاز" },
+            ensci: { label:"اللغة الإنجليزية · بكالوريا 12 — الفرع العلمي", title:"اعثر على قالب Anki المناسب لمفردات الإنجليزية.", welcomeTitle:"اختر طريقة عرض مفردات الإنجليزية للفرع العلمي.", word:"Achievement", meaning:"إنجاز" }
           };
 
           async function waitForStep(page, index) {
@@ -598,6 +600,11 @@ jobs:
               assert.equal(openingCopy.startLabel, "ابدأ الجولة التفاعلية ←", deck + ": guided tour action label is unclear");
               assert.equal(openingCopy.exploreLabel, "تصفّح القوالب", deck + ": direct gallery action label is unclear");
               assert.equal(openingCopy.focusId, "gxWelcomeStart", deck + ": opening does not place focus on the primary action");
+              await page.locator("#gxWelcomeFlip").click();
+              assert.equal(await page.locator("#gxWelcomePreviewCard").evaluate(node => node.classList.contains("is-flipped")), true, deck + ": welcome preview did not reveal the reverse face");
+              assert.equal(await page.locator("#gxWelcomeFlip").getAttribute("aria-pressed"), "true", deck + ": flip state is not exposed accessibly");
+              await page.locator("#gxWelcomeFlip").click();
+              assert.equal(await page.locator("#gxWelcomePreviewCard").evaluate(node => node.classList.contains("is-flipped")), false, deck + ": welcome preview did not return to the front face");
               assert(openingCopy.copyWidth <= openingCopy.copyClientWidth + 1, deck + "/" + viewport.name + ": opening copy overflows horizontally");
               assert.equal(await page.locator("#gallery-experience-hero").count(), 1, deck + ": gallery hero is missing");
                   assert.equal(await page.locator("#gallery-experience-hero").evaluate(element => element.closest("#galleryBrowser") === null), true, deck + "/" + viewport.name + ": gallery hero was inserted inside the template browser");
@@ -702,7 +709,7 @@ jobs:
                     const snoozed = await page.evaluate((key) => ({
                       completed: localStorage.getItem(key),
                       snoozed: sessionStorage.getItem(key.replace("_onboarded", "_onboarding_snoozed"))
-                    }), "anki_" + deck + "_onboarded_v3");
+                    }), "anki_" + deck + "_onboarded_v4");
                     assert.equal(snoozed.completed, null, deck + ": Later incorrectly marked the tour completed");
                     assert.equal(snoozed.snoozed, "1", deck + ": Later did not persist the session snooze");
 
@@ -721,7 +728,7 @@ jobs:
                     const completed = await page.evaluate((key) => ({
                       completed: localStorage.getItem(key),
                       snoozed: sessionStorage.getItem(key.replace("_onboarded", "_onboarding_snoozed"))
-                    }), "anki_" + deck + "_onboarded_v3");
+                    }), "anki_" + deck + "_onboarded_v4");
                     assert.equal(completed.completed, "1", deck + ": final completion was not persisted");
                     assert.equal(completed.snoozed, null, deck + ": completion did not clear the snooze");
                     await page.locator("#exportOverlay .fs-close").click();
