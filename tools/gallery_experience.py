@@ -470,12 +470,57 @@ body{
   #gxWelcome .gx-opening-v4 .gx-stage-caption{font-size:.5rem;max-width:150px}
 }
 
+/* Institutional opening v5: concise orientation, evidence-led value, and a live card sample. */
+#gxWelcome{padding:clamp(12px,2vw,28px);background:rgba(5,13,25,.84);backdrop-filter:blur(10px)}
+#gxWelcome .gx-dialog.gx-opening-v5{width:min(1080px,100%);max-height:min(880px,94dvh);overflow:auto;grid-template-columns:minmax(0,1.06fr) minmax(320px,.94fr);border:1px solid rgba(156,177,205,.24);border-radius:20px;background:#101e31;box-shadow:0 34px 100px rgba(0,0,0,.55)}
+#gxWelcome .gx-opening-v5 .gx-copy{padding:clamp(25px,4vw,48px);gap:0;background:linear-gradient(145deg,#13243a,#101e31)}
+#gxWelcome .gx-opening-v5 .gx-kicker{color:#c4d2e5;font-size:.66rem;letter-spacing:.14em}
+#gxWelcome .gx-opening-v5 .gx-brand-mark{border-radius:8px;background:#2d4e70;box-shadow:none}
+#gxWelcome .gx-opening-v5 .gx-deck-label{margin-top:21px;margin-bottom:0;padding:7px 11px;border:1px solid rgba(152,177,207,.2);border-radius:7px;background:rgba(255,255,255,.035);color:#afc2db;font-size:.68rem}
+#gxWelcome .gx-opening-v5 h2{max-width:590px;margin:18px 0 11px;color:#f5f8fc;font-size:clamp(1.75rem,3vw,2.55rem);line-height:1.4;letter-spacing:-.04em}
+#gxWelcome .gx-opening-v5 .gx-lead{max-width:590px;color:#b9c8da;font-size:.86rem;line-height:1.95}
+#gxWelcome .gx-opening-v5 .gx-points{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:23px 0 0}
+#gxWelcome .gx-opening-v5 .gx-point{min-width:0;min-height:90px;display:flex;flex-direction:column;align-items:flex-start;padding:12px;border:1px solid rgba(159,181,210,.13);border-radius:10px;background:#172a42}
+#gxWelcome .gx-opening-v5 .gx-point-no{margin:0;color:#80c9c0;font-size:.62rem;font-weight:900;letter-spacing:.1em}
+#gxWelcome .gx-opening-v5 .gx-point-copy{display:grid;gap:5px;margin-top:8px}
+#gxWelcome .gx-opening-v5 .gx-point strong{color:#edf3fa;font-size:.73rem}
+#gxWelcome .gx-opening-v5 .gx-point span:not(.gx-point-no){color:#9db0c8;font-size:.61rem;line-height:1.6}
+#gxWelcome .gx-opening-v5 .gx-actions{display:flex;gap:9px;margin-top:23px}
+#gxWelcome .gx-opening-v5 .gx-button{min-height:46px;padding:0 16px;border:1px solid rgba(155,181,211,.2);border-radius:9px;background:#1a304a;color:#dce8f5;font-size:.74rem;font-weight:850}
+#gxWelcome .gx-opening-v5 .gx-button.primary{border-color:#416b96;background:#315b85;color:white;box-shadow:none}
+#gxWelcome .gx-opening-v5 .gx-button.primary:hover{background:#3b6c9b}
+#gxWelcome .gx-opening-v5 .gx-small{margin-top:12px;color:#8fa4bd;font-size:.63rem;line-height:1.75}
+#gxWelcome .gx-opening-v5 .gx-stage{min-height:470px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:32px clamp(20px,3vw,38px);direction:ltr;border-left:1px solid rgba(159,181,210,.12);background:#0d192a}
+#gxWelcome .gx-opening-v5 .gx-stage-head,#gxWelcome .gx-opening-v5 .gx-stage-foot{width:min(100%,390px);display:flex;align-items:center;justify-content:space-between;gap:12px}
+#gxWelcome .gx-opening-v5 .gx-stage-head{color:#afc2d9;font-size:.66rem;font-weight:850}
+#gxWelcome .gx-opening-v5 .gx-face-state{padding:5px 9px;border:1px solid rgba(116,199,190,.2);border-radius:6px;background:rgba(67,147,139,.1);color:#9bddd5;font-size:.6rem}
+#gxWelcome .gx-opening-v5 .gx-card-scene{width:min(100%,390px);perspective:1100px}
+#gxWelcome .gx-opening-v5 .gx-preview-card{position:relative;width:100%;min-height:270px;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.2,.72,.2,1)}
+#gxWelcome .gx-opening-v5 .gx-preview-card.is-flipped{transform:rotateY(180deg)}
+#gxWelcome .gx-opening-v5 .gx-preview-face{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(20px,3vw,28px);border:1px solid rgba(166,190,219,.23);border-radius:15px;background:#1b3552;box-shadow:0 24px 55px rgba(0,0,0,.25);backface-visibility:hidden;-webkit-backface-visibility:hidden}
+#gxWelcome .gx-opening-v5 .gx-preview-face.back{transform:rotateY(180deg);background:#173b43}
+#gxWelcome .gx-opening-v5 .gx-card-label{color:#a9c0d8;font-size:.62rem;font-weight:850;letter-spacing:.1em}
+#gxWelcome .gx-opening-v5 .gx-card-word{display:block;margin:20px 0;color:#fff;font-size:clamp(2rem,4vw,3rem);font-weight:900;line-height:1.25;letter-spacing:-.035em;overflow-wrap:anywhere}
+#gxWelcome .gx-opening-v5 .gx-card-hint{display:block;padding-top:13px;border-top:1px solid rgba(216,226,247,.14);color:#b4c5d8;font-size:.66rem;line-height:1.7}
+#gxWelcome .gx-opening-v5 .gx-stage-foot{direction:rtl}
+#gxWelcome .gx-opening-v5 .gx-flip-button{min-height:39px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 13px;border:1px solid rgba(116,199,190,.25);border-radius:8px;background:#17343d;color:#c6eee8;font:inherit;font-size:.68rem;font-weight:850;cursor:pointer}
+#gxWelcome .gx-opening-v5 .gx-stage-caption{max-width:190px;color:#849bb5;font-size:.59rem;line-height:1.65;text-align:right}
+#gxWelcome .gx-opening-v5 .gx-close{top:13px;left:13px;width:34px;height:34px;border:1px solid rgba(173,193,219,.18);border-radius:8px;background:#1a2b40;color:#c5d3e3}
+#gxWelcome .gx-opening-v5 button:focus-visible{outline:2px solid #8dc8e8;outline-offset:3px}
+#gallery-experience-hero.gx-hero-v3 .gx-art-card.back,#gallery-experience-hero.gx-hero-v3 .gx-art-card.mid{display:none}
+#gallery-experience-hero.gx-hero-v3 .gx-art-card.front{position:relative;width:min(86%,310px);min-height:218px;transform:none;opacity:1}
+@media(max-width:820px){#gxWelcome .gx-dialog.gx-opening-v5{grid-template-columns:1fr;max-height:95dvh}#gxWelcome .gx-opening-v5 .gx-copy{grid-row:1;padding:24px 24px 20px}#gxWelcome .gx-opening-v5 .gx-stage{grid-row:2;min-height:330px;padding:14px 22px 24px;border-left:0;border-top:1px solid rgba(159,181,210,.12)}#gxWelcome .gx-opening-v5 .gx-preview-card{min-height:230px}}
+@media(max-width:520px){#gxWelcome{padding:7px}#gxWelcome .gx-dialog.gx-opening-v5{border-radius:14px;max-height:96dvh}#gxWelcome .gx-opening-v5 .gx-copy{padding:19px 16px 16px}#gxWelcome .gx-opening-v5 h2{font-size:1.5rem;line-height:1.4;margin-top:13px}#gxWelcome .gx-opening-v5 .gx-lead{font-size:.79rem;line-height:1.8}#gxWelcome .gx-opening-v5 .gx-points{gap:6px;margin-top:15px}#gxWelcome .gx-opening-v5 .gx-point{min-height:78px;padding:9px 8px;border-radius:8px}#gxWelcome .gx-opening-v5 .gx-point strong{font-size:.66rem}#gxWelcome .gx-opening-v5 .gx-point span:not(.gx-point-no){font-size:.55rem}#gxWelcome .gx-opening-v5 .gx-actions{display:grid;grid-template-columns:1fr;margin-top:16px}#gxWelcome .gx-opening-v5 .gx-button{width:100%;min-height:43px}#gxWelcome .gx-opening-v5 .gx-small{font-size:.6rem}#gxWelcome .gx-opening-v5 .gx-stage{min-height:275px;padding:11px 13px 17px;gap:10px}#gxWelcome .gx-opening-v5 .gx-preview-card{min-height:195px}#gxWelcome .gx-opening-v5 .gx-preview-face{padding:17px;border-radius:13px}#gxWelcome .gx-opening-v5 .gx-card-word{font-size:1.8rem}}
+@media(max-width:360px){#gxWelcome .gx-opening-v5 .gx-copy{padding:13px 12px 10px}#gxWelcome .gx-opening-v5 .gx-kicker{font-size:.55rem}#gxWelcome .gx-opening-v5 .gx-deck-label{margin-top:8px;padding:5px 8px;font-size:.56rem}#gxWelcome .gx-opening-v5 h2{font-size:1.15rem;line-height:1.28;margin:9px 0 6px}#gxWelcome .gx-opening-v5 .gx-lead{font-size:.62rem;line-height:1.48}#gxWelcome .gx-opening-v5 .gx-points{gap:5px;margin-top:9px}#gxWelcome .gx-opening-v5 .gx-point{min-height:50px;padding:6px}#gxWelcome .gx-opening-v5 .gx-point-copy{gap:3px;margin-top:5px}#gxWelcome .gx-opening-v5 .gx-point strong{font-size:.56rem}#gxWelcome .gx-opening-v5 .gx-point span:not(.gx-point-no){display:none}#gxWelcome .gx-opening-v5 .gx-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:9px}#gxWelcome .gx-opening-v5 .gx-button{min-height:34px;padding:0 6px;font-size:.59rem}#gxWelcome .gx-opening-v5 .gx-small{font-size:.52rem;line-height:1.3;margin-top:5px}#gxWelcome .gx-opening-v5 .gx-stage{min-height:185px;padding:7px 11px 10px;gap:6px}#gxWelcome .gx-opening-v5 .gx-preview-card{min-height:132px}#gxWelcome .gx-opening-v5 .gx-preview-face{padding:11px;border-radius:12px}#gxWelcome .gx-opening-v5 .gx-card-label{font-size:.51rem}#gxWelcome .gx-opening-v5 .gx-card-word{font-size:1.3rem;margin:7px 0}#gxWelcome .gx-opening-v5 .gx-card-hint{font-size:.5rem;padding-top:6px}#gxWelcome .gx-opening-v5 .gx-flip-button{min-height:30px;font-size:.56rem;padding:0 8px}#gxWelcome .gx-opening-v5 .gx-stage-caption{font-size:.48rem;max-width:135px}}
+@media(prefers-reduced-motion:reduce){#gxWelcome .gx-opening-v5 .gx-preview-card{transition:none}}
+
+
 """
 
 
 WELCOME_MARKUP = r"""
 <div id="gxWelcome" hidden>
-  <section class="gx-dialog gx-opening-v4" role="dialog" aria-modal="true" aria-labelledby="gxWelcomeTitle" aria-describedby="gxWelcomeLead" tabindex="-1">
+  <section class="gx-dialog gx-opening-v5" role="dialog" aria-modal="true" aria-labelledby="gxWelcomeTitle" aria-describedby="gxWelcomeLead" tabindex="-1">
     <button class="gx-close" id="gxWelcomeClose" type="button" aria-label="إغلاق المقدمة">×</button>
     <div class="gx-copy">
       <div class="gx-kicker"><span class="gx-brand-mark" aria-hidden="true">A</span><span>ANKI DESIGN STUDIO</span></div>
@@ -562,7 +607,7 @@ EXPERIENCE_JS = r"""
     }
   };
   var profile=profiles[deck]||profiles.en9;
-  var welcomeKey="anki_"+deck+"_welcome_seen_v4";
+  var welcomeKey="anki_"+deck+"_welcome_seen_v5";
   var previousFocus=null;
   var welcomeOpen=false;
 
