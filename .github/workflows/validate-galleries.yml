@@ -421,6 +421,8 @@ jobs:
                   assert.equal(library.count,100,deck+": library does not show all 100 designs");
                   assert.equal(library.filters,0,deck+": filter chips are still present");
                   assert(library.eagerFrames>0&&library.eagerFrames<=35,deck+": gallery eagerly mounted too many or no real previews ("+library.eagerFrames+")");
+                  const iframeInput=await page.evaluate(()=>{const frame=document.querySelector("#gbGrid .gb-preview-frame");return frame?getComputedStyle(frame).pointerEvents:"missing";});
+                  assert.equal(iframeInput,"none",deck+": decorative preview iframe intercepts card clicks");
                   assert(library.totalWidth<=viewport.width+1,deck+"/"+viewport.name+": library causes horizontal overflow");
                   await page.screenshot({path:"qa-artifacts/"+deck+"-"+viewport.name+"-library.png",fullPage:false});
                   const first=page.locator("#gbGrid .gb-item").first();
