@@ -57,7 +57,41 @@ body:has(#galleryBrowser.open) #onboardTourLauncher{display:none!important}
 #gbProgress{background:#64b9ad}
 #gv:not(.gx-visible){display:none!important}
 #gv.gx-visible{display:block!important}
-#gvStage{border-radius:20px!important}
+#gv{max-width:1480px;margin:22px auto 0;border:1px solid rgba(173,195,215,.17);border-radius:18px;background:#10243a;box-shadow:0 24px 60px rgba(0,0,0,.2)}
+#gv .gv-bar{padding:14px 20px;border-bottom:1px solid rgba(173,195,215,.14);background:#142b41;color:#d8e5ee}
+#gv .gv-counter{color:#dbe8ef}
+#gvStage{height:clamp(560px,78vh,820px)!important;min-height:560px!important;max-height:820px;padding:44px 74px;border-radius:0!important;border-bottom:1px solid rgba(173,195,215,.14);scroll-margin-top:84px;background:radial-gradient(ellipse at 50% 8%,rgba(78,145,148,.18),transparent 48%),radial-gradient(ellipse at 50% 95%,rgba(51,96,123,.19),transparent 52%),linear-gradient(180deg,#142b41 0%,#0d1e30 100%)}
+#gvStage::before,#gvStage::after{border-color:#68b9ae;opacity:.56}
+#gvFrame{border:1px solid rgba(151,191,194,.28);border-radius:16px;background:#10243a;box-shadow:0 28px 72px rgba(0,0,0,.36),0 0 0 1px rgba(255,255,255,.035) inset}
+#gv .gv-arrow{width:48px;height:48px;background:#1b3a52;color:#edf6f8;border:1px solid rgba(113,190,181,.38);box-shadow:0 8px 24px rgba(4,20,34,.36)}
+#gv .gv-arrow:hover{background:#28546a;border-color:#79c6ba;box-shadow:0 12px 28px rgba(4,20,34,.42)}
+#gv .gv-fab{width:44px;height:44px;border-radius:10px;background:#17334b;border-color:rgba(173,195,215,.2);color:#e4eef5}
+#gv .gv-fab:hover{border-color:#71bdb2;color:#9be0d4}
+#gv .gv-info{background:rgba(11,29,46,.94);border-color:rgba(173,195,215,.2);border-radius:9px;color:#dce8ef}
+#gv .gv-progress{height:5px;background:#1c354a}
+#gv .gv-progress-bar{background:#72c4b8}
+#gv .gv-showans{min-height:50px;margin:14px auto 0;border:1px solid rgba(111,190,180,.38);background:linear-gradient(120deg,#286d70,#214e67);color:#f4fbfa;box-shadow:0 8px 22px rgba(6,36,47,.16)}
+#gv .gv-showans:hover{background:linear-gradient(120deg,#347f7e,#2a6176);border-color:#8ad5c8;box-shadow:0 10px 26px rgba(6,36,47,.25)}
+#gv .gv-actions{padding:18px 20px;background:#10243a}
+#gv .gv-act{min-height:50px;border-radius:10px;border-color:rgba(173,195,215,.2)}
+#gv .gv-act.primary{background:#337b76;border-color:#4f9991}
+#gv .gv-act.primary.active{background:#245f61;box-shadow:0 0 0 3px rgba(103,191,180,.18)}
+#gv .gv-act.ghost{background:#18344b;color:#e0ebf2}
+#gv .gv-act.ghost:hover{border-color:#72bdb2;color:#a8e0d7}
+#gv .gv-hint{color:#9eb3c5}
+#gv .gv-sel-bar{border-color:rgba(111,190,180,.4);background:linear-gradient(120deg,rgba(48,112,111,.16),rgba(23,62,84,.2))}
+#gv .gv-sel-info b{color:#84d0c4}
+#gv .gv-dot.on{background:#72c4b8;border-color:#72c4b8}
+.aa{max-width:1480px;border-color:rgba(173,195,215,.17);border-radius:16px;background:#11263b;box-shadow:0 18px 44px rgba(0,0,0,.17)}
+.aa-t{min-height:64px;padding:18px 22px;background:linear-gradient(110deg,#2c7774,#1b4e65);border-color:rgba(173,195,215,.14)}
+.aa-b{background:#11263b;padding:24px 22px}
+.aa-lb{color:#a9bdcc}
+#download{max-width:1480px}
+#download .dl-c{border-color:rgba(173,195,215,.17);border-radius:16px;background:#11263b;box-shadow:0 18px 44px rgba(0,0,0,.17)}
+#download .dl-c h3{color:#f0f6fa}
+#download .dl-c p{color:#b3c4d1}
+body.gx-selection-ready #statusBar{background:#10243a!important;border-color:rgba(173,195,215,.17)!important;color:#a5b9c9!important}
+#gallery-experience-hero{scroll-margin-top:84px}
 body:not(.gx-selection-ready) #gv,
 body:not(.gx-selection-ready) #gvStage,
 body:not(.gx-selection-ready) #gvShowAns,
@@ -94,6 +128,21 @@ body.gx-selection-ready #onboardTourLauncher{display:inline-flex}
  .gallery-browser .gb-head{min-height:60px;padding:10px 13px}
  .gallery-browser .gb-title{font-size:.85rem}
  .gallery-browser .gb-hint{font-size:.62rem}
+}
+@media(max-width:560px){
+ #gv{margin:14px 10px 0;border-radius:14px}
+ #gv .gv-bar{padding:12px 14px}
+ #gvStage{height:82vh!important;min-height:520px!important;max-height:700px;padding:30px 46px}
+ #gv .gv-arrow{width:42px;height:42px}
+ #gv .gv-fab{width:42px;height:42px}
+ #gv .gv-actions{display:grid;grid-template-columns:1fr;gap:8px;padding:12px}
+ #gv .gv-act{min-width:0;width:100%;min-height:48px;padding:12px}
+ #gv .gv-hint{font-size:.72rem}
+ .aa{margin:16px 10px 0;border-radius:13px}
+ .aa-t{min-height:54px;padding:14px 16px}
+ .aa-b{padding:18px 14px}
+ #download{padding:0 10px}
+ #download .dl-c{padding:18px 14px;border-radius:13px}
 }
 @media(max-width:350px){
  #gallery-experience-hero .gx-showcase{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;padding:8px}
