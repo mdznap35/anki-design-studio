@@ -105,8 +105,8 @@ jobs:
               assert len(designs) == 100, f"{deck}: expected 100 designs, found {len(designs)}"
               expected_nav = (
                   '<a class="hdr-link" href="/en9">إنجليزي 9</a>',
-                  '<a class="hdr-link" href="/enlit">إنجليزي بكالوريا أدبي 12</a>',
-                  '<a class="hdr-link" href="/ensci">إنجليزي بكالوريا علمي 12</a>',
+                  '<a class="hdr-link" href="/enlit">إنجليزي بكالوريا 12 · الفرع الأدبي</a>',
+                  '<a class="hdr-link" href="/ensci">إنجليزي بكالوريا 12 · الفرع العلمي</a>',
                   '<a class="hdr-link" href="/fr9">فرنسي 9</a>',
                   '<a class="hdr-link" href="/bac12">فرنسي بكالوريا 12</a>',
               )
@@ -157,14 +157,14 @@ jobs:
 
           const samples = {
             en9: { f: "Student", a: "طالب", p: "", s: "", c: "", dossier: "", page: "", pos: "NOUN", poslabel: "اسم", unit: "Unit 01", unitnum: "01" },
-            enlit: { f: "Novel", a: "رواية", p: "", s: "", c: "", dossier: "", page: "", pos: "", poslabel: "", unit: "Unit 01 - Future Careers", unitnum: "" },
-            ensci: { f: "Energy", a: "طاقة", p: "", s: "", c: "", dossier: "", page: "", pos: "", poslabel: "", unit: "Unit 01 - A Learned Lesson is a Good Lesson", unitnum: "" },
+            enlit: { f: "Achievement", a: "إنجاز", p: "", s: "", c: "", dossier: "", page: "", pos: "", poslabel: "", unit: "Unit 01 - Future Careers", unitnum: "" },
+            ensci: { f: "Achievement", a: "إنجاز", p: "", s: "", c: "", dossier: "", page: "", pos: "", poslabel: "", unit: "Unit 01 - A Learned Lesson is a Good Lesson", unitnum: "" },
             fr9: { f: "Leçon", a: "درس", p: "", s: "", c: "", dossier: "Dossier 1", page: "", pos: "", poslabel: "", unit: "", unitnum: "" },
           };
           const cases = {
             en9: ["{{Word}}|{{Meaning}}|{{POS}}|{{POSLabel}}|{{Unit}}|{{UnitNum}}|{{AudioEN}}", "Student|طالب|NOUN|اسم|Unit 01|01|"],
-            enlit: ["{{#English}}<b>{{English}}</b>{{/English}}|{{Arabic}}|{{UnitText}}|{{AudioEN}}", "<b>Novel</b>|رواية|Unit 01 - Future Careers|"],
-            ensci: ["{{English}}|{{Arabic}}|{{UnitText}}|{{AudioEN}}", "Energy|طاقة|Unit 01 - A Learned Lesson is a Good Lesson|"],
+            enlit: ["{{#English}}<b>{{English}}</b>{{/English}}|{{Arabic}}|{{UnitText}}|{{AudioEN}}", "<b>Achievement</b>|إنجاز|Unit 01 - Future Careers|"],
+            ensci: ["{{English}}|{{Arabic}}|{{UnitText}}|{{AudioEN}}", "Achievement|إنجاز|Unit 01 - A Learned Lesson is a Good Lesson|"],
             fr9: ["{{Français}}|{{Arabic}}|{{Dossier}}|{{AudioFR}}", "Leçon|درس|Dossier 1|"],
           };
 
@@ -195,8 +195,8 @@ jobs:
           expected_steps = ("start", "library", "preview", "selection", "audio", "export")
           required_targets = (
               ".hero-cta-main", "#gbFilters", "#gbGrid", "#gvShowAns",
-              "#gvSelectBtn", "#gTtsPreviewBtn", "#gAudioPanelBody", "#exOpenBtn", ".gb-item",
-              "#exViewSummary",
+              "#gvSelectBtn", "#gAudioPanelBody select", "#gAudioPanelBody", "#exOpenBtn", ".gb-item",
+              "#exportOverlay .fs-close",
           )
           for deck in ("en9", "enlit", "ensci", "fr9"):
               html = (Path("out") / f"{deck}.html").read_text(encoding="utf-8")
@@ -237,7 +237,7 @@ jobs:
               expected_audio_status = "fetch(apiBase()+'/api/audio_status?source=" + audio_source + "')"
               assert html.count(expected_audio_status) == 1, f"{deck}: generated audio-status URL is malformed or duplicated"
               assert "fetch(apiBase()+'/api/audio_status?source=" + audio_source + ").then" not in html, f"{deck}: audio-status URL is missing its closing quote"
-              assert "100 تصميم فعلي" in tour_source, f"{deck}: library explanation must state the real design count"
+              assert "100 قالب" in tour_source, f"{deck}: library explanation must state the real design count"
               assert "كيفية الاستيراد" in tour_source and 'id="importGuide"' in html, f"{deck}: post-export Anki import guidance is missing"
               assert 'setAttribute("aria-live","polite")' in tour_source, f"{deck}: guide announcements are missing"
               assert 'setAttribute("aria-current"' in tour_source and 'index === onbStep' in tour_source and '"step"' in tour_source and '"false"' in tour_source, f"{deck}: direct accessible step navigation is missing"
@@ -405,16 +405,16 @@ jobs:
           ];
           const previewCases = {
             en9: { sample: {f:"Student",a:"طالب",p:"",s:"",c:"",dossier:"",page:"",pos:"NOUN",poslabel:"اسم",poscolor:"",unit:"Unit 01",unitnum:"01",type:"",typeCode:""}, template:"{{Word}}|{{Meaning}}|{{POS}}|{{POSLabel}}|{{Unit}}|{{UnitNum}}|{{AudioEN}}", expected:"Student|طالب|NOUN|اسم|Unit 01|01|" },
-            enlit: { sample: {f:"Novel",a:"رواية",p:"",s:"",c:"",dossier:"",page:"",pos:"",poslabel:"",poscolor:"",unit:"Unit 01 - Future Careers",unitnum:"",type:"",typeCode:""}, template:"{{#English}}<b>{{English}}</b>{{/English}}|{{Arabic}}|{{UnitText}}|{{AudioEN}}", expected:"<b>Novel</b>|رواية|Unit 01 - Future Careers|" },
-            ensci: { sample: {f:"Energy",a:"طاقة",p:"",s:"",c:"",dossier:"",page:"",pos:"",poslabel:"",poscolor:"",unit:"Unit 01 - A Learned Lesson is a Good Lesson",unitnum:"",type:"",typeCode:""}, template:"{{English}}|{{Arabic}}|{{UnitText}}|{{AudioEN}}", expected:"Energy|طاقة|Unit 01 - A Learned Lesson is a Good Lesson|" },
+            enlit: { sample: {f:"Achievement",a:"إنجاز",p:"",s:"",c:"",dossier:"",page:"",pos:"",poslabel:"",poscolor:"",unit:"Unit 01 - Future Careers",unitnum:"",type:"",typeCode:""}, template:"{{#English}}<b>{{English}}</b>{{/English}}|{{Arabic}}|{{UnitText}}|{{AudioEN}}", expected:"<b>Achievement</b>|إنجاز|Unit 01 - Future Careers|" },
+            ensci: { sample: {f:"Achievement",a:"إنجاز",p:"",s:"",c:"",dossier:"",page:"",pos:"",poslabel:"",poscolor:"",unit:"Unit 01 - A Learned Lesson is a Good Lesson",unitnum:"",type:"",typeCode:""}, template:"{{English}}|{{Arabic}}|{{UnitText}}|{{AudioEN}}", expected:"Achievement|إنجاز|Unit 01 - A Learned Lesson is a Good Lesson|" },
             fr9: { sample: {f:"Leçon",a:"درس",p:"",s:"",c:"",dossier:"Dossier 1",page:"",pos:"",poslabel:"",poscolor:"",unit:"",unitnum:"",type:"",typeCode:""}, template:"{{Français}}|{{Arabic}}|{{Dossier}}|{{AudioFR}}", expected:"Leçon|درس|Dossier 1|" },
           };
 
           const openingCases = {
             fr9: { label:"اللغة الفرنسية · الصف التاسع", title:"اكتشف القالب الأنسب لمفردات الفرنسية", welcomeTitle:"اجعل مراجعة الفرنسية أوضح، بدءاً من القالب المناسب.", word:"Leçon", meaning:"درس" },
             en9: { label:"اللغة الإنجليزية · الصف التاسع", title:"اختر طريقة العرض المناسبة لمفردات الإنجليزية", welcomeTitle:"اختر قالباً يجعل مراجعة مفردات الإنجليزية أكثر وضوحاً.", word:"Student", meaning:"طالب" },
-            enlit: { label:"اللغة الإنجليزية · بكالوريا أدبي 12", title:"اختر تصميم Anki المناسب لمفردات الإنجليزية — بكالوريا أدبي 12", welcomeTitle:"اختر شكل البطاقة التي ستراجع بها مفردات الإنجليزية.", word:"Novel", meaning:"رواية" },
-            ensci: { label:"اللغة الإنجليزية · بكالوريا علمي 12", title:"اختر تصميم Anki المناسب لمفردات الإنجليزية — بكالوريا علمي 12", welcomeTitle:"اجعل مراجعة مفردات الإنجليزية أوضح وأسهل.", word:"Energy", meaning:"طاقة" }
+            enlit: { label:"اللغة الإنجليزية · بكالوريا 12 — الفرع الأدبي", title:"اعثر على قالب Anki المناسب لمفردات الإنجليزية.", welcomeTitle:"اختر شكل البطاقة قبل أن تبدأ المراجعة.", word:"Achievement", meaning:"إنجاز" },
+            ensci: { label:"اللغة الإنجليزية · بكالوريا 12 — الفرع العلمي", title:"اعثر على قالب Anki المناسب لمفردات الإنجليزية.", welcomeTitle:"اختر شكل البطاقة قبل أن تبدأ المراجعة.", word:"Achievement", meaning:"إنجاز" }
           };
 
           async function waitForStep(page, index) {
@@ -492,7 +492,7 @@ jobs:
             assert(state.path && state.path.startsWith("M0 0H"), deck + "/" + viewport.name + ": spotlight aperture path is empty");
             assert(state.documentWidth <= viewport.width + 1, deck + "/" + viewport.name + ": horizontal page overflow detected (" + state.documentWidth + "px)");
             const separated = state.card.bottom <= state.target.top + 2 || state.card.top >= state.target.bottom - 2 || state.card.right <= state.target.left + 2 || state.card.left >= state.target.right - 2;
-            assert(separated, deck + "/" + viewport.name + ": coachmark overlaps its highlighted control at step " + (index + 1));
+            assert(separated, deck + "/" + viewport.name + ": coachmark overlaps its highlighted control at step " + (index + 1) + "; geometry=" + JSON.stringify(state));
             return state;
           }
 
@@ -702,7 +702,7 @@ jobs:
                     const snoozed = await page.evaluate((key) => ({
                       completed: localStorage.getItem(key),
                       snoozed: sessionStorage.getItem(key.replace("_onboarded", "_onboarding_snoozed"))
-                    }), "anki_" + deck + "_onboarded_v2");
+                    }), "anki_" + deck + "_onboarded_v3");
                     assert.equal(snoozed.completed, null, deck + ": Later incorrectly marked the tour completed");
                     assert.equal(snoozed.snoozed, "1", deck + ": Later did not persist the session snooze");
 
@@ -721,7 +721,7 @@ jobs:
                     const completed = await page.evaluate((key) => ({
                       completed: localStorage.getItem(key),
                       snoozed: sessionStorage.getItem(key.replace("_onboarded", "_onboarding_snoozed"))
-                    }), "anki_" + deck + "_onboarded_v2");
+                    }), "anki_" + deck + "_onboarded_v3");
                     assert.equal(completed.completed, "1", deck + ": final completion was not persisted");
                     assert.equal(completed.snoozed, null, deck + ": completion did not clear the snooze");
                     await page.locator("#exportOverlay .fs-close").click();
