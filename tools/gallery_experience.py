@@ -61,6 +61,16 @@ body{
 #gbFilters input:focus-visible,#gbFilters select:focus-visible,#gbFilters button:focus-visible{
   outline:3px solid rgba(88,214,231,.6);outline-offset:2px;
 }
+/* The browser's compact header can overlap the first gallery row while the
+   guided tour scrolls its nested grid. Keep the header's text transparent to
+   pointer hit-testing while preserving all actual header controls. */
+#galleryBrowser .gb-head{pointer-events:none}
+#galleryBrowser .gb-head .gb-tools,
+#galleryBrowser .gb-head .gb-chip,
+#galleryBrowser .gb-head .gb-close,
+#galleryBrowser .gb-head button,
+#galleryBrowser .gb-head input,
+#galleryBrowser .gb-head select{pointer-events:auto}
 #gbGrid{
   display:grid!important;grid-template-columns:repeat(auto-fill,minmax(min(100%,245px),1fr));
   align-items:stretch;gap:clamp(13px,1.8vw,22px);margin-top:18px;
