@@ -405,8 +405,8 @@ jobs:
           ];
           const previewCases = {
             en9: { sample: {f:"Student",a:"طالب",p:"",s:"",c:"",dossier:"",page:"",pos:"NOUN",poslabel:"اسم",poscolor:"",unit:"Unit 01",unitnum:"01",type:"",typeCode:""}, template:"{{Word}}|{{Meaning}}|{{POS}}|{{POSLabel}}|{{Unit}}|{{UnitNum}}|{{AudioEN}}", expected:"Student|طالب|NOUN|اسم|Unit 01|01|" },
-            enlit: { sample: {f:"Novel",a:"رواية",p:"",s:"",c:"",dossier:"",page:"",pos:"",poslabel:"",poscolor:"",unit:"Unit 01 - Future Careers",unitnum:"",type:"",typeCode:""}, template:"{{#English}}<b>{{English}}</b>{{/English}}|{{Arabic}}|{{UnitText}}|{{AudioEN}}", expected:"<b>Novel</b>|رواية|Unit 01 - Future Careers|" },
-            ensci: { sample: {f:"Energy",a:"طاقة",p:"",s:"",c:"",dossier:"",page:"",pos:"",poslabel:"",poscolor:"",unit:"Unit 01 - A Learned Lesson is a Good Lesson",unitnum:"",type:"",typeCode:""}, template:"{{English}}|{{Arabic}}|{{UnitText}}|{{AudioEN}}", expected:"Energy|طاقة|Unit 01 - A Learned Lesson is a Good Lesson|" },
+            enlit: { sample: {f:"Achievement",a:"إنجاز",p:"",s:"",c:"",dossier:"",page:"",pos:"",poslabel:"",poscolor:"",unit:"Unit 01 - Future Careers",unitnum:"",type:"",typeCode:""}, template:"{{#English}}<b>{{English}}</b>{{/English}}|{{Arabic}}|{{UnitText}}|{{AudioEN}}", expected:"<b>Achievement</b>|إنجاز|Unit 01 - Future Careers|" },
+            ensci: { sample: {f:"Achievement",a:"إنجاز",p:"",s:"",c:"",dossier:"",page:"",pos:"",poslabel:"",poscolor:"",unit:"Unit 01 - A Learned Lesson is a Good Lesson",unitnum:"",type:"",typeCode:""}, template:"{{English}}|{{Arabic}}|{{UnitText}}|{{AudioEN}}", expected:"Achievement|إنجاز|Unit 01 - A Learned Lesson is a Good Lesson|" },
             fr9: { sample: {f:"Leçon",a:"درس",p:"",s:"",c:"",dossier:"Dossier 1",page:"",pos:"",poslabel:"",poscolor:"",unit:"",unitnum:"",type:"",typeCode:""}, template:"{{Français}}|{{Arabic}}|{{Dossier}}|{{AudioFR}}", expected:"Leçon|درس|Dossier 1|" },
           };
 
