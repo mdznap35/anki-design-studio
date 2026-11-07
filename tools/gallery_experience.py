@@ -399,37 +399,120 @@ body{
 #gxWelcome .gx-opening-v3 .gx-stage{min-height:430px}
 @media(max-width:760px){#gallery-experience-hero .gx-hero-inner{gap:24px}#gallery-experience-hero h1{max-width:unset}#gxWelcome .gx-opening-v3 .gx-dialog{border-radius:20px;max-height:94dvh}#gxWelcome .gx-opening-v3 .gx-stage{min-height:300px}#gxWelcome .gx-opening-v3 .gx-copy{padding:22px 18px}}
 
+/* Opening v4: a focused product welcome with a genuinely interactive card preview. */
+#gxWelcome{padding:clamp(10px,2.2vw,26px);background:radial-gradient(ellipse at 18% 18%,rgba(77,104,205,.22),transparent 38%),rgba(3,8,20,.88)}
+#gxWelcome .gx-dialog.gx-opening-v4{width:min(1120px,100%);max-height:min(900px,94dvh);overflow:auto;grid-template-columns:minmax(0,1.04fr) minmax(330px,.96fr);border:1px solid rgba(183,198,232,.22);border-radius:28px;background:linear-gradient(140deg,#111d35 0%,#10182c 54%,#0a1325 100%);box-shadow:0 36px 110px rgba(0,0,0,.62),0 0 0 1px rgba(255,255,255,.035) inset}
+#gxWelcome .gx-opening-v4 .gx-copy{padding:clamp(24px,4.2vw,52px);gap:0}
+#gxWelcome .gx-opening-v4 .gx-kicker{font-size:.7rem;letter-spacing:.08em;color:#c7d2fe}
+#gxWelcome .gx-opening-v4 .gx-deck-label{margin-top:19px;margin-bottom:0;padding:7px 12px;border-radius:999px;font-size:.72rem;background:rgba(255,255,255,.045);border-color:rgba(174,190,226,.18)}
+#gxWelcome .gx-opening-v4 h2{max-width:620px;margin:17px 0 12px;font-size:clamp(1.7rem,3.15vw,2.65rem);line-height:1.42;letter-spacing:-.035em}
+#gxWelcome .gx-opening-v4 .gx-lead{max-width:620px;color:#c6d1e3;font-size:.91rem;line-height:1.95}
+#gxWelcome .gx-opening-v4 .gx-points{grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:22px 0 0}
+#gxWelcome .gx-opening-v4 .gx-point{min-width:0;min-height:98px;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;padding:12px;border-radius:14px;border-color:rgba(171,190,229,.14);background:linear-gradient(150deg,rgba(255,255,255,.055),rgba(255,255,255,.018))}
+#gxWelcome .gx-opening-v4 .gx-point-no{margin:0;color:#73d9e7;font-size:.66rem;font-weight:950;letter-spacing:.1em;font-variant-numeric:tabular-nums}
+#gxWelcome .gx-opening-v4 .gx-point-copy{display:grid;gap:4px;margin-top:8px}
+#gxWelcome .gx-opening-v4 .gx-point strong{font-size:.77rem;color:#f1f5ff}
+#gxWelcome .gx-opening-v4 .gx-point span:not(.gx-point-no){margin:0;color:#aebbd0;font-size:.64rem;line-height:1.65}
+#gxWelcome .gx-opening-v4 .gx-actions{display:flex;gap:9px;margin-top:22px}
+#gxWelcome .gx-opening-v4 .gx-button{min-height:48px;padding:0 16px;border-radius:13px;font-size:.78rem}
+#gxWelcome .gx-opening-v4 .gx-button.primary{box-shadow:0 10px 24px rgba(80,83,192,.25)}
+#gxWelcome .gx-opening-v4 .gx-small{margin-top:12px;color:#9aa9c1;font-size:.67rem;line-height:1.75}
+#gxWelcome .gx-opening-v4 .gx-stage{min-height:500px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:34px clamp(20px,3vw,38px);direction:ltr;border-left:1px solid rgba(167,186,225,.10);background:radial-gradient(ellipse at 50% 46%,rgba(83,99,202,.16),transparent 55%),linear-gradient(180deg,rgba(255,255,255,.018),transparent)}
+#gxWelcome .gx-opening-v4 .gx-stage-head,#gxWelcome .gx-opening-v4 .gx-stage-foot{width:min(100%,390px);display:flex;align-items:center;justify-content:space-between;gap:12px}
+#gxWelcome .gx-opening-v4 .gx-stage-head{color:#b8c7e3;font-size:.69rem;font-weight:850}
+#gxWelcome .gx-opening-v4 .gx-face-state{padding:6px 10px;border:1px solid rgba(127,215,230,.2);border-radius:999px;background:rgba(34,211,238,.07);color:#8ee4ef;font-size:.64rem}
+#gxWelcome .gx-opening-v4 .gx-card-scene{width:min(100%,390px);perspective:1100px}
+#gxWelcome .gx-opening-v4 .gx-preview-card{position:relative;width:100%;min-height:286px;transform-style:preserve-3d;transition:transform .62s cubic-bezier(.2,.72,.2,1)}
+#gxWelcome .gx-opening-v4 .gx-preview-card.is-flipped{transform:rotateY(180deg)}
+#gxWelcome .gx-opening-v4 .gx-preview-face{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(20px,3vw,29px);border:1px solid rgba(173,190,234,.24);border-radius:24px;background:radial-gradient(ellipse at 92% 2%,rgba(123,112,255,.22),transparent 48%),linear-gradient(145deg,#25375b,#121e36);box-shadow:0 28px 65px rgba(0,0,0,.36),0 0 0 1px rgba(255,255,255,.035) inset;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+#gxWelcome .gx-opening-v4 .gx-preview-face.back{transform:rotateY(180deg);background:radial-gradient(ellipse at 8% 4%,rgba(36,184,190,.17),transparent 48%),linear-gradient(145deg,#173b4b,#102033)}
+#gxWelcome .gx-opening-v4 .gx-card-label{color:#aab9dc;font-size:.66rem;font-weight:900;letter-spacing:.12em}
+#gxWelcome .gx-opening-v4 .gx-card-word{display:block;margin:20px 0;color:#fff;font-size:clamp(2rem,4vw,3rem);font-weight:950;line-height:1.25;letter-spacing:-.04em;overflow-wrap:anywhere}
+#gxWelcome .gx-opening-v4 .gx-card-hint{display:block;padding-top:14px;border-top:1px solid rgba(216,226,247,.15);color:#b4c2da;font-size:.7rem;line-height:1.7}
+#gxWelcome .gx-opening-v4 .gx-stage-foot{direction:rtl}
+#gxWelcome .gx-opening-v4 .gx-flip-button{min-height:42px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 14px;border:1px solid rgba(126,211,230,.28);border-radius:12px;background:rgba(34,211,238,.09);color:#c9f6fb;font:inherit;font-size:.72rem;font-weight:900;cursor:pointer}
+#gxWelcome .gx-opening-v4 .gx-stage-caption{max-width:190px;color:#8fa0ba;font-size:.62rem;line-height:1.65;text-align:right}
+#gxWelcome .gx-opening-v4 .gx-close{top:13px;left:13px;width:37px;height:37px;border-radius:11px}
+#gxWelcome .gx-opening-v4 button:focus-visible{outline:3px solid #67e8f9;outline-offset:3px}
+#gallery-experience-hero.gx-hero-v3 .gx-art-card.back,#gallery-experience-hero.gx-hero-v3 .gx-art-card.mid{display:none}
+#gallery-experience-hero.gx-hero-v3 .gx-art-card.front{position:relative;width:min(86%,310px);min-height:218px;transform:none;opacity:1}
+@media(max-width:820px){#gxWelcome .gx-dialog.gx-opening-v4{grid-template-columns:1fr;max-height:95dvh}#gxWelcome .gx-opening-v4 .gx-copy{grid-row:1;padding:24px 24px 20px}#gxWelcome .gx-opening-v4 .gx-stage{grid-row:2;min-height:360px;padding:14px 22px 26px;border-left:0;border-top:1px solid rgba(167,186,225,.10)}#gxWelcome .gx-opening-v4 .gx-preview-card{min-height:245px}}
+@media(max-width:520px){#gxWelcome{padding:7px}#gxWelcome .gx-dialog.gx-opening-v4{border-radius:19px;max-height:96dvh}#gxWelcome .gx-opening-v4 .gx-copy{padding:20px 17px 17px}#gxWelcome .gx-opening-v4 h2{font-size:1.55rem;line-height:1.42;margin-top:13px}#gxWelcome .gx-opening-v4 .gx-lead{font-size:.82rem;line-height:1.85}#gxWelcome .gx-opening-v4 .gx-points{gap:6px;margin-top:16px}#gxWelcome .gx-opening-v4 .gx-point{min-height:86px;padding:9px 8px;border-radius:11px}#gxWelcome .gx-opening-v4 .gx-point strong{font-size:.68rem}#gxWelcome .gx-opening-v4 .gx-point span:not(.gx-point-no){font-size:.57rem;line-height:1.55}#gxWelcome .gx-opening-v4 .gx-actions{display:grid;grid-template-columns:1fr;margin-top:17px}#gxWelcome .gx-opening-v4 .gx-button{width:100%;min-height:45px}#gxWelcome .gx-opening-v4 .gx-small{font-size:.62rem;margin-top:9px}#gxWelcome .gx-opening-v4 .gx-stage{min-height:300px;padding:12px 14px 18px;gap:11px}#gxWelcome .gx-opening-v4 .gx-preview-card{min-height:205px}#gxWelcome .gx-opening-v4 .gx-preview-face{padding:18px;border-radius:18px}#gxWelcome .gx-opening-v4 .gx-card-word{font-size:1.85rem}#gxWelcome .gx-opening-v4 .gx-stage-foot{align-items:flex-start}}
+@media(prefers-reduced-motion:reduce){#gxWelcome .gx-opening-v4 .gx-preview-card{transition:none}}
+@media(max-width:360px){
+  #gxWelcome{place-items:start center;padding:6px}
+  #gxWelcome .gx-dialog.gx-opening-v4{width:calc(100vw - 12px);max-height:calc(100dvh - 12px);margin:0 auto;align-content:start;grid-template-columns:1fr;border-radius:16px}
+  #gxWelcome .gx-opening-v4 .gx-copy{grid-row:1;justify-content:flex-start;padding:13px 12px 10px}
+  #gxWelcome .gx-opening-v4 .gx-kicker{font-size:.57rem;gap:6px}
+  #gxWelcome .gx-opening-v4 .gx-kicker:before{width:17px}
+  #gxWelcome .gx-opening-v4 .gx-deck-label{margin-top:8px;padding:5px 8px;font-size:.58rem}
+  #gxWelcome .gx-opening-v4 h2{font-size:1.17rem;line-height:1.25;margin:9px 0 6px}
+  #gxWelcome .gx-opening-v4 .gx-lead{font-size:.64rem;line-height:1.5}
+  #gxWelcome .gx-opening-v4 .gx-points{gap:5px;margin-top:9px}
+  #gxWelcome .gx-opening-v4 .gx-point{min-height:53px;padding:6px;border-radius:9px}
+  #gxWelcome .gx-opening-v4 .gx-point-no{font-size:.55rem}
+  #gxWelcome .gx-opening-v4 .gx-point-copy{gap:3px;margin-top:5px}
+  #gxWelcome .gx-opening-v4 .gx-point strong{font-size:.58rem}
+  #gxWelcome .gx-opening-v4 .gx-point span:not(.gx-point-no){display:none}
+  #gxWelcome .gx-opening-v4 .gx-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px}
+  #gxWelcome .gx-opening-v4 .gx-button{min-height:35px;padding:0 7px;font-size:.62rem;border-radius:9px}
+  #gxWelcome .gx-opening-v4 .gx-small{font-size:.54rem;line-height:1.35;margin-top:6px}
+  #gxWelcome .gx-opening-v4 .gx-stage{grid-row:2;min-height:195px;padding:8px 12px 12px;gap:7px}
+  #gxWelcome .gx-opening-v4 .gx-stage-head{font-size:.58rem}
+  #gxWelcome .gx-opening-v4 .gx-face-state{padding:4px 7px;font-size:.54rem}
+  #gxWelcome .gx-opening-v4 .gx-preview-card{min-height:142px}
+  #gxWelcome .gx-opening-v4 .gx-preview-face{padding:12px;border-radius:14px}
+  #gxWelcome .gx-opening-v4 .gx-card-label{font-size:.54rem}
+  #gxWelcome .gx-opening-v4 .gx-card-word{font-size:1.35rem;margin:8px 0}
+  #gxWelcome .gx-opening-v4 .gx-card-hint{font-size:.53rem;padding-top:7px}
+  #gxWelcome .gx-opening-v4 .gx-stage-foot{gap:7px}
+  #gxWelcome .gx-opening-v4 .gx-flip-button{min-height:32px;padding:0 9px;font-size:.58rem}
+  #gxWelcome .gx-opening-v4 .gx-stage-caption{font-size:.5rem;max-width:150px}
+}
+
 """
 
 
 WELCOME_MARKUP = r"""
 <div id="gxWelcome" hidden>
-  <section class="gx-dialog gx-opening-v3" role="dialog" aria-modal="true" aria-labelledby="gxWelcomeTitle" aria-describedby="gxWelcomeLead" tabindex="-1">
+  <section class="gx-dialog gx-opening-v4" role="dialog" aria-modal="true" aria-labelledby="gxWelcomeTitle" aria-describedby="gxWelcomeLead" tabindex="-1">
     <button class="gx-close" id="gxWelcomeClose" type="button" aria-label="إغلاق المقدمة">×</button>
     <div class="gx-copy">
-      <div class="gx-kicker"><span class="gx-brand-mark" aria-hidden="true">A</span><span data-gx-kicker>استوديو قوالب Anki</span></div>
+      <div class="gx-kicker"><span class="gx-brand-mark" aria-hidden="true">A</span><span>ANKI DESIGN STUDIO</span></div>
       <div class="gx-deck-label" data-gx-deck-label>...</div>
-      <h2 id="gxWelcomeTitle" data-gx-welcome-title>اختر التصميم الذي يناسب طريقة دراستك.</h2>
-      <p class="gx-lead" id="gxWelcomeLead" data-gx-welcome-lead>يضم هذا المعرض 100 قالب. استكشف التصاميم، وعاين تفاصيل البطاقة، ثم اختر ما يناسبك وراجع اختياراتك قبل إنشاء الرزمة.</p>
-      <div class="gx-points" aria-label="مراحل اختيار القالب">
-        <div class="gx-point"><span class="gx-point-no">01</span><div class="gx-point-copy"><strong>استكشف 100 قالب</strong><span>استخدم التصنيفات لتصل إلى التصميم المناسب.</span></div></div>
-        <div class="gx-point"><span class="gx-point-no">02</span><div class="gx-point-copy"><strong>افحص وجهي البطاقة</strong><span>شاهد كيف تظهر المفردة ومعناها.</span></div></div>
-        <div class="gx-point"><span class="gx-point-no">03</span><div class="gx-point-copy"><strong>اختر ثم راجع</strong><span>حدّد تصاميمك واضبط الصوت قبل إنشاء الرزمة.</span></div></div>
+      <h2 id="gxWelcomeTitle" data-gx-welcome-title>ابدأ من شكل البطاقة، ثم اختر ما يناسبك.</h2>
+      <p class="gx-lead" id="gxWelcomeLead" data-gx-welcome-lead>أمامك 100 قالب. افتح تصميماً، جرّب الوجهين، ثم اختر ما تريد استخدامه في رُزمتك.</p>
+      <div class="gx-points" aria-label="طريقة العمل">
+        <div class="gx-point"><span class="gx-point-no">01</span><div class="gx-point-copy"><strong>استكشف</strong><span>100 قالب في مكتبة واحدة.</span></div></div>
+        <div class="gx-point"><span class="gx-point-no">02</span><div class="gx-point-copy"><strong>عاين</strong><span>افحص وجهي البطاقة قبل الاختيار.</span></div></div>
+        <div class="gx-point"><span class="gx-point-no">03</span><div class="gx-point-copy"><strong>اختر</strong><span>حدّد قوالبك وراجع الرزمة.</span></div></div>
       </div>
       <div class="gx-actions">
         <button class="gx-button primary" id="gxWelcomeStart" type="button">ابدأ الجولة التفاعلية <span aria-hidden="true">←</span></button>
         <button class="gx-button" id="gxWelcomeExplore" type="button">تصفّح القوالب</button>
       </div>
-      <div class="gx-small">تصفّح بحرية. لا يُحدَّد أي قالب ولا تُنشأ أي رزمة تلقائياً؛ كل خطوة تنفيذية تبدأ باختيارك.</div>
+      <div class="gx-small">الجولة تستعرض الأدوات فقط. لن يُحدَّد قالب أو يبدأ إنشاء ملف إلا باختيارك.</div>
     </div>
-    <div class="gx-stage" aria-hidden="true">
-      <div class="gx-orbit"></div>
-      <div class="gx-stack">
-        <div class="gx-card back"><div class="gx-card-top"><span>الخطوة الأولى</span><span>01</span></div><div class="gx-card-word">اكتشف</div><div class="gx-card-lines"><span></span><span></span><span></span></div></div>
-        <div class="gx-card mid"><div class="gx-card-top"><span>الخطوة الثانية</span><span>02</span></div><div class="gx-card-word">عاين</div><div class="gx-card-lines"><span></span><span></span><span></span></div></div>
-        <div class="gx-card front gx-card-sample"><div class="gx-card-top"><span>عينة من المحتوى</span><span>03</span></div><div class="gx-card-word" data-gx-sample-word>Student</div><div class="gx-card-meaning"><span>المعنى</span><strong data-gx-sample-meaning>طالب</strong></div></div>
+    <div class="gx-stage">
+      <div class="gx-stage-head"><span>معاينة تفاعلية</span><span class="gx-face-state" id="gxWelcomeFaceState">الوجه الأمامي</span></div>
+      <div class="gx-card-scene">
+        <div class="gx-preview-card" id="gxWelcomePreviewCard">
+          <div class="gx-preview-face front">
+            <span class="gx-card-label">المفردة</span>
+            <strong class="gx-card-word" data-gx-sample-word>Student</strong>
+            <span class="gx-card-hint">جرّب قلب البطاقة لرؤية الوجه الآخر.</span>
+          </div>
+          <div class="gx-preview-face back">
+            <span class="gx-card-label">المعنى بالعربية</span>
+            <strong class="gx-card-word" data-gx-sample-meaning>طالب</strong>
+            <span class="gx-card-hint">هكذا تتنقّل بين وجهي بطاقة المفردة.</span>
+          </div>
+        </div>
       </div>
-      <div class="gx-stage-label">عينة مفردة · يمكنك معاينة القالب بمحتوى الرزمة الفعلي</div>
+      <div class="gx-stage-foot">
+        <button class="gx-flip-button" id="gxWelcomeFlip" type="button" aria-pressed="false"><span aria-hidden="true">↻</span> اقلب البطاقة</button>
+        <span class="gx-stage-caption">عينة للمحتوى؛ القوالب الفعلية قابلة للمعاينة داخل المكتبة.</span>
+      </div>
     </div>
   </section>
 </div>
@@ -445,8 +528,8 @@ EXPERIENCE_JS = r"""
       label:"اللغة الفرنسية · الصف التاسع",
       title:"اكتشف القالب الأنسب لمفردات الفرنسية",
       description:"تصفّح 100 قالب، وعاين طريقة عرض الكلمة ومعناها، ثم اختر التصاميم التي تريدها في رُزمتك.",
-      welcomeTitle:"اجعل مراجعة الفرنسية أوضح، بدءاً من القالب المناسب.",
-      welcomeLead:"يضم معرض الفرنسية للصف التاسع 100 قالب. استكشف التصاميم، وعاين تفاصيل البطاقة، ثم اعتمد ما يناسبك وراجع اختياراتك قبل إنشاء الرزمة.",
+      welcomeTitle:"اختر طريقة عرض مفردات الفرنسية.",
+      welcomeLead:"هذا معرض مفردات الفرنسية للصف التاسع. أمامك 100 قالب؛ افتح أي تصميم، وجرّب الوجهين، ثم اختر ما تريد استخدامه في رُزمتك.",
       sampleWord:"Leçon",
       sampleMeaning:"درس"
     },
@@ -454,8 +537,8 @@ EXPERIENCE_JS = r"""
       label:"اللغة الإنجليزية · الصف التاسع",
       title:"اختر طريقة العرض المناسبة لمفردات الإنجليزية",
       description:"تصفّح 100 قالب لمفردات الإنجليزية، وقارن وضوح الكلمة والمعنى، ثم اختر التصاميم التي تناسبك.",
-      welcomeTitle:"اختر قالباً يجعل مراجعة مفردات الإنجليزية أكثر وضوحاً.",
-      welcomeLead:"يضم معرض الإنجليزية للصف التاسع 100 قالب. استكشف التصاميم، وعاين تفاصيل البطاقة، ثم اعتمد ما يناسبك وراجع اختياراتك قبل إنشاء الرزمة.",
+      welcomeTitle:"اختر طريقة عرض مفردات الإنجليزية.",
+      welcomeLead:"هذا معرض مفردات الإنجليزية للصف التاسع. أمامك 100 قالب؛ افتح أي تصميم، وجرّب الوجهين، ثم اختر ما تريد استخدامه في رُزمتك.",
       sampleWord:"Student",
       sampleMeaning:"طالب"
     },
@@ -463,8 +546,8 @@ EXPERIENCE_JS = r"""
       label:"اللغة الإنجليزية · بكالوريا 12 — الفرع الأدبي",
       title:"اعثر على قالب Anki المناسب لمفردات الإنجليزية.",
       description:"100 قالب لبطاقات مفردات الإنجليزية. استكشف التصاميم، وافحص وجهي البطاقة، ثم اختر ما تريد استخدامه في رُزمتك.",
-      welcomeTitle:"اختر شكل البطاقة قبل أن تبدأ المراجعة.",
-      welcomeLead:"هذا المعرض يضم 100 قالب لبطاقات مفردات اللغة الإنجليزية لطلاب بكالوريا 12 — الفرع الأدبي. افتح أي تصميم، وجرّب وجهي البطاقة، ثم اختر ما تريد استخدامه في رُزمتك.",
+      welcomeTitle:"اختر طريقة عرض مفردات الإنجليزية للفرع الأدبي.",
+      welcomeLead:"هذا معرض مفردات الإنجليزية لطلاب بكالوريا 12 — الفرع الأدبي. أمامك 100 قالب؛ عاين الوجهين، ثم اختر ما تريد استخدامه في رُزمتك.",
       sampleWord:"Achievement",
       sampleMeaning:"إنجاز"
     },
@@ -472,14 +555,14 @@ EXPERIENCE_JS = r"""
       label:"اللغة الإنجليزية · بكالوريا 12 — الفرع العلمي",
       title:"اعثر على قالب Anki المناسب لمفردات الإنجليزية.",
       description:"100 قالب لبطاقات مفردات الإنجليزية. استكشف التصاميم، وافحص وجهي البطاقة، ثم اختر ما تريد استخدامه في رُزمتك.",
-      welcomeTitle:"اختر شكل البطاقة قبل أن تبدأ المراجعة.",
-      welcomeLead:"هذا المعرض يضم 100 قالب لبطاقات مفردات اللغة الإنجليزية لطلاب بكالوريا 12 — الفرع العلمي. افتح أي تصميم، وجرّب وجهي البطاقة، ثم اختر ما تريد استخدامه في رُزمتك.",
+      welcomeTitle:"اختر طريقة عرض مفردات الإنجليزية للفرع العلمي.",
+      welcomeLead:"هذا معرض مفردات الإنجليزية لطلاب بكالوريا 12 — الفرع العلمي. أمامك 100 قالب؛ عاين الوجهين، ثم اختر ما تريد استخدامه في رُزمتك.",
       sampleWord:"Achievement",
       sampleMeaning:"إنجاز"
     }
   };
   var profile=profiles[deck]||profiles.en9;
-  var welcomeKey="anki_"+deck+"_welcome_seen_v3";
+  var welcomeKey="anki_"+deck+"_welcome_seen_v4";
   var previousFocus=null;
   var welcomeOpen=false;
 
@@ -563,8 +646,14 @@ EXPERIENCE_JS = r"""
     welcomeOpen=true;
     var dialog=modal.querySelector(".gx-dialog");
     if(dialog)dialog.scrollTop=0;
+    var preview=document.getElementById("gxWelcomePreviewCard");
+    var flip=document.getElementById("gxWelcomeFlip");
+    var faceState=document.getElementById("gxWelcomeFaceState");
+    if(preview)preview.classList.remove("is-flipped");
+    if(flip){flip.setAttribute("aria-pressed","false");flip.innerHTML='<span aria-hidden="true">↻</span> اقلب البطاقة';}
+    if(faceState)faceState.textContent="الوجه الأمامي";
     var start=document.getElementById("gxWelcomeStart");
-    if(start)start.focus();
+    if(start)start.focus({preventScroll:true});
   }
   function closeGalleryWelcome(markSeen){
     var modal=document.getElementById("gxWelcome");
@@ -595,6 +684,16 @@ EXPERIENCE_JS = r"""
     var start=document.getElementById("gxWelcomeStart");
     var explore=document.getElementById("gxWelcomeExplore");
     var close=document.getElementById("gxWelcomeClose");
+    var flip=document.getElementById("gxWelcomeFlip");
+    if(flip)flip.addEventListener("click",function(){
+      var preview=document.getElementById("gxWelcomePreviewCard");
+      var faceState=document.getElementById("gxWelcomeFaceState");
+      if(!preview)return;
+      var flipped=preview.classList.toggle("is-flipped");
+      flip.setAttribute("aria-pressed",String(flipped));
+      flip.innerHTML=flipped?'<span aria-hidden="true">↻</span> أظهر المفردة':'<span aria-hidden="true">↻</span> اقلب البطاقة';
+      if(faceState)faceState.textContent=flipped?"وجه المعنى":"الوجه الأمامي";
+    });
     if(start)start.addEventListener("click",function(){
       closeGalleryWelcome(true);
       window.setTimeout(function(){
@@ -758,7 +857,7 @@ def apply_gallery_experience(html, deck):
 
     required = (
         'hero.id="gallery-experience-hero"',
-        'class="gx-dialog gx-opening-v3"',
+        'class="gx-dialog gx-opening-v4"',
         'data-gx-welcome-title',
         'data-gx-sample-word',
         'data-gx-sample-meaning',
