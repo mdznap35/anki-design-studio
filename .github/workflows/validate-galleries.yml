@@ -105,8 +105,8 @@ jobs:
               assert len(designs) == 100, f"{deck}: expected 100 designs, found {len(designs)}"
               expected_nav = (
                   '<a class="hdr-link" href="/en9">إنجليزي 9</a>',
-                  '<a class="hdr-link" href="/enlit">إنجليزي بكالوريا أدبي 12</a>',
-                  '<a class="hdr-link" href="/ensci">إنجليزي بكالوريا علمي 12</a>',
+                  '<a class="hdr-link" href="/enlit">الإنجليزية — بكالوريا، الشعبة الأدبية</a>',
+                  '<a class="hdr-link" href="/ensci">الإنجليزية — بكالوريا، الشعبة العلمية</a>',
                   '<a class="hdr-link" href="/fr9">فرنسي 9</a>',
                   '<a class="hdr-link" href="/bac12">فرنسي بكالوريا 12</a>',
               )
@@ -413,8 +413,8 @@ jobs:
           const openingCases = {
             fr9: { label:"اللغة الفرنسية · الصف التاسع", title:"اكتشف القالب الأنسب لمفردات الفرنسية", welcomeTitle:"اجعل مراجعة الفرنسية أوضح، بدءاً من القالب المناسب.", word:"Leçon", meaning:"درس" },
             en9: { label:"اللغة الإنجليزية · الصف التاسع", title:"اختر طريقة العرض المناسبة لمفردات الإنجليزية", welcomeTitle:"اختر قالباً يجعل مراجعة مفردات الإنجليزية أكثر وضوحاً.", word:"Student", meaning:"طالب" },
-            enlit: { label:"اللغة الإنجليزية · بكالوريا أدبي 12", title:"اختر تصميم Anki المناسب لمفردات الإنجليزية — بكالوريا أدبي 12", welcomeTitle:"اختر شكل البطاقة التي ستراجع بها مفردات الإنجليزية.", word:"Novel", meaning:"رواية" },
-            ensci: { label:"اللغة الإنجليزية · بكالوريا علمي 12", title:"اختر تصميم Anki المناسب لمفردات الإنجليزية — بكالوريا علمي 12", welcomeTitle:"اجعل مراجعة مفردات الإنجليزية أوضح وأسهل.", word:"Energy", meaning:"طاقة" }
+            enlit: { label:"اللغة الإنجليزية · بكالوريا — الشعبة الأدبية", title:"قوالب Anki لمفردات اللغة الإنجليزية — بكالوريا، الشعبة الأدبية", welcomeTitle:"ابدأ باختيار شكل البطاقات التي ستراجع بها مفردات الإنجليزية.", word:"Novel", meaning:"رواية" },
+            ensci: { label:"اللغة الإنجليزية · بكالوريا — الشعبة العلمية", title:"قوالب Anki لمفردات اللغة الإنجليزية — بكالوريا، الشعبة العلمية", welcomeTitle:"ابدأ باختيار شكل البطاقات التي ستراجع بها مفردات الإنجليزية.", word:"Energy", meaning:"طاقة" },
           };
 
           async function waitForStep(page, index) {
@@ -595,8 +595,8 @@ jobs:
               assert.equal(openingCopy.heroWord, openingCase.word, deck + ": hero sample word does not match the deck");
               assert.equal(openingCopy.heroMeaning, openingCase.meaning, deck + ": hero sample meaning does not match the deck");
               assert.equal(openingCopy.pointCount, 3, deck + ": opening must explain the three core user actions");
-              assert.equal(openingCopy.startLabel, "ابدأ الجولة التفاعلية ←", deck + ": guided tour action label is unclear");
-              assert.equal(openingCopy.exploreLabel, "تصفّح القوالب", deck + ": direct gallery action label is unclear");
+              assert.equal(openingCopy.startLabel, "ابدأ الجولة ←", deck + ": guided tour action label is unclear");
+              assert.equal(openingCopy.exploreLabel, "تصفّح 100 قالب", deck + ": direct gallery action label is unclear");
               assert.equal(openingCopy.focusId, "gxWelcomeStart", deck + ": opening does not place focus on the primary action");
               assert(openingCopy.copyWidth <= openingCopy.copyClientWidth + 1, deck + "/" + viewport.name + ": opening copy overflows horizontally");
               assert.equal(await page.locator("#gallery-experience-hero").count(), 1, deck + ": gallery hero is missing");
@@ -670,6 +670,10 @@ jobs:
                     assert.equal(frameAudit.scripts, 0, deck + ": scripts remain inside sandboxed card preview");
                     assert.equal(frameAudit.inlineHandlers, 0, deck + ": inline event handlers remain inside card preview");
                     if (frameAudit.wordWidth > 0) assert(frameAudit.wordWidth <= frameAudit.parentWidth - 14, deck + ": preview sample word still overflows its card slot");
+                    await page.locator('[data-guide-action="openLibrary"]').click();
+                    await page.waitForFunction(() => { const browser = document.getElementById("galleryBrowser"); return browser && browser.classList.contains("open"); }, null, { timeout: 10000 });
+                    await page.waitForFunction(() => { const target = document.querySelector(".og-spotlight"); return target && target.matches("#gbFilters .gb-chip"); }, null, { timeout: 10000 });
+                    await inspectStep(page, deck, viewport, 1);
                     await page.locator("#gbGrid .gb-item").first().click({ timeout: 10000 });
                     await page.waitForFunction(() => window.onbStep === 2, null, { timeout: 10000 });
                     await waitForStep(page, 2);
@@ -684,6 +688,10 @@ jobs:
                       return note && /تم تحديث الاختيار فعليًا|أُزيل تحديد القالب الحالي/.test(note.textContent);
                     }, null, { timeout: 10000 });
 
+                    await page.locator('[data-guide-action="audio"]').click();
+                    await waitForStep(page, 4);
+                    await page.locator("#gTtsPreviewBtn").click({ timeout: 10000 });
+                    await page.waitForFunction(() => { const note = document.getElementById("onboardGuideNote"); return note && note.textContent.includes("بدأت معاينة الصوت"); }, null, { timeout: 10000 });
                     await page.locator('[data-guide-step="5"]').click();
                     await waitForStep(page, 5);
                     await page.locator('[data-guide-action="review"]').click();
