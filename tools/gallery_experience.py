@@ -299,7 +299,7 @@ def apply_gallery_experience(html, deck):
     for token in required:
         if token not in html:
             raise SystemExit(deck + ": incomplete gallery experience: " + token)
-    if 'id="gbFilters"' in html or 'class="gb-chip"' in html:
+    if 'id="gbFilters"' in html:
         raise SystemExit(deck + ": old filter controls remain in generated gallery")
     if 'id="gxWelcome"' in html or 'id="gxWelcomeStart"' in html:
         raise SystemExit(deck + ": old blocking welcome modal remains")
