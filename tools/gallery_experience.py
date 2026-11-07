@@ -442,7 +442,14 @@ def apply_gallery_experience(html, deck):
     )
     frame_handlers = (
         "var previewFrame=it.querySelector('.gb-preview-frame');"
-        "if(previewFrame){previewFrame.srcdoc=thumbDoc(t);"
+        "if(previewFrame){"
+        "var previewSource=thumbDoc(t);"
+        "var previewDocument=new DOMParser().parseFromString(previewSource,'text/html');"
+        "previewDocument.querySelectorAll('script,iframe,object,embed').forEach(function(node){node.remove();});"
+        "previewDocument.querySelectorAll('*').forEach(function(node){Array.from(node.attributes).forEach(function(attribute){"
+        "if(/^on/i.test(attribute.name)||((attribute.name==='href'||attribute.name==='src')&&/^\\s*javascript:/i.test(attribute.value))){node.removeAttribute(attribute.name);}"
+        "});});"
+        "previewFrame.srcdoc='<!doctype html>'+previewDocument.documentElement.outerHTML;"
         "previewFrame.addEventListener('load',function(){"
         "var doc=this.contentDocument;"
         "var hasContent=doc&&doc.body&&(doc.body.children.length>0||(doc.body.textContent||'').trim().length>0);"
