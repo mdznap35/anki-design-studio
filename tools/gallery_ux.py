@@ -203,8 +203,8 @@ var onboardOpenedAudio = false;
 var onboardPositionFrame = 0;
 
 var ONBOARD_STEPS = [
-  {id:"start",label:"ابدأ من المكتبة",title:"ابدأ من التصنيفات والبحث",text:"تضم هذه المكتبة 100 قالب. استخدم أدوات التصفية لتضييق النتائج والوصول إلى التصميم الذي تريد رؤيته. تغيير طريقة العرض لا يضيف أي قالب إلى رُزمتك.",target:"#gbFilters .gb-chip",fallback:"#galleryBrowser .gb-title",targetLabel:"تصنيفات القوالب",note:"بعدها انتقل إلى شبكة القوالب وافتح تصميماً لمعاينته."},
-  {id:"library",label:"اختيار قالب",title:"افتح التصميم الذي تريد فحصه",text:"تعرض الشبكة القوالب المئة. افتح أي بطاقة لمشاهدة معاينتها؛ فتحها وحده لا يضيفها إلى اختيارات الرزمة.",target:"#gbGrid .gb-item",fallback:"#gbGrid",targetLabel:"شبكة القوالب",note:"اختر بطاقة من الشبكة لتنتقل الجولة تلقائياً إلى معاينتها."},
+  {id:"start",label:"بداية الجولة",title:"ابدأ من زر تصفّح القوالب",text:"من زر «تصفّح القوالب» افتح المكتبة. أمامك 100 قالب؛ وبعد فتحها تستطيع استخدام التصنيفات للوصول إلى التصاميم التي تريد فحصها. لا يُضاف أي قالب إلى رُزمتك بمجرد فتح المكتبة.",target:".hero-cta-main",targetLabel:"زر تصفّح القوالب",note:"اضغط الزر المظلّل أو انتقل إلى المكتبة من زر الجولة أدناه."},
+  {id:"library",label:"استكشاف المكتبة",title:"صفِّ النتائج ثم افتح تصميماً",text:"استخدم تصنيفات المكتبة لتضييق النتائج، ثم اختر بطاقة من الشبكة لمعاينة تصميمها. فتح البطاقة لا يضيفها إلى اختيارات الرزمة.",target:"#gbFilters .gb-chip",fallback:"#gbGrid .gb-item",targetLabel:"تصنيفات القوالب",note:"اختر بطاقة من الشبكة؛ ستنتقل الجولة تلقائياً إلى معاينتها."},
   {id:"preview",label:"معاينة الوجهين",title:"افحص الوجهين قبل الاختيار",text:"اقلب البطاقة وتحقق من وضوح المفردة ومعناها وتوزيع العناصر. هذه معاينة للتصميم وليست تعديلاً على محتوى الرزمة.",target:"#gvShowAns",fallback:"#gvStage",targetLabel:"زر قلب البطاقة",note:"جرّب زر القلب بنفسك أو انتقل إلى خطوة التحديد."},
   {id:"selection",label:"اعتماد القالب",title:"أضف التصميم إلى اختياراتك",text:"زر التحديد يضيف القالب الحالي أو يزيله من مجموعتك. يمكنك اختيار أكثر من تصميم، ولن تختار الجولة أي قالب نيابةً عنك.",target:"#gvSelectBtn",targetLabel:"زر تحديد القالب",note:"عدد القوالب المختارة يتحدث بعد اختيارك مباشرةً."},
   {id:"audio",label:"إعداد الصوت",title:"اضبط النطق لكل لغة",text:"اختر الصوتين واضبط السرعة والنغمة والفواصل. استخدم زر المعاينة عندما ترغب في الاستماع؛ لن يبدأ أي صوت من تلقاء نفسه.",target:"#gAudioPanelBody select",fallback:"#gAudioPanelBody",targetLabel:"قائمة اختيار الصوت",note:"يمكنك تعديل الإعدادات لاحقاً أيضاً؛ لن يبدأ تشغيل الصوت إلا بطلبك."},
@@ -271,7 +271,7 @@ function onboardEnsureRoot(){
 }
 function onboardPrepareStep(index){
   var browser = document.getElementById("galleryBrowser");
-  if(index === 0 || index === 1){
+  if(index === 1){
     // Open the real library from the first guided stop and keep it open while
     // the visitor moves from filters to the template grid.
     // The tour can start before the asynchronous gallery watcher has populated gvList.
@@ -286,7 +286,7 @@ function onboardPrepareStep(index){
       }
       onboardOpenedBrowser = browser.classList.contains("open");
     }
-  }else if(index > 1 && onboardOpenedBrowser && browser && browser.classList.contains("open") && typeof closeGalleryBrowser === "function"){
+  }else if(index !== 1 && onboardOpenedBrowser && browser && browser.classList.contains("open") && typeof closeGalleryBrowser === "function"){
     closeGalleryBrowser();
     onboardOpenedBrowser = false;
   }
@@ -620,6 +620,10 @@ document.addEventListener("click",function(event){
   if(!onboardGuideOpen)return;
   var target = event.target;
   if(!target || !target.closest)return;
+  if(onbStep === 0 && target.closest(".hero-cta-main")){
+    window.setTimeout(function(){if(onboardGuideOpen && onbStep === 0)goToOnboardStep(1);},360);
+    return;
+  }
   if(onbStep === 1 && target.closest("#gbGrid .gb-item")){
     window.setTimeout(function(){if(onboardGuideOpen && onbStep === 1)goToOnboardStep(2);},360);
     return;
