@@ -270,19 +270,21 @@ body .og-spotlight{outline:2px solid #77cfc5!important;outline-offset:5px!import
 #onboardGuideRoot .og-institutional .og-progress button .og-progress-name{height:auto!important;min-height:0;overflow:visible;line-height:1.3}
 #onboardGuideRoot .og-institutional .og-task{flex:0 0 auto}
 @media(max-width:640px){
- #onboardGuideRoot .og-card.og-institutional{max-height:min(55dvh,460px)}
+ #onboardGuideRoot .og-card.og-institutional{max-height:min(42dvh,360px)}
  #onboardGuideRoot .og-institutional .og-head{padding:11px 13px}
  #onboardGuideRoot .og-institutional .og-progress-wrap{padding:9px 13px 8px}
- #onboardGuideRoot .og-institutional .og-progress-meta{margin-bottom:7px}
+ #onboardGuideRoot .og-institutional .og-progress-meta{margin-bottom:5px}
  #onboardGuideRoot .og-institutional .og-progress{gap:4px}
- #onboardGuideRoot .og-institutional .og-progress button .og-progress-index{width:23px;height:23px!important;min-height:23px!important;font-size:.54rem}
- #onboardGuideRoot .og-institutional .og-progress button .og-progress-name{font-size:.47rem}
- #onboardGuideRoot .og-institutional .og-content{padding:13px 15px 11px}
- #onboardGuideRoot .og-institutional .og-meta{margin-bottom:6px}
- #onboardGuideRoot .og-institutional .og-title{font-size:1.02rem;margin-bottom:7px}
- #onboardGuideRoot .og-institutional .og-text{font-size:.72rem;line-height:1.68}
- #onboardGuideRoot .og-institutional .og-task{margin-top:11px;padding:9px 10px}
- #onboardGuideRoot .og-institutional .og-note{margin-top:8px;font-size:.61rem;line-height:1.55}
+ #onboardGuideRoot .og-institutional .og-progress button .og-progress-index{width:22px;height:22px!important;min-height:22px!important;font-size:.53rem}
+ #onboardGuideRoot .og-institutional .og-progress button .og-progress-name{display:none}
+ #onboardGuideRoot .og-institutional .og-content{padding:10px 14px 9px}
+ #onboardGuideRoot .og-institutional .og-meta{margin-bottom:4px}
+ #onboardGuideRoot .og-institutional .og-title{font-size:.98rem;margin-bottom:6px}
+ #onboardGuideRoot .og-institutional .og-text{font-size:.68rem;line-height:1.55}
+ #onboardGuideRoot .og-institutional .og-task{margin-top:8px;padding:7px 9px}
+ #onboardGuideRoot .og-institutional .og-note{margin-top:6px;font-size:.57rem;line-height:1.4}
+ #onboardGuideRoot .og-institutional .og-note:not(.important){display:none}
+ #onboardGuideRoot .og-institutional .og-footer{padding:8px 11px}
  #onboardGuideRoot .og-institutional .og-footer{padding:9px 12px}
 }
 @media(max-width:360px){
@@ -486,7 +488,7 @@ function positionOnboardGuide(){
   widthOptions.forEach(function(candidateWidth){
     if(best&&best.overlap===0)return;
     card.style.width=candidateWidth+"px";
-    card.style.maxHeight=(width<=640?Math.min(height*.55,460):Math.min(height*.43,430))+"px";
+    card.style.maxHeight=(width<=640?Math.min(height*.42,360):Math.min(height*.43,430))+"px";
     var measured=card.getBoundingClientRect();
     if(!rect){
       best={left:Math.max(margin,(width-measured.width)/2),top:Math.max(margin,(height-measured.height)/2),name:"center",overlap:0};
@@ -615,7 +617,7 @@ function renderOnboardStep(){
   taskCopy.appendChild(onboardNode("strong","",targetLabel));
   task.appendChild(taskCopy);content.appendChild(task);
 
-  var status=onboardNode("p","og-note",note);status.id = "onboardGuideNote";
+  var status=onboardNode("p",review?"og-note important":"og-note",note);status.id = "onboardGuideNote";
   status.setAttribute("role","status");status.setAttribute("aria-live","polite");
   content.appendChild(status);card.appendChild(content);
 
