@@ -195,7 +195,7 @@ body .og-spotlight{outline-width:2px!important;outline-offset:4px!important;box-
 #onboardTourLauncher{right:22px;bottom:22px;min-height:48px;padding:0 19px;border:1px solid rgba(148,163,184,.24);border-radius:12px;background:#14243b;color:#f8fafc;font-size:.78rem;letter-spacing:.01em;box-shadow:0 12px 32px rgba(5,15,30,.24)}
 #onboardTourLauncher:hover{background:#1d3554;filter:none;transform:translateY(-2px);box-shadow:0 16px 38px rgba(5,15,30,.3)}
 #onboardGuideRoot{color:#f8fafc}
-#onboardGuideRoot .og-card.og-institutional{width:min(456px,calc(100vw - 28px));max-height:min(40dvh,390px);overflow:auto;padding:0;border:1px solid rgba(154,174,203,.24);border-radius:18px;background:#101d30;box-shadow:0 28px 90px rgba(1,8,20,.5),0 0 0 1px rgba(255,255,255,.035) inset;backdrop-filter:blur(18px);scrollbar-width:thin}
+#onboardGuideRoot .og-card.og-institutional{width:min(456px,calc(100vw - 28px));max-height:min(45.8dvh,458px);overflow:auto;padding:0;border:1px solid rgba(154,174,203,.24);border-radius:18px;background:#101d30;box-shadow:0 28px 90px rgba(1,8,20,.5),0 0 0 1px rgba(255,255,255,.035) inset;backdrop-filter:blur(18px);scrollbar-width:thin}
 #onboardGuideRoot .og-card.og-institutional:before,#onboardGuideRoot .og-card.og-institutional:after{display:none}
 #onboardGuideRoot .og-institutional .og-head{display:flex;align-items:center;gap:12px;margin:0;padding:17px 19px;border-bottom:1px solid rgba(190,205,226,.11);background:#13243a}
 #onboardGuideRoot .og-institutional .og-brand{gap:10px}
@@ -290,11 +290,24 @@ body .og-spotlight{outline:2px solid #77cfc5!important;outline-offset:5px!import
 @media(max-width:360px){
  #onboardGuideRoot .og-card.og-institutional{max-height:min(55dvh,360px)}
  #onboardGuideRoot .og-institutional .og-progress-name{display:none}
- #onboardGuideRoot .og-institutional .og-content{padding:10px 12px}
- #onboardGuideRoot .og-institutional .og-title{font-size:.94rem}
- #onboardGuideRoot .og-institutional .og-text{font-size:.67rem;line-height:1.55}
- #onboardGuideRoot .og-institutional .og-task{margin-top:8px;padding:7px 8px}
- #onboardGuideRoot .og-institutional .og-note{font-size:.57rem;margin-top:6px}
+ #onboardGuideRoot .og-institutional .og-head{padding:6px 10px}
+ #onboardGuideRoot .og-institutional .og-mark{width:29px;height:29px}
+ #onboardGuideRoot .og-institutional .og-brand-copy small{display:none}
+ #onboardGuideRoot .og-institutional .og-progress-wrap{padding:5px 10px}
+ #onboardGuideRoot .og-institutional .og-progress-meta{margin-bottom:3px}
+ #onboardGuideRoot .og-institutional .og-progress button .og-progress-index{width:19px;height:19px!important;min-height:19px!important}
+ #onboardGuideRoot .og-institutional .og-content{padding:7px 10px 6px}
+ #onboardGuideRoot .og-institutional .og-meta{margin-bottom:2px}
+ #onboardGuideRoot .og-institutional .og-title{font-size:.86rem;margin-bottom:4px}
+ #onboardGuideRoot .og-institutional .og-text{font-size:.61rem;line-height:1.34}
+ #onboardGuideRoot .og-institutional .og-task{margin-top:5px;padding:5px 7px}
+ #onboardGuideRoot .og-institutional .og-task-icon{width:23px;height:23px;flex-basis:23px}
+ #onboardGuideRoot .og-institutional .og-task-copy small{display:none}
+ #onboardGuideRoot .og-institutional .og-task-copy strong{font-size:.63rem}
+ #onboardGuideRoot .og-institutional .og-note{font-size:.53rem;margin-top:4px}
+ #onboardGuideRoot .og-institutional .og-footer{padding:6px 9px}
+ #onboardGuideRoot .og-institutional .og-btn{min-height:29px;padding:5px 7px;font-size:.57rem}
+ #onboardGuideRoot .og-institutional .og-skip{font-size:.56rem}
 }
 
 
@@ -488,7 +501,7 @@ function positionOnboardGuide(){
   widthOptions.forEach(function(candidateWidth){
     if(best&&best.overlap===0)return;
     card.style.width=candidateWidth+"px";
-    card.style.maxHeight=(width<=640?Math.min(height*.42,360):Math.min(height*.43,430))+"px";
+    card.style.maxHeight=(width<=640?Math.min(height*.42,360):Math.min(height*.458,458))+"px";
     var measured=card.getBoundingClientRect();
     if(!rect){
       best={left:Math.max(margin,(width-measured.width)/2),top:Math.max(margin,(height-measured.height)/2),name:"center",overlap:0};
