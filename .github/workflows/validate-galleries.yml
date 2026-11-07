@@ -103,6 +103,18 @@ jobs:
               end = bmatch(html, start)
               designs = json.loads(html[start:end + 1])
               assert len(designs) == 100, f"{deck}: expected 100 designs, found {len(designs)}"
+              expected_nav = (
+                  '<a class="hdr-link" href="/en9">إنجليزي 9</a>',
+                  '<a class="hdr-link" href="/enlit">أدب إنجليزي 12</a>',
+                  '<a class="hdr-link" href="/ensci">إنجليزي علمي 12</a>',
+                  '<a class="hdr-link" href="/fr9">فرنسي 9</a>',
+                  '<a class="hdr-link" href="/bac12">فرنسي بكالوريا 12</a>',
+              )
+              assert all(link in html for link in expected_nav), f"{deck}: header navigation is not fully localized"
+              assert not any(label in html for label in (
+                  '>English 9</a>', '>English Literature 12</a>', '>English Science 12</a>',
+                  '>French 9</a>', '>French Bac 12</a>'
+              )), f"{deck}: English header navigation labels remain"
               assert all(item.get("pack") == deck for item in designs), f"{deck}: incorrect deck binding"
               assert f"gallery_imgs_{deck}/" not in html, f"{deck}: stale thumbnail directory remains"
               assert "gallery_imgs/" in html, f"{deck}: shared thumbnail directory missing"
