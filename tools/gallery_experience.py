@@ -411,11 +411,16 @@ def apply_gallery_experience(html, deck):
 
     js = EXPERIENCE_JS.replace("__DECK__", deck)
     script_tag = '<script id="gallery-experience-runtime">\n' + js + '\n</script>\n'
-    body_closers = list(re.finditer(r"</body\s*>", html, flags=re.I))
+    body_closers = list(re.finditer(r"</body\\s*>", html, flags=re.I))
     if not body_closers:
         raise SystemExit(deck + ": missing final body close")
     body_close = body_closers[-1]
-    html = html[:body_close.start()] + WELCOME_MARKUP + script_tag + html[body_close.start():]
+    launcher_position = html.find(new_launcher)
+    if launcher_position < 0 or html.count(new_launcher) != 1 or launcher_position >= body_close.start():
+        raise SystemExit(deck + ": expected one persistent launcher before the final body close")
+    # Keep the persistent launcher after every script so it remains a genuine
+    # document control and preserves the existing document-order invariant.
+    html = html[:launcher_position] + WELCOME_MARKUP + script_tag + html[launcher_position:]
 
     required = (
         'hero.id="gallery-experience-hero"',
