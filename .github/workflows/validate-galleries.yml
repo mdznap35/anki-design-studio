@@ -111,6 +111,7 @@ jobs:
               assert html.count('id="gallery-experience-runtime"') == 1, f"{deck}: v2 runtime missing or duplicated"
               assert html.count('id="gxWelcome"') == 1, f"{deck}: welcome experience missing or duplicated"
               assert 'hero.id="gallery-experience-hero"' in html, f"{deck}: gallery hero runtime missing"
+              assert 'document.querySelector("#sec-gal .hero")' in html, f"{deck}: gallery hero is not anchored in the main page section"
               assert "window.openGalleryWelcome" in html and "window.hasSeenGalleryWelcome" in html, f"{deck}: welcome controls are not wired"
               assert "setTimeout(function(){if(window.openGalleryWelcome)" in html, f"{deck}: first-visit welcome trigger is missing"
               print(f"PASS {deck}: 100 designs, deck-bound fields, shared thumbnails")
@@ -504,6 +505,7 @@ jobs:
                   assert(welcomeMetrics.left >= -1 && welcomeMetrics.right <= viewport.width + 1, deck + "/" + viewport.name + ": welcome exceeds horizontal viewport");
                   assert(welcomeMetrics.top >= -1 && welcomeMetrics.bottom <= viewport.height + 1, deck + "/" + viewport.name + ": welcome exceeds vertical viewport");
                   assert.equal(await page.locator("#gallery-experience-hero").count(), 1, deck + ": gallery hero is missing");
+                  assert.equal(await page.locator("#gallery-experience-hero").evaluate(element => element.closest("#galleryBrowser") === null), true, deck + "/" + viewport.name + ": gallery hero was inserted inside the template browser");
                   await page.screenshot({ path: "qa-artifacts/" + deck + "-" + viewport.name + "-welcome.png", fullPage: false });
                   await page.locator("#gxWelcomeStart").click();
                   try {
