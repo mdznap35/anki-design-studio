@@ -482,7 +482,12 @@ def apply_gallery_experience(html, deck):
         'hero.id="gallery-experience-hero"',
         'id="gxWelcomeStart"',
         'window.hasSeenGalleryWelcome',
-        'window.openGalleryWelcome'
+        'window.openGalleryWelcome',
+        'class="gb-preview-frame"',
+        "previewFrame.srcdoc=thumbDoc(t)",
+        'class="gx-action primary hero-cta-main"',
+        'originalHero.remove()',
+        'window.openGalleryBrowser'
     )
     for token in required:
         if token not in html:
