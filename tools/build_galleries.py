@@ -8,6 +8,7 @@ import json, os, re, shutil
 from pathlib import Path
 
 from gallery_ux import apply_gallery_ux
+from gallery_experience import apply_gallery_experience
 
 ROOT = Path(os.environ.get('WORKSPACE_ROOT') or Path(__file__).resolve().parents[1])
 # CI can provide the exact live French Bac page as a read-only base. Local runs
@@ -395,6 +396,7 @@ def build_one(did, spec, base):
             raise SystemExit('[%s] expected to remove 100 extra buttons, removed %d'
                              % (did, removed_extra_buttons))
     h = apply_gallery_ux(h, did)
+    h = apply_gallery_experience(h, did)
     return h, spec
 
 
