@@ -132,7 +132,7 @@ jobs:
               assert 'id="gbFilters"' not in html, f"{deck}: filter controls remain in the gallery DOM"
               assert 'class="gb-preview-host"' in html, f"{deck}: gallery cards do not use preview hosts"
               assert "تم فتح معاينة التصميم " in html, f"{deck}: card action still claims to select a template"
-              assert "originalHero.remove()" in html, f"{deck}: duplicate legacy gallery hero remains"
+              assert "oldHero.remove()" in html, f"{deck}: duplicate legacy gallery hero remains"
               assert "window.openGalleryBrowser" in html, f"{deck}: opening action is not connected to the library"
               assert 'document.querySelector("#sec-gal .hero")' in html, f"{deck}: original gallery hero anchor is missing"
               assert 'id="gxWelcome"' not in html and 'id="gxWelcomeStart"' not in html, f"{deck}: old blocking welcome experience remains"
