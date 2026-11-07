@@ -12,7 +12,7 @@ EXPERIENCE_CSS = r"""
 #gallery-experience-hero h1{max-width:15ch;margin:0;color:#f7fafc;font-size:clamp(2rem,4vw,3.65rem);font-weight:950;line-height:1.25;letter-spacing:-.045em}
 #gallery-experience-hero .gx-description{max-width:58ch;margin:17px 0 0;color:#c0ceda;font-size:clamp(.91rem,1.25vw,1.05rem);line-height:2}
 #gallery-experience-hero .gx-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:27px}
-#gallery-experience-hero .gx-action{min-height:49px;display:inline-flex;align-items:center;justify-content:center;gap:12px;padding:0 19px;border:1px solid rgba(180,202,221,.23);border-radius:9px;background:rgba(255,255,255,.045);color:#eaf2f8;font:inherit;font-size:.78rem;font-weight:900;cursor:pointer;transition:background .18s,transform .18s,border-color .18s}
+#gallery-experience-hero .gx-action{min-height:50px;display:inline-flex;align-items:center;justify-content:center;gap:12px;padding:0 19px;border:1px solid rgba(180,202,221,.23);border-radius:9px;background:rgba(255,255,255,.045);color:#eaf2f8;font:inherit;font-size:.78rem;font-weight:900;cursor:pointer;transition:background .18s,transform .18s,border-color .18s}
 #gallery-experience-hero .gx-action:hover{transform:translateY(-2px);background:rgba(255,255,255,.09);border-color:rgba(122,197,186,.56)}
 #gallery-experience-hero .gx-action.primary{border-color:#4e8d88;background:#337b76;color:white;box-shadow:0 10px 24px rgba(19,102,98,.2)}
 #gallery-experience-hero .gx-action.primary:hover{background:#3e8a83}
@@ -33,6 +33,7 @@ EXPERIENCE_CSS = r"""
 .gallery-browser{background:var(--bg,#0b1020)}
 .gallery-browser .gb-head{min-height:72px;padding:14px clamp(16px,3vw,34px);display:flex;align-items:center;gap:15px;border-bottom:1px solid rgba(170,190,215,.13);background:#101f32}
 .gallery-browser .gb-title{margin:0;color:#f2f6fa;font-size:1rem;font-weight:900}
+.hdr-nav .hdr-link[aria-current="page"]{color:#f3fbfa;border-color:rgba(117,192,179,.38);background:rgba(92,169,158,.12);box-shadow:inset 0 -2px #72c5b8}
 .gallery-browser .gb-count{margin-inline-start:auto;color:#a8bdce;font-size:.73rem;font-variant-numeric:tabular-nums}
 .gallery-browser .gb-close{width:40px;height:40px;border-radius:9px;border:1px solid rgba(180,199,219,.18);background:rgba(255,255,255,.04);color:#edf4f9}
 .gallery-browser .gb-bar{min-height:44px;padding:9px clamp(16px,3vw,34px);display:flex;align-items:center;border-bottom:1px solid rgba(170,190,215,.1);background:#0e1b2c}
@@ -56,6 +57,17 @@ EXPERIENCE_CSS = r"""
 #gv:not(.gx-visible){display:none!important}
 #gv.gx-visible{display:block!important}
 #gvStage{border-radius:20px!important}
+body:not(.gx-selection-ready) #gv,
+body:not(.gx-selection-ready) #gvStage,
+body:not(.gx-selection-ready) #gvShowAns,
+body:not(.gx-selection-ready) .gv-progress,
+body:not(.gx-selection-ready) .gv-actions,
+body:not(.gx-selection-ready) #gvShimmer,
+body:not(.gx-selection-ready) .aa,
+body:not(.gx-selection-ready) #download,
+body:not(.gx-selection-ready) #statusBar,
+body:not(.gx-selection-ready) #onboardTourLauncher{display:none!important}
+body.gx-selection-ready #onboardTourLauncher{display:inline-flex}
 #gvSelectBtn,#exOpenBtn,#gTtsPreviewBtn{min-height:45px!important;border-radius:10px!important;font-weight:850!important}
 @media(max-width:820px){
  #gallery-experience-hero{grid-template-columns:1fr;gap:25px;padding:30px}
@@ -67,8 +79,8 @@ EXPERIENCE_CSS = r"""
  #gallery-experience-hero h1{font-size:clamp(1.65rem,7.2vw,2.1rem);line-height:1.2}
  #gallery-experience-hero .gx-description{margin-top:10px;font-size:.78rem;line-height:1.65}
  #gallery-experience-hero .gx-actions{display:grid;grid-template-columns:1fr;width:100%;gap:6px;margin-top:14px}
- #gallery-experience-hero .gx-action{width:100%;min-height:43px}
- #gallery-experience-hero .gx-action:not(.primary){min-height:34px;border-color:transparent;background:transparent;color:#b6c9d8}
+ #gallery-experience-hero .gx-action{width:100%;min-height:48px}
+ #gallery-experience-hero .gx-action:not(.primary){min-height:48px;border-color:rgba(180,202,221,.16);background:rgba(255,255,255,.025);color:#d1deea}
  #gallery-experience-hero .gx-showcase{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:auto minmax(170px,auto) auto auto;gap:8px;padding:8px;border-radius:13px}
  #gallery-experience-hero .gx-featured{grid-column:1/-1}
  #gallery-experience-hero .gx-featured,#gallery-experience-hero .gx-featured iframe{min-height:170px}
@@ -101,10 +113,10 @@ EXPERIENCE_JS = r"""
 "use strict";
 var deck="__DECK__";
 var profiles={
- fr9:{label:"اللغة الفرنسية · الصف التاسع",title:"اختر شكلاً يليق بمفرداتك الفرنسية.",description:"مئة تصميم مختلف لبطاقات المفردات. شاهد القالب الحقيقي، وافحص الوجهين، ثم اعتمد ما يناسب طريقة دراستك.",word:"Leçon",meaning:"درس"},
- en9:{label:"اللغة الإنجليزية · الصف التاسع",title:"اجعل كل مفردة واضحة من النظرة الأولى.",description:"مئة تصميم لبطاقات مفردات الإنجليزية. استعرضها دون تصنيفات، افتح أي تصميم لمعاينته، ثم اختر القوالب التي تريدها.",word:"Student",meaning:"طالب"},
- enlit:{label:"بكالوريا 12 · الفرع الأدبي",title:"اختر طريقة عرض مفردات الإنجليزية.",description:"مئة تصميم لبطاقات مفردات الإنجليزية لطلاب بكالوريا 12 — الفرع الأدبي. استعرض التصاميم كما ستظهر على بطاقاتك، ثم اعتمد اختياراتك.",word:"Achievement",meaning:"إنجاز"},
- ensci:{label:"بكالوريا 12 · الفرع العلمي",title:"اختر طريقة عرض مفردات الإنجليزية.",description:"مئة تصميم لبطاقات مفردات الإنجليزية لطلاب بكالوريا 12 — الفرع العلمي. استعرض التصاميم كما ستظهر على بطاقاتك، ثم اعتمد اختياراتك.",word:"Achievement",meaning:"إنجاز"}
+ fr9:{label:"اللغة الفرنسية · الصف التاسع",title:"اختر شكل بطاقات مفرداتك.",description:"100 تصميم لبطاقات المفردات الفرنسية للصف التاسع. افتح أي تصميم لمعاينة وجهي البطاقة، ثم حدده لإضافته إلى اختياراتك.",word:"Leçon",meaning:"درس"},
+ en9:{label:"اللغة الإنجليزية · الصف التاسع",title:"اختر شكل بطاقات مفرداتك.",description:"100 تصميم لبطاقات مفردات الإنجليزية للصف التاسع. افتح أي تصميم لمعاينة وجهي البطاقة، ثم حدده لإضافته إلى اختياراتك.",word:"Student",meaning:"طالب"},
+ enlit:{label:"بكالوريا 12 · الفرع الأدبي",title:"اختر شكل بطاقات مفرداتك.",description:"100 تصميم لبطاقات مفردات الإنجليزية لبكالوريا 12 · الفرع الأدبي. افتح أي تصميم لمعاينة وجهي البطاقة، ثم حدده لإضافته إلى اختياراتك.",word:"Achievement",meaning:"إنجاز"},
+ ensci:{label:"بكالوريا 12 · الفرع العلمي",title:"اختر شكل بطاقات مفرداتك.",description:"100 تصميم لبطاقات مفردات الإنجليزية لبكالوريا 12 · الفرع العلمي. افتح أي تصميم لمعاينة وجهي البطاقة، ثم حدده لإضافته إلى اختياراتك.",word:"Achievement",meaning:"إنجاز"}
 };
 var profile=profiles[deck]||profiles.en9;
 function text(node,value){if(node)node.textContent=value;}
@@ -158,14 +170,14 @@ function addHero(){
   '<div class="gx-eyebrow"><span class="gx-mark" aria-hidden="true">A</span><span>ANKI DESIGN STUDIO</span></div>'+
   '<div class="gx-deck" data-gx-deck></div>'+
   '<h1 data-gx-title></h1><p class="gx-description" data-gx-description></p>'+
-  '<div class="gx-actions"><button class="gx-action primary hero-cta-main" type="button" data-gx-browse>استعرض القوالب المئة <span aria-hidden="true">←</span></button><button class="gx-action" type="button" data-gx-tour>شاهد الجولة التفاعلية</button></div>'+
-  '<div class="gx-facts"><span>100 تصميم فعلي</span><span>معاينة قبل الاعتماد</span><span>لا تصنيفات ولا فرز</span></div>'+
+  '<div class="gx-actions"><button class="gx-action primary hero-cta-main" type="button" data-gx-browse>تصفّح التصاميم <span aria-hidden="true">←</span></button><button class="gx-action" type="button" data-gx-tour>تعرّف إلى خطوات الاختيار</button></div>'+
+  '<div class="gx-facts"><span>100 تصميم</span><span>معاينة فعلية للوجهين</span><span>اختيار أكثر من قالب</span></div>'+
  '</div>'+
  '<div class="gx-showcase" aria-label="معاينات حقيقية من مكتبة القوالب">'+
-  '<div class="gx-showcase-head"><span>من داخل المكتبة</span><span class="gx-live">معاينات فعلية</span></div>'+
+  '<div class="gx-showcase-head"><span>نماذج من المكتبة</span><span class="gx-live">معاينات فعلية</span></div>'+
   '<div class="gx-featured gx-preview-host" id="gxPreviewMain"><span class="gb-preview-loading">جارٍ تجهيز المعاينة</span></div>'+
   '<div class="gx-side-previews"><div class="gx-mini gx-preview-host" id="gxPreviewAlt1"><span class="gb-preview-loading">قالب آخر</span></div><div class="gx-mini gx-preview-host" id="gxPreviewAlt2"><span class="gb-preview-loading">تصميم آخر</span></div></div>'+
-  '<div class="gx-showcase-foot">هذه معاينات من القوالب الفعلية المرتبطة بهذه الرزمة، وليست رسومات توضيحية بديلة.</div>'+
+  '<div class="gx-showcase-foot">المعاينات من التصاميم الفعلية في هذه الرزمة.</div>'+
  '</div>';
  oldHero.parentNode.insertBefore(hero,oldHero);oldHero.remove();
  text(hero.querySelector("[data-gx-deck]"),profile.label);
@@ -176,7 +188,7 @@ function addHero(){
   if(typeof window.openGalleryBrowser==="function")window.openGalleryBrowser();
  });
  hero.querySelector("[data-gx-tour]").addEventListener("click",function(){
-  var launcher=document.getElementById("onboardTourLauncher");if(launcher)launcher.click();
+  if(typeof window.showOnboarding==="function")window.showOnboarding();
  });
 }
 function mountShowcase(){
@@ -196,6 +208,10 @@ function disableFilters(){
 }
 function init(){
  addHero();disableFilters();mountShowcase();
+ var route=deck==="fr9"?"/fr9":(deck==="en9"?"/en9":(deck==="enlit"?"/enlit":"/ensci"));
+ document.querySelectorAll(".hdr-nav .hdr-link").forEach(function(link){
+  try{var path=new URL(link.getAttribute("href"),window.location.href).pathname.replace(/\\/$/,"");if(path===route)link.setAttribute("aria-current","page");}catch(_e){}
+ });
  var launcher=document.getElementById("onboardTourLauncher");
  if(launcher){
   launcher.textContent="الجولة التفاعلية";launcher.setAttribute("aria-label","ابدأ الجولة التفاعلية");
@@ -205,9 +221,14 @@ function init(){
  var grid=document.getElementById("gbGrid");
  if(grid)grid.addEventListener("click",function(event){
   var card=event.target.closest(".gb-item");if(!card)return;
-   var preview=document.getElementById("gv");if(preview)preview.classList.add("gx-visible");
+   document.body.classList.add("gx-selection-ready");
+  var preview=document.getElementById("gv");if(preview)preview.classList.add("gx-visible");
   grid.querySelectorAll('.gb-item[data-gx-active="true"]').forEach(function(item){item.removeAttribute("data-gx-active");});
   card.setAttribute("data-gx-active","true");
+  if(!document.getElementById("onboardGuideRoot"))window.setTimeout(function(){
+   var stage=document.getElementById("gvStage");
+   if(stage)stage.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
+  },220);
  },true);
 }
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});
