@@ -78,6 +78,15 @@ body{
 #gbGrid .gb-item:focus-visible{outline:3px solid rgba(88,214,231,.75);outline-offset:3px}
 #gbGrid .gb-item[data-gx-active="true"]{border-color:rgba(88,214,231,.82)!important;box-shadow:0 0 0 2px rgba(88,214,231,.16),0 18px 38px rgba(0,0,0,.22)!important}
 #gbGrid .gb-item img{max-width:100%;height:auto;object-fit:contain}
+#gbGrid .gb-preview-frame{
+  display:block;position:relative;z-index:0;width:100%;height:auto;aspect-ratio:22/45;
+  min-height:180px;border:0;background:#0e0c16;pointer-events:none;
+}
+#gbGrid .gb-fallback-img{
+  display:none;position:absolute;inset:0;z-index:1;width:100%;height:100%;
+  object-fit:contain;background:#0e0c16;
+}
+#gbGrid .gb-fallback-img[data-show="true"]{display:block}
 #gvStage{
   overflow:hidden;border:1px solid rgba(165,181,215,.22)!important;border-radius:26px!important;
   background:radial-gradient(ellipse at 50% 0,rgba(104,92,220,.11),transparent 48%),rgba(13,21,38,.94)!important;
@@ -412,6 +421,44 @@ def apply_gallery_experience(html, deck):
     if html.count(old_launcher) != 1:
         raise SystemExit(deck + ": expected one persistent onboarding launcher")
     html = html.replace(old_launcher, new_launcher, 1)
+
+    # Replace the generic shared thumbnails with lazy, isolated renders of
+    # each real template. The existing image remains a failure fallback.
+    old_thumb = '<img class="gb-img" data-loading="1" loading="lazy" decoding="async" src="\'+img+\'" alt="تصميم \'+num+\'">'
+    new_thumb = (
+        '<iframe class="gb-preview-frame" loading="lazy" title="معاينة تصميم \'+num+\'" '
+        'sandbox="allow-same-origin"></iframe>'
+        '<img class="gb-fallback-img" loading="lazy" decoding="async" src="\'+img+\'" alt="تصميم \'+num+\'">'
+    )
+    if html.count(old_thumb) != 1:
+        raise SystemExit(deck + ": expected one shared gallery thumbnail renderer")
+    html = html.replace(old_thumb, new_thumb, 1)
+    image_handlers = re.compile(
+        r"var im=it\\.querySelector\\('\.gb-img'\\);\\s*"
+        r"im\\.addEventListener\\('load',function\\(\\)\\{this\\.removeAttribute\\('data-loading'\\);"
+        r"var sk=this\\.parentNode\\.querySelector\\('\.gb-sk'\\);if\\(sk\\)sk\\.style\\.display='none';\\}\\);\\s*"
+        r"im\\.addEventListener\\('error',function\\(\\)\\{this\\.removeAttribute\\('data-loading'\\);"
+        r"var sk=this\\.parentNode\\.querySelector\\('\.gb-sk'\\);if\\(sk\\)sk\\.style\\.display='none';\\}\\);"
+    )
+    frame_handlers = (
+        "var previewFrame=it.querySelector('.gb-preview-frame');"
+        "if(previewFrame){previewFrame.srcdoc=thumbDoc(t);"
+        "previewFrame.addEventListener('load',function(){"
+        "var doc=this.contentDocument;"
+        "var hasContent=doc&&doc.body&&(doc.body.children.length>0||(doc.body.textContent||'').trim().length>0);"
+        "var fallback=this.parentNode.querySelector('.gb-fallback-img');"
+        "if(!hasContent&&fallback)fallback.setAttribute('data-show','true');"
+        "var sk=this.parentNode.querySelector('.gb-sk');if(sk)sk.style.display='none';"
+        "});"
+        "previewFrame.addEventListener('error',function(){"
+        "var fallback=this.parentNode.querySelector('.gb-fallback-img');"
+        "if(fallback)fallback.setAttribute('data-show','true');"
+        "var sk=this.parentNode.querySelector('.gb-sk');if(sk)sk.style.display='none';"
+        "});}"
+    )
+    html, handler_count = image_handlers.subn(frame_handlers, html, count=1)
+    if handler_count != 1:
+        raise SystemExit(deck + ": could not upgrade gallery cards to live template previews")
 
     style_tag = '<style id="gallery-experience-v2">\n' + EXPERIENCE_CSS + '\n</style>\n'
     html, style_count = re.subn(r"</head\s*>", style_tag + "</head>", html, count=1, flags=re.I)
