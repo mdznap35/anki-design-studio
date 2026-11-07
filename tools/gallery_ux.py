@@ -99,6 +99,8 @@ function onboardEnsureRoot(){
   onboardGuideRoot=root;return root;
 }
 function onboardPrepareStep(index){
+  var preview=document.getElementById("gv");
+  if(index>=2&&preview)preview.classList.add("gx-visible");
   var browser=document.getElementById("galleryBrowser");
   if(index===1&&browser&&!browser.classList.contains("open")){
     try{if(typeof ensureGalleryDesigns==="function")ensureGalleryDesigns();}catch(_e){}
