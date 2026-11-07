@@ -253,6 +253,7 @@ jobs:
               assert "onboardBackdropPath(target,width,height)" in tour_source and "scheduleOnboardPosition" in tour_source, f"{deck}: adaptive spotlight geometry is missing"
               assert 'backdrop.setAttribute("viewBox","0 0 " + width + " " + height);' in tour_source, f"{deck}: SVG spotlight coordinates are not scaled to the viewport"
               assert "var candidates=[" in tour_source and "candidateScore=overlap*1000000" in tour_source and "card.dataset.placement=best.name" in tour_source, f"{deck}: collision-aware coachmark placement is missing"
+            assert "var fixedOverlay=target.closest(\".gallery-browser,.help-overlay,.onboard-overlay\")" in tour_source and "targetOutsideViewport=before.top<0||before.bottom>height" in tour_source, f"{deck}: tour must not scroll fixed overlays or repeatedly scroll visible targets"
               assert "pointer-events:none" in html and "pointer-events:auto" in html, f"{deck}: coachmark should not block the gallery"
               assert 'setAttribute("data-guide-action","later")' in tour_source and 'function closeOnboarding(completed)' in tour_source and 'ONBOARD_SNOOZE_KEY' in tour_source and 'sessionStorage.setItem' in tour_source and 'closeOnboarding(false)' in tour_source, f"{deck}: dismissing onboarding must defer rather than falsely complete it"
               assert "onboardOpenedBrowser" in tour_source and "onboardOpenedAudio" in tour_source, f"{deck}: onboarding must restore only panels it opened"
