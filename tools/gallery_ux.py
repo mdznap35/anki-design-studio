@@ -261,7 +261,7 @@ function positionOnboardGuide(){
   var width=Math.max(320,document.documentElement.clientWidth||window.innerWidth||320);
   var height=Math.max(320,window.innerHeight||document.documentElement.clientHeight||320);
   var reduced=!!(window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches);
-  backdrop.setAttribute("viewBox","0 0 "+width+" "+height);
+  backdrop.setAttribute("viewBox","0 0 " + width + " " + height);
   if(target&&target.isConnected){
     var before=target.getBoundingClientRect();
     if(!onboardScrollingTarget&&(before.top<88||before.bottom>height-96)){
