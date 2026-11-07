@@ -492,7 +492,7 @@ jobs:
             assert(state.path && state.path.startsWith("M0 0H"), deck + "/" + viewport.name + ": spotlight aperture path is empty");
             assert(state.documentWidth <= viewport.width + 1, deck + "/" + viewport.name + ": horizontal page overflow detected (" + state.documentWidth + "px)");
             const separated = state.card.bottom <= state.target.top + 2 || state.card.top >= state.target.bottom - 2 || state.card.right <= state.target.left + 2 || state.card.left >= state.target.right - 2;
-            assert(separated, deck + "/" + viewport.name + ": coachmark overlaps its highlighted control at step " + (index + 1));
+            assert(separated, deck + "/" + viewport.name + ": coachmark overlaps its highlighted control at step " + (index + 1) + "; geometry=" + JSON.stringify(state));
             return state;
           }
 
