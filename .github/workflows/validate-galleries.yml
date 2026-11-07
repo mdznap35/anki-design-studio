@@ -208,7 +208,7 @@ jobs:
               expected_audio_status = "fetch(apiBase()+'/api/audio_status?source=" + audio_source + "')"
               assert html.count(expected_audio_status) == 1, f"{deck}: generated audio-status URL is malformed or duplicated"
               assert "fetch(apiBase()+'/api/audio_status?source=" + audio_source + ").then" not in html, f"{deck}: audio-status URL is missing its closing quote"
-              assert "100 تصميم فعلي" in tour_source, f"{deck}: library explanation must state the real design count"
+              assert "100 تصميم حقيقي" in tour_source, f"{deck}: library explanation must state the real design count"
               assert "كيفية الاستيراد" in tour_source and 'id="importGuide"' in html, f"{deck}: post-export Anki import guidance is missing"
               assert 'setAttribute("aria-live","polite")' in tour_source, f"{deck}: guide announcements are missing"
               assert 'setAttribute("aria-current"' in tour_source and 'index === onbStep' in tour_source and '"step"' in tour_source and '"false"' in tour_source, f"{deck}: direct accessible step navigation is missing"
