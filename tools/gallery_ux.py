@@ -134,7 +134,7 @@ var ONBOARD_SNOOZE_KEY = "anki_" + ONBOARD_DECK + "_onboarding_snoozed_v2";
 var onboardOpenedBrowser = false;
 var onboardOpenedAudio = false;
 var onboardPositionFrame = 0;
-var onboardScrollingTarget = false;
+
 var ONBOARD_STEPS = [
   {id:"start",label:"البداية",title:"من مكتبة القوالب إلى رزمة Anki — جولة عملية",text:"في دقائق قليلة ستتعرّف إلى طريقة استكشاف التصاميم، وفحص البطاقة، وتحديد ما يناسبك، ثم مراجعة إعدادات الصوت والتصدير. سنشرح الأدوات الحقيقية داخل المعرض؛ ولن نغيّر اختياراتك أو ننشئ ملفاً نيابةً عنك.",target:".hero-cta-main",targetLabel:"زر تصفّح القوالب",note:"يمكنك الانتقال بين المحطات أو إغلاق الجولة في أي وقت. لا تُحفظ اختيارات جديدة إلا عندما تضغط أنت على أدواتها."},
   {id:"library",label:"المكتبة",title:"ابدأ من مكتبة التصاميم",text:"تضم المكتبة 100 تصميم فعلي. استخدم تصنيفات الألوان لتصفية القوالب، ثم افتح أي بطاقة لتنتقل إلى معاينتها. فتح البطاقة يعرض القالب فقط؛ ولا يضيفه إلى اختيارات الرزمة.",target:"#gbFilters .gb-chip",fallback:"#galleryBrowser .gb-title",targetLabel:"زر تصنيف القوالب",note:"اختر بطاقة من الشبكة لتنتقل تلقائياً إلى محطة المعاينة، أو استخدم «التالي» لتجاوز التجربة."},
@@ -273,17 +273,15 @@ function positionOnboardGuide(){
   if(!card||!backdrop||!path)return;
   var width=Math.max(320,document.documentElement.clientWidth||window.innerWidth||320);
   var height=Math.max(320,window.innerHeight||document.documentElement.clientHeight||320);
-  var reduced=!!(window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   backdrop.setAttribute("viewBox","0 0 " + width + " " + height);
   if(target&&target.isConnected){
     var before=target.getBoundingClientRect();
     var fixedOverlay=target.closest(".gallery-browser,.help-overlay,.onboard-overlay");
     var targetOutsideViewport=before.top<0||before.bottom>height;
-    if(!fixedOverlay&&!onboardScrollingTarget&&targetOutsideViewport){
-      onboardScrollingTarget=true;
-      try{target.scrollIntoView({behavior:reduced?"auto":"smooth",block:"center",inline:"nearest"});}catch(_e){}
-      window.setTimeout(function(){onboardScrollingTarget=false;scheduleOnboardPosition();},reduced?60:430);
-      return;
+    if(!fixedOverlay&&targetOutsideViewport){
+      try{target.scrollIntoView({behavior:"instant",block:"center",inline:"nearest"});}
+      catch(_e){try{target.scrollIntoView({behavior:"auto",block:"center",inline:"nearest"});}catch(_e2){}}
+      before=target.getBoundingClientRect();
     }
     onboardActiveTarget=target;
     target.classList.add("og-spotlight");
