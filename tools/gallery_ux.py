@@ -191,13 +191,87 @@ body .og-spotlight{outline-width:2px!important;outline-offset:4px!important;box-
   #onboardGuideRoot .og-footer{gap:5px}
 }
 
+/* Institutional guided experience v5: editorial navigation, clear hierarchy, task-led actions. */
+#onboardTourLauncher{right:22px;bottom:22px;min-height:48px;padding:0 19px;border:1px solid rgba(148,163,184,.24);border-radius:12px;background:#14243b;color:#f8fafc;font-size:.78rem;letter-spacing:.01em;box-shadow:0 12px 32px rgba(5,15,30,.24)}
+#onboardTourLauncher:hover{background:#1d3554;filter:none;transform:translateY(-2px);box-shadow:0 16px 38px rgba(5,15,30,.3)}
+#onboardGuideRoot{color:#f8fafc}
+#onboardGuideRoot .og-card.og-institutional{width:min(456px,calc(100vw - 28px));max-height:min(76dvh,650px);overflow:auto;padding:0;border:1px solid rgba(154,174,203,.24);border-radius:18px;background:#101d30;box-shadow:0 28px 90px rgba(1,8,20,.5),0 0 0 1px rgba(255,255,255,.035) inset;backdrop-filter:blur(18px);scrollbar-width:thin}
+#onboardGuideRoot .og-card.og-institutional:before,#onboardGuideRoot .og-card.og-institutional:after{display:none}
+#onboardGuideRoot .og-institutional .og-head{display:flex;align-items:center;gap:12px;margin:0;padding:17px 19px;border-bottom:1px solid rgba(190,205,226,.11);background:#13243a}
+#onboardGuideRoot .og-institutional .og-brand{gap:10px}
+#onboardGuideRoot .og-institutional .og-mark{width:35px;height:35px;border:1px solid rgba(153,181,219,.28);border-radius:10px;background:#233c5c;color:#dbeafe;box-shadow:none;font-size:.82rem}
+#onboardGuideRoot .og-institutional .og-brand-copy{gap:3px}
+#onboardGuideRoot .og-institutional .og-brand-copy strong{font-size:.66rem;letter-spacing:.11em;color:#f0f5fc}
+#onboardGuideRoot .og-institutional .og-brand-copy small{font-size:.63rem;color:#91a5c0}
+#onboardGuideRoot .og-institutional .og-head-meta{display:flex;align-items:center;gap:7px;margin-inline-start:auto;color:#a8bad1;font-size:.64rem;white-space:nowrap}
+#onboardGuideRoot .og-institutional .og-live-dot{width:7px;height:7px;border-radius:50%;background:#55c2b2;box-shadow:0 0 0 4px rgba(85,194,178,.11)}
+#onboardGuideRoot .og-institutional .og-close{width:32px;height:32px;border:1px solid rgba(190,205,226,.16);border-radius:9px;background:rgba(255,255,255,.035);color:#b9c8dc}
+#onboardGuideRoot .og-institutional .og-progress-wrap{padding:15px 19px 14px;background:#0d192a;border-bottom:1px solid rgba(190,205,226,.1)}
+#onboardGuideRoot .og-institutional .og-progress-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;color:#8fa4bf;font-size:.64rem}
+#onboardGuideRoot .og-institutional .og-progress-meta strong{color:#c8d7ea;font-size:.65rem;font-variant-numeric:tabular-nums;letter-spacing:.06em}
+#onboardGuideRoot .og-institutional .og-progress{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;margin:0}
+#onboardGuideRoot .og-institutional .og-progress button{display:flex;flex-direction:column;align-items:center;gap:7px;min-width:0;padding:0;border:0;background:none;color:#7489a5}
+#onboardGuideRoot .og-institutional .og-progress-index{display:grid;place-items:center;width:27px;height:27px;border:1px solid rgba(145,165,194,.2);border-radius:8px;background:#15253a;font-size:.61rem;font-weight:850;font-variant-numeric:tabular-nums}
+#onboardGuideRoot .og-institutional .og-progress-name{display:block;width:100%;overflow:hidden;color:#8498b2;font-size:.54rem;line-height:1.35;text-align:center;text-overflow:ellipsis;white-space:nowrap}
+#onboardGuideRoot .og-institutional .og-progress button.done .og-progress-index{border-color:rgba(85,194,178,.36);background:rgba(46,132,125,.2);color:#9ce3d8}
+#onboardGuideRoot .og-institutional .og-progress button.current .og-progress-index{border-color:#8cb4e8;background:#29496d;color:#fff;box-shadow:0 0 0 3px rgba(104,153,209,.12)}
+#onboardGuideRoot .og-institutional .og-progress button.current .og-progress-name{color:#e0ebf8;font-weight:850}
+#onboardGuideRoot .og-institutional .og-content{padding:19px 21px 16px}
+#onboardGuideRoot .og-institutional .og-meta{display:flex;align-items:center;gap:9px;margin:0 0 10px}
+#onboardGuideRoot .og-institutional .og-step-label{color:#75cfc4;font-size:.65rem;font-weight:900;letter-spacing:.07em}
+#onboardGuideRoot .og-institutional .og-count{color:#92a6c0;font-size:.65rem}
+#onboardGuideRoot .og-institutional .og-title{margin:0 0 10px;color:#f7f9fc;font-size:clamp(1.15rem,2vw,1.42rem);font-weight:850;line-height:1.45;letter-spacing:-.025em}
+#onboardGuideRoot .og-institutional .og-text{margin:0;color:#c0ccdc;font-size:.81rem;line-height:1.9}
+#onboardGuideRoot .og-institutional .og-task{display:flex;align-items:center;gap:11px;margin-top:17px;padding:12px 13px;border:1px solid rgba(123,166,211,.2);border-radius:11px;background:#142943}
+#onboardGuideRoot .og-institutional .og-task-icon{display:grid;place-items:center;flex:0 0 29px;width:29px;height:29px;border:1px solid rgba(117,207,196,.24);border-radius:8px;background:rgba(58,142,136,.13);color:#8fe0d4;font-size:1rem;font-weight:800}
+#onboardGuideRoot .og-institutional .og-task-copy{display:grid;gap:3px;min-width:0}
+#onboardGuideRoot .og-institutional .og-task-copy small{color:#8da4bf;font-size:.59rem}
+#onboardGuideRoot .og-institutional .og-task-copy strong{color:#e4eef9;font-size:.74rem;font-weight:850}
+#onboardGuideRoot .og-institutional .og-note{margin:12px 0 0;color:#91a4bd;font-size:.66rem;line-height:1.7}
+#onboardGuideRoot .og-institutional .og-footer{position:sticky;bottom:0;display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0;padding:13px 19px;border-top:1px solid rgba(190,205,226,.11);background:#0d192a}
+#onboardGuideRoot .og-institutional .og-skip{color:#9aabc0;font-size:.67rem;text-decoration:none}
+#onboardGuideRoot .og-institutional .og-skip:hover{color:#e4eef9}
+#onboardGuideRoot .og-institutional .og-actions{gap:7px}
+#onboardGuideRoot .og-institutional .og-btn{min-height:40px;padding:8px 13px;border:1px solid rgba(159,183,212,.18);border-radius:9px;font-size:.69rem}
+#onboardGuideRoot .og-institutional .og-btn.ghost{background:rgba(255,255,255,.035);color:#c1cee0}
+#onboardGuideRoot .og-institutional .og-btn.primary{border-color:#426c9d;background:#315b89;color:#fff;box-shadow:none}
+#onboardGuideRoot .og-institutional .og-btn.primary:hover{background:#3c6c9f}
+#onboardGuideRoot .og-institutional button:focus-visible{outline:2px solid #8dc8e8;outline-offset:3px}
+body .og-spotlight{outline:2px solid #77cfc5!important;outline-offset:5px!important;border-radius:10px!important;box-shadow:0 0 0 8px rgba(77,181,169,.12),0 12px 32px rgba(2,12,26,.22)!important}
+@media(max-width:640px){
+ #onboardTourLauncher{right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));min-height:44px;padding:0 14px}
+ #onboardGuideRoot .og-card.og-institutional{width:calc(100vw - 16px);max-height:min(74dvh,620px);border-radius:15px}
+ #onboardGuideRoot .og-institutional .og-head{padding:13px 14px}
+ #onboardGuideRoot .og-institutional .og-progress-wrap{padding:12px 13px}
+ #onboardGuideRoot .og-institutional .og-progress{gap:3px}
+ #onboardGuideRoot .og-institutional .og-progress-index{width:24px;height:24px;font-size:.57rem}
+ #onboardGuideRoot .og-institutional .og-progress-name{font-size:.48rem}
+ #onboardGuideRoot .og-institutional .og-content{padding:15px 15px 13px}
+ #onboardGuideRoot .og-institutional .og-title{font-size:1.08rem}
+ #onboardGuideRoot .og-institutional .og-text{font-size:.75rem;line-height:1.8}
+ #onboardGuideRoot .og-institutional .og-footer{padding:11px 13px}
+ #onboardGuideRoot .og-institutional .og-btn{min-height:40px;padding:8px 10px;font-size:.66rem}
+}
+@media(max-width:360px){
+ #onboardGuideRoot .og-card.og-institutional{max-height:76dvh}
+ #onboardGuideRoot .og-institutional .og-head-meta{display:none}
+ #onboardGuideRoot .og-institutional .og-progress-name{font-size:.43rem}
+ #onboardGuideRoot .og-institutional .og-content{padding:12px}
+ #onboardGuideRoot .og-institutional .og-text{font-size:.71rem}
+ #onboardGuideRoot .og-institutional .og-task{margin-top:12px;padding:9px}
+ #onboardGuideRoot .og-institutional .og-footer{gap:5px;padding:9px}
+ #onboardGuideRoot .og-institutional .og-btn{padding:7px 8px;font-size:.62rem}
+}
+@media(prefers-reduced-motion:reduce){#onboardGuideRoot .og-institutional *,#onboardGuideRoot .og-institutional *:before,#onboardGuideRoot .og-institutional *:after{animation:none!important;transition:none!important}}
+
+
 """
 
 TOUR_JS = r"""
 var ONBOARD_DECK = "__DECK__";
 var ONBOARD_PRIMARY_LANGUAGE = ONBOARD_DECK === "fr9" ? "الفرنسية" : "الإنجليزية";
-var ONBOARD_STORAGE_KEY = "anki_" + ONBOARD_DECK + "_onboarded_v4";
-var ONBOARD_SNOOZE_KEY = "anki_" + ONBOARD_DECK + "_onboarding_snoozed_v4";
+var ONBOARD_STORAGE_KEY = "anki_" + ONBOARD_DECK + "_onboarded_v5";
+var ONBOARD_SNOOZE_KEY = "anki_" + ONBOARD_DECK + "_onboarding_snoozed_v5";
 var onboardOpenedBrowser = false;
 var onboardOpenedAudio = false;
 var onboardPositionFrame = 0;
@@ -432,125 +506,105 @@ function onboardNode(tag,className,text){
 }
 function renderOnboardStep(){
   if(!onboardGuideOpen)return;
-  var root = onboardEnsureRoot();
-  var step = ONBOARD_STEPS[onbStep];
+  var root=onboardEnsureRoot();
+  var step=ONBOARD_STEPS[onbStep];
   if(!step)return;
-  var review = step.id === "export" && onboardReviewOpened;
-  var title = review ? "راجع إعدادات رُزمتك قبل إنشائها" : step.title;
-  var body = review ? "في نافذة المراجعة، تأكد من اسم الرزمة والقوالب التي اخترتها وإعدادات الصوت وخيارات التضمين. يمكنك إغلاق النافذة والعودة إلى المعرض لإجراء أي تعديل." : step.text;
-  var targetLabel = review ? "زر إغلاق نافذة المراجعة" : step.targetLabel;
-  var note = review ? "هذه مراجعة فقط؛ لم يبدأ إنشاء ملف APKG. لن يبدأ إلا عندما تضغط «بدء التصدير» بنفسك." : step.note;
-  var primaryLabel = onbStep === 0 ? "انتقل إلى القوالب" :
-    onbStep === 1 ? "تابع إلى المعاينة" :
-    onbStep === 2 ? "جرّب قلب البطاقة" :
-    onbStep === 3 ? "انتقل إلى إعدادات الصوت" :
-    onbStep === 4 ? "انتقل إلى مراجعة الرزمة" :
-    (review ? "إنهاء الجولة" : "افتح شاشة المراجعة");
-  var primaryAction = onbStep === 0 ? "start" :
-    onbStep === 1 ? "preview" :
-    onbStep === 2 ? "flip" :
-    onbStep === 3 ? "audio" :
-    onbStep === 4 ? "export" :
-    (review ? "finish" : "review");
+  var review=step.id==="export"&&onboardReviewOpened;
+  var title=review?"راجع إعدادات رُزمتك قبل إنشائها":step.title;
+  var body=review?"في نافذة المراجعة، تأكد من اسم الرزمة والقوالب التي اخترتها وإعدادات الصوت وخيارات التضمين. يمكنك إغلاق النافذة والعودة إلى المعرض لإجراء أي تعديل.":step.text;
+  var targetLabel=review?"زر إغلاق نافذة المراجعة":step.targetLabel;
+  var note=review?"هذه مراجعة فقط؛ لم يبدأ إنشاء ملف APKG. لن يبدأ إلا عندما تضغط «بدء التصدير» بنفسك.":step.note;
+  var primaryLabel=onbStep===0?"افتح مكتبة القوالب":
+    onbStep===1?"اعرض هذا التصميم":
+    onbStep===2?"اقلب البطاقة":
+    onbStep===3?"انتقل إلى الصوت":
+    onbStep===4?"راجع الرزمة":
+    (review?"إنهاء الجولة":"افتح المراجعة");
+  var primaryAction=onbStep===0?"start":
+    onbStep===1?"preview":
+    onbStep===2?"flip":
+    onbStep===3?"audio":
+    onbStep===4?"export":
+    (review?"finish":"review");
 
-  var svgNS = "http://www.w3.org/2000/svg";
-  var backdrop = document.createElementNS(svgNS,"svg");
-  backdrop.setAttribute("class","og-backdrop");
-  backdrop.setAttribute("aria-hidden","true");
-  backdrop.setAttribute("focusable","false");
-  backdrop.setAttribute("viewBox","0 0 100 100");
-  backdrop.setAttribute("preserveAspectRatio","none");
-  var path = document.createElementNS(svgNS,"path");
-  path.setAttribute("id","ogBackdropPath");
-  path.setAttribute("fill","rgba(3,7,18,.68)");
-  path.setAttribute("fill-rule","evenodd");
-  path.setAttribute("d","M0 0H100V100H0Z");
-  backdrop.appendChild(path);
-
-  var card = onboardNode("section","og-card");
+  var card=onboardNode("section","og-card og-institutional");
   card.setAttribute("role","dialog");
   card.setAttribute("aria-modal","false");
   card.setAttribute("aria-labelledby","onboardGuideTitle");
   card.setAttribute("aria-describedby","onboardGuideText");
 
-  var head = onboardNode("div","og-head");
-  var brand = onboardNode("div","og-brand");
+  var head=onboardNode("header","og-head");
+  var brand=onboardNode("div","og-brand");
   brand.appendChild(onboardNode("span","og-mark","A"));
-  var brandCopy = onboardNode("span","og-brand-copy");
+  var brandCopy=onboardNode("span","og-brand-copy");
   brandCopy.appendChild(onboardNode("strong","","ANKI DESIGN STUDIO"));
-  brandCopy.appendChild(onboardNode("small","","تجربة داخل المعرض • ٦ محطات"));
+  brandCopy.appendChild(onboardNode("small","","دليل استخدام المعرض"));
   brand.appendChild(brandCopy);
-  var close = onboardNode("button","og-close","×");
-  close.type = "button";
-  close.setAttribute("data-guide-action","close");
+  var headMeta=onboardNode("div","og-head-meta");
+  headMeta.appendChild(onboardNode("span","og-live-dot",""));
+  headMeta.appendChild(onboardNode("span","","جولة تفاعلية"));
+  var close=onboardNode("button","og-close","×");
+  close.type="button";close.setAttribute("data-guide-action","close");
   close.setAttribute("aria-label","إغلاق الجولة");
-  head.appendChild(brand);
-  head.appendChild(close);
+  head.appendChild(brand);head.appendChild(headMeta);head.appendChild(close);
   card.appendChild(head);
 
-  var progress = onboardNode("nav","og-progress");
-  progress.setAttribute("aria-label","محطات الجولة");
+  var progressWrap=onboardNode("div","og-progress-wrap");
+  var progressMeta=onboardNode("div","og-progress-meta");
+  progressMeta.appendChild(onboardNode("span","","مسار التعرّف"));
+  progressMeta.appendChild(onboardNode("strong","",String(onbStep+1).padStart(2,"0")+" / "+String(ONBOARD_STEPS.length).padStart(2,"0")));
+  progressWrap.appendChild(progressMeta);
+  var progress=onboardNode("nav","og-progress");
+  progress.setAttribute("aria-label","مراحل الجولة");
   ONBOARD_STEPS.forEach(function(item,index){
-    var button = onboardNode("button",index <= onbStep ? "done" : "");
-    button.type = "button";
-    button.setAttribute("data-guide-step",String(index));
-    button.setAttribute("aria-label","الانتقال إلى المحطة " + (index+1) + ": " + item.label);
-    button.setAttribute("aria-current",index === onbStep ? "step" : "false");
-    button.appendChild(onboardNode("span",""));
+    var button=onboardNode("button",index<onbStep?"done":(index===onbStep?"current":""));
+    button.type="button";button.setAttribute("data-guide-step",String(index));
+    button.setAttribute("aria-label","الانتقال إلى المرحلة "+(index+1)+": "+item.label);
+    button.setAttribute("aria-current",index===onbStep?"step":"false");
+    button.appendChild(onboardNode("span","og-progress-index",String(index+1).padStart(2,"0")));
+    button.appendChild(onboardNode("span","og-progress-name",item.label));
     progress.appendChild(button);
   });
-  card.appendChild(progress);
+  progressWrap.appendChild(progress);card.appendChild(progressWrap);
 
-  var meta = onboardNode("div","og-meta");
-  meta.appendChild(onboardNode("span","og-step-label",step.label));
-  meta.appendChild(onboardNode("span","og-count","المحطة " + (onbStep+1) + " من " + ONBOARD_STEPS.length));
-  card.appendChild(meta);
-  var heading = onboardNode("h2","og-title",title);
-  heading.id = "onboardGuideTitle";
-  heading.tabIndex = -1;
-  card.appendChild(heading);
-  var description = onboardNode("p","og-text",body);
-  description.id = "onboardGuideText";
-  description.setAttribute("aria-live","polite");
-  card.appendChild(description);
+  var content=onboardNode("div","og-content");
+  var meta=onboardNode("div","og-meta");
+  meta.appendChild(onboardNode("span","og-step-label","المرحلة "+String(onbStep+1).padStart(2,"0")));
+  meta.appendChild(onboardNode("span","og-count",step.label));
+  content.appendChild(meta);
+  var heading=onboardNode("h2","og-title",title);heading.id="onboardGuideTitle";heading.tabIndex=-1;
+  content.appendChild(heading);
+  var description=onboardNode("p","og-text",body);description.id="onboardGuideText";description.setAttribute("aria-live","polite");
+  content.appendChild(description);
 
-  var targetBox = onboardNode("div","og-target");
-  targetBox.appendChild(onboardNode("span","og-target-mark","◎"));
-  var targetCopy = onboardNode("span","og-target-copy");
-  targetCopy.appendChild(onboardNode("small","","الأداة الفعلية على الصفحة"));
-  targetCopy.appendChild(onboardNode("strong","",targetLabel));
-  targetBox.appendChild(targetCopy);
-  card.appendChild(targetBox);
+  var task=onboardNode("div","og-task");
+  task.appendChild(onboardNode("span","og-task-icon","↗"));
+  var taskCopy=onboardNode("span","og-task-copy");
+  taskCopy.appendChild(onboardNode("small","","الإجراء داخل الصفحة"));
+  taskCopy.appendChild(onboardNode("strong","",targetLabel));
+  task.appendChild(taskCopy);content.appendChild(task);
 
-  var status = onboardNode("p","og-note",note);
-  status.id = "onboardGuideNote";
-  status.setAttribute("role","status");
-  status.setAttribute("aria-live","polite");
-  card.appendChild(status);
+  var status=onboardNode("p","og-note",note);status.id="onboardGuideNote";
+  status.setAttribute("role","status");status.setAttribute("aria-live","polite");
+  content.appendChild(status);card.appendChild(content);
 
-  var footer = onboardNode("div","og-footer");
-  var later = onboardNode("button","og-skip","لاحقًا");
-  later.type = "button";
-  later.setAttribute("data-guide-action","later");
-  footer.appendChild(later);
-  var actions = onboardNode("div","og-actions");
-  if(onbStep > 0){
-    var previous = onboardNode("button","og-btn ghost","السابق");
-    previous.type = "button";
-    previous.setAttribute("data-guide-action","previous");
-    actions.appendChild(previous);
-  }
-  var primary = onboardNode("button","og-btn primary",primaryLabel);
-  primary.type = "button";
-  primary.setAttribute("data-guide-action",primaryAction);
-  actions.appendChild(primary);
-  footer.appendChild(actions);
-  card.appendChild(footer);
+  var footer=onboardNode("footer","og-footer");
+  var later=onboardNode("button","og-skip","إنهاء لاحقاً");
+  later.type="button";later.setAttribute("data-guide-action","later");footer.appendChild(later);
+  var actions=onboardNode("div","og-actions");
+  if(onbStep>0){var previous=onboardNode("button","og-btn ghost","السابق");previous.type="button";previous.setAttribute("data-guide-action","previous");actions.appendChild(previous);}
+  var primary=onboardNode("button","og-btn primary",primaryLabel);primary.type="button";primary.setAttribute("data-guide-action",primaryAction);actions.appendChild(primary);
+  footer.appendChild(actions);card.appendChild(footer);
 
+  var backdrop=document.createElementNS("http://www.w3.org/2000/svg","svg");
+  backdrop.setAttribute("class","og-backdrop");backdrop.setAttribute("aria-hidden","true");
+  backdrop.setAttribute("focusable","false");backdrop.setAttribute("viewBox","0 0 100 100");backdrop.setAttribute("preserveAspectRatio","none");
+  var path=document.createElementNS("http://www.w3.org/2000/svg","path");
+  path.setAttribute("id","ogBackdropPath");path.setAttribute("fill","rgba(3,7,18,.48)");
+  path.setAttribute("fill-rule","evenodd");path.setAttribute("d","M0 0H100V100H0Z");backdrop.appendChild(path);
   while(root.firstChild)root.removeChild(root.firstChild);
-  root.appendChild(backdrop);
-  root.appendChild(card);
-  if(heading && typeof heading.focus === "function")heading.focus({preventScroll:true});
+  root.appendChild(backdrop);root.appendChild(card);
+  if(heading&&typeof heading.focus==="function")heading.focus({preventScroll:true});
 }
 function handleOnboardAction(action){
   if(action === "finish"){closeOnboarding(true);return;}
