@@ -463,13 +463,17 @@ jobs:
                   });
                   const page = await context.newPage();
                   const pageErrors = [];
+                  const blockedPreviewScripts = [];
                   let downloads = 0;
                   page.on("pageerror", error => {
                     pageErrors.push(error.message);
                     console.error("BROWSER PAGE ERROR " + deck + "/" + viewport.name + ": " + error.message);
                   });
                   page.on("console", message => {
-                    if (message.type() === "error") console.error("BROWSER CONSOLE ERROR " + deck + "/" + viewport.name + ": " + message.text());
+                    if (message.type() === "error") {
+                      console.error("BROWSER CONSOLE ERROR " + deck + "/" + viewport.name + ": " + message.text());
+                      if (message.text().includes("Blocked script execution in 'about:srcdoc'")) blockedPreviewScripts.push(message.text());
+                    }
                   });
                   page.on("download", () => downloads++);
                   // The static preview server intentionally has no backend API.
@@ -567,6 +571,20 @@ jobs:
                     }, null, { timeout: 15000 });
                     const frameText = await firstFrame.evaluate(frame => frame.contentDocument.body.textContent || "");
                     assert(frameText.includes(previewCase.sample.f), deck + ": gallery thumbnail does not show its deck-specific sample word");
+                    const frameAudit = await firstFrame.evaluate(frame => {
+                      const doc = frame.contentDocument;
+                      const nodes = Array.from(doc.querySelectorAll("*"));
+                      const word = nodes.find(node => node.textContent.trim().length > 0 && /fitme|ds-word|word|frword|arword/.test(node.className && String(node.className)));
+                      return {
+                        scripts: doc.querySelectorAll("script").length,
+                        inlineHandlers: nodes.reduce((count, node) => count + Array.from(node.attributes).filter(attribute => /^on/i.test(attribute.name)).length, 0),
+                        wordWidth: word ? word.scrollWidth : 0,
+                        parentWidth: word && word.parentElement ? word.parentElement.clientWidth : 0
+                      };
+                    });
+                    assert.equal(frameAudit.scripts, 0, deck + ": scripts remain inside sandboxed card preview");
+                    assert.equal(frameAudit.inlineHandlers, 0, deck + ": inline event handlers remain inside card preview");
+                    if (frameAudit.wordWidth > 0) assert(frameAudit.wordWidth <= frameAudit.parentWidth - 14, deck + ": preview sample word still overflows its card slot");
                     await page.locator("#gbGrid .gb-item").first().click({ timeout: 10000 });
                     await page.waitForFunction(() => window.onbStep === 2, null, { timeout: 10000 });
                     await waitForStep(page, 2);
@@ -644,6 +662,7 @@ jobs:
                   }
 
                   assert.deepEqual(pageErrors, [], deck + "/" + viewport.name + ": uncaught browser errors: " + pageErrors.join(" | "));
+                  assert.deepEqual(blockedPreviewScripts, [], deck + "/" + viewport.name + ": sandboxed preview attempted to execute scripts");
                   assert.equal(downloads, 0, deck + "/" + viewport.name + ": onboarding unexpectedly initiated a download");
                   report.decks[deck][viewport.name] = { steps, pageErrors, downloads };
                   await context.close();
