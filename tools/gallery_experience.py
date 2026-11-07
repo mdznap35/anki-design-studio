@@ -411,7 +411,7 @@ def apply_gallery_experience(html, deck):
 
     js = EXPERIENCE_JS.replace("__DECK__", deck)
     script_tag = '<script id="gallery-experience-runtime">\n' + js + '\n</script>\n'
-    body_closers = list(re.finditer(r"</body\\s*>", html, flags=re.I))
+    body_closers = list(re.finditer(r"</body\s*>", html, flags=re.I))
     if not body_closers:
         raise SystemExit(deck + ": missing final body close")
     body_close = body_closers[-1]
