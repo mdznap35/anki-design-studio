@@ -372,8 +372,8 @@ def build_one(did, spec, base):
     # Normalize the existing route-based header navigation as well as legacy links.
     nav_labels = {
         '/en9': 'إنجليزي 9',
-        '/enlit': 'أدب إنجليزي 12',
-        '/ensci': 'إنجليزي علمي 12',
+        '/enlit': 'إنجليزي بكالوريا أدبي 12',
+        '/ensci': 'إنجليزي بكالوريا علمي 12',
         '/fr9': 'فرنسي 9',
         '/bac12': 'فرنسي بكالوريا 12',
     }
