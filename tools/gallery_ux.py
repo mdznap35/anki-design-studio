@@ -278,7 +278,8 @@ function positionOnboardGuide(){
   if(target&&target.isConnected){
     var before=target.getBoundingClientRect();
     var fixedOverlay=target.closest(".gallery-browser,.help-overlay,.onboard-overlay");
-    if(!fixedOverlay&&!onboardScrollingTarget&&(before.top<88||before.bottom>height-96)){
+    var targetOutsideViewport=before.top<0||before.bottom>height;
+    if(!fixedOverlay&&!onboardScrollingTarget&&targetOutsideViewport){
       onboardScrollingTarget=true;
       try{target.scrollIntoView({behavior:reduced?"auto":"smooth",block:"center",inline:"nearest"});}catch(_e){}
       window.setTimeout(function(){onboardScrollingTarget=false;scheduleOnboardPosition();},reduced?60:430);
