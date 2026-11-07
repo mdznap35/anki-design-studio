@@ -195,7 +195,7 @@ body .og-spotlight{outline-width:2px!important;outline-offset:4px!important;box-
 #onboardTourLauncher{right:22px;bottom:22px;min-height:48px;padding:0 19px;border:1px solid rgba(148,163,184,.24);border-radius:12px;background:#14243b;color:#f8fafc;font-size:.78rem;letter-spacing:.01em;box-shadow:0 12px 32px rgba(5,15,30,.24)}
 #onboardTourLauncher:hover{background:#1d3554;filter:none;transform:translateY(-2px);box-shadow:0 16px 38px rgba(5,15,30,.3)}
 #onboardGuideRoot{color:#f8fafc}
-#onboardGuideRoot .og-card.og-institutional{width:min(456px,calc(100vw - 28px));max-height:min(76dvh,650px);overflow:auto;padding:0;border:1px solid rgba(154,174,203,.24);border-radius:18px;background:#101d30;box-shadow:0 28px 90px rgba(1,8,20,.5),0 0 0 1px rgba(255,255,255,.035) inset;backdrop-filter:blur(18px);scrollbar-width:thin}
+#onboardGuideRoot .og-card.og-institutional{width:min(456px,calc(100vw - 28px));max-height:min(40dvh,390px);overflow:auto;padding:0;border:1px solid rgba(154,174,203,.24);border-radius:18px;background:#101d30;box-shadow:0 28px 90px rgba(1,8,20,.5),0 0 0 1px rgba(255,255,255,.035) inset;backdrop-filter:blur(18px);scrollbar-width:thin}
 #onboardGuideRoot .og-card.og-institutional:before,#onboardGuideRoot .og-card.og-institutional:after{display:none}
 #onboardGuideRoot .og-institutional .og-head{display:flex;align-items:center;gap:12px;margin:0;padding:17px 19px;border-bottom:1px solid rgba(190,205,226,.11);background:#13243a}
 #onboardGuideRoot .og-institutional .og-brand{gap:10px}
@@ -240,7 +240,7 @@ body .og-spotlight{outline-width:2px!important;outline-offset:4px!important;box-
 body .og-spotlight{outline:2px solid #77cfc5!important;outline-offset:5px!important;border-radius:10px!important;box-shadow:0 0 0 8px rgba(77,181,169,.12),0 12px 32px rgba(2,12,26,.22)!important}
 @media(max-width:640px){
  #onboardTourLauncher{right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));min-height:44px;padding:0 14px}
- #onboardGuideRoot .og-card.og-institutional{width:calc(100vw - 16px);max-height:min(74dvh,620px);border-radius:15px}
+ #onboardGuideRoot .og-card.og-institutional{width:calc(100vw - 16px);max-height:min(42dvh,340px);border-radius:15px}
  #onboardGuideRoot .og-institutional .og-head{padding:13px 14px}
  #onboardGuideRoot .og-institutional .og-progress-wrap{padding:12px 13px}
  #onboardGuideRoot .og-institutional .og-progress{gap:3px}
@@ -455,7 +455,7 @@ function positionOnboardGuide(){
   widthOptions.forEach(function(candidateWidth){
     if(best&&best.overlap===0)return;
     card.style.width=candidateWidth+"px";
-    card.style.maxHeight=Math.min(height*.76,650)+"px";
+    card.style.maxHeight=Math.min(height*.39,390)+"px";
     var measured=card.getBoundingClientRect();
     if(!rect){
       best={left:Math.max(margin,(width-measured.width)/2),top:Math.max(margin,(height-measured.height)/2),name:"center",overlap:0};
