@@ -193,7 +193,7 @@ function onboardTargetVisible(node){
 }
 function onboardStepTarget(step){
   if(!step)return null;
-  var selector=(step.id==="export"&&onboardReviewOpened)?"#exViewSummary":step.target;
+  var selector=(step.id==="export"&&onboardReviewOpened)?"#exportOverlay .fs-close":step.target;
   var target=selector?document.querySelector(selector):null;
   if(!onboardTargetVisible(target)&&step.fallback)target=document.querySelector(step.fallback);
   return onboardTargetVisible(target)?target:null;
@@ -366,10 +366,10 @@ function renderOnboardStep(){
   var step = ONBOARD_STEPS[onbStep];
   if(!step)return;
   var review = step.id === "export" && onboardReviewOpened;
-  var title = review ? "هكذا تبدو مراجعة الرزمة قبل الإنشاء" : step.title;
-  var body = review ? "راجع اسم الرزمة، وعدد القوالب المختارة، وإعدادات الصوت وخيارات التضمين. يمكنك إغلاق النافذة والعودة للتعديل. تذكير: لن يبدأ الإنشاء حتى تضغط زر «بدء التصدير» بنفسك." : step.text;
-  var targetLabel = review ? "ملخص إعدادات الرزمة" : step.targetLabel;
-  var note = review ? "لم نضغط زر بدء التصدير، ولم يُرسل طلب إنشاء APKG." : step.note;
+  var title = review ? "راجع إعدادات رُزمتك قبل إنشائها" : step.title;
+  var body = review ? "في نافذة المراجعة، تأكد من اسم الرزمة والقوالب التي اخترتها وإعدادات الصوت وخيارات التضمين. يمكنك إغلاق النافذة والعودة إلى المعرض لإجراء أي تعديل." : step.text;
+  var targetLabel = review ? "زر إغلاق نافذة المراجعة" : step.targetLabel;
+  var note = review ? "هذه مراجعة فقط؛ لم يبدأ إنشاء ملف APKG. لن يبدأ إلا عندما تضغط «بدء التصدير» بنفسك." : step.note;
   var primaryLabel = onbStep === 0 ? "ابدأ الجولة" :
     onbStep === 1 ? "تابع إلى المعاينة" :
     onbStep === 2 ? "جرّب قلب البطاقة" :
