@@ -196,7 +196,7 @@ jobs:
           required_targets = (
               ".hero-cta-main", "#gbFilters", "#gbGrid", "#gvShowAns",
               "#gvSelectBtn", "#gTtsPreviewBtn", "#gAudioPanelBody", "#exOpenBtn", ".gb-item",
-              "#exViewSummary",
+              "#exportOverlay .fs-close",
           )
           for deck in ("en9", "enlit", "ensci", "fr9"):
               html = (Path("out") / f"{deck}.html").read_text(encoding="utf-8")
