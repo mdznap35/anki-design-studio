@@ -208,9 +208,15 @@ function onboardPrepareStep(index){
     // Ensure the 100 real designs have been mounted before opening the library.
     // The tour can start before the asynchronous gallery watcher has populated gvList.
     try{if(typeof ensureGalleryDesigns === "function")ensureGalleryDesigns();}catch(_e){}
-    if(browser && !browser.classList.contains("open") && typeof openGalleryBrowser === "function"){
-      openGalleryBrowser();
-      onboardOpenedBrowser = true;
+    if(browser && !browser.classList.contains("open")){
+      try{if(typeof gbBuildFilters === "function")gbBuildFilters();}catch(_e){}
+      try{if(typeof renderGalleryBrowser === "function")renderGalleryBrowser();}catch(_e){}
+      try{if(typeof openGalleryBrowser === "function")openGalleryBrowser();}catch(_e){}
+      if(!browser.classList.contains("open")){
+        browser.classList.add("open");
+        try{document.body.style.overflow="hidden";}catch(_e){}
+      }
+      onboardOpenedBrowser = browser.classList.contains("open");
     }
   }else if(onboardOpenedBrowser && browser && browser.classList.contains("open") && typeof closeGalleryBrowser === "function"){
     closeGalleryBrowser();
@@ -235,7 +241,8 @@ function goToOnboardStep(index){
   onboardReviewOpened = false;
   onboardPrepareStep(next);
   renderOnboardStep();
-  window.setTimeout(scheduleOnboardPosition,90);
+  var settleDelay=(next===1||next===2||next===4)?460:90;
+  window.setTimeout(scheduleOnboardPosition,settleDelay);
 }
 function onboardBackdropPath(target,width,height){
   var outer = "M0 0H" + width + "V" + height + "H0Z";
