@@ -525,18 +525,18 @@ WELCOME_MARKUP = r"""
     <div class="gx-copy">
       <div class="gx-kicker"><span class="gx-brand-mark" aria-hidden="true">A</span><span>ANKI DESIGN STUDIO</span></div>
       <div class="gx-deck-label" data-gx-deck-label>...</div>
-      <h2 id="gxWelcomeTitle" data-gx-welcome-title>ابدأ من شكل البطاقة، ثم اختر ما يناسبك.</h2>
-      <p class="gx-lead" id="gxWelcomeLead" data-gx-welcome-lead>أمامك 100 قالب. افتح تصميماً، جرّب الوجهين، ثم اختر ما تريد استخدامه في رُزمتك.</p>
+      <h2 id="gxWelcomeTitle" data-gx-welcome-title>شاهد شكل البطاقة قبل اختيارها.</h2>
+      <p class="gx-lead" id="gxWelcomeLead" data-gx-welcome-lead>افتح أي قالب لترى المفردة ومعناها على وجهي البطاقة. بعدها حدّد التصاميم التي تريدها في رُزمتك.</p>
       <div class="gx-points" aria-label="طريقة العمل">
-        <div class="gx-point"><span class="gx-point-no">01</span><div class="gx-point-copy"><strong>استكشف</strong><span>100 قالب في مكتبة واحدة.</span></div></div>
-        <div class="gx-point"><span class="gx-point-no">02</span><div class="gx-point-copy"><strong>عاين</strong><span>افحص وجهي البطاقة قبل الاختيار.</span></div></div>
-        <div class="gx-point"><span class="gx-point-no">03</span><div class="gx-point-copy"><strong>اختر</strong><span>حدّد قوالبك وراجع الرزمة.</span></div></div>
+        <div class="gx-point"><span class="gx-point-no">01</span><div class="gx-point-copy"><strong>استكشف</strong><span>تصفّح القوالب المئة في مكتبة واحدة.</span></div></div>
+        <div class="gx-point"><span class="gx-point-no">02</span><div class="gx-point-copy"><strong>عاين</strong><span>شاهد المفردة والمعنى كما سيظهران في Anki.</span></div></div>
+        <div class="gx-point"><span class="gx-point-no">03</span><div class="gx-point-copy"><strong>اختر</strong><span>اختر التصاميم التي تريد إضافتها إلى رُزمتك.</span></div></div>
       </div>
       <div class="gx-actions">
-        <button class="gx-button primary" id="gxWelcomeStart" type="button">ابدأ الجولة التفاعلية <span aria-hidden="true">←</span></button>
+        <button class="gx-button primary" id="gxWelcomeStart" type="button">ابدأ الجولة العملية <span aria-hidden="true">←</span></button>
         <button class="gx-button" id="gxWelcomeExplore" type="button">تصفّح القوالب</button>
       </div>
-      <div class="gx-small">الجولة تستعرض الأدوات فقط. لن يُحدَّد قالب أو يبدأ إنشاء ملف إلا باختيارك.</div>
+      <div class="gx-small">سنشرح الأدوات من دون تغيير اختياراتك أو إنشاء ملف نيابةً عنك.</div>
     </div>
     <div class="gx-stage">
       <div class="gx-stage-head"><span>معاينة تفاعلية</span><span class="gx-face-state" id="gxWelcomeFaceState">الوجه الأمامي</span></div>
@@ -545,18 +545,18 @@ WELCOME_MARKUP = r"""
           <div class="gx-preview-face front">
             <span class="gx-card-label">المفردة</span>
             <strong class="gx-card-word" data-gx-sample-word>Student</strong>
-            <span class="gx-card-hint">جرّب قلب البطاقة لرؤية الوجه الآخر.</span>
+            <span class="gx-card-hint">اقلب البطاقة لتشاهد وجه المعنى.</span>
           </div>
           <div class="gx-preview-face back">
             <span class="gx-card-label">المعنى بالعربية</span>
             <strong class="gx-card-word" data-gx-sample-meaning>طالب</strong>
-            <span class="gx-card-hint">هكذا تتنقّل بين وجهي بطاقة المفردة.</span>
+            <span class="gx-card-hint">هذا هو الوجه الآخر للبطاقة.</span>
           </div>
         </div>
       </div>
       <div class="gx-stage-foot">
         <button class="gx-flip-button" id="gxWelcomeFlip" type="button" aria-pressed="false"><span aria-hidden="true">↻</span> اقلب البطاقة</button>
-        <span class="gx-stage-caption">عينة للمحتوى؛ القوالب الفعلية قابلة للمعاينة داخل المكتبة.</span>
+        <span class="gx-stage-caption">هذه عينة توضيحية؛ ستعاين القوالب الفعلية من المكتبة.</span>
       </div>
     </div>
   </section>
@@ -573,8 +573,8 @@ EXPERIENCE_JS = r"""
       label:"اللغة الفرنسية · الصف التاسع",
       title:"اكتشف القالب الأنسب لمفردات الفرنسية",
       description:"تصفّح 100 قالب، وعاين طريقة عرض الكلمة ومعناها، ثم اختر التصاميم التي تريدها في رُزمتك.",
-      welcomeTitle:"اختر طريقة عرض مفردات الفرنسية.",
-      welcomeLead:"هذا معرض مفردات الفرنسية للصف التاسع. أمامك 100 قالب؛ افتح أي تصميم، وجرّب الوجهين، ثم اختر ما تريد استخدامه في رُزمتك.",
+      welcomeTitle:"شاهد شكل البطاقة قبل اختيارها.",
+      welcomeLead:"هذا معرض قوالب مفردات الفرنسية للصف التاسع. افتح أي قالب لترى المفردة ومعناها على وجهي البطاقة، ثم حدّد التصاميم التي تريدها في رُزمتك.",
       sampleWord:"Leçon",
       sampleMeaning:"درس"
     },
@@ -582,8 +582,8 @@ EXPERIENCE_JS = r"""
       label:"اللغة الإنجليزية · الصف التاسع",
       title:"اختر طريقة العرض المناسبة لمفردات الإنجليزية",
       description:"تصفّح 100 قالب لمفردات الإنجليزية، وقارن وضوح الكلمة والمعنى، ثم اختر التصاميم التي تناسبك.",
-      welcomeTitle:"اختر طريقة عرض مفردات الإنجليزية.",
-      welcomeLead:"هذا معرض مفردات الإنجليزية للصف التاسع. أمامك 100 قالب؛ افتح أي تصميم، وجرّب الوجهين، ثم اختر ما تريد استخدامه في رُزمتك.",
+      welcomeTitle:"شاهد شكل البطاقة قبل اختيارها.",
+      welcomeLead:"هذا معرض قوالب مفردات الإنجليزية للصف التاسع. افتح أي قالب لترى المفردة ومعناها على وجهي البطاقة، ثم حدّد التصاميم التي تريدها في رُزمتك.",
       sampleWord:"Student",
       sampleMeaning:"طالب"
     },
@@ -591,8 +591,8 @@ EXPERIENCE_JS = r"""
       label:"اللغة الإنجليزية · بكالوريا 12 — الفرع الأدبي",
       title:"اعثر على قالب Anki المناسب لمفردات الإنجليزية.",
       description:"100 قالب لبطاقات مفردات الإنجليزية. استكشف التصاميم، وافحص وجهي البطاقة، ثم اختر ما تريد استخدامه في رُزمتك.",
-      welcomeTitle:"اختر طريقة عرض مفردات الإنجليزية للفرع الأدبي.",
-      welcomeLead:"هذا معرض مفردات الإنجليزية لطلاب بكالوريا 12 — الفرع الأدبي. أمامك 100 قالب؛ عاين الوجهين، ثم اختر ما تريد استخدامه في رُزمتك.",
+      welcomeTitle:"شاهد شكل البطاقة قبل اختيارها.",
+      welcomeLead:"هذا معرض قوالب مفردات الإنجليزية لبكالوريا 12 — الفرع الأدبي. افتح أي قالب لمعاينة وجهي البطاقة، ثم حدّد التصاميم التي تريدها في رُزمتك.",
       sampleWord:"Achievement",
       sampleMeaning:"إنجاز"
     },
@@ -600,8 +600,8 @@ EXPERIENCE_JS = r"""
       label:"اللغة الإنجليزية · بكالوريا 12 — الفرع العلمي",
       title:"اعثر على قالب Anki المناسب لمفردات الإنجليزية.",
       description:"100 قالب لبطاقات مفردات الإنجليزية. استكشف التصاميم، وافحص وجهي البطاقة، ثم اختر ما تريد استخدامه في رُزمتك.",
-      welcomeTitle:"اختر طريقة عرض مفردات الإنجليزية للفرع العلمي.",
-      welcomeLead:"هذا معرض مفردات الإنجليزية لطلاب بكالوريا 12 — الفرع العلمي. أمامك 100 قالب؛ عاين الوجهين، ثم اختر ما تريد استخدامه في رُزمتك.",
+      welcomeTitle:"شاهد شكل البطاقة قبل اختيارها.",
+      welcomeLead:"هذا معرض قوالب مفردات الإنجليزية لبكالوريا 12 — الفرع العلمي. افتح أي قالب لمعاينة وجهي البطاقة، ثم حدّد التصاميم التي تريدها في رُزمتك.",
       sampleWord:"Achievement",
       sampleMeaning:"إنجاز"
     }
