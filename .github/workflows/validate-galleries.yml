@@ -515,7 +515,10 @@ jobs:
 
                   const steps = [];
                   for (let index = 0; index < 4; index++) {
-                    if (index > 0) {
+                    if (index === 1) {
+                      await page.locator('[data-guide-action="start"]').click();
+                      await waitForStep(page, index);
+                    } else if (index > 1) {
                       await page.locator('[data-guide-step="' + index + '"]').click();
                       await waitForStep(page, index);
                     }
@@ -529,7 +532,7 @@ jobs:
                   }
 
                   if (viewport.exerciseControls) {
-                    await page.locator('[data-guide-step="1"]').click();
+                    await page.locator('[data-guide-action="start"]').click();
                     await waitForStep(page, 1);
                     await page.locator("#gbGrid .gb-item").first().click({ timeout: 10000 });
                     await page.waitForFunction(() => window.onbStep === 2, null, { timeout: 10000 });
