@@ -312,45 +312,52 @@ function positionOnboardGuide(){
   }else target=null;
   var rect=target?target.getBoundingClientRect():null;
   path.setAttribute("d",onboardBackdropPath(target,width,height));
-  card.style.width=Math.min(width-24,width<=640?440:480)+"px";
   card.style.left="12px";
   card.style.top="12px";
   card.style.right="auto";
   card.style.bottom="auto";
-  card.style.maxHeight=Math.min(height*.56,520)+"px";
   card.dataset.placement="center";
-  var measured=card.getBoundingClientRect();
-  if(!rect){
-    card.style.left=Math.max(12,(width-measured.width)/2)+"px";
-    card.style.top=Math.max(12,(height-measured.height)/2)+"px";
-    return;
-  }
   var margin=12;
-  var centeredLeft=Math.max(margin,(width-measured.width)/2);
-  var centeredTop=Math.max(margin,(height-measured.height)/2);
-  var candidates=[
-    {left:centeredLeft,top:margin,name:"top-center"},
-    {left:centeredLeft,top:height-measured.height-margin,name:"bottom-center"},
-    {left:margin,top:centeredTop,name:"middle-left"},
-    {left:width-measured.width-margin,top:centeredTop,name:"middle-right"},
-    {left:margin,top:margin,name:"top-left"},
-    {left:width-measured.width-margin,top:margin,name:"top-right"},
-    {left:margin,top:height-measured.height-margin,name:"bottom-left"},
-    {left:width-measured.width-margin,top:height-measured.height-margin,name:"bottom-right"}
-  ];
+  var baseWidth=Math.min(width-24,width<=640?440:480);
+  var widthOptions=[baseWidth,Math.min(width-24,420),Math.min(width-24,380),Math.min(width-24,340)];
   var best=null;
-  candidates.forEach(function(candidate){
-    var left=Math.max(margin,Math.min(width-measured.width-margin,candidate.left));
-    var top=Math.max(margin,Math.min(height-measured.height-margin,candidate.top));
-    var overlapW=Math.max(0,Math.min(left+measured.width,rect.right)-Math.max(left,rect.left));
-    var overlapH=Math.max(0,Math.min(top+measured.height,rect.bottom)-Math.max(top,rect.top));
-    var overlap=overlapW*overlapH;
-    var candidateScore=overlap*1000000+(Math.abs((left+measured.width/2)-(rect.left+rect.width/2))+Math.abs((top+measured.height/2)-(rect.top+rect.height/2)));
-    if(!best||candidateScore<best.score)best={left:left,top:top,name:candidate.name,score:candidateScore};
+  widthOptions.forEach(function(candidateWidth){
+    if(best&&best.overlap===0)return;
+    card.style.width=candidateWidth+"px";
+    card.style.maxHeight=Math.min(height*.56,520)+"px";
+    var measured=card.getBoundingClientRect();
+    if(!rect){
+      best={left:Math.max(margin,(width-measured.width)/2),top:Math.max(margin,(height-measured.height)/2),name:"center",overlap:0};
+      return;
+    }
+    var centeredLeft=Math.max(margin,(width-measured.width)/2);
+    var centeredTop=Math.max(margin,(height-measured.height)/2);
+    var candidates=[
+      {left:centeredLeft,top:margin,name:"top-center"},
+      {left:centeredLeft,top:height-measured.height-margin,name:"bottom-center"},
+      {left:margin,top:centeredTop,name:"middle-left"},
+      {left:width-measured.width-margin,top:centeredTop,name:"middle-right"},
+      {left:margin,top:margin,name:"top-left"},
+      {left:width-measured.width-margin,top:margin,name:"top-right"},
+      {left:margin,top:height-measured.height-margin,name:"bottom-left"},
+      {left:width-measured.width-margin,top:height-measured.height-margin,name:"bottom-right"}
+    ];
+    candidates.forEach(function(candidate){
+      var left=Math.max(margin,Math.min(width-measured.width-margin,candidate.left));
+      var top=Math.max(margin,Math.min(height-measured.height-margin,candidate.top));
+      var overlapW=Math.max(0,Math.min(left+measured.width,rect.right)-Math.max(left,rect.left));
+      var overlapH=Math.max(0,Math.min(top+measured.height,rect.bottom)-Math.max(top,rect.top));
+      var overlap=overlapW*overlapH;
+      var distance=Math.abs((left+measured.width/2)-(rect.left+rect.width/2))+Math.abs((top+measured.height/2)-(rect.top+rect.height/2));
+      var candidateScore=overlap*1000000+distance;
+      if(!best||candidateScore<best.score)best={left:left,top:top,name:candidate.name,overlap:overlap,score:candidateScore};
+    });
   });
-  card.style.left=best.left+"px";
-  card.style.top=best.top+"px";
-  card.dataset.placement=best.name;
+  if(best){
+    card.style.left=best.left+"px";
+    card.style.top=best.top+"px";
+    card.dataset.placement=best.name;
+  }
 }
 function scheduleOnboardPosition(){
   if(!onboardGuideOpen || onboardPositionFrame)return;
