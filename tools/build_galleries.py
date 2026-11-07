@@ -36,8 +36,8 @@ EN_POOL = [
 
 NAV = (
   '      <a class="hdr-link" href="/en9">إنجليزي 9</a>\n'
-  '      <a class="hdr-link" href="/enlit">إنجليزي بكالوريا أدبي 12</a>\n'
-  '      <a class="hdr-link" href="/ensci">إنجليزي بكالوريا علمي 12</a>\n'
+  '      <a class="hdr-link" href="/enlit">الإنجليزية — بكالوريا، الشعبة الأدبية</a>\n'
+  '      <a class="hdr-link" href="/ensci">الإنجليزية — بكالوريا، الشعبة العلمية</a>\n'
   '      <a class="hdr-link" href="/fr9">فرنسي 9</a>\n'
   '      <a class="hdr-link" href="/bac12">فرنسي بكالوريا 12</a>'
 )
@@ -77,12 +77,12 @@ DECKS = {
       meta='استكشف 100 قالب لبطاقات مفردات اللغة الإنجليزية للصف التاسع، وعاين التصاميم قبل اختيارها وإعداد رُزمتك.',
       frdef='en-US-GuyNeural', img='gallery_imgs'),
   'enlit': dict(route='/enlit', ffile='enlit.html', lang='en', ws='enlit', deck='English Bac Literary 12',
-      title='معرض قوالب Anki | الإنجليزية — بكالوريا أدبي 12',
-      meta='استكشف 100 قالب لبطاقات مفردات اللغة الإنجليزية المخصّصة لبكالوريا أدبي 12، وعاين التصاميم قبل اختيارها.',
+      title='معرض قوالب Anki | اللغة الإنجليزية — بكالوريا، الشعبة الأدبية',
+      meta='استكشف 100 قالب لمفردات اللغة الإنجليزية المقررة في بكالوريا الشعبة الأدبية، وعاين التصاميم قبل اختيارها.',
       frdef='en-US-GuyNeural', img='gallery_imgs'),
   'ensci': dict(route='/ensci', ffile='ensci.html', lang='en', ws='ensci', deck='English Bac Scientific 12',
-      title='معرض قوالب Anki | الإنجليزية — بكالوريا علمي 12',
-      meta='استكشف 100 قالب لبطاقات مفردات اللغة الإنجليزية المخصّصة لبكالوريا علمي 12، وعاين التصاميم قبل اختيارها.',
+      title='معرض قوالب Anki | اللغة الإنجليزية — بكالوريا، الشعبة العلمية',
+      meta='استكشف 100 قالب لمفردات اللغة الإنجليزية المقررة في بكالوريا الشعبة العلمية، وعاين التصاميم قبل اختيارها.',
       frdef='en-US-GuyNeural', img='gallery_imgs'),
   'fr9': dict(route='/fr9', ffile='fr9.html', lang='fr', ws='tas9', deck='French 9',
       title='معرض قوالب Anki | اللغة الفرنسية للصف التاسع',
