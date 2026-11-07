@@ -223,7 +223,7 @@ def apply_gallery_experience(html, deck):
     html = html.replace("تم اختيار التصميم ", "تم فتح معاينة التصميم ")
 
     old_thumb = '<img class="gb-img" data-loading="1" loading="lazy" decoding="async" src="\'+img+\'" alt="تصميم \'+num+\'">'
-    new_thumb = '<div class="gb-preview-host" aria-label="معاينة تصميم '+num+'"><span class="gb-preview-loading">تظهر المعاينة عند الوصول إلى هذا القالب</span></div>'
+    new_thumb = '<div class="gb-preview-host" aria-label="معاينة تصميم \'+num+\'"><span class="gb-preview-loading">تظهر المعاينة عند الوصول إلى هذا القالب</span></div>'
     if html.count(old_thumb) != 1:
         raise SystemExit(deck + ": expected one base thumbnail renderer")
     html = html.replace(old_thumb, new_thumb, 1)
@@ -244,7 +244,7 @@ def apply_gallery_experience(html, deck):
         "var previewDocument=new DOMParser().parseFromString(previewSource,'text/html');"
         "previewDocument.querySelectorAll('script,iframe,object,embed,form').forEach(function(node){node.remove();});"
         "previewDocument.querySelectorAll('*').forEach(function(node){Array.from(node.attributes).forEach(function(attribute){"
-        "if(/^on/i.test(attribute.name)||((attribute.name==='href'||attribute.name==='src')&&/^\\\\s*javascript:/i.test(attribute.value))){node.removeAttribute(attribute.name);}"
+        "if(/^on/i.test(attribute.name)||((attribute.name==='href'||attribute.name==='src')&&/^\\s*javascript:/i.test(attribute.value))){node.removeAttribute(attribute.name);}"
         "});});"
         "var previewFrame=document.createElement('iframe');previewFrame.className='gb-preview-frame';"
         "previewFrame.setAttribute('sandbox','allow-same-origin');previewFrame.setAttribute('loading','lazy');"
@@ -273,13 +273,13 @@ def apply_gallery_experience(html, deck):
 
     # The gallery browser keeps all designs visible and always starts from the full set.
     html = html.replace("var gbCur=0,gbFam='all'", "var gbCur=0,gbFam='all'", 1)
-    css = '<style id="gallery-experience-v6">\\n' + EXPERIENCE_CSS + '\\n</style>\\n'
-    html, inserted = re.subn(r"</head\\s*>", css + "</head>", html, count=1, flags=re.I)
+    css = '<style id="gallery-experience-v6">\n' + EXPERIENCE_CSS + '\n</style>\n'
+    html, inserted = re.subn(r"</head\s*>", css + "</head>", html, count=1, flags=re.I)
     if inserted != 1:
         raise SystemExit(deck + ": could not add the clean gallery visual system")
     js = EXPERIENCE_JS.replace("__DECK__", deck)
-    script = '<script id="gallery-experience-runtime-v6">\\n' + js + '\\n</script>\\n'
-    closers = list(re.finditer(r"</body\\s*>", html, flags=re.I))
+    script = '<script id="gallery-experience-runtime-v6">\n' + js + '\n</script>\n'
+    closers = list(re.finditer(r"</body\s*>", html, flags=re.I))
     if not closers:
         raise SystemExit(deck + ": missing final body close")
     # Runtime after the shared page scripts, before the real tour launcher.
