@@ -209,8 +209,17 @@ function disableFilters(){
 function init(){
  addHero();disableFilters();mountShowcase();
  var route=deck==="fr9"?"/fr9":(deck==="en9"?"/en9":(deck==="enlit"?"/enlit":"/ensci"));
+ var isPages=window.location.hostname.indexOf("github.io")!==-1;
+ var pageBase=isPages?"/"+window.location.pathname.split("/")[1]+"/":"";
+ var pageTargets={"/en9":pageBase+"en9.html","/enlit":pageBase+"enlit.html","/ensci":pageBase+"ensci.html","/fr9":pageBase+"fr9.html","/bac12":pageBase};
  document.querySelectorAll(".hdr-nav .hdr-link").forEach(function(link){
-  try{var path=new URL(link.getAttribute("href"),window.location.href).pathname.replace(/\\/$/,"");if(path===route)link.setAttribute("aria-current","page");}catch(_e){}
+  try{
+   var raw=link.getAttribute("href")||"";
+   if(isPages&&pageTargets[raw])link.setAttribute("href",pageTargets[raw]);
+   var path=new URL(link.getAttribute("href"),window.location.href).pathname;
+   if(path.length>1&&path.charAt(path.length-1)==="/")path=path.slice(0,-1);
+   if((isPages&&path===pageBase+deck+".html")||(!isPages&&path===route))link.setAttribute("aria-current","page");
+  }catch(_e){}
  });
  var launcher=document.getElementById("onboardTourLauncher");
  if(launcher){
