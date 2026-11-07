@@ -163,9 +163,9 @@ jobs:
           sys.path.insert(0, "tools")
           from build_galleries import bmatch
 
-          expected_steps = ("start", "library", "preview", "selection", "audio", "export")
+          expected_steps = ("start", "library", "preview", "export")
           required_targets = (
-              ".hero-cta-main", "#gbFilters", "#gbGrid", "#gvShowAns",
+              "#gbFilters", "#gbGrid", "#gvShowAns",
               "#gvSelectBtn", "#gTtsPreviewBtn", "#gAudioPanelBody", "#exOpenBtn", ".gb-item",
               "#exViewSummary",
           )
@@ -208,7 +208,7 @@ jobs:
               expected_audio_status = "fetch(apiBase()+'/api/audio_status?source=" + audio_source + "')"
               assert html.count(expected_audio_status) == 1, f"{deck}: generated audio-status URL is malformed or duplicated"
               assert "fetch(apiBase()+'/api/audio_status?source=" + audio_source + ").then" not in html, f"{deck}: audio-status URL is missing its closing quote"
-              assert "100 تصميم فعلي" in tour_source, f"{deck}: library explanation must state the real design count"
+              assert "100 تصميم حقيقي" in tour_source, f"{deck}: library explanation must state the real design count"
               assert "كيفية الاستيراد" in tour_source and 'id="importGuide"' in html, f"{deck}: post-export Anki import guidance is missing"
               assert 'setAttribute("aria-live","polite")' in tour_source, f"{deck}: guide announcements are missing"
               assert 'setAttribute("aria-current"' in tour_source and 'index === onbStep' in tour_source and '"step"' in tour_source and '"false"' in tour_source, f"{deck}: direct accessible step navigation is missing"
@@ -230,7 +230,7 @@ jobs:
               assert "prefers-reduced-motion:reduce" in html and "safe-area-inset-bottom" in html, f"{deck}: mobile/reduced-motion support is missing"
               assert 'event.key === "Escape"' in tour_source and 'event.key === "ArrowLeft"' in tour_source, f"{deck}: keyboard navigation is missing"
               assert "onboardGuideReturnFocus" in tour_source and "isConnected" in tour_source, f"{deck}: focus restoration is missing"
-              assert 'if(onbStep === 5 && exportOverlay && exportOverlay.classList.contains("on")' in tour_source, f"{deck}: Escape must close export review before leaving the guide"
+              assert 'if(onbStep === 3 && exportOverlay && exportOverlay.classList.contains("on")' in tour_source, f"{deck}: Escape must close export review before leaving the guide"
               assert 'onboardGuideReturnFocus = closeButton' in tour_source and 'onboardGuideReturnFocus = opener' in tour_source, f"{deck}: export-review focus handoff is incomplete"
               assert 'localStorage.setItem(ONBOARD_STORAGE_KEY,"1")' in tour_source and "catch(_e)" in tour_source, f"{deck}: safe per-gallery completion state is missing"
               assert "function renderOnboardVisual" not in tour_source, f"{deck}: fake static tour visuals remain"
@@ -248,12 +248,12 @@ jobs:
               ids = re.findall(r'\bid=["\']([^"\']+)["\']', html)
               duplicates = sorted({value for value in ids if ids.count(value) > 1})
               assert not duplicates, f"{deck}: duplicate HTML IDs: {duplicates}"
-              print(f"PASS {deck}: 100 deck-bound designs, six real in-page guide stops, spotlight, safe export boundary, mobile/accessibility checks")
+              print(f"PASS {deck}: 100 deck-bound designs, four-stage in-page quick-start, spotlight, safe export boundary, mobile/accessibility checks")
 
           print("ALL FOUR INTERACTIVE GALLERY TOUR CHECKS PASSED")
           PY
 
-      - name: Syntax-check the generated six-step onboarding scripts
+      - name: Syntax-check the generated four-stage quick-start scripts
         run: |
           node <<'JS'
           const assert = require("node:assert/strict");
@@ -386,7 +386,9 @@ jobs:
                 '#onboardGuideRoot .og-progress button[aria-current="step"]'
               );
               const target = document.querySelector(".og-spotlight");
-              if (!button || Number(button.getAttribute("data-guide-step")) !== expected || !target) return false;
+              if (!button || Number(button.getAttribute("data-guide-step")) !== expected) return false;
+              if (expected === 0) return !target;
+              if (!target) return false;
               const rect = target.getBoundingClientRect();
               return rect.width > 0 && rect.height > 0;
             }, index, { timeout: 10000 });
@@ -401,14 +403,14 @@ jobs:
               const target = document.querySelector(".og-spotlight");
               const footer = document.querySelector("#onboardGuideRoot .og-footer");
               const path = document.querySelector("#ogBackdropPath");
-              if (!card || !target || !footer || !path) return null;
+              if (!card || !footer || !path) return null;
               const c = card.getBoundingClientRect();
-              const t = target.getBoundingClientRect();
+              const t = target ? target.getBoundingClientRect() : null;
               const f = footer.getBoundingClientRect();
               return {
                 card: { left: c.left, top: c.top, right: c.right, bottom: c.bottom, width: c.width, height: c.height, scrollHeight: card.scrollHeight, clientHeight: card.clientHeight },
                 footer: { top: f.top, bottom: f.bottom, left: f.left, right: f.right, width: f.width, height: f.height },
-                target: { left: t.left, top: t.top, right: t.right, bottom: t.bottom, width: t.width, height: t.height },
+                target: t ? { left: t.left, top: t.top, right: t.right, bottom: t.bottom, width: t.width, height: t.height } : null,
                 placement: card.dataset.placement,
                 viewBox: path.ownerSVGElement.getAttribute("viewBox"),
                 path: path.getAttribute("d"),
@@ -423,12 +425,14 @@ jobs:
             assert(state.card.left >= -1 && state.card.right <= viewport.width + 1, deck + "/" + viewport.name + ": coachmark escapes horizontal viewport at step " + (index + 1) + " " + JSON.stringify(state.card));
             assert(state.card.top >= -1 && state.card.bottom <= viewport.height + 1, deck + "/" + viewport.name + ": coachmark escapes vertical viewport at step " + (index + 1) + " " + JSON.stringify(state.card));
             assert(state.footer.top >= state.card.top - 1 && state.footer.bottom <= state.card.bottom + 1, deck + "/" + viewport.name + ": guide navigation footer is clipped at step " + (index + 1) + " " + JSON.stringify(state.footer));
-            assert(state.target.width > 0 && state.target.height > 0, deck + "/" + viewport.name + ": spotlight target is collapsed at step " + (index + 1));
+            if (index !== 0) assert(state.target && state.target.width > 0 && state.target.height > 0, deck + "/" + viewport.name + ": spotlight target is collapsed at step " + (index + 1));
             assert.equal(state.viewBox, "0 0 " + viewport.width + " " + viewport.height, deck + "/" + viewport.name + ": spotlight SVG viewBox does not match viewport");
             assert(state.path && state.path.startsWith("M0 0H"), deck + "/" + viewport.name + ": spotlight aperture path is empty");
             assert(state.documentWidth <= viewport.width + 1, deck + "/" + viewport.name + ": horizontal page overflow detected (" + state.documentWidth + "px)");
-            const separated = state.card.bottom <= state.target.top + 2 || state.card.top >= state.target.bottom - 2;
-            assert(separated, deck + "/" + viewport.name + ": coachmark overlaps its highlighted control at step " + (index + 1));
+            if (index !== 0) {
+              const separated = state.card.bottom <= state.target.top + 2 || state.card.top >= state.target.bottom - 2;
+              assert(separated, deck + "/" + viewport.name + ": coachmark overlaps its highlighted control at step " + (index + 1));
+            }
             return state;
           }
 
@@ -510,8 +514,11 @@ jobs:
                   await waitForStep(page, 0);
 
                   const steps = [];
-                  for (let index = 0; index < 6; index++) {
-                    if (index > 0) {
+                  for (let index = 0; index < 4; index++) {
+                    if (index === 1) {
+                      await page.locator('[data-guide-action="start"]').click();
+                      await waitForStep(page, index);
+                    } else if (index > 1) {
                       await page.locator('[data-guide-step="' + index + '"]').click();
                       await waitForStep(page, index);
                     }
@@ -525,7 +532,7 @@ jobs:
                   }
 
                   if (viewport.exerciseControls) {
-                    await page.locator('[data-guide-step="1"]').click();
+                    await page.locator('[data-guide-action="start"]').click();
                     await waitForStep(page, 1);
                     await page.locator("#gbGrid .gb-item").first().click({ timeout: 10000 });
                     await page.waitForFunction(() => window.onbStep === 2, null, { timeout: 10000 });
@@ -533,16 +540,14 @@ jobs:
                     await inspectStep(page, deck, viewport, 2);
 
                     await page.locator("#gvShowAns").click({ timeout: 10000 });
-                    await page.waitForFunction(() => window.onbStep === 3, null, { timeout: 10000 });
-                    await waitForStep(page, 3);
                     await page.locator("#gvSelectBtn").click({ timeout: 10000 });
                     await page.waitForFunction(() => {
                       const note = document.getElementById("onboardGuideNote");
                       return note && /تم تحديث الاختيار فعليًا|أُزيل تحديد القالب الحالي/.test(note.textContent);
                     }, null, { timeout: 10000 });
 
-                    await page.locator('[data-guide-step="5"]').click();
-                    await waitForStep(page, 5);
+                    await page.locator('[data-guide-step="3"]').click();
+                    await waitForStep(page, 3);
                     await page.locator('[data-guide-action="review"]').click();
                     await page.waitForFunction(() => {
                       const overlay = document.getElementById("exportOverlay");
@@ -565,8 +570,8 @@ jobs:
 
                     await page.locator("#onboardTourLauncher").click();
                     await page.waitForSelector("#onboardGuideRoot .og-card");
-                    await page.locator('[data-guide-step="5"]').click();
-                    await waitForStep(page, 5);
+                    await page.evaluate(() => goToOnboardStep(3));
+                    await waitForStep(page, 3);
                     await page.locator('[data-guide-action="review"]').click();
                     await page.waitForFunction(() => {
                       const overlay = document.getElementById("exportOverlay");
@@ -585,7 +590,7 @@ jobs:
                   assert.equal(downloads, 0, deck + "/" + viewport.name + ": onboarding unexpectedly initiated a download");
                   report.decks[deck][viewport.name] = { steps, pageErrors, downloads };
                   await context.close();
-                  console.log("BROWSER PASS " + deck + "/" + viewport.name + ": six steps, viewport geometry, spotlight, no overflow, no export download");
+                  console.log("BROWSER PASS " + deck + "/" + viewport.name + ": four stages, viewport geometry, spotlight, no overflow, no export download");
                 }
               }
               fs.writeFileSync("qa-artifacts/browser-qa-report.json", JSON.stringify(report, null, 2));
