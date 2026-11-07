@@ -113,6 +113,9 @@ jobs:
               assert 'hero.id="gallery-experience-hero"' in html, f"{deck}: gallery hero runtime missing"
               assert 'class="gb-preview-frame"' in html, f"{deck}: live template preview frame is missing"
               assert "previewFrame.srcdoc=thumbDoc(t)" in html, f"{deck}: real template render is not wired to gallery cards"
+              assert "new DOMParser().parseFromString(previewSource,'text/html')" in html, f"{deck}: preview sanitizer is missing"
+              assert "querySelectorAll('script,iframe,object,embed')" in html, f"{deck}: unsafe preview elements are not removed"
+              assert "var fitPreview=function()" in html, f"{deck}: preview text fitting routine is missing"
               assert 'class="gx-action primary hero-cta-main"' in html, f"{deck}: branded hero action is missing or not tour-compatible"
               assert "originalHero.remove()" in html, f"{deck}: duplicate legacy hero was not removed"
               assert "window.openGalleryBrowser" in html, f"{deck}: hero/welcome browser entry action is not wired"
@@ -616,6 +619,11 @@ jobs:
                     }), "anki_" + deck + "_onboarded");
                     assert.equal(completed.completed, "1", deck + ": final completion was not persisted");
                     assert.equal(completed.snoozed, null, deck + ": completion did not clear the snooze");
+                    await page.locator("#exportOverlay .fs-close").click();
+                    await page.waitForFunction(() => {
+                      const overlay = document.getElementById("exportOverlay");
+                      return !overlay || !overlay.classList.contains("on");
+                    }, null, { timeout: 10000 });
 
                     await page.locator("#gallery-experience-hero [data-gx-browse]").click();
                     await page.waitForFunction(() => {
