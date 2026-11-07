@@ -163,6 +163,17 @@ function positionOnboardGuide(){
   onboardClearSpotlight();
   var target=onboardStepTarget(ONBOARD_STEPS[onbStep]);
   if(target){
+    var context=onbStep===0?target.closest("#gallery-experience-hero"):null;
+    if(context){
+      var contextRect=context.getBoundingClientRect();
+      if(contextRect.top<headerBottom+12){
+        var html=document.documentElement,body=document.body;
+        var htmlScroll=html.style.scrollBehavior,bodyScroll=body.style.scrollBehavior;
+        html.style.scrollBehavior="auto";body.style.scrollBehavior="auto";
+        try{window.scrollTo(0,Math.max(0,window.scrollY+contextRect.top-headerBottom-12));}
+        finally{html.style.scrollBehavior=htmlScroll;body.style.scrollBehavior=bodyScroll;}
+      }
+    }
     var before=target.getBoundingClientRect();
     var targetOutsideViewport=before.top<0||before.bottom>window.innerHeight;
     if(targetOutsideViewport){
@@ -177,7 +188,7 @@ function positionOnboardGuide(){
     }
     onboardActiveTarget=target;target.classList.add("og-spotlight");
     var rect=target.getBoundingClientRect();
-    onboardGuideRoot.dataset.placement=rect.top>window.innerHeight*.48?"top":"bottom";
+    onboardGuideRoot.dataset.placement=onbStep===0?"bottom":(rect.top>window.innerHeight*.48?"top":"bottom");
   }else onboardGuideRoot.dataset.placement="bottom";
 }
 function scheduleOnboardPosition(){
