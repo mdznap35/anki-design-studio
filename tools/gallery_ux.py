@@ -273,17 +273,15 @@ function positionOnboardGuide(){
   if(!card||!backdrop||!path)return;
   var width=Math.max(320,document.documentElement.clientWidth||window.innerWidth||320);
   var height=Math.max(320,window.innerHeight||document.documentElement.clientHeight||320);
-  var reduced=!!(window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   backdrop.setAttribute("viewBox","0 0 " + width + " " + height);
   if(target&&target.isConnected){
     var before=target.getBoundingClientRect();
     var fixedOverlay=target.closest(".gallery-browser,.help-overlay,.onboard-overlay");
     var targetOutsideViewport=before.top<0||before.bottom>height;
-    if(!fixedOverlay&&!onboardScrollingTarget&&targetOutsideViewport){
-      onboardScrollingTarget=true;
-      try{target.scrollIntoView({behavior:reduced?"auto":"smooth",block:"center",inline:"nearest"});}catch(_e){}
-      window.setTimeout(function(){onboardScrollingTarget=false;scheduleOnboardPosition();},reduced?60:430);
-      return;
+    if(!fixedOverlay&&targetOutsideViewport){
+      try{target.scrollIntoView({behavior:"instant",block:"center",inline:"nearest"});}
+      catch(_e){try{target.scrollIntoView({behavior:"auto",block:"center",inline:"nearest"});}catch(_e2){}}
+      before=target.getBoundingClientRect();
     }
     onboardActiveTarget=target;
     target.classList.add("og-spotlight");
