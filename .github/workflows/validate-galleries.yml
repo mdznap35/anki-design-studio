@@ -386,7 +386,9 @@ jobs:
                 '#onboardGuideRoot .og-progress button[aria-current="step"]'
               );
               const target = document.querySelector(".og-spotlight");
-              if (!button || Number(button.getAttribute("data-guide-step")) !== expected || !target) return false;
+              if (!button || Number(button.getAttribute("data-guide-step")) !== expected) return false;
+              if (expected === 0) return !target;
+              if (!target) return false;
               const rect = target.getBoundingClientRect();
               return rect.width > 0 && rect.height > 0;
             }, index, { timeout: 10000 });
@@ -401,14 +403,14 @@ jobs:
               const target = document.querySelector(".og-spotlight");
               const footer = document.querySelector("#onboardGuideRoot .og-footer");
               const path = document.querySelector("#ogBackdropPath");
-              if (!card || !target || !footer || !path) return null;
+              if (!card || !footer || !path) return null;
               const c = card.getBoundingClientRect();
-              const t = target.getBoundingClientRect();
+              const t = target ? target.getBoundingClientRect() : null;
               const f = footer.getBoundingClientRect();
               return {
                 card: { left: c.left, top: c.top, right: c.right, bottom: c.bottom, width: c.width, height: c.height, scrollHeight: card.scrollHeight, clientHeight: card.clientHeight },
                 footer: { top: f.top, bottom: f.bottom, left: f.left, right: f.right, width: f.width, height: f.height },
-                target: { left: t.left, top: t.top, right: t.right, bottom: t.bottom, width: t.width, height: t.height },
+                target: t ? { left: t.left, top: t.top, right: t.right, bottom: t.bottom, width: t.width, height: t.height } : null,
                 placement: card.dataset.placement,
                 viewBox: path.ownerSVGElement.getAttribute("viewBox"),
                 path: path.getAttribute("d"),
@@ -423,12 +425,14 @@ jobs:
             assert(state.card.left >= -1 && state.card.right <= viewport.width + 1, deck + "/" + viewport.name + ": coachmark escapes horizontal viewport at step " + (index + 1) + " " + JSON.stringify(state.card));
             assert(state.card.top >= -1 && state.card.bottom <= viewport.height + 1, deck + "/" + viewport.name + ": coachmark escapes vertical viewport at step " + (index + 1) + " " + JSON.stringify(state.card));
             assert(state.footer.top >= state.card.top - 1 && state.footer.bottom <= state.card.bottom + 1, deck + "/" + viewport.name + ": guide navigation footer is clipped at step " + (index + 1) + " " + JSON.stringify(state.footer));
-            assert(state.target.width > 0 && state.target.height > 0, deck + "/" + viewport.name + ": spotlight target is collapsed at step " + (index + 1));
+            if (index !== 0) assert(state.target && state.target.width > 0 && state.target.height > 0, deck + "/" + viewport.name + ": spotlight target is collapsed at step " + (index + 1));
             assert.equal(state.viewBox, "0 0 " + viewport.width + " " + viewport.height, deck + "/" + viewport.name + ": spotlight SVG viewBox does not match viewport");
             assert(state.path && state.path.startsWith("M0 0H"), deck + "/" + viewport.name + ": spotlight aperture path is empty");
             assert(state.documentWidth <= viewport.width + 1, deck + "/" + viewport.name + ": horizontal page overflow detected (" + state.documentWidth + "px)");
-            const separated = state.card.bottom <= state.target.top + 2 || state.card.top >= state.target.bottom - 2;
-            assert(separated, deck + "/" + viewport.name + ": coachmark overlaps its highlighted control at step " + (index + 1));
+            if (index !== 0) {
+              const separated = state.card.bottom <= state.target.top + 2 || state.card.top >= state.target.bottom - 2;
+              assert(separated, deck + "/" + viewport.name + ": coachmark overlaps its highlighted control at step " + (index + 1));
+            }
             return state;
           }
 
