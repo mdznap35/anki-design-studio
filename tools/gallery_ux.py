@@ -148,24 +148,67 @@ body .og-spotlight{position:relative!important;z-index:2147482998!important;outl
 @media(max-width:640px){#onboardGuideRoot .og-card{width:calc(100vw - 20px);max-height:min(58dvh,520px);padding:16px;border-radius:21px}#onboardGuideRoot .og-title{font-size:1.12rem;line-height:1.48}#onboardGuideRoot .og-text{font-size:.81rem;line-height:1.8}#onboardGuideRoot .og-target{margin-top:12px;padding:10px 11px}#onboardGuideRoot .og-note{font-size:.69rem}#onboardGuideRoot .og-footer{margin:13px -11px -11px;padding:11px}#onboardGuideRoot .og-btn{min-height:44px;padding:9px 12px;font-size:.74rem}}
 @media(max-width:360px){#onboardGuideRoot .og-card{width:calc(100vw - 16px);padding:13px}#onboardGuideRoot .og-title{font-size:1.04rem}#onboardGuideRoot .og-text{font-size:.75rem}#onboardGuideRoot .og-footer{gap:7px}#onboardGuideRoot .og-btn{padding:8px 9px;font-size:.69rem}}
 
+/* Guided tour v4: compact contextual coaching, never a second welcome screen. */
+#onboardGuideRoot .og-card{width:min(420px,calc(100vw - 24px));max-height:min(38dvh,340px);padding:17px 18px;border:1px solid rgba(155,181,225,.28);border-radius:21px;background:radial-gradient(ellipse at 94% 0,rgba(94,103,224,.18),transparent 48%),linear-gradient(150deg,rgba(15,26,48,.99),rgba(6,14,29,.995));box-shadow:0 24px 72px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.04) inset}
+#onboardGuideRoot .og-head{margin-bottom:9px}
+#onboardGuideRoot .og-mark{width:31px;height:31px;border-radius:10px}
+#onboardGuideRoot .og-brand-copy strong{font-size:.65rem;letter-spacing:.08em}
+#onboardGuideRoot .og-brand-copy small{font-size:.6rem}
+#onboardGuideRoot .og-close{width:33px;height:33px;border-radius:10px}
+#onboardGuideRoot .og-progress{gap:6px;margin-bottom:11px}
+#onboardGuideRoot .og-progress button{padding:4px 0}
+#onboardGuideRoot .og-progress button span{height:5px}
+#onboardGuideRoot .og-meta{margin-bottom:5px}
+#onboardGuideRoot .og-step-label{font-size:.69rem}
+#onboardGuideRoot .og-count{font-size:.64rem}
+#onboardGuideRoot .og-title{margin:0 0 7px;font-size:clamp(1.03rem,1.8vw,1.24rem);line-height:1.42;letter-spacing:-.02em}
+#onboardGuideRoot .og-text{font-size:.76rem;line-height:1.68;color:#d3ddec}
+#onboardGuideRoot .og-target{display:flex;gap:8px;margin-top:9px;padding:7px 9px;border-radius:11px;background:rgba(34,211,238,.06)}
+#onboardGuideRoot .og-target-mark{width:23px;height:23px;border-radius:7px;font-size:.76rem}
+#onboardGuideRoot .og-target-copy small{font-size:.57rem}
+#onboardGuideRoot .og-target-copy strong{font-size:.69rem}
+#onboardGuideRoot .og-note{margin-top:7px;font-size:.62rem;line-height:1.55;color:#9eafc8}
+#onboardGuideRoot .og-footer{margin:10px -10px -10px;padding:9px 10px 8px;gap:8px}
+#onboardGuideRoot .og-actions{gap:7px}
+#onboardGuideRoot .og-btn{min-height:39px;padding:8px 12px;border-radius:11px;font-size:.7rem}
+#onboardGuideRoot .og-skip{font-size:.66rem}
+body .og-spotlight{outline-width:2px!important;outline-offset:4px!important;box-shadow:0 0 0 6px rgba(34,211,238,.13),0 12px 34px rgba(0,0,0,.22)!important}
+@media(max-width:640px){
+  #onboardGuideRoot .og-card{width:calc(100vw - 20px);max-height:min(40dvh,320px);padding:14px;border-radius:18px}
+  #onboardGuideRoot .og-head{margin-bottom:7px}
+  #onboardGuideRoot .og-title{font-size:1rem;line-height:1.4}
+  #onboardGuideRoot .og-text{font-size:.72rem;line-height:1.6}
+  #onboardGuideRoot .og-target{margin-top:7px;padding:6px 8px}
+  #onboardGuideRoot .og-note{font-size:.59rem}
+  #onboardGuideRoot .og-footer{margin:8px -8px -8px;padding:8px}
+  #onboardGuideRoot .og-btn{min-height:38px;padding:7px 9px;font-size:.66rem}
+  #onboardGuideRoot .og-skip{font-size:.62rem}
+}
+@media(max-width:360px){
+  #onboardGuideRoot .og-card{max-height:min(43dvh,300px);padding:11px}
+  #onboardGuideRoot .og-text{font-size:.68rem}
+  #onboardGuideRoot .og-target{display:none}
+  #onboardGuideRoot .og-footer{gap:5px}
+}
+
 """
 
 TOUR_JS = r"""
 var ONBOARD_DECK = "__DECK__";
 var ONBOARD_PRIMARY_LANGUAGE = ONBOARD_DECK === "fr9" ? "الفرنسية" : "الإنجليزية";
-var ONBOARD_STORAGE_KEY = "anki_" + ONBOARD_DECK + "_onboarded_v3";
-var ONBOARD_SNOOZE_KEY = "anki_" + ONBOARD_DECK + "_onboarding_snoozed_v3";
+var ONBOARD_STORAGE_KEY = "anki_" + ONBOARD_DECK + "_onboarded_v4";
+var ONBOARD_SNOOZE_KEY = "anki_" + ONBOARD_DECK + "_onboarding_snoozed_v4";
 var onboardOpenedBrowser = false;
 var onboardOpenedAudio = false;
 var onboardPositionFrame = 0;
 
 var ONBOARD_STEPS = [
-  {id:"start",label:"نظرة عامة",title:"من اختيار القالب إلى تجهيز رزمة Anki",text:"تضم هذه المكتبة 100 قالب. سنمرّ معاً على طريقة العثور على تصميم، ومعاينة وجهي البطاقة، واختيار ما يناسبك، ثم ضبط الصوت ومراجعة الرزمة. الجولة تشرح الأدوات الفعلية؛ ولا تختار قوالبك أو تنشئ ملفاً نيابةً عنك.",target:".hero-cta-main",targetLabel:"زر استكشاف القوالب",note:"ستبقى اختياراتك بيدك. يمكنك التنقل بين المحطات أو إغلاق الجولة متى شئت."},
-  {id:"library",label:"مكتبة القوالب",title:"اعثر على التصميم من بين 100 قالب",text:"تُفتح المكتبة لتعرض القوالب الفعلية. استخدم التصنيفات لتصفية النتائج، ثم افتح أي بطاقة لمشاهدة معاينتها. فتح القالب لا يضيفه إلى رُزمتك؛ الاختيار يتم بخطوة منفصلة.",target:"#gbFilters .gb-chip",fallback:"#galleryBrowser .gb-title",targetLabel:"تصنيفات القوالب",note:"افتح أي قالب من الشبكة؛ ستنتقل الجولة تلقائياً إلى معاينته. ويمكنك أيضاً المتابعة دون اختيار."},
-  {id:"preview",label:"معاينة البطاقة",title:"افحص الوجهين قبل أن تختار",text:"هذه معاينة للقالب بمحتوى المفردات، وليست صورة ثابتة. جرّب قلب البطاقة، وتحقق من وضوح الكلمة والمعنى وتوزيع العناصر على الوجهين.",target:"#gvShowAns",fallback:"#gvStage",targetLabel:"زر قلب البطاقة",note:"جرّب زر قلب البطاقة في المعاينة أو استخدم زر الجولة أدناه للانتقال بعد التجربة."},
-  {id:"selection",label:"اختيار القوالب",title:"حدّد ما تريد استخدامه في رُزمتك",text:"عندما يناسبك التصميم، اضغط زر التحديد لإضافته إلى اختياراتك. يمكنك تحديد أكثر من قالب، والضغط مرة أخرى لإلغاء أي اختيار. لن تحدد الجولة أي تصميم تلقائياً.",target:"#gvSelectBtn",targetLabel:"زر تحديد القالب",note:"يمكنك تجربة التحديد بنفسك؛ سيظهر عدد القوالب المختارة بعد تنفيذ اختيارك."},
-  {id:"audio",label:"إعداد الصوت",title:"اختر الصوت واضبط طريقة النطق",text:"من إعدادات الصوت يمكنك اختيار صوت الإنجليزية والعربية، وتعديل السرعة والنغمة والفواصل. ابدأ من قائمة اختيار الصوت، ثم جرّب النطق من زر المعاينة عندما تكون مستعداً.",target:"#gAudioPanelBody select",targetLabel:"قائمة اختيار الصوت",note:"هذه الإعدادات تُستخدم عند تجهيز الرزمة. لن يبدأ تشغيل أي صوت إلا عندما تطلب ذلك."},
-  {id:"export",label:"مراجعة الرزمة",title:"تأكّد من اختياراتك قبل إنشاء الملف",text:"راجع اسم الرزمة، والقوالب التي حددتها، وإعدادات الصوت والخيارات المتاحة. فتح شاشة المراجعة لا ينشئ الملف؛ لا يبدأ إنشاء APKG إلا إذا ضغطت أنت زر بدء التصدير. وبعد التنزيل، اتبع قسم «كيفية الاستيراد إلى Anki» أسفل الصفحة.",target:"#exOpenBtn",targetLabel:"زر مراجعة الرزمة",note:"سنفتح شاشة المراجعة فقط. لن نضغط بدء التصدير ولن ننشئ ملفاً أثناء الجولة."}
+  {id:"start",label:"ابدأ من المكتبة",title:"ابدأ من التصنيفات والبحث",text:"استخدم أدوات التصفية لتضييق النتائج والوصول إلى التصاميم التي تريد رؤيتها. تغيير طريقة العرض لا يضيف أي قالب إلى رُزمتك.",target:"#gbFilters",fallback:".hero-cta-main",targetLabel:"أدوات البحث والتصفية",note:"بعدها انتقل إلى شبكة القوالب وافتح تصميماً لمعاينته."},
+  {id:"library",label:"اختيار قالب",title:"افتح التصميم الذي تريد فحصه",text:"تعرض الشبكة القوالب المئة. افتح أي بطاقة لمشاهدة معاينتها؛ فتحها وحده لا يضيفها إلى اختيارات الرزمة.",target:"#gbGrid .gb-item",fallback:"#gbGrid",targetLabel:"شبكة القوالب",note:"اختر بطاقة من الشبكة لتنتقل الجولة تلقائياً إلى معاينتها."},
+  {id:"preview",label:"معاينة الوجهين",title:"افحص الوجهين قبل الاختيار",text:"اقلب البطاقة وتحقق من وضوح المفردة ومعناها وتوزيع العناصر. هذه معاينة للتصميم وليست تعديلاً على محتوى الرزمة.",target:"#gvShowAns",fallback:"#gvStage",targetLabel:"زر قلب البطاقة",note:"جرّب زر القلب بنفسك أو انتقل إلى خطوة التحديد."},
+  {id:"selection",label:"اعتماد القالب",title:"أضف التصميم إلى اختياراتك",text:"زر التحديد يضيف القالب الحالي أو يزيله من مجموعتك. يمكنك اختيار أكثر من تصميم، ولن تختار الجولة أي قالب نيابةً عنك.",target:"#gvSelectBtn",targetLabel:"زر تحديد القالب",note:"عدد القوالب المختارة يتحدث بعد اختيارك مباشرةً."},
+  {id:"audio",label:"إعداد الصوت",title:"اضبط النطق لكل لغة",text:"اختر الصوتين واضبط السرعة والنغمة والفواصل. استخدم زر المعاينة عندما ترغب في الاستماع؛ لن يبدأ أي صوت من تلقاء نفسه.",target:"#gAudioPanelBody select",fallback:"#gAudioPanelBody",targetLabel:"قائمة اختيار الصوت",note:"يمكنك تعديل الإعدادات لاحقاً أيضاً؛ لن يبدأ تشغيل الصوت إلا بطلبك."},
+  {id:"export",label:"مراجعة الرزمة",title:"راجع إعداداتك قبل إنشاء الملف",text:"افتح شاشة المراجعة لتفحص اسم الرزمة والقوالب المختارة وإعدادات الصوت. لن يبدأ إنشاء APKG إلا عندما تضغط زر بدء التصدير بنفسك.",target:"#exOpenBtn",targetLabel:"زر مراجعة الرزمة",note:"سنفتح شاشة المراجعة فقط، ولن نبدأ التنزيل أو إنشاء الملف خلال الجولة."}
 ];
 var onbStep = 0;
 var onboardGuideOpen = false;
@@ -228,8 +271,9 @@ function onboardEnsureRoot(){
 }
 function onboardPrepareStep(index){
   var browser = document.getElementById("galleryBrowser");
-  if(index === 1){
-    // Ensure the 100 real designs have been mounted before opening the library.
+  if(index === 0 || index === 1){
+    // Open the real library from the first guided stop and keep it open while
+    // the visitor moves from filters to the template grid.
     // The tour can start before the asynchronous gallery watcher has populated gvList.
     try{if(typeof ensureGalleryDesigns === "function")ensureGalleryDesigns();}catch(_e){}
     if(browser && !browser.classList.contains("open")){
@@ -242,7 +286,7 @@ function onboardPrepareStep(index){
       }
       onboardOpenedBrowser = browser.classList.contains("open");
     }
-  }else if(onboardOpenedBrowser && browser && browser.classList.contains("open") && typeof closeGalleryBrowser === "function"){
+  }else if(index > 1 && onboardOpenedBrowser && browser && browser.classList.contains("open") && typeof closeGalleryBrowser === "function"){
     closeGalleryBrowser();
     onboardOpenedBrowser = false;
   }
@@ -301,6 +345,19 @@ function positionOnboardGuide(){
   if(target&&target.isConnected){
     var before=target.getBoundingClientRect();
     var fixedOverlay=target.closest(".gallery-browser,.help-overlay,.onboard-overlay");
+    // The audio settings panel sits below the main preview. Bring its first
+    // actual control into the upper viewport band; the coachmark can then sit
+    // beneath it without covering the highlighted select.
+    if(step.id==="audio"&&!fixedOverlay){
+      try{
+        target.scrollIntoView({behavior:"instant",block:"start",inline:"nearest"});
+        before=target.getBoundingClientRect();
+        window.scrollBy(0,before.top-132);
+        before=target.getBoundingClientRect();
+      }catch(_e){
+        try{target.scrollIntoView({behavior:"auto",block:"start",inline:"nearest"});}catch(_e2){}
+      }
+    }
     var targetOutsideViewport=before.top<0||before.bottom>height;
     if(!fixedOverlay&&targetOutsideViewport){
       try{target.scrollIntoView({behavior:"instant",block:"center",inline:"nearest"});}
@@ -324,7 +381,7 @@ function positionOnboardGuide(){
   widthOptions.forEach(function(candidateWidth){
     if(best&&best.overlap===0)return;
     card.style.width=candidateWidth+"px";
-    card.style.maxHeight=Math.min(height*.42,460)+"px";
+    card.style.maxHeight=Math.min(height*.36,340)+"px";
     var measured=card.getBoundingClientRect();
     if(!rect){
       best={left:Math.max(margin,(width-measured.width)/2),top:Math.max(margin,(height-measured.height)/2),name:"center",overlap:0};
@@ -383,7 +440,7 @@ function renderOnboardStep(){
   var body = review ? "في نافذة المراجعة، تأكد من اسم الرزمة والقوالب التي اخترتها وإعدادات الصوت وخيارات التضمين. يمكنك إغلاق النافذة والعودة إلى المعرض لإجراء أي تعديل." : step.text;
   var targetLabel = review ? "زر إغلاق نافذة المراجعة" : step.targetLabel;
   var note = review ? "هذه مراجعة فقط؛ لم يبدأ إنشاء ملف APKG. لن يبدأ إلا عندما تضغط «بدء التصدير» بنفسك." : step.note;
-  var primaryLabel = onbStep === 0 ? "ابدأ الجولة" :
+  var primaryLabel = onbStep === 0 ? "انتقل إلى القوالب" :
     onbStep === 1 ? "تابع إلى المعاينة" :
     onbStep === 2 ? "جرّب قلب البطاقة" :
     onbStep === 3 ? "انتقل إلى إعدادات الصوت" :
@@ -421,7 +478,7 @@ function renderOnboardStep(){
   brand.appendChild(onboardNode("span","og-mark","A"));
   var brandCopy = onboardNode("span","og-brand-copy");
   brandCopy.appendChild(onboardNode("strong","","ANKI DESIGN STUDIO"));
-  brandCopy.appendChild(onboardNode("small","","جولة عملية • ٦ محطات"));
+  brandCopy.appendChild(onboardNode("small","","تجربة داخل المعرض • ٦ محطات"));
   brand.appendChild(brandCopy);
   var close = onboardNode("button","og-close","×");
   close.type = "button";
