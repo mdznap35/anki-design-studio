@@ -510,7 +510,8 @@ def apply_gallery_experience(html, deck):
         'window.hasSeenGalleryWelcome',
         'window.openGalleryWelcome',
         'class="gb-preview-frame"',
-        "previewFrame.srcdoc=thumbDoc(t)",
+        "var previewSource=thumbDoc(t);",
+        "previewFrame.srcdoc='<!doctype html>'+previewDocument.documentElement.outerHTML",
         'class="gx-action primary hero-cta-main"',
         'originalHero.remove()',
         'window.openGalleryBrowser'
