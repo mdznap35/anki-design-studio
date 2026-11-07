@@ -454,8 +454,8 @@ EXPERIENCE_JS = r"""
       description:"تصفّح 100 قالب للإنجليزية العلمية، وافحص طريقة عرض المصطلح ومعناه، ثم اختر التصميم الأنسب لمراجعتك.",
       welcomeTitle:"امنح المصطلحات العلمية عرضاً واضحاً وسهل المراجعة.",
       welcomeLead:"يضم معرض الإنجليزية العلمية للبكالوريا 100 قالب. استكشف التصاميم، وعاين تفاصيل البطاقة، ثم اعتمد ما يناسبك وراجع اختياراتك قبل إنشاء الرزمة.",
-      sampleWord:"Atom",
-      sampleMeaning:"ذرة"
+      sampleWord:"Achievement",
+      sampleMeaning:"إنجاز"
     }
   };
   var profile=profiles[deck]||profiles.en9;
