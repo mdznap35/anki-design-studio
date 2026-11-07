@@ -379,6 +379,26 @@ body{
 @media(prefers-reduced-motion:reduce){
   #gallery-experience-hero *,#gxWelcome *,#gbGrid .gb-item,#onboardTourLauncher{scroll-behavior:auto!important;animation:none!important;transition:none!important}
 }
+/* Opening refinement: stronger hierarchy, more direct copy and calmer card rhythm. */
+#gallery-experience-hero .gx-hero-inner{gap:clamp(26px,5vw,72px)}
+#gallery-experience-hero h1{max-width:15ch;letter-spacing:-.035em;line-height:1.22}
+#gallery-experience-hero .gx-description{max-width:58ch;line-height:1.9}
+#gallery-experience-hero .gx-metrics{gap:10px}
+#gallery-experience-hero .gx-metric{border-radius:15px;padding:13px 15px}
+#gallery-experience-hero .gx-actions{gap:10px;flex-wrap:wrap}
+#gallery-experience-hero .gx-action{min-height:48px;border-radius:13px}
+#gxWelcome .gx-opening-v3 .gx-dialog{border-radius:26px}
+#gxWelcome .gx-opening-v3 .gx-copy{gap:0}
+#gxWelcome .gx-opening-v3 .gx-lead{max-width:56ch;line-height:1.9}
+#gxWelcome .gx-opening-v3 .gx-points{gap:9px;margin-top:22px}
+#gxWelcome .gx-opening-v3 .gx-point{border-radius:15px;padding:12px 14px}
+#gxWelcome .gx-opening-v3 .gx-point-no{width:30px;height:30px;border-radius:10px}
+#gxWelcome .gx-opening-v3 .gx-actions{gap:10px;margin-top:22px}
+#gxWelcome .gx-opening-v3 .gx-button{min-height:48px;border-radius:13px}
+#gxWelcome .gx-opening-v3 .gx-small{margin-top:13px;line-height:1.75}
+#gxWelcome .gx-opening-v3 .gx-stage{min-height:430px}
+@media(max-width:760px){#gallery-experience-hero .gx-hero-inner{gap:24px}#gallery-experience-hero h1{max-width:unset}#gxWelcome .gx-opening-v3 .gx-dialog{border-radius:20px;max-height:94dvh}#gxWelcome .gx-opening-v3 .gx-stage{min-height:300px}#gxWelcome .gx-opening-v3 .gx-copy{padding:22px 18px}}
+
 """
 
 
@@ -392,9 +412,9 @@ WELCOME_MARKUP = r"""
       <h2 id="gxWelcomeTitle" data-gx-welcome-title>اختر التصميم الذي يناسب طريقة دراستك.</h2>
       <p class="gx-lead" id="gxWelcomeLead" data-gx-welcome-lead>يضم هذا المعرض 100 قالب. استكشف التصاميم، وعاين تفاصيل البطاقة، ثم اختر ما يناسبك وراجع اختياراتك قبل إنشاء الرزمة.</p>
       <div class="gx-points" aria-label="مراحل اختيار القالب">
-        <div class="gx-point"><span class="gx-point-no">01</span><div class="gx-point-copy"><strong>استكشف 100 تصميماً</strong><span>ابحث وصفِّ القوالب حتى تصل إلى ما يناسبك.</span></div></div>
-        <div class="gx-point"><span class="gx-point-no">02</span><div class="gx-point-copy"><strong>عاين الوجهين</strong><span>افحص شكل البطاقة قبل اعتماد أي تصميم.</span></div></div>
-        <div class="gx-point"><span class="gx-point-no">03</span><div class="gx-point-copy"><strong>حدّد ثم راجع</strong><span>اختر قوالبك، واضبط الصوت، وراجع الرزمة قبل إنشائها.</span></div></div>
+        <div class="gx-point"><span class="gx-point-no">01</span><div class="gx-point-copy"><strong>استكشف 100 قالب</strong><span>استخدم التصنيفات لتصل إلى التصميم المناسب.</span></div></div>
+        <div class="gx-point"><span class="gx-point-no">02</span><div class="gx-point-copy"><strong>افحص وجهي البطاقة</strong><span>شاهد كيف تظهر المفردة ومعناها.</span></div></div>
+        <div class="gx-point"><span class="gx-point-no">03</span><div class="gx-point-copy"><strong>اختر ثم راجع</strong><span>حدّد تصاميمك واضبط الصوت قبل إنشاء الرزمة.</span></div></div>
       </div>
       <div class="gx-actions">
         <button class="gx-button primary" id="gxWelcomeStart" type="button">ابدأ الجولة التفاعلية <span aria-hidden="true">←</span></button>
@@ -409,7 +429,7 @@ WELCOME_MARKUP = r"""
         <div class="gx-card mid"><div class="gx-card-top"><span>الخطوة الثانية</span><span>02</span></div><div class="gx-card-word">عاين</div><div class="gx-card-lines"><span></span><span></span><span></span></div></div>
         <div class="gx-card front gx-card-sample"><div class="gx-card-top"><span>عينة من المحتوى</span><span>03</span></div><div class="gx-card-word" data-gx-sample-word>Student</div><div class="gx-card-meaning"><span>المعنى</span><strong data-gx-sample-meaning>طالب</strong></div></div>
       </div>
-      <div class="gx-stage-label">مثال توضيحي · عاين القالب بمحتوى الرزمة الفعلي</div>
+      <div class="gx-stage-label">عينة مفردة · يمكنك معاينة القالب بمحتوى الرزمة الفعلي</div>
     </div>
   </section>
 </div>
@@ -440,26 +460,26 @@ EXPERIENCE_JS = r"""
       sampleMeaning:"طالب"
     },
     enlit:{
-      label:"اللغة الإنجليزية · بكالوريا أدبي 12",
-      title:"اختر تصميم Anki المناسب لمفردات الإنجليزية — بكالوريا أدبي 12",
-      description:"100 تصميم لبطاقات مفردات اللغة الإنجليزية المخصّصة لبكالوريا أدبي 12. قارن وضوح الكلمة ومعناها، وافحص القالب قبل اعتماده.",
-      welcomeTitle:"اختر شكل البطاقة التي ستراجع بها مفردات الإنجليزية.",
-      welcomeLead:"هذا المعرض مخصّص للغة الإنجليزية — بكالوريا أدبي 12. أمامك 100 قالب؛ افتح أي قالب لمعاينة وجهَي البطاقة، ثم حدّد ما يناسبك وراجع إعداداتك قبل إنشاء الرزمة.",
-      sampleWord:"Novel",
-      sampleMeaning:"رواية"
+      label:"اللغة الإنجليزية · بكالوريا 12 — الفرع الأدبي",
+      title:"اعثر على قالب Anki المناسب لمفردات الإنجليزية.",
+      description:"100 قالب لبطاقات مفردات الإنجليزية. استكشف التصاميم، وافحص وجهي البطاقة، ثم اختر ما تريد استخدامه في رُزمتك.",
+      welcomeTitle:"اختر شكل البطاقة قبل أن تبدأ المراجعة.",
+      welcomeLead:"هذا المعرض يضم 100 قالب لبطاقات مفردات اللغة الإنجليزية لطلاب بكالوريا 12 — الفرع الأدبي. افتح أي تصميم، وجرّب وجهي البطاقة، ثم اختر ما تريد استخدامه في رُزمتك.",
+      sampleWord:"Achievement",
+      sampleMeaning:"إنجاز"
     },
     ensci:{
-      label:"اللغة الإنجليزية · بكالوريا علمي 12",
-      title:"اختر تصميم Anki المناسب لمفردات الإنجليزية — بكالوريا علمي 12",
-      description:"100 تصميم لبطاقات مفردات اللغة الإنجليزية المخصّصة لبكالوريا علمي 12. قارن وضوح الكلمة ومعناها، وافحص القالب قبل اعتماده.",
-      welcomeTitle:"اجعل مراجعة مفردات الإنجليزية أوضح وأسهل.",
-      welcomeLead:"هذا المعرض مخصّص للغة الإنجليزية — بكالوريا علمي 12. أمامك 100 قالب؛ افتح أي قالب لمعاينة وجهَي البطاقة، ثم حدّد ما يناسبك وراجع إعداداتك قبل إنشاء الرزمة.",
-      sampleWord:"Energy",
-      sampleMeaning:"طاقة"
+      label:"اللغة الإنجليزية · بكالوريا 12 — الفرع العلمي",
+      title:"اعثر على قالب Anki المناسب لمفردات الإنجليزية.",
+      description:"100 قالب لبطاقات مفردات الإنجليزية. استكشف التصاميم، وافحص وجهي البطاقة، ثم اختر ما تريد استخدامه في رُزمتك.",
+      welcomeTitle:"اختر شكل البطاقة قبل أن تبدأ المراجعة.",
+      welcomeLead:"هذا المعرض يضم 100 قالب لبطاقات مفردات اللغة الإنجليزية لطلاب بكالوريا 12 — الفرع العلمي. افتح أي تصميم، وجرّب وجهي البطاقة، ثم اختر ما تريد استخدامه في رُزمتك.",
+      sampleWord:"Achievement",
+      sampleMeaning:"إنجاز"
     }
   };
   var profile=profiles[deck]||profiles.en9;
-  var welcomeKey="anki_"+deck+"_welcome_seen_v2";
+  var welcomeKey="anki_"+deck+"_welcome_seen_v3";
   var previousFocus=null;
   var welcomeOpen=false;
 
