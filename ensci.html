@@ -1339,14 +1339,14 @@ body{
 @media(max-width:640px){
   #galleryBrowser .gb-head{
     display:grid!important;
-    grid-template-columns:minmax(0,1fr) auto;
-    grid-template-areas:"title count" "tools tools";
+    grid-template-columns:minmax(0,1fr);
+    grid-template-areas:"title" "count" "tools";
     align-items:center;
-    gap:10px;
-    padding:12px 68px 12px 14px!important;
+    gap:8px;
+    padding:12px 14px 12px 68px!important;
   }
   #galleryBrowser .gb-title{grid-area:title;min-width:0;white-space:normal;font-size:1rem}
-  #galleryBrowser .gb-count{grid-area:count;justify-self:end;font-size:.72rem;padding:5px 9px}
+  #galleryBrowser .gb-count{grid-area:count;justify-self:start;font-size:.72rem;padding:5px 9px}
   #galleryBrowser .gb-tools{
     grid-area:tools;
     display:flex!important;
