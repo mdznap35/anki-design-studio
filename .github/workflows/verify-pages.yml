@@ -11,6 +11,10 @@ on:
       - "ensci.html"
       - "fr9.html"
       - "gallery_imgs/**"
+      - "ensci-history-01-latest.html"
+      - "ensci-history-02-2026-11-07-1605.html"
+      - "ensci-history-03-2026-11-07-1602.html"
+      - "ensci-history-04-2026-11-07-1540.html"
   workflow_dispatch:
   workflow_run:
     workflows:
@@ -74,6 +78,27 @@ jobs:
                   print(f"PASS thumbnail {sample}: HTTP 200 image/jpeg ({len(body)} bytes)")
               except Exception as exc:
                   failures.append(f"thumbnail {sample}: {exc}")
+
+          previews = (
+              "ensci-history-01-latest.html",
+              "ensci-history-02-2026-11-07-1605.html",
+              "ensci-history-03-2026-11-07-1602.html",
+              "ensci-history-04-2026-11-07-1540.html",
+          )
+          for filename in previews:
+              try:
+                  status, headers, raw = fetch(f"{base}/{filename}")
+                  html = raw.decode("utf-8")
+                  marker = "var EMBEDDED_DESIGNS_100 = "
+                  pos = html.index(marker) + len(marker)
+                  designs, _ = json.JSONDecoder().raw_decode(html[pos:].lstrip())
+                  assert status == 200, f"HTTP {status}"
+                  assert len(designs) == 100, f"expected 100 designs, got {len(designs)}"
+                  assert all(item.get("pack") == "ensci" for item in designs), "wrong deck binding"
+                  assert "gallery_imgs/" in html, "shared thumbnail path missing"
+                  print(f"PASS preview {filename}: HTTP 200, 100 English Bac Science designs")
+              except Exception as exc:
+                  failures.append(f"preview {filename}: {exc}")
 
           if failures:
               raise SystemExit("GitHub Pages live verification failed:\\n" + "\\n".join(failures))
