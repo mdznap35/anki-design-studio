@@ -1,0 +1,117 @@
+name: Promote selected sixth English Bac Science gallery
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/promote-ensci-sixth.yml"
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  promote-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout full repository history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Promote exact selected historical files
+        shell: bash
+        run: |
+          set -euo pipefail
+          source_commit="605f9107813fe60d89d024c9fc895b6d7ab55b6a"
+          expected_blob="84c66642a37ec8c9c2ba966b6d56ef25711a5156"
+          git cat-file -e "${source_commit}:ensci.html"
+          git show "${source_commit}:ensci.html" > ensci.html
+          git show "${source_commit}:out/ensci.html" > out/ensci.html
+          test "$(git hash-object ensci.html)" = "$expected_blob"
+          test "$(git hash-object out/ensci.html)" = "$expected_blob"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- ensci.html out/ensci.html
+          if ! git diff --cached --quiet; then
+            git commit -m "Promote selected sixth English Bac Science gallery [skip ci]"
+            git push origin HEAD:main
+          else
+            echo "Selected sixth gallery is already the active version."
+          fi
+          echo "PROMOTED_BLOB=$expected_blob" >> "$GITHUB_ENV"
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Build the complete Pages site
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./
+          destination: ./_site
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./_site
+
+      - name: Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Verify active selected gallery and nine historical previews
+        env:
+          BASE_URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          python - <<'PY'
+          import json, os, urllib.request
+          base = os.environ["BASE_URL"].rstrip("/") + "/"
+          def fetch(path):
+              req = urllib.request.Request(base + path, headers={"User-Agent": "anki-gallery-release-verifier/1.0"})
+              with urllib.request.urlopen(req, timeout=40) as response:
+                  return response.status, response.headers, response.read()
+          status, headers, raw = fetch("ensci.html")
+          html = raw.decode("utf-8")
+          marker = "var EMBEDDED_DESIGNS_100 = "
+          pos = html.index(marker) + len(marker)
+          designs, _ = json.JSONDecoder().raw_decode(html[pos:].lstrip())
+          assert status == 200
+          assert len(designs) == 100, f"expected 100 designs, got {len(designs)}"
+          assert all(item.get("pack") == "ensci" for item in designs), "wrong deck binding"
+          assert all(item.get("fields") for item in designs), "missing field mappings"
+          assert "gallery_imgs/" in html, "shared thumbnail path missing"
+          print("PASS active /ensci.html: selected historical version, 100 English Bac Science designs")
+          previews = (
+              "ensci-history-01-latest.html",
+              "ensci-history-02-2026-11-07-1605.html",
+              "ensci-history-03-2026-11-07-1602.html",
+              "ensci-history-04-2026-11-07-1540.html",
+              "ensci-history-05-2026-11-07-0855.html",
+              "ensci-history-06-2026-11-07-0736.html",
+              "ensci-history-07-2026-11-07-0635.html",
+              "ensci-history-08-2026-11-07-0537.html",
+              "ensci-history-09-2026-11-06-1938.html",
+          )
+          for filename in previews:
+              status, _, raw = fetch(filename)
+              page = raw.decode("utf-8")
+              pos = page.index(marker) + len(marker)
+              items, _ = json.JSONDecoder().raw_decode(page[pos:].lstrip())
+              assert status == 200 and len(items) == 100
+              assert all(item.get("pack") == "ensci" for item in items)
+              print(f"PASS {filename}: HTTP 200, 100 designs")
+          for sample in ("001.jpg", "050.jpg", "100.jpg"):
+              status, headers, body = fetch("gallery_imgs/" + sample)
+              assert status == 200 and headers.get_content_type() == "image/jpeg" and len(body) > 1000
+              print(f"PASS shared thumbnail {sample}")
+          print("ALL PROMOTION AND LIVE PAGES CHECKS PASSED")
+          PY
