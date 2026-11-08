@@ -45,11 +45,23 @@ jobs:
           sha256sum /tmp/ensci-v6-base.html
           test "$(git rev-parse 605f9107813fe60d89d024c9fc895b6d7ab55b6a:index.html)" = "13f781e29355f5fc1f2ba8889b356c737cc161bc"
 
-      - name: Rebuild using the exact v6 base, without changing shared gallery sources
+      - name: Build only English Science from the exact v6 base
         env:
           ANKI_BASE_HTML: /tmp/ensci-v6-base.html
         run: |
-          python tools/build_galleries.py
+          python - <<'PY'
+          import os, sys
+          from pathlib import Path
+          sys.path.insert(0, "tools")
+          from build_galleries import build_one, DECKS
+          base_path = Path(os.environ["ANKI_BASE_HTML"])
+          base = base_path.read_text(encoding="utf-8")
+          html, _ = build_one("ensci", DECKS["ensci"], base)
+          out = Path("out")
+          out.mkdir(exist_ok=True)
+          (out / "ensci.html").write_text(html, encoding="utf-8")
+          print("Built only ENSCI:", len(html), "characters")
+          PY
           cp out/ensci.html ensci.html
 
       - name: Compare the design payload and every original control against v6
