@@ -41,8 +41,9 @@ jobs:
           git cat-file -e "${source_commit}:out/ensci.html"
           git show "${source_commit}:ensci.html" > ensci.html
           git show "${source_commit}:out/ensci.html" > out/ensci.html
-          root_blob="$(git hash-object ensci.html)"
-          out_blob="$(git hash-object out/ensci.html)"
+          root_blob="$(git hash-object -w ensci.html)"
+          out_blob="$(git hash-object -w out/ensci.html)"
+          echo "Historical file blobs written to the local object database."
           echo "Restored root blob: $root_blob"
           echo "Restored out blob: $out_blob"
           test "$root_blob" = "$expected_blob"
