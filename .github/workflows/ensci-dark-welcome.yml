@@ -5,7 +5,6 @@ on:
     branches:
       - "redesign/ensci-welcome-dark-v1-2026-11-08"
     paths:
-      - "tools/build_galleries.py"
       - "tools/ensci_welcome.py"
       - ".github/workflows/ensci-dark-welcome.yml"
   workflow_dispatch:
@@ -45,24 +44,20 @@ jobs:
           sha256sum /tmp/ensci-v6-base.html
           test "$(git rev-parse 605f9107813fe60d89d024c9fc895b6d7ab55b6a:index.html)" = "13f781e29355f5fc1f2ba8889b356c737cc161bc"
 
-      - name: Build only English Science from the exact v6 base
-        env:
-          ANKI_BASE_HTML: /tmp/ensci-v6-base.html
+      - name: Apply additive ENSCI improvements to the exact original v6 page
         run: |
+          set -euo pipefail
+          git show 605f9107813fe60d89d024c9fc895b6d7ab55b6a:ensci.html > /tmp/ensci-v6-original.html
           python - <<'PY'
-          import os, sys
+          import sys
           from pathlib import Path
           sys.path.insert(0, "tools")
-          from build_galleries import build_one, DECKS
-          base_path = Path(os.environ["ANKI_BASE_HTML"])
-          base = base_path.read_text(encoding="utf-8")
-          html, _ = build_one("ensci", DECKS["ensci"], base)
-          out = Path("out")
-          out.mkdir(exist_ok=True)
-          (out / "ensci.html").write_text(html, encoding="utf-8")
-          print("Built only ENSCI:", len(html), "characters")
+          from ensci_welcome import apply_ensci_welcome
+          original = Path("/tmp/ensci-v6-original.html").read_text(encoding="utf-8")
+          refined = apply_ensci_welcome(original)
+          Path("ensci.html").write_text(refined, encoding="utf-8")
+          print("Applied additive welcome and individual-preview guidance:", len(refined), "characters")
           PY
-          cp out/ensci.html ensci.html
 
       - name: Compare the design payload and every original control against v6
         run: |
