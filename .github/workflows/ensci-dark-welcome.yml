@@ -277,7 +277,8 @@ jobs:
               result["selection_toggles"]=True
               result["previous_next_navigation"]=True
               page.locator("#ensci-preview-guide").scroll_into_view_if_needed()
-              page.screenshot(path="qa-artifacts/03-individual-preview-desktop.png",full_page=True)
+              page.screenshot(path="qa-artifacts/03-individual-preview-desktop.png")
+              page.screenshot(path="qa-artifacts/03b-individual-preview-full-page.png",full_page=True)
 
               # Verify that the desktop page remains free of horizontal overflow.
               desktop_metrics=page.evaluate("()=>({width:document.documentElement.clientWidth,scrollWidth:document.documentElement.scrollWidth})")
@@ -321,6 +322,18 @@ jobs:
               assert len(set(mobile_grid["chipTopPositions"]))==1,f"Mobile category chips are stacked vertically: {mobile_grid}"
               result["mobile_gallery"]=mobile_grid
               mobile.screenshot(path="qa-artifacts/05-library-mobile.png")
+
+              mobile.locator("#gbGrid .gb-item").first.click()
+              mobile.wait_for_selector("#ensci-preview-guide",timeout=10000)
+              mobile_preview=mobile.locator("#ensci-preview-guide").evaluate(
+                "(e)=>({parent:e.parentElement?.id,width:e.getBoundingClientRect().width,height:e.getBoundingClientRect().height})"
+              )
+              assert mobile_preview["parent"]=="gv" and mobile_preview["height"]>0,f"Mobile preview guidance is not visible: {mobile_preview}"
+              mobile_preview_overflow=mobile.evaluate("()=>({width:document.documentElement.clientWidth,scrollWidth:document.documentElement.scrollWidth})")
+              assert mobile_preview_overflow["scrollWidth"]<=mobile_preview_overflow["width"]+2,f"Mobile individual preview overflows: {mobile_preview_overflow}"
+              result["mobile_individual_preview"]=mobile_preview
+              mobile.locator("#ensci-preview-guide").scroll_into_view_if_needed()
+              mobile.screenshot(path="qa-artifacts/06-individual-preview-mobile.png")
 
               result["page_errors"]=errors
               assert not errors,"Browser JavaScript errors: "+json.dumps(errors,ensure_ascii=False)
