@@ -1,0 +1,316 @@
+name: Build and verify ENSCI dark-first welcome refinement
+
+on:
+  push:
+    branches:
+      - "redesign/ensci-welcome-dark-v1-2026-11-08"
+    paths:
+      - "tools/build_galleries.py"
+      - "tools/ensci_welcome.py"
+      - ".github/workflows/ensci-dark-welcome.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out the selected sixth baseline plus additive changes
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Compile the generator and ENSCI-only enhancement
+        run: |
+          python -m py_compile \
+            tools/build_galleries.py \
+            tools/gallery_ux.py \
+            tools/gallery_experience.py \
+            tools/ensci_welcome.py
+
+      - name: Verify the protected French Bac source is unchanged
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = "c196613fe0016d281853754cdf5539a395dcdde6" || true
+          git show 605f9107813fe60d89d024c9fc895b6d7ab55b6a:index.html > /tmp/ensci-v6-base.html
+          test -s /tmp/ensci-v6-base.html
+          sha256sum /tmp/ensci-v6-base.html
+          test "$(git rev-parse 605f9107813fe60d89d024c9fc895b6d7ab55b6a:index.html)" = "13f781e29355f5fc1f2ba8889b356c737cc161bc"
+
+      - name: Rebuild using the exact v6 base, without changing shared gallery sources
+        env:
+          ANKI_BASE_HTML: /tmp/ensci-v6-base.html
+        run: |
+          python tools/build_galleries.py
+          cp out/ensci.html ensci.html
+
+      - name: Compare the design payload and every original control against v6
+        run: |
+          python - <<'PY'
+          import json, re, subprocess, sys
+          from pathlib import Path
+          sys.path.insert(0, "tools")
+          from build_galleries import bmatch
+
+          base_sha = "605f9107813fe60d89d024c9fc895b6d7ab55b6a"
+          original = subprocess.check_output(
+              ["git", "show", f"{base_sha}:ensci.html"]
+          ).decode("utf-8")
+          current = Path("ensci.html").read_text(encoding="utf-8")
+
+          def designs(html):
+              marker = "var EMBEDDED_DESIGNS_100 = "
+              pos = html.index(marker) + len(marker)
+              start = html.index("[", pos)
+              return json.loads(html[start:bmatch(html, start) + 1])
+
+          old, new = designs(original), designs(current)
+          assert len(old) == 100 and len(new) == 100, "The design count changed"
+          assert old == new, "The 100-design payload was changed; this build must preserve it byte-for-data"
+          assert len({x.get("name") for x in new}) == 100, "Template names are not unique"
+          assert all(x.get("pack") == "ensci" for x in new), "Wrong deck binding"
+          assert all(x.get("fields") and x.get("front") and x.get("back") and x.get("css") for x in new), "Incomplete card design"
+          assert all("English" in x["fields"] and "Arabic" in x["fields"] for x in new), "Science field mapping changed"
+
+          old_ids = set(re.findall(r'\bid="([^"]+)"', original))
+          new_ids = set(re.findall(r'\bid="([^"]+)"', current))
+          missing = sorted(old_ids - new_ids)
+          assert not missing, "Original DOM IDs were removed: " + ", ".join(missing[:25])
+
+          required_original = (
+              'id="gxWelcome"',
+              'id="gxWelcomeExplore"',
+              'id="gxWelcomeStart"',
+              'id="onboardOverlay"',
+              'id="gbFilters"',
+              'id="gbGrid"',
+              'id="galleryBrowser"',
+              'id="gvStage"',
+              'id="gvFrame"',
+              'id="gvSelectBtn"',
+              'id="gvShowAns"',
+              'class="gb-preview-frame"',
+              'function openGalleryBrowser()',
+              'function renderGalleryBrowser()',
+              'function gbBuildFilters()',
+              'function gvFlip()',
+              'function gvSelect()',
+              'function gvSelAll()',
+          )
+          for token in required_original:
+              assert token in current, "An original gallery feature is missing: " + token
+
+          for token in (
+              'id="ensci-welcome-polish"',
+              'id="ensci-preview-guide-runtime"',
+              'اختر قالب Anki قبل أن تبني رُزمتك.',
+              'تصفّح القوالب الـ100',
+              'شاهد الجولة التفاعلية',
+              'معاينة القالب الفردية',
+          ):
+              assert token in current, "New welcome/preview feature missing: " + token
+
+          assert "var(--bg,#0b1020)" in current or "--bg:#0b1020" in current or "--bg: #0b1020" in current, "The original dark-first theme token is missing"
+          assert current.count('id="ensci-welcome-polish"') == 1
+          assert current.count('id="ensci-preview-guide-runtime"') == 1
+
+          print("PASS: all 100 original Science templates are data-identical to v6")
+          print("PASS: every original element ID and all original gallery/tour/selection controls are retained")
+          print("PASS: dark-first theme remains the default")
+          print("PASS: welcome CTA hierarchy and individual preview introduction are additive")
+          PY
+
+      - name: Publish the rebuilt ENSCI file to this isolated design branch
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- ensci.html
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish additive dark-first ENSCI welcome refinement"
+            git push origin "HEAD:refs/heads/\${GITHUB_REF_NAME}"
+          else
+            echo "The generated English Science page is already current."
+          fi
+
+      - name: Install Chromium
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install playwright
+          python -m playwright install --with-deps chromium
+
+      - name: Start a local server for the exact generated page
+        run: |
+          python -m http.server 8765 >/tmp/ensci-http.log 2>&1 &
+          for attempt in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8765/ensci.html >/dev/null; then
+              echo "Local generated page is ready."
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/ensci-http.log
+          exit 1
+
+      - name: Test desktop welcome, categories, all previews, and individual card controls
+        run: |
+          mkdir -p qa-artifacts
+          cat > /tmp/qa_ensci_dark.py <<'PY'
+          import json
+          from pathlib import Path
+          from playwright.sync_api import sync_playwright
+
+          errors=[]
+          result={}
+
+          with sync_playwright() as p:
+              browser=p.chromium.launch(headless=True)
+
+              # Desktop first visit.
+              desktop=browser.new_context(viewport={"width":1440,"height":1000},device_scale_factor=1)
+              page=desktop.new_page()
+              page.on("pageerror",lambda err:errors.append(str(err)))
+              response=page.goto("http://127.0.0.1:8765/ensci.html",wait_until="domcontentloaded",timeout=60000)
+              assert response and response.status==200
+              page.wait_for_selector("#gxWelcome",state="visible",timeout=20000)
+              assert "اختر قالب Anki" in page.locator("#gxWelcomeTitle").inner_text()
+              assert page.locator("#gxWelcomeExplore").inner_text().strip().startswith("تصفّح القوالب")
+              assert "جولة تفاعلية" in page.locator("#gxWelcomeStart").inner_text()
+              result["welcome_title"]=page.locator("#gxWelcomeTitle").inner_text()
+              result["welcome_primary"]=page.locator("#gxWelcomeExplore").inner_text()
+              result["welcome_secondary"]=page.locator("#gxWelcomeStart").inner_text()
+              result["dark_background"]=page.locator("body").evaluate("(e)=>getComputedStyle(e).backgroundColor")
+              assert result["dark_background"]=="rgb(11, 10, 20)", "The default theme is no longer dark"
+              page.screenshot(path="qa-artifacts/01-welcome-desktop.png")
+
+              page.locator("#gxWelcomeExplore").click()
+              page.wait_for_selector("#gbGrid .gb-item",timeout=20000)
+              page.wait_for_timeout(800)
+              cards=page.locator("#gbGrid .gb-item").count()
+              categories=page.locator("#gbFilters .gb-chip").count()
+              frames=page.locator("#gbGrid .gb-preview-frame").count()
+              assert cards==100,f"Expected 100 visible template cards, got {cards}"
+              assert categories==9,f"Expected all 9 original category controls, got {categories}"
+              assert frames==100,f"Expected 100 live preview frames, got {frames}"
+
+              frame=page.locator("#gbGrid .gb-preview-frame").first
+              frame.scroll_into_view_if_needed()
+              page.wait_for_function("""() => {
+                const f=document.querySelector('#gbGrid .gb-preview-frame');
+                return !!(f&&f.contentDocument&&f.contentDocument.body&&
+                  (f.contentDocument.body.children.length||(f.contentDocument.body.textContent||'').trim().length));
+              }""",timeout=20000)
+              frame_text=frame.evaluate("(f)=>(f.contentDocument.body.innerText||'').trim().slice(0,100)")
+              assert frame_text and "Energy" in frame_text,f"First live template is blank or wrong: {frame_text!r}"
+
+              # Prove the category controls still filter and restore the full library.
+              category_button=page.locator("#gbFilters .gb-chip:not([data-f='all'])").first
+              category_button.click()
+              page.wait_for_timeout(200)
+              filtered=page.locator("#gbGrid .gb-item").count()
+              assert 0<filtered<100,f"Category filter did not change the list: {filtered}"
+              page.locator("#gbFilters .gb-chip[data-f='all']").click()
+              page.wait_for_timeout(200)
+              assert page.locator("#gbGrid .gb-item").count()==100,"The All filter did not restore all 100 cards"
+
+              result.update({
+                "cards":cards,
+                "categories":categories,
+                "live_preview_frames":frames,
+                "first_template_preview":frame_text,
+                "category_filter_result_count":filtered,
+              })
+              page.screenshot(path="qa-artifacts/02-library-desktop.png")
+
+              # Open one real template and exercise the original individual preview.
+              page.locator("#gbGrid .gb-item").first.click()
+              page.wait_for_timeout(350)
+              page.wait_for_selector("#ensci-preview-guide",timeout=10000)
+              assert page.locator("#gvStage").is_visible(),"The individual preview stage did not open"
+              assert page.locator("#gvSelectBtn").count()==1
+              assert page.locator("#gvShowAns").count()==1
+              assert page.locator(".gv-next").count()==1
+              result["preview_intro"]=page.locator("#ensci-preview-guide h2").inner_text()
+
+              before_flip=page.evaluate("()=>gvFlipped")
+              page.locator("#gvShowAns").click()
+              after_flip=page.evaluate("()=>gvFlipped")
+              assert before_flip!=after_flip,"The original flip control did not toggle the card"
+
+              before_select=page.locator("#gvSelectBtn").get_attribute("aria-pressed")
+              page.locator("#gvSelectBtn").click()
+              after_select=page.locator("#gvSelectBtn").get_attribute("aria-pressed")
+              assert before_select!=after_select,"The original selection control did not toggle"
+              page.locator("#gvSelectBtn").click()
+
+              before_index=page.evaluate("()=>gvIdx")
+              page.locator(".gv-next").click()
+              after_index=page.evaluate("()=>gvIdx")
+              assert before_index!=after_index,"The next-template arrow did not navigate"
+
+              result["flip_toggles"]=True
+              result["selection_toggles"]=True
+              result["previous_next_navigation"]=True
+              page.locator("#gvStage").scroll_into_view_if_needed()
+              page.screenshot(path="qa-artifacts/03-individual-preview-desktop.png")
+
+              # Verify that the desktop page remains free of horizontal overflow.
+              desktop_metrics=page.evaluate("()=>({width:document.documentElement.clientWidth,scrollWidth:document.documentElement.scrollWidth})")
+              assert desktop_metrics["scrollWidth"]<=desktop_metrics["width"]+2,desktop_metrics
+              result["desktop_layout"]=desktop_metrics
+
+              # Fresh phone context: the welcome remains readable and all primary actions fit.
+              mobile_context=browser.new_context(viewport={"width":390,"height":844},device_scale_factor=1,is_mobile=True,has_touch=True)
+              mobile=mobile_context.new_page()
+              mobile.on("pageerror",lambda err:errors.append(str(err)))
+              mobile.goto("http://127.0.0.1:8765/ensci.html",wait_until="domcontentloaded",timeout=60000)
+              mobile.wait_for_selector("#gxWelcome",state="visible",timeout=20000)
+              mobile_metrics=mobile.evaluate("""() => ({
+                viewport:document.documentElement.clientWidth,
+                scrollWidth:document.documentElement.scrollWidth,
+                dialog:document.querySelector('#gxWelcome .gx-dialog')?.getBoundingClientRect().width,
+                welcomeTitle:document.querySelector('#gxWelcomeTitle')?.innerText
+              })""")
+              assert mobile_metrics["scrollWidth"]<=mobile_metrics["viewport"]+2,f"Mobile welcome overflows: {mobile_metrics}"
+              assert mobile_metrics["dialog"]<=mobile_metrics["viewport"],f"Mobile welcome dialog is too wide: {mobile_metrics}"
+              result["mobile_welcome"]=mobile_metrics
+              mobile.screenshot(path="qa-artifacts/04-welcome-mobile.png")
+
+              mobile.locator("#gxWelcomeExplore").click()
+              mobile.wait_for_selector("#gbGrid .gb-item",timeout=20000)
+              mobile.wait_for_timeout(500)
+              assert mobile.locator("#gbGrid .gb-item").count()==100
+              mobile_grid=mobile.evaluate("""()=>({
+                viewport:document.documentElement.clientWidth,
+                scrollWidth:document.documentElement.scrollWidth,
+                grid:document.querySelector('#gbGrid')?.getBoundingClientRect().width
+              })""")
+              assert mobile_grid["scrollWidth"]<=mobile_grid["viewport"]+2,f"Mobile gallery overflows: {mobile_grid}"
+              result["mobile_gallery"]=mobile_grid
+              mobile.screenshot(path="qa-artifacts/05-library-mobile.png")
+
+              result["page_errors"]=errors
+              assert not errors,"Browser JavaScript errors: "+json.dumps(errors,ensure_ascii=False)
+              Path("qa-artifacts/browser-results.json").write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding="utf-8")
+              print(json.dumps(result,ensure_ascii=False,indent=2))
+              browser.close()
+          PY
+          python /tmp/qa_ensci_dark.py
+
+      - name: Upload refined page and real-browser screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: ensci-dark-welcome-refinement
+          path: |
+            ensci.html
+            qa-artifacts/
+          if-no-files-found: error
+          retention-days: 30
