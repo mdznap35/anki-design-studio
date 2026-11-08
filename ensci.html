@@ -1335,11 +1335,42 @@ body{
   color:#82dbe8;font-size:.67rem;font-variant-numeric:tabular-nums;
 }
 #gv{scroll-margin-top:20px}
+/* Mobile gallery header: keep all original category chips in a horizontal scroll row. */
+@media(max-width:640px){
+  #galleryBrowser .gb-head{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) auto;
+    grid-template-areas:"title count" "tools tools";
+    align-items:center;
+    gap:10px;
+    padding:12px 68px 12px 14px!important;
+  }
+  #galleryBrowser .gb-title{grid-area:title;min-width:0;white-space:normal;font-size:1rem}
+  #galleryBrowser .gb-count{grid-area:count;justify-self:end;font-size:.72rem;padding:5px 9px}
+  #galleryBrowser .gb-tools{
+    grid-area:tools;
+    display:flex!important;
+    flex-wrap:nowrap!important;
+    align-items:center;
+    width:100%!important;
+    max-width:none!important;
+    min-width:0;
+    margin:0!important;
+    overflow-x:auto!important;
+    overflow-y:hidden;
+    padding:1px 0 5px;
+    -webkit-overflow-scrolling:touch;
+  }
+  #galleryBrowser .gb-chip{flex:0 0 auto;min-height:38px;white-space:nowrap}
+  #galleryBrowser .gb-close{top:12px;left:12px;width:42px;height:42px}
+  #galleryBrowser .gb-bar{padding:8px 14px}
+  #galleryBrowser .gb-hint{font-size:.68rem;line-height:1.7}
+}
 @media(max-width:820px){
   #gxWelcome .gx-opening-v3 .gx-dialog{grid-template-columns:1fr}
   #gxWelcome .gx-opening-v3 .gx-points{grid-template-columns:1fr}
   #gxWelcome .gx-opening-v3 .gx-point{min-height:0}
-  #ensci-preview-guide{display:block;margin:30px auto 13px}
+  #ensci-preview-guide{display:block;margin:16px auto 18px;padding:0 14px}
   #ensci-preview-guide .ensci-preview-actions{margin-top:13px}
 }
 @media(max-width:520px){
@@ -8188,7 +8219,7 @@ setTimeout(function(){try{setupExportModal();}catch(_e){}},1500);
         '<span class="ensci-preview-action"><b>02</b> اقلب البطاقة لمشاهدة الوجهين</span>'+
         '<span class="ensci-preview-action"><b>03</b> حدّد القالب الذي يناسبك</span>'+
       '</div>';
-    gallery.parentNode.insertBefore(guide,gallery);
+    gallery.insertBefore(guide,gallery.firstElementChild);
   }
   if(document.readyState==="loading"){
     document.addEventListener("DOMContentLoaded",addPreviewGuide,{once:true});
