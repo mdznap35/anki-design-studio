@@ -246,6 +246,12 @@ jobs:
               assert page.locator("#gvShowAns").count()==1
               assert page.locator(".gv-next").count()==1
               result["preview_intro"]=page.locator("#ensci-preview-guide h2").inner_text()
+              guide_metrics=page.locator("#ensci-preview-guide").evaluate(
+                "(e)=>({parent:e.parentElement?.id,width:e.getBoundingClientRect().width,height:e.getBoundingClientRect().height})"
+              )
+              assert guide_metrics["parent"]=="gv",f"Preview guidance is outside the active preview: {guide_metrics}"
+              assert guide_metrics["height"]>0,"Preview guidance is not visible"
+              result["preview_guide_layout"]=guide_metrics
 
               before_flip=page.evaluate("()=>gvFlipped")
               page.locator("#gvShowAns").click()
@@ -266,8 +272,8 @@ jobs:
               result["flip_toggles"]=True
               result["selection_toggles"]=True
               result["previous_next_navigation"]=True
-              page.locator("#gvStage").scroll_into_view_if_needed()
-              page.screenshot(path="qa-artifacts/03-individual-preview-desktop.png")
+              page.locator("#ensci-preview-guide").scroll_into_view_if_needed()
+              page.screenshot(path="qa-artifacts/03-individual-preview-desktop.png",full_page=True)
 
               # Verify that the desktop page remains free of horizontal overflow.
               desktop_metrics=page.evaluate("()=>({width:document.documentElement.clientWidth,scrollWidth:document.documentElement.scrollWidth})")
@@ -298,9 +304,17 @@ jobs:
               mobile_grid=mobile.evaluate("""()=>({
                 viewport:document.documentElement.clientWidth,
                 scrollWidth:document.documentElement.scrollWidth,
-                grid:document.querySelector('#gbGrid')?.getBoundingClientRect().width
+                grid:document.querySelector('#gbGrid')?.getBoundingClientRect().width,
+                filtersWidth:document.querySelector('#galleryBrowser .gb-tools')?.clientWidth,
+                filtersScrollWidth:document.querySelector('#galleryBrowser .gb-tools')?.scrollWidth,
+                filterChipCount:document.querySelectorAll('#galleryBrowser .gb-tools .gb-chip').length,
+                chipTopPositions:[...document.querySelectorAll('#galleryBrowser .gb-tools .gb-chip')].map(x=>Math.round(x.getBoundingClientRect().top))
               })""")
               assert mobile_grid["scrollWidth"]<=mobile_grid["viewport"]+2,f"Mobile gallery overflows: {mobile_grid}"
+              assert mobile_grid["filterChipCount"]==9,f"Mobile category filters missing: {mobile_grid}"
+              assert mobile_grid["filtersWidth"]>200,f"Mobile category toolbar collapsed: {mobile_grid}"
+              assert mobile_grid["filtersScrollWidth"]>mobile_grid["filtersWidth"],f"Mobile category row does not scroll horizontally: {mobile_grid}"
+              assert len(set(mobile_grid["chipTopPositions"]))==1,f"Mobile category chips are stacked vertically: {mobile_grid}"
               result["mobile_gallery"]=mobile_grid
               mobile.screenshot(path="qa-artifacts/05-library-mobile.png")
 
