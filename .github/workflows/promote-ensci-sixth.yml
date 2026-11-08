@@ -48,12 +48,14 @@ jobs:
           echo "Restored out blob: $out_blob"
           test "$root_blob" = "$expected_blob"
           test "$out_blob" = "$expected_blob"
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git update-index --cacheinfo "100644,$expected_blob,ensci.html"
-          echo "Staged root historical blob."
-          git update-index --cacheinfo "100644,$expected_blob,out/ensci.html"
-          echo "Staged out historical blob."
+          git config --global user.name "github-actions[bot]"
+          echo "Git author configured."
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          echo "Git email configured."
+          git cat-file -e "$expected_blob"
+          echo "Historical blob exists locally."
+          git add -f -- ensci.html out/ensci.html
+          echo "Both selected files staged with git add."
           echo "Staged exact historical blobs:"
           git status --short
           git diff --cached --stat
