@@ -1,0 +1,85 @@
+name: Promote selected sixth English Bac Science gallery
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/promote-ensci-sixth.yml"
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  promote-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout full repository history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Promote selected sixth version
+        shell: bash
+        run: |
+          set -euo pipefail
+          source_commit="605f9107813fe60d89d024c9fc895b6d7ab55b6a"
+          expected_blob="84c66642a37ec8c9c2ba966b6d56ef25711a5156"
+          git fetch --no-tags origin "$source_commit"
+          git show "${source_commit}:ensci.html" > ensci.html
+          git show "${source_commit}:out/ensci.html" > out/ensci.html
+          root_blob="$(git hash-object ensci.html)"
+          out_blob="$(git hash-object out/ensci.html)"
+          echo "Root blob: $root_blob"
+          echo "Out blob: $out_blob"
+          test "$root_blob" = "$expected_blob"
+          test "$out_blob" = "$expected_blob"
+          git add -f -- ensci.html out/ensci.html
+          git status --short
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -m "Promote selected sixth English Bac Science gallery [skip ci]"
+          git push origin HEAD:main
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Build Pages site
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./
+          destination: ./_site
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./_site
+
+      - name: Deploy Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Verify active selected version
+        env:
+          BASE_URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          python - <<'PY'
+          import json, os, urllib.request
+          base=os.environ["BASE_URL"].rstrip("/")+"/"
+          req=urllib.request.Request(base+"ensci.html",headers={"User-Agent":"anki-gallery-verifier/1.0"})
+          with urllib.request.urlopen(req,timeout=40) as r:
+              html=r.read().decode("utf-8")
+              assert r.status==200
+          marker="var EMBEDDED_DESIGNS_100 = "
+          pos=html.index(marker)+len(marker)
+          designs,_=json.JSONDecoder().raw_decode(html[pos:].lstrip())
+          assert len(designs)==100
+          assert all(x.get("pack")=="ensci" for x in designs)
+          print("PASS: active /ensci.html is the selected sixth version with 100 science designs")
+          PY
