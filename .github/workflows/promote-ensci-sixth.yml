@@ -50,11 +50,14 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -- ensci.html out/ensci.html
-          if ! git diff --cached --quiet; then
-            git commit -m "Promote selected sixth English Bac Science gallery [skip ci]"
-            git push origin HEAD:main
-          else
+          echo "Staged changes:"
+          git status --short
+          git diff --cached --stat
+          if git diff --cached --quiet; then
             echo "Selected sixth gallery is already the active version."
+          else
+            git commit -m "Promote selected sixth English Bac Science gallery [skip ci]" || { echo "COMMIT_FAILED"; exit 1; }
+            git push origin HEAD:main || { echo "PUSH_FAILED"; exit 1; }
           fi
           echo "PROMOTED_BLOB=$expected_blob" >> "$GITHUB_ENV"
 
