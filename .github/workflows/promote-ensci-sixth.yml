@@ -34,11 +34,19 @@ jobs:
           set -euo pipefail
           source_commit="605f9107813fe60d89d024c9fc895b6d7ab55b6a"
           expected_blob="84c66642a37ec8c9c2ba966b6d56ef25711a5156"
+          echo "Current checkout: $(git rev-parse HEAD)"
+          git fetch --no-tags origin "$source_commit"
+          git cat-file -e "${source_commit}^{commit}"
           git cat-file -e "${source_commit}:ensci.html"
+          git cat-file -e "${source_commit}:out/ensci.html"
           git show "${source_commit}:ensci.html" > ensci.html
           git show "${source_commit}:out/ensci.html" > out/ensci.html
-          test "$(git hash-object ensci.html)" = "$expected_blob"
-          test "$(git hash-object out/ensci.html)" = "$expected_blob"
+          root_blob="$(git hash-object ensci.html)"
+          out_blob="$(git hash-object out/ensci.html)"
+          echo "Restored root blob: $root_blob"
+          echo "Restored out blob: $out_blob"
+          test "$root_blob" = "$expected_blob"
+          test "$out_blob" = "$expected_blob"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -- ensci.html out/ensci.html
