@@ -190,7 +190,7 @@ jobs:
               page.wait_for_selector("#gxWelcome",state="visible",timeout=20000)
               assert "اختر قالب Anki" in page.locator("#gxWelcomeTitle").inner_text()
               assert page.locator("#gxWelcomeExplore").inner_text().strip().startswith("تصفّح القوالب")
-              assert "جولة تفاعلية" in page.locator("#gxWelcomeStart").inner_text()
+              assert "الجولة التفاعلية" in page.locator("#gxWelcomeStart").inner_text()
               result["welcome_title"]=page.locator("#gxWelcomeTitle").inner_text()
               result["welcome_primary"]=page.locator("#gxWelcomeExplore").inner_text()
               result["welcome_secondary"]=page.locator("#gxWelcomeStart").inner_text()
