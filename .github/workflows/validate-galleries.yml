@@ -276,7 +276,7 @@ jobs:
             echo "Generated gallery pages are already current; no publication commit needed."
           fi
       - name: Publish generated galleries to the Render master branch
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' && vars.ENABLE_RENDER_PUBLISH == 'true'
         run: |
           set -euo pipefail
           git fetch origin master
@@ -295,7 +295,7 @@ jobs:
             git -C /tmp/render-master push origin HEAD:master
           fi
       - name: Smoke-test exact Render files and clean routes
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' && vars.ENABLE_RENDER_PUBLISH == 'true'
         env:
           EXPECTED_COMMIT: ${{ github.sha }}
         run: |
