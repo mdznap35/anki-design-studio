@@ -411,6 +411,9 @@ def build_one(did, spec, base):
                              % (did, removed_extra_buttons))
     h = apply_gallery_ux(h, did)
     h = apply_gallery_experience(h, did)
+    if did == 'ensci':
+        from ensci_welcome import apply_ensci_welcome
+        h = apply_ensci_welcome(h)
     return h, spec
 
 
