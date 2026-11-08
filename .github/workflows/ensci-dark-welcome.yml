@@ -140,15 +140,13 @@ jobs:
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git fetch origin "redesign/ensci-welcome-dark-v1-2026-11-08"
-          git pull --rebase origin "redesign/ensci-welcome-dark-v1-2026-11-08"
           git add -- ensci.html
           if ! git diff --cached --quiet; then
             git commit -m "Publish additive dark-first ENSCI welcome refinement"
-            git push origin "HEAD:refs/heads/redesign/ensci-welcome-dark-v1-2026-11-08"
-          else
-            echo "The generated English Science page is already current."
           fi
+          git fetch origin "redesign/ensci-welcome-dark-v1-2026-11-08"
+          git pull --rebase origin "redesign/ensci-welcome-dark-v1-2026-11-08"
+          git push origin "HEAD:refs/heads/redesign/ensci-welcome-dark-v1-2026-11-08"
 
       - name: Install Chromium
         run: |
