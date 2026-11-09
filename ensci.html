@@ -6492,7 +6492,7 @@ function showOnboarding(){
     if(typeof overlay.showModal === "function"){
       if(!overlay.open)overlay.showModal();
     }else{
-      overlay.setAttribute("open","");
+      overlay.setAttribute('open','');
     }
   }
   onboardEnsureRoot();
@@ -6514,7 +6514,7 @@ function closeOnboarding(completed){
   var overlay = document.getElementById("onboardOverlay");
   if(overlay){
     if(typeof overlay.close === "function" && overlay.open)overlay.close();
-    else overlay.removeAttribute("open");
+    else overlay.removeAttribute('open');
   }
   if(completed){
     var persisted = markOnboardingCompleted();
