@@ -1725,6 +1725,18 @@ body.light .gv-info{background:rgba(255,254,250,.94)!important}
   .arena-hero *,.gb-item,.arena-primary-action{animation:none!important;transition:none!important}
 }
 </style>
+<style id="arena-native-onboarding-dialog">
+#onboardOverlay.onboard-overlay{
+  position:fixed!important;inset:0!important;z-index:2147483000!important;
+  display:none;align-items:stretch;justify-content:stretch;
+  width:100vw!important;height:100dvh!important;max-width:none!important;max-height:none!important;
+  margin:0!important;padding:0!important;border:0!important;border-radius:0!important;
+  overflow:visible!important;background:transparent!important;color:inherit;
+}
+#onboardOverlay.onboard-overlay[open]{display:flex}
+#onboardOverlay.onboard-overlay::backdrop{background:transparent}
+#onboardOverlay>.onboard-box[hidden]{display:none!important}
+</style>
 </head>
 <body>
 <div class="scroll-prog" id="scrollProg" aria-hidden="true"></div>
@@ -1980,8 +1992,8 @@ body.light .gv-info{background:rgba(255,254,250,.94)!important}
     <div class="gb-grid" id="gbGrid"></div>
     <div class="gb-toast" id="gbToast" role="status" aria-live="polite"></div>
   </div>
-<dialog class="onboard-overlay" id="onboardOverlay" hidden aria-hidden="true">
-  <div class="onboard-box" id="onboardBox"></div>
+<dialog class="onboard-overlay" id="onboardOverlay" aria-label="جولة داخل المعرض" aria-labelledby="onboardStepTitle" aria-modal="true">
+  <div class="onboard-box" id="onboardBox" hidden></div>
 </dialog>
 <dialog class="whatsnew-overlay" id="whatsNewOverlay" style="display:none">
   <div class="whatsnew-box" id="whatsnewBox"></div>
@@ -6102,7 +6114,7 @@ function showCompatChecker(){
 
 var ONBOARD_DECK = "ensci";
 var ONBOARD_PRIMARY_LANGUAGE = ONBOARD_DECK === "fr9" ? "الفرنسية" : "الإنجليزية";
-var ONBOARD_STORAGE_KEY = "anki_" + ONBOARD_DECK + "_onboarded_v2";
+var ONBOARD_STORAGE_KEY = "anki_ensci_onboarded";
 var ONBOARD_SNOOZE_KEY = "anki_" + ONBOARD_DECK + "_onboarding_snoozed_v2";
 var onboardOpenedBrowser = false;
 var onboardOpenedAudio = false;
@@ -6125,13 +6137,13 @@ var onboardReviewOpened = false;
 
 function isOnboardingCompleted(){
   try{
-    if(localStorage.getItem(ONBOARD_STORAGE_KEY) === "1")return true;
+    if(localStorage.getItem(ONBOARD_STORAGE_KEY) === "1" || localStorage.getItem("anki_ensci_onboarded_v2") === "1")return true;
   }catch(_e){}
   try{return sessionStorage.getItem(ONBOARD_SNOOZE_KEY) === "1";}
   catch(_e){return false;}
 }
 function markOnboardingCompleted(){
-  try{localStorage.setItem(ONBOARD_STORAGE_KEY,"1");return true;}
+  try{localStorage.setItem('anki_ensci_onboarded','1');return true;}
   catch(_e){return false;}
 }
 function onboardTargetVisible(node){
@@ -6155,13 +6167,13 @@ function onboardClearSpotlight(){
 }
 function onboardEnsureRoot(){
   if(onboardGuideRoot && onboardGuideRoot.isConnected)return onboardGuideRoot;
-  var legacy = document.getElementById("onboardOverlay");
-  if(legacy){legacy.hidden = true;legacy.setAttribute("aria-hidden","true");}
+  var overlay = document.getElementById("onboardOverlay");
+  if(!overlay)return null;
   var root = document.createElement("div");
   root.id = "onboardGuideRoot";
   root.className = "onboard-guide-root";
   root.setAttribute("dir","rtl");
-  document.body.appendChild(root);
+  overlay.appendChild(root);
   root.addEventListener("click",function(event){
     var stepButton = event.target.closest ? event.target.closest("[data-guide-step]") : null;
     if(stepButton){
@@ -6173,6 +6185,16 @@ function onboardEnsureRoot(){
     if(actionButton)handleOnboardAction(actionButton.getAttribute("data-guide-action"));
   });
   onboardGuideRoot = root;
+  if(!overlay.dataset.arenaBound){
+    overlay.addEventListener("cancel",function(event){
+      event.preventDefault();
+      closeOnboarding(false);
+    });
+    overlay.addEventListener("click",function(event){
+      if(event.target===overlay)closeOnboarding(false);
+    });
+    overlay.dataset.arenaBound="1";
+  }
   return root;
 }
 function onboardPrepareStep(index){
@@ -6347,9 +6369,8 @@ function renderOnboardStep(){
   backdrop.appendChild(path);
 
   var card = onboardNode("section","og-card");
-  card.setAttribute("role","dialog");
-  card.setAttribute("aria-modal","false");
-  card.setAttribute("aria-labelledby","onboardGuideTitle");
+  card.setAttribute("role","group");
+  card.setAttribute("aria-labelledby","onboardStepTitle");
   card.setAttribute("aria-describedby","onboardGuideText");
 
   var head = onboardNode("div","og-head");
@@ -6385,7 +6406,7 @@ function renderOnboardStep(){
   meta.appendChild(onboardNode("span","og-count","المحطة " + (onbStep+1) + " من " + ONBOARD_STEPS.length));
   card.appendChild(meta);
   var heading = onboardNode("h2","og-title",title);
-  heading.id = "onboardGuideTitle";
+  heading.id = "onboardStepTitle";
   heading.tabIndex = -1;
   card.appendChild(heading);
   var description = onboardNode("p","og-text",body);
@@ -6464,8 +6485,19 @@ function showOnboarding(){
   onboardOpenedAudio = false;
   var launcher = document.getElementById("onboardTourLauncher");
   if(launcher)launcher.hidden = true;
+  var overlay = document.getElementById("onboardOverlay");
+  if(overlay){
+    overlay.removeAttribute("hidden");
+    overlay.removeAttribute("aria-hidden");
+    if(typeof overlay.showModal === "function"){
+      if(!overlay.open)overlay.showModal();
+    }else{
+      overlay.setAttribute("open","");
+    }
+  }
   onboardEnsureRoot();
   goToOnboardStep(0);
+  window.setTimeout(function(){var first=overlay&&overlay.querySelector(".og-btn.primary");if(first)first.focus();},40);
 }
 function closeOnboarding(completed){
   if(!onboardGuideOpen)return;
@@ -6479,6 +6511,11 @@ function closeOnboarding(completed){
   onboardOpenedAudio = false;
   if(onboardGuideRoot && onboardGuideRoot.parentNode)onboardGuideRoot.parentNode.removeChild(onboardGuideRoot);
   onboardGuideRoot = null;
+  var overlay = document.getElementById("onboardOverlay");
+  if(overlay){
+    if(typeof overlay.close === "function" && overlay.open)overlay.close();
+    else overlay.removeAttribute("open");
+  }
   if(completed){
     var persisted = markOnboardingCompleted();
     try{
