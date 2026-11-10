@@ -1340,6 +1340,7 @@ body{background:radial-gradient(ellipse at 6% 2%,rgba(90,76,210,.12),transparent
   document.addEventListener("keydown",function(event){
     if(!active)return;
     if(event.key==="Escape"){event.preventDefault();end("closed");}
+    else if(event.target && /^(INPUT|TEXTAREA|SELECT)$/.test(event.target.tagName))return;
     else if(event.key==="ArrowLeft"&&!event.altKey&&index<steps.length-1){go(index+1);}
     else if(event.key==="ArrowRight"&&!event.altKey&&index>0){go(index-1);}
   });
