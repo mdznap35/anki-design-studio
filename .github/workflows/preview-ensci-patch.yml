@@ -1,0 +1,186 @@
+name: Apply isolated science gallery redesign
+on:
+  push:
+    branches:
+      - preview/ensci-global-ux-v3
+    paths:
+      - .github/workflows/preview-ensci-patch.yml
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: preview/ensci-global-ux-v3
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Apply the reviewed patch
+        run: |
+          cat > /tmp/patch_ensci.py <<'PY'
+          from pathlib import Path
+          import re, hashlib, subprocess
+          p=Path('ensci.html')
+          s=p.read_text()
+          original=s
+          # 1) Remove legacy opening/tour style layers, including the old hero treatment.
+          for style_id in ('gallery-tour-redesign','gallery-experience-v2'):
+              s,n=re.subn(r'<style\s+id="'+re.escape(style_id)+r'">[\s\S]*?</style>\s*','',s,count=1)
+              print('removed style',style_id,n)
+          # 2) Replace the old welcome/intro and forced tour entry with a practical studio command surface.
+          old=re.search(r'<section class="hero hero--center reveal">[\s\S]*?</section>\s*</div>\s*\n\s*<div id="gv"',s)
+          if not old: raise SystemExit('Could not locate original hero boundary')
+          workspace='''<section class="studio-workspace" aria-labelledby="studioWorkspaceTitle">
+            <div class="studio-workspace-top">
+              <div class="studio-heading">
+                <div class="studio-eyebrow"><span class="studio-mark" aria-hidden="true">A</span><span>ANKI DESIGN STUDIO</span><span class="studio-slash">/</span><span>ENGLISH · BAC SCIENCE 12</span></div>
+                <h1 id="studioWorkspaceTitle">مكتبة القوالب</h1>
+                <p>استكشف التصاميم، افحص المعاينة الفعلية، ثم اعتمد اختياراتك قبل تجهيز الرزمة.</p>
+              </div>
+              <div class="studio-primary-actions" aria-label="إجراءات المعرض">
+                <button type="button" class="studio-action studio-action-primary" onclick="openGalleryBrowser()"><span aria-hidden="true">▦</span> استكشف المكتبة</button>
+                <button type="button" class="studio-action" onclick="document.getElementById('gvStage').scrollIntoView({behavior:'smooth',block:'center'});"><span aria-hidden="true">◉</span> المعاينة الحالية</button>
+                <button type="button" class="studio-action" onclick="toggleAudioPanel();document.getElementById('gAudioPanelBody').scrollIntoView({behavior:'smooth',block:'center'});"><span aria-hidden="true">♫</span> إعدادات الصوت</button>
+                <button type="button" class="studio-action" onclick="openExport()"><span aria-hidden="true">↗</span> مراجعة الرزمة</button>
+              </div>
+            </div>
+            <div class="studio-status-row" aria-live="polite">
+              <div class="studio-stat"><span class="studio-stat-label">التصاميم المتاحة</span><strong id="wsTotalCount">100</strong></div>
+              <span class="studio-status-divider" aria-hidden="true"></span>
+              <div class="studio-stat"><span class="studio-stat-label">اختياراتك</span><strong id="wsSelectedCount">0</strong></div>
+              <span class="studio-status-divider" aria-hidden="true"></span>
+              <div class="studio-current"><span class="studio-live-dot" aria-hidden="true"></span><span>القالب المعروض</span><strong id="wsCurrentLabel">جارٍ التحميل…</strong></div>
+              <span class="studio-shortcut"><kbd>/</kbd> للبحث في المكتبة</span>
+            </div>
+          </section>
+          
+            <div id="gv"'''
+          s=s[:old.start()]+workspace+s[old.end():]
+          # 3) Remove the obsolete auto-tour dialog and the six-step onboarding implementation.
+          s=re.sub(r'<dialog class="onboard-overlay" id="onboardOverlay"[\s\S]*?</dialog>\s*','',s,count=1)
+          start=s.find('// ============================================================\n// ONBOARDING\n// ============================================================')
+          end=s.find('// ============================================================\n// WHAT\'S NEW\n// ============================================================',start)
+          if start<0 or end<0: raise SystemExit('Could not locate onboarding JS boundaries')
+          s=s[:start]+'// Guided tour removed: the workspace is task-first and its controls remain directly accessible.\n\n'+s[end:]
+          # 4) Remove forced welcome at startup and replace the context-menu tour action with the real help panel.
+          s=s.replace("    if(!isOnboardingCompleted()&&(!window.hasSeenGalleryWelcome||!window.hasSeenGalleryWelcome()))setTimeout(function(){if(window.openGalleryWelcome)window.openGalleryWelcome();},220);\n",'')
+          s=s.replace("{icon:'❓',label:'شرح التطبيق',action:'showOnboarding()'},","{icon:'❓',label:'الدليل الشامل',action:'showHelp()'},")
+          # 5) Remove fake welcome modal, dynamic fake hero runtime, and floating tour launcher.
+          s=re.sub(r'<div id="gxWelcome" hidden>[\s\S]*?</script>\s*<button id="onboardTourLauncher"[\s\S]*?</button>\s*','',s,count=1)
+          # Remove stale listeners and legacy onboarding-only selectors from the base stylesheet.
+          s=re.sub(r"document\.getElementById\('onboardOverlay'\)\.addEventListener\('click',[^\n]*\n?",'',s)
+          s=re.sub(r"document\.getElementById\('onboardOverlay'\)\.addEventListener\('keydown',[^\n]*\n?",'',s)
+          s=s.replace('.onboard-overlay,','').replace('.onboard-overlay.on,','').replace('.onboard-overlay,.whatsnew-overlay','.whatsnew-overlay').replace('.onboard-box,.whatsnew-box','.whatsnew-box').replace('.whatsnew-box, .onboard-box,','.whatsnew-box,')
+          # 6) Replace browser hint with a real searchable library control.
+          oldbar='''    <div class="gb-bar">
+                 <span class="gb-hint">اضغط على أي قالب لاختياره والعودة إلى المعرض. مرّر إلى الأسفل لمشاهدة بقية القوالب.</span>
+              </div>'''
+          newbar='''    <div class="gb-bar gb-bar-enhanced">
+                <label class="gb-search-box" for="gbSearchInput"><span aria-hidden="true">⌕</span><input id="gbSearchInput" type="search" autocomplete="off" placeholder="ابحث باسم القالب أو وصفه…" oninput="gbSearchTemplates(this.value)"><kbd>/</kbd></label>
+                <span class="gb-search-status" id="gbSearchStatus" role="status" aria-live="polite">100 قالب في المكتبة</span>
+              </div>'''
+          if oldbar not in s: raise SystemExit('Could not locate gallery browser hint')
+          s=s.replace(oldbar,newbar,1)
+          # 7) Add query filtering without changing template IDs, category family mapping, or selection behavior.
+          s=s.replace("var gbCur=0,gbFam='all';","var gbCur=0,gbFam='all',gbQuery='';",1)
+          s=s.replace("  function gbSetFilter(m){gbFam=m;var box=document.getElementById('gbFilters');if(box)box.querySelectorAll('.gb-chip').forEach(function(c){c.classList.toggle('on',c.getAttribute('data-f')===m);});renderGalleryBrowser();}","  function gbSetFilter(m){gbFam=m;var box=document.getElementById('gbFilters');if(box)box.querySelectorAll('.gb-chip').forEach(function(c){c.classList.toggle('on',c.getAttribute('data-f')===m);});renderGalleryBrowser();}\n  function gbSearchTemplates(value){gbQuery=(value||'').trim().toLocaleLowerCase();renderGalleryBrowser();}\n  window.gbSearchTemplates=gbSearchTemplates;",1)
+          oldloop="var shown=[];for(var i=0;i<list.length;i++){var f=gbFamMap[i]||gbFamilyOf(gbAccentOf(i));gbFamMap[i]=f;if(gbFam==='all'||f===gbFam)shown.push(i);}"
+          newloop="var shown=[];for(var i=0;i<list.length;i++){var f=gbFamMap[i]||gbFamilyOf(gbAccentOf(i));gbFamMap[i]=f;var t=list[i];var hay=[t.nm,t.en,t.cat,(t.tags||[]).join(' ')].join(' ').toLocaleLowerCase();if((gbFam==='all'||f===gbFam)&&(!gbQuery||hay.indexOf(gbQuery)>=0))shown.push(i);}var searchStatus=document.getElementById('gbSearchStatus');if(searchStatus)searchStatus.textContent=shown.length+' من '+list.length+' قالب';"
+          if oldloop not in s: raise SystemExit('Could not locate browser filter loop')
+          s=s.replace(oldloop,newloop,1)
+          # Keep the audio shortcut idempotent: open only when currently collapsed.
+          old_audio='onclick="toggleAudioPanel();document.getElementById(\'gAudioPanelBody\').scrollIntoView({behavior:\'smooth\',block:\'center\'});"'
+          new_audio='onclick="var p=document.getElementById(\'gAudioPanelBody\');if(p&&!p.classList.contains(\'open\'))toggleAudioPanel();if(p)p.scrollIntoView({behavior:\'smooth\',block:\'center\'});"'
+          if old_audio not in s: raise SystemExit('audio action anchor missing')
+          s=s.replace(old_audio,new_audio,1)
+          # 8) Add coherent, brand-matched styling and keyboard affordances.
+          css=r'''<style id="studio-workspace-enhancements">
+          .studio-workspace{width:min(var(--maxw,1240px),calc(100% - 40px));margin:clamp(24px,4vw,52px) auto 28px;padding:clamp(20px,3vw,34px);border:1px solid var(--bd);border-radius:var(--r-xl,8px);background:linear-gradient(135deg,var(--bg-1),var(--bg-2));box-shadow:0 18px 54px rgba(0,0,0,.12);position:relative;overflow:hidden}
+          .studio-workspace:before{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:linear-gradient(180deg,var(--ac),var(--ac3));opacity:.9}
+          .studio-workspace-top{display:flex;align-items:flex-end;justify-content:space-between;gap:28px}
+          .studio-heading{min-width:0}
+          .studio-eyebrow{display:flex;align-items:center;flex-wrap:wrap;gap:9px;color:var(--tx3);font:600 .65rem var(--font-mono);letter-spacing:.08em}
+          .studio-mark{display:grid;place-items:center;width:27px;height:27px;border:1px solid var(--bd-strong);border-radius:5px;background:var(--grad-soft);color:var(--ac);font:800 .9rem var(--font-en)}
+          .studio-slash{color:var(--ac);opacity:.8}
+          .studio-heading h1{margin:15px 0 5px;font:800 clamp(1.55rem,3vw,2.25rem)/1.25 var(--font-head);letter-spacing:-.025em;color:var(--tx)}
+          .studio-heading p{margin:0;max-width:640px;color:var(--tx2);font-size:.9rem;line-height:1.9}
+          .studio-primary-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px;max-width:520px}
+          .studio-action{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;padding:9px 13px;border:1px solid var(--bd);border-radius:5px;background:var(--surface-2);color:var(--tx);font:700 .76rem var(--font);cursor:pointer;transition:transform .18s,border-color .18s,background .18s;white-space:nowrap}
+          .studio-action:hover{transform:translateY(-2px);border-color:var(--bd-strong);background:var(--surface-3)}
+          .studio-action-primary{border-color:transparent;background:var(--grad);color:#fff;box-shadow:0 8px 20px var(--glow)}
+          .studio-action-primary:hover{filter:brightness(1.08);background:var(--grad)}
+          .studio-status-row{display:flex;align-items:center;flex-wrap:wrap;gap:18px;margin-top:25px;padding-top:17px;border-top:1px solid var(--bd)}
+          .studio-stat{display:grid;gap:2px;min-width:74px}.studio-stat-label,.studio-current{color:var(--tx3);font-size:.68rem}.studio-stat strong{color:var(--tx);font:700 1.12rem var(--font-en);font-variant-numeric:tabular-nums}
+          .studio-status-divider{height:28px;width:1px;background:var(--bd)}
+          .studio-current{display:flex;align-items:center;gap:8px;min-width:0}.studio-current strong{max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--tx2);font-weight:800}
+          .studio-live-dot{width:7px;height:7px;flex:0 0 auto;border-radius:50%;background:var(--gn);box-shadow:0 0 0 4px color-mix(in srgb,var(--gn) 14%,transparent)}
+          .studio-shortcut{margin-inline-start:auto;color:var(--tx3);font-size:.67rem}.studio-shortcut kbd,.gb-search-box kbd{padding:3px 7px;border:1px solid var(--bd-strong);border-radius:4px;background:var(--surface-2);color:var(--tx2);font:600 .68rem var(--font-mono)}
+          .gb-bar-enhanced{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 16px!important}
+          .gb-search-box{display:flex;align-items:center;gap:10px;width:min(520px,100%);min-height:42px;padding:0 12px;border:1px solid var(--bd);border-radius:6px;background:var(--bg-1);color:var(--tx3)}
+          .gb-search-box:focus-within{border-color:var(--ac);box-shadow:0 0 0 3px var(--grad-soft)}
+          .gb-search-box>span{font-size:1.35rem;line-height:1}
+          .gb-search-box input{width:100%;min-width:0;border:0;outline:0;background:transparent;color:var(--tx);font:500 .8rem var(--font)}
+          .gb-search-box input::placeholder{color:var(--tx3)}
+          .gb-search-status{flex:0 0 auto;color:var(--tx3);font-size:.7rem;font-variant-numeric:tabular-nums}
+          @media(max-width:900px){.studio-workspace-top{align-items:flex-start;flex-direction:column;gap:20px}.studio-primary-actions{justify-content:flex-start;max-width:none}.studio-action{flex:1 1 auto}}
+          @media(max-width:600px){.studio-workspace{width:calc(100% - 24px);margin:18px auto 20px;padding:19px 16px}.studio-eyebrow{font-size:.58rem;gap:6px}.studio-heading h1{margin-top:12px;font-size:1.55rem}.studio-heading p{font-size:.8rem}.studio-primary-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%;gap:7px}.studio-action{min-width:0;min-height:43px;padding:8px 7px;font-size:.68rem}.studio-status-row{gap:11px;margin-top:18px;padding-top:14px}.studio-status-divider{height:24px}.studio-stat{min-width:52px}.studio-stat-label{font-size:.6rem}.studio-stat strong{font-size:1rem}.studio-current{flex:1 1 100%;order:5}.studio-current strong{max-width:58vw}.studio-shortcut{margin-inline-start:auto;font-size:.61rem}.gb-bar-enhanced{align-items:stretch;flex-direction:column}.gb-search-box{width:100%}.gb-search-status{align-self:flex-start}}
+          @media(prefers-reduced-motion:reduce){.studio-workspace *,.gb-search-box{transition:none!important;animation:none!important}}
+          </style>
+          '''
+          s=s.replace('</head>',css+'\n</head>',1)
+          # 9) Live workspace summary, slash shortcut, and escape handling for the library modal.
+          script=r'''<script id="studio-workspace-runtime">
+          (function(){
+            function updateStudioStatus(){
+              var total=document.getElementById('wsTotalCount'),selected=document.getElementById('wsSelectedCount'),current=document.getElementById('wsCurrentLabel');
+              try{if(total)total.textContent=String((window.gvList&&gvList.length)||100);}catch(_e){if(total)total.textContent='100';}
+              try{if(selected)selected.textContent=String((window.gvSel&&gvSel.length)||0);}catch(_e){if(selected)selected.textContent='0';}
+              try{var t=typeof gvCurrent==='function'?gvCurrent():null;if(current)current.textContent=t?(t.nm||('قالب '+(gvIdx+1))):'—';}catch(_e){if(current)current.textContent='—';}
+            }
+            window.updateStudioStatus=updateStudioStatus;
+            document.addEventListener('keydown',function(event){
+              var target=event.target,tag=target&&target.tagName;
+              var typing=tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT'||(target&&target.isContentEditable);
+              var browser=document.getElementById('galleryBrowser');
+              var opened=browser&&browser.classList.contains('open');
+              if(event.key==='Escape'&&opened){event.preventDefault();if(typeof closeGalleryBrowser==='function')closeGalleryBrowser();return;}
+              if(typing||event.ctrlKey||event.metaKey||event.altKey)return;
+              if(event.key==='/'&&!opened){event.preventDefault();if(typeof openGalleryBrowser==='function')openGalleryBrowser();window.setTimeout(function(){var input=document.getElementById('gbSearchInput');if(input)input.focus();},60);}
+              else if(event.key==='/'&&opened){event.preventDefault();var input=document.getElementById('gbSearchInput');if(input)input.focus();}
+            });
+            document.addEventListener('DOMContentLoaded',updateStudioStatus,{once:true});
+            window.addEventListener('load',updateStudioStatus,{once:true});
+            window.setTimeout(updateStudioStatus,900);
+          })();
+          </script>
+          '''
+          body_pos=s.rfind('</body>')
+          if body_pos < 0: raise SystemExit('Missing final body close')
+          s=s[:body_pos]+script+'\n'+s[body_pos:]
+          # 10) Ensure live summary follows the actual renderer/selection mutations.
+          s=s.replace("try{gvSelUpdate();}catch(e){}","try{gvSelUpdate();}catch(e){}\n  try{if(typeof updateStudioStatus==='function')updateStudioStatus();}catch(e){}",1)
+          s=s.replace("      gvSelUpdate();\n", "      gvSelUpdate();\n      if(typeof updateStudioStatus==='function')updateStudioStatus();\n",1)
+          # Remove misleading what's-new claims about the deleted welcome/tour; describe current workspace capabilities.
+          s=s.replace("    {icon:'🏠',text:'واجهة افتتاحية (Hero) بإحصائيات وأزرار سريعة وشرح 3 خطوات'},","    {icon:'⌕',text:'بحث فوري داخل مكتبة القوالب مع تصنيفات لونية واختصارات لوحة المفاتيح'},")
+          s=s.replace("    {icon:'🚀',text:'شاشة بداية جميلة بملء الشاشة — جولة تفاعلية أول مرة'},",'')
+          s=s.replace("    {icon:'📚',text:'شرح التطبيق — دليل تعليمي تفاعلي'},","    {icon:'📚',text:'دليل شامل يمكن فتحه عند الحاجة دون مقاطعة التصفح'},")
+          # Remove any remaining old floating tour launcher if markup remains.
+          s=re.sub(r'<button id="onboardTourLauncher"[\s\S]*?</button>\s*','',s)
+          if 'gallery-experience-runtime' in s or 'gxWelcome' in s or 'onboardGuideRoot' in s or 'showOnboarding()' in s:
+              raise SystemExit('Legacy onboarding references remain; aborting write')
+          p.write_text(s)
+          print('written bytes',len(s),'delta',len(s)-len(original))
+          print('sha256',hashlib.sha256(s.encode()).hexdigest())
+          print('git blob',subprocess.check_output(['git','hash-object','ensci.html'],text=True).strip())
+          
+          PY
+          python3 /tmp/patch_ensci.py
+      - name: Commit only the gallery page
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ensci.html
+          git commit -m "Redesign science gallery workspace and remove forced onboarding"
+          git push origin HEAD:preview/ensci-global-ux-v3
