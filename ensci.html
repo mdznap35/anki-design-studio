@@ -2306,6 +2306,7 @@ function toggleMultiSelect(id){
 function apiBase(){
   try{
     var h=location.hostname||'';
+    if(h==='anki-ensci-global-ux-v2.onrender.com')return 'https://anki-design-studio.onrender.com';
     if(h.indexOf('onrender.com')>=0||h==='127.0.0.1'||h==='localhost')return '';
   }catch(_e){}
   return 'https://anki-design-studio.onrender.com';
