@@ -70,7 +70,7 @@ jobs:
           assert "onboardTourLauncher" in html, "The original guided tour entry point is missing"
 
           # The restored page is expected to remain dark by default.
-          assert "var(--bg,#0b1020)" in html or "--bg:#0b1020" in html or "--bg: #0b1020" in html, "Dark default background token was not found"
+          assert "--bg:#0B0A14" in html, "Dark default gallery palette token was not found"
 
           print(f"PASS: {len(entries)} unique real designs, all bound to English Science")
           print("PASS: 2 original Science card models with front/back/CSS")
