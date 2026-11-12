@@ -1,4 +1,5 @@
 name: Verify English Science Arena design in a real browser
+# Trigger follow-up after the workflow file was registered on this branch
 
 on:
   push:
