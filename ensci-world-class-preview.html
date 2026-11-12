@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b1420">
+<title>Anki Design Studio — English Science Preview</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#09131e;color:#eef7f4;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+.top{height:42px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;border-bottom:1px solid #ffffff18;background:#0c1b29;color:#a9c1c1;font-size:12px;letter-spacing:.02em}
+.top b{color:#8de5c4}.top span:last-child{opacity:.75}
+iframe{display:block;width:100%;height:calc(100dvh - 42px);border:0;background:#0b0a14}
+@media(max-width:600px){.top{height:38px;padding:0 12px;font-size:10px}iframe{height:calc(100dvh - 38px)}}
+</style>
+</head>
+<body>
+<div class="top"><span><b>ANKI DESIGN STUDIO</b> · WORLD-CLASS PREVIEW</span><span>نسخة تجريبية مستقلة · لا تغيّر الموقع الرسمي</span></div>
+<iframe id="site" title="معرض قوالب Anki — معاينة التطوير"></iframe>
+<script>
+(function(){
+ const frame=document.getElementById('site');
+ frame.src='ensci.html';
+ const css=`
+ :root{--wc-bg:#0a1420;--wc-panel:#102638;--wc-panel2:#142f40;--wc-text:#f1f8f5;--wc-muted:#bfd0cf;--wc-line:rgba(177,218,207,.17);--wc-mint:#86e4c2;--wc-lime:#d5ef8c}
+ html{scroll-behavior:smooth;scroll-padding-top:90px}
+ body{background:radial-gradient(ellipse at 90% 0%,rgba(87,190,165,.09),transparent 38%),#09131e!important;color:var(--wc-text)!important}
+ .hdr{background:rgba(8,20,30,.9)!important;border-bottom:1px solid var(--wc-line)!important;backdrop-filter:blur(18px)}
+ .hdr-in{max-width:1480px!important;min-height:72px!important;padding-inline:clamp(16px,3vw,42px)!important}
+ .brand-mark{background:linear-gradient(135deg,var(--wc-mint),#72cbd9)!important;color:#08212a!important}
+ .hdr-link{border-radius:10px!important;color:#c2d5d2!important}.hdr-link:hover{background:#86e4c21a!important;color:var(--wc-mint)!important}
+ #gallery-experience-hero{max-width:1380px!important;margin:clamp(20px,3vw,42px) auto 32px!important;padding:clamp(26px,4.4vw,62px)!important;border:1px solid var(--wc-line)!important;border-radius:28px!important;background:radial-gradient(ellipse at 84% 8%,rgba(104,214,226,.14),transparent 38%),radial-gradient(ellipse at 12% 100%,rgba(130,226,193,.1),transparent 36%),linear-gradient(132deg,#122b3b,#0d1d2b 60%,#0a1722)!important;box-shadow:0 28px 80px #0006!important;overflow:hidden}
+ #gallery-experience-hero .gx-hero-inner{gap:clamp(26px,5vw,76px)!important;align-items:center!important}
+ #gallery-experience-hero .gx-eyebrow{color:#b9d8d0!important;font-weight:850!important;letter-spacing:.11em!important}
+ #gallery-experience-hero h1{color:#f3faf6!important;font-size:clamp(2.2rem,4.5vw,4rem)!important;line-height:1.24!important;letter-spacing:-.04em!important}
+ #gallery-experience-hero .gx-description{color:#c2d3d1!important;font-size:clamp(.98rem,1.3vw,1.1rem)!important;line-height:2!important}
+ #gallery-experience-hero .gx-deck-label{border:1px solid #86e4c244!important;background:#86e4c20d!important;color:#c9f2e3!important}
+ #gallery-experience-hero .gx-action{min-height:50px!important;border-radius:13px!important;font-weight:850!important}
+ #gallery-experience-hero .gx-action.primary{background:linear-gradient(110deg,#80dfbd,#d2ed8d)!important;color:#09252b!important;box-shadow:0 12px 28px #65cfa52c!important}
+ #gallery-experience-hero .gx-metric{border-color:var(--wc-line)!important;background:#ffffff06!important;border-radius:14px!important}
+ #gallery-experience-hero .gx-metric strong{color:#f4faf7!important}.gx-metric span{color:#abc3c0!important}
+ #galleryBrowser{background:#0a1723!important;backdrop-filter:blur(12px)}
+ #galleryBrowser .gb-head{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;gap:18px!important;align-items:center!important;padding:20px clamp(16px,3vw,34px)!important;background:#102638!important;border-bottom:1px solid var(--wc-line)!important}
+ #galleryBrowser .gb-title{color:#f1f8f5!important;font-weight:950!important}
+ #galleryBrowser .gb-filters{display:flex!important;flex-wrap:wrap!important;gap:8px!important;max-width:100%!important;padding:0!important}
+ #galleryBrowser .gb-chip{min-height:38px!important;padding:0 12px!important;border:1px solid var(--wc-line)!important;border-radius:11px!important;background:#ffffff07!important;color:#d3e2df!important;font-size:.74rem!important;font-weight:800!important;white-space:nowrap!important}
+ #galleryBrowser .gb-chip.on{border-color:#86e4c277!important;background:#86e4c21a!important;color:#d9f7e9!important}
+ #galleryBrowser .gb-chip-n{background:#ffffff13!important;color:#f0f8f4!important}
+ #galleryBrowser .gb-bar{display:flex!important;align-items:center!important;gap:16px!important;flex-wrap:wrap!important;padding:14px clamp(16px,3vw,34px)!important;background:#0d2130!important;border-bottom:1px solid var(--wc-line)!important}
+ #wcSearch{display:flex;align-items:center;gap:10px;width:min(520px,100%);min-height:46px;padding:0 13px;border:1px solid #bad9d02b;border-radius:12px;background:#102a3b;color:#a8c2bd}
+ #wcSearch:focus-within{border-color:var(--wc-mint);box-shadow:0 0 0 3px #86e4c21c}
+ #wcSearch svg{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8}
+ #wcSearch input{width:100%;min-width:0;border:0;outline:0;background:transparent;color:#f3faf6;font:650 .82rem system-ui;direction:rtl}
+ #wcSearch input::placeholder{color:#9eb9b5;opacity:1}
+ #wcSearch kbd{padding:2px 7px;border:1px solid #ffffff22;border-radius:6px;color:#a8c2bd}
+ #wcSearchStatus{margin-inline-start:auto;color:#b5cac5;font-size:.76rem}
+ #galleryBrowser .gb-grid{grid-template-columns:repeat(auto-fill,minmax(190px,1fr))!important;gap:16px!important;padding:clamp(16px,2.5vw,34px)!important}
+ #galleryBrowser .gb-item{border:1px solid #b5d8ce25!important;border-radius:17px!important;background:#102536!important;box-shadow:0 10px 30px #0003!important;transition:transform .2s,border-color .2s,box-shadow .2s!important}
+ #galleryBrowser .gb-item:hover{transform:translateY(-4px)!important;border-color:var(--wc-mint)!important;box-shadow:0 18px 42px #0005!important}
+ #galleryBrowser .gb-item[hidden]{display:none!important}
+ #galleryBrowser .gb-num{border-radius:8px!important;background:#091a27e8!important;color:#eff8f4!important}
+ #galleryBrowser .gb-ov{background:linear-gradient(180deg,transparent 35%,#061722f2)!important}
+ #galleryBrowser .gb-ov-t{color:#f2faf6!important;font-weight:900!important}
+ #galleryBrowser .gb-ov-b{border:1px solid #86e4c244!important;background:#86e4c21b!important;color:#d9f7e9!important}
+ #galleryBrowser .gb-toast{border-radius:12px!important}
+ #gv{max-width:1320px!important;margin:28px auto!important;border:1px solid var(--wc-line)!important;border-radius:22px!important;background:#0d1e2b!important;box-shadow:0 22px 64px #0004!important;overflow:hidden}
+ #gv .gv-bar{background:#0c1d2aee!important;border-bottom:1px solid var(--wc-line)!important;backdrop-filter:blur(14px)}
+ #gvStage,.gv-stage{min-height:500px!important;background:radial-gradient(ellipse at 50% 5%,#68d6e214,transparent 60%),linear-gradient(#102638,#0b1b28)!important}
+ .gv-frame{border-radius:18px!important;box-shadow:0 28px 70px #0008!important}
+ .gv-arrow,.gv-act{border-radius:11px!important}
+ .gv-act.primary{background:linear-gradient(110deg,#80dfbd,#d2ed8d)!important;color:#09252b!important}
+ .aa,.export-sec .dl-c{border:1px solid var(--wc-line)!important;border-radius:18px!important;background:#102638!important;box-shadow:0 18px 52px #0003!important}
+ .aa-t{color:#f2faf6!important;border-bottom:1px solid var(--wc-line)!important}
+ .aa-b,.aa-lb,.export-sec .dl-head p,.export-sec .dl-row{color:#c4d7d1!important}
+ .aa .sl,.aa .tx,.dl-c .tx{background:#0b1e2c!important;color:#f2faf6!important;border:1px solid #b5d8ce33!important;border-radius:10px!important}
+ .export-sec .dl-btn{min-height:50px!important;border-radius:12px!important;background:linear-gradient(110deg,#80dfbd,#d2ed8d)!important;color:#09252b!important;font-weight:900!important}
+ .site-bottom .faq-item{border:1px solid var(--wc-line)!important;border-radius:13px!important;background:#102638!important}
+ .site-bottom .faq-q{color:#eff8f4!important}.site-bottom .faq-a{color:#bfd2cd!important}
+ .footer{background:#08141e!important;border-top:1px solid var(--wc-line)!important}
+ /* Make the welcome and guided tour readable, scrollable, and correctly sized. */
+ #gxWelcome{padding:clamp(12px,3vh,28px)!important;overflow-y:auto!important;align-items:center!important}
+ #gxWelcome .gx-dialog{width:min(1120px,100%)!important;max-height:calc(100dvh - 32px)!important;overflow:auto!important;border:1px solid var(--wc-line)!important;border-radius:24px!important;background:linear-gradient(145deg,#142c3c,#0d1c29)!important;box-shadow:0 32px 90px #0009!important}
+ #gxWelcome .gx-opening-v3{padding:clamp(22px,4vw,48px)!important}
+ #gxWelcome h2,#gxWelcome h1{color:#f5fbf8!important}
+ #gxWelcome p,#gxWelcome .gx-lead{color:#c6d7d3!important;line-height:1.9!important}
+ #onboardOverlay{padding:16px!important;overflow:auto!important}
+ #onboardOverlay .onboard-box{width:min(680px,100%)!important;max-height:calc(100dvh - 32px)!important;overflow:auto!important;border:1px solid var(--wc-line)!important;border-radius:20px!important;background:#122b3b!important;color:#f0f8f5!important;box-shadow:0 28px 80px #0009!important}
+ #onboardOverlay p,#onboardOverlay .onboard-desc{color:#c5d7d2!important;line-height:1.9!important}
+ :focus-visible{outline:3px solid #a6ebce!important;outline-offset:3px!important}
+ @media(max-width:900px){#gallery-experience-hero .gx-hero-inner{grid-template-columns:1fr!important}#gallery-experience-hero .gx-art{max-width:460px!important;margin:12px auto 0!important}}
+ @media(max-width:760px){.hdr-in{flex-wrap:wrap!important;padding-block:8px!important}.hdr-nav{order:3;flex:1 0 100%;overflow-x:auto!important;scrollbar-width:none}.hdr-nav::-webkit-scrollbar{display:none}#gallery-experience-hero{margin:14px 12px 20px!important;padding:23px 18px!important;border-radius:21px!important}#galleryBrowser .gb-head{grid-template-columns:1fr!important;gap:12px!important}#galleryBrowser .gb-filters{flex-wrap:nowrap!important;overflow-x:auto!important;padding-bottom:5px!important;scrollbar-width:thin}#galleryBrowser .gb-chip{flex:0 0 auto!important}#galleryBrowser .gb-bar{align-items:stretch!important}#wcSearch{width:100%}#wcSearchStatus{margin:0;width:100%}#galleryBrowser .gb-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important;padding:12px!important}#galleryBrowser .gb-item{min-width:0!important}#gvStage,.gv-stage{min-height:420px!important;padding:18px 12px!important}#gxWelcome{padding:8px!important}#gxWelcome .gx-dialog{max-height:calc(100dvh - 16px)!important;border-radius:17px!important}#onboardOverlay{padding:8px!important}#onboardOverlay .onboard-box{max-height:calc(100dvh - 16px)!important}}
+ @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}
+ `;
+ function enhance(){
+  try{
+   const w=frame.contentWindow,d=frame.contentDocument;
+   if(!d||!d.body)return false;
+   if(d.getElementById('wc-preview-style'))return true;
+   const style=d.createElement('style');style.id='wc-preview-style';style.textContent=css;d.head.appendChild(style);
+   const hero=d.getElementById('gallery-experience-hero');
+   if(hero){
+    const title=hero.querySelector('[data-gx-title],h1');
+    const desc=hero.querySelector('[data-gx-description],.gx-description');
+    if(title)title.textContent='بطاقات أوضح. مراجعة أذكى.';
+    if(desc)desc.textContent='استكشف 100 تصميم لمفردات الإنجليزية العلمية، افحص وجهي البطاقة، واختر القالب الذي يساعدك على المراجعة بوضوح. كل شيء يبدأ بالمعاينة وينتهي برزمة Anki جاهزة.';
+   }
+   const overlay=d.getElementById('galleryBrowser');
+   if(overlay){
+    const bar=overlay.querySelector('.gb-bar');
+    if(bar&&!d.getElementById('wcSearch')){
+     const label=d.createElement('label');label.id='wcSearch';label.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 5 5"></path></svg><input id="wcSearchInput" type="search" autocomplete="off" placeholder="ابحث في القوالب المئة: رقم، اسم، وصف..." aria-label="البحث في القوالب"><kbd>/</kbd>';
+     const status=d.createElement('span');status.id='wcSearchStatus';status.setAttribute('role','status');status.setAttribute('aria-live','polite');status.textContent='100 تصميم · اختر قالبًا لمعاينة الوجهين';
+     bar.prepend(label);bar.append(status);
+     const input=label.querySelector('input');
+     const apply=()=>{
+      const q=input.value.trim().toLocaleLowerCase();let visible=0;
+      Array.from(d.querySelectorAll('#gbGrid .gb-item[data-i]')).forEach(card=>{
+       const i=Number(card.getAttribute('data-i'));const t=(w.gvList||[])[i]||{};
+       const hay=[card.innerText,t.nm,t.num,t.id,t.cat,t.pack,t.unit,t.pos,t.tags,JSON.stringify(t)].join(' ').toLocaleLowerCase();
+       const ok=!q||hay.includes(q);card.hidden=!ok;card.style.display=ok?'':'none';if(ok)visible++;
+      });
+      status.textContent=q?(visible+' نتيجة مطابقة من 100'):'100 تصميم · اختر قالبًا لمعاينة الوجهين';
+     };
+     input.addEventListener('input',apply);
+     overlay.addEventListener('click',e=>{if(e.target.closest('.gb-chip'))w.setTimeout(apply,60)});
+     const observer=new MutationObserver(()=>{if(input.value)apply()});
+     const grid=d.getElementById('gbGrid');if(grid)observer.observe(grid,{childList:true});
+     d.addEventListener('keydown',e=>{const tag=e.target&&e.target.tagName;if(e.key==='/'&&!/INPUT|TEXTAREA|SELECT/.test(tag||'')){e.preventDefault();input.focus()}if(e.key==='Escape'&&d.activeElement===input){input.value='';apply();input.blur()}});
+    }
+   }
+   return true;
+  }catch(e){return false}
+ }
+ frame.addEventListener('load',function(){
+  let tries=0;const timer=w.setInterval(()=>{tries++;if(enhance()||tries>80)w.clearInterval(timer)},150);
+ });
+})();
+</script>
+</body>
+</html>
