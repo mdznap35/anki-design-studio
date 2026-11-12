@@ -1,4 +1,4 @@
-name: Verify English Science Arena design in a real browser
+name: Verify English Science Arena design and guided tour in a real browser
 # Trigger follow-up after the workflow file was registered on this branch
 
 on:
@@ -7,6 +7,7 @@ on:
       - "qa/ensci-arena-browser-2026-11-12"
     paths:
       - ".github/workflows/qa-ensci-arena.yml"
+      - "ensci.html"
   workflow_dispatch:
 
 permissions:
@@ -189,6 +190,71 @@ jobs:
               assert metrics["document"] <= metrics["viewport"] + 2, f"Horizontal page overflow on mobile: {metrics}"
               page.screenshot(path="qa-artifacts/04-individual-preview-mobile.png", full_page=True)
 
+              # Exercise all six actual tour spotlights. No TTS request or APKG build is triggered.
+              page.set_viewport_size({"width": 1440, "height": 1000})
+              page.locator("#onboardTourLauncher").click()
+              page.wait_for_selector("#gxWelcome", state="visible", timeout=10000)
+              page.locator("#gxWelcomeStart").click()
+              page.wait_for_function("() => !!(document.querySelector('#onboardOverlay') && document.querySelector('#onboardOverlay').open)", timeout=15000)
+              page.wait_for_selector("#onboardGuideRoot .og-card", state="visible", timeout=10000)
+
+              tour_steps = []
+              for step_index in range(6):
+                  if step_index:
+                      page.locator(f'#onboardGuideRoot [data-guide-step="{step_index}"]').click()
+                  page.wait_for_function(
+                      """(i) => {
+                        const steps = window.ONBOARD_STEPS;
+                        if (!steps || !steps[i] || window.onbStep !== i) return false;
+                        const node = window.onboardStepTarget(steps[i]);
+                        if (!node || !node.isConnected) return false;
+                        const rect = node.getBoundingClientRect();
+                        const style = getComputedStyle(node);
+                        return rect.width > 0 && rect.height > 0 &&
+                          style.display !== "none" && style.visibility !== "hidden";
+                      }""",
+                      arg=step_index,
+                      timeout=20000,
+                  )
+                  details = page.evaluate(
+                      """(i) => {
+                        const step = window.ONBOARD_STEPS[i];
+                        const node = window.onboardStepTarget(step);
+                        const rect = node.getBoundingClientRect();
+                        return {
+                          index: i,
+                          id: step.id,
+                          selector: step.target,
+                          label: step.targetLabel,
+                          targetId: node.id || null,
+                          targetClass: typeof node.className === "string" ? node.className : node.className.baseVal,
+                          spotlightApplied: node.classList.contains("og-spotlight"),
+                          rect: {x: Math.round(rect.x), y: Math.round(rect.y), width: Math.round(rect.width), height: Math.round(rect.height)},
+                          heading: document.querySelector("#onboardStepTitle")?.innerText || "",
+                          counter: document.querySelector("#onboardGuideRoot .og-count")?.innerText || ""
+                        };
+                      }""",
+                      step_index,
+                  )
+                  assert details["spotlightApplied"], f"Tour step {step_index + 1} did not spotlight its real target: {details}"
+                  if step_index == 0:
+                      assert details["selector"] == ".arena-primary-action", f"Opening tour still points to an obsolete hero control: {details}"
+                      assert "arena-primary-action" in details["targetClass"], f"Opening tour did not target the primary hero CTA: {details}"
+                      page.screenshot(path="qa-artifacts/05-tour-start-desktop.png", full_page=True)
+                  if step_index == 1:
+                      assert page.locator("#galleryBrowser").evaluate("(el) => el.classList.contains('open')"), "Library tour step did not open the real gallery"
+                      assert page.locator("#gbFilters .gb-chip").count() > 0, "Library tour spotlight has no real filter controls"
+                      page.screenshot(path="qa-artifacts/06-tour-library-desktop.png", full_page=True)
+                  tour_steps.append(details)
+
+              assert len(tour_steps) == 6 and all(step["spotlightApplied"] for step in tour_steps), "One or more tour spotlights are not connected to real controls"
+              results["tour_steps"] = tour_steps
+              results["tour_audio_was_not_played"] = True
+              results["tour_apkg_was_not_created"] = True
+              page.locator("#onboardGuideRoot .og-close").click()
+              page.wait_for_function("() => !document.querySelector('#onboardOverlay')?.open", timeout=10000)
+              results["tour_closed_cleanly"] = True
+
               results["page_errors"] = errors
               assert not errors, "JavaScript page errors: " + json.dumps(errors, ensure_ascii=False)
 
@@ -201,10 +267,10 @@ jobs:
           PY
           python /tmp/qa_ensci.py
 
-      - name: Upload original v6 page, browser screenshots, and test results
+      - name: Upload Arena preview page, browser screenshots, and test results
         uses: actions/upload-artifact@v4
         with:
-          name: ensci-v6-real-browser-qa
+          name: ensci-arena-browser-qa
           path: |
             ensci.html
             qa-artifacts/
