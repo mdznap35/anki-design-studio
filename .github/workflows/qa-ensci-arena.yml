@@ -6,7 +6,7 @@ on:
     branches:
       - "qa/ensci-arena-browser-2026-11-12"
     paths:
-      - ".github/workflows/qa-ensci-v6.yml"
+      - ".github/workflows/qa-ensci-arena.yml"
   workflow_dispatch:
 
 permissions:
@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - name: Check out the exact selected sixth version
+      - name: Check out the exact Arena preview source
         uses: actions/checkout@v4
 
       - name: Set up Python
