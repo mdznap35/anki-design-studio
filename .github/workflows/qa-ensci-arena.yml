@@ -1,0 +1,211 @@
+name: Verify English Science Arena design in a real browser
+
+on:
+  push:
+    branches:
+      - "qa/ensci-arena-browser-2026-11-12"
+    paths:
+      - ".github/workflows/qa-ensci-v6.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  real-browser-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out the exact selected sixth version
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Verify source and embedded gallery data
+        run: |
+          python - <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+          sys.path.insert(0, "tools")
+          from build_galleries import bmatch
+
+          html = Path("ensci.html").read_text(encoding="utf-8")
+          assert len(html) > 500_000, f"Unexpected page size: {len(html)}"
+          marker = "var EMBEDDED_DESIGNS_100 = "
+          pos = html.index(marker) + len(marker)
+          start = html.index("[", pos)
+          entries = json.loads(html[start:bmatch(html, start) + 1])
+
+          assert len(entries) == 100, f"Expected exactly 100 designs; got {len(entries)}"
+          assert len({e.get("name") for e in entries}) == 100, "Design names are not unique"
+          assert all(e.get("pack") == "ensci" for e in entries), "A design has the wrong deck binding"
+          assert all(e.get("fields") and e.get("front") and e.get("back") and e.get("css") for e in entries), "A design is missing front/back/CSS/field data"
+          assert all("English" in e["fields"] and "Arabic" in e["fields"] for e in entries), "The English/Arabic field binding is incomplete"
+
+          source = json.loads(Path("tools/decks/ensci/templates.json").read_text(encoding="utf-8"))
+          assert len(source["models"]) == 2, f"Expected the two existing Science card models; got {len(source['models'])}"
+          assert all(m.get("qfmt") and m.get("afmt") and m.get("css") for m in source["models"]), "A source card model is incomplete"
+
+          for token in (
+              'id="gallery-experience-hero"',
+              'id="gallery-experience-runtime"',
+              'id="gxWelcome"',
+              'id="gbFilters"',
+              'id="gbGrid"',
+              'id="gvStage"',
+              'id="gvSelectBtn"',
+              'id="fsFlipBtn"',
+              'class="gb-preview-frame"',
+              "previewFrame.srcdoc=",
+              "var previewSource=thumbDoc(t)",
+              "function gvJumpTo(",
+          ):
+              assert token in html, f"Missing original gallery component: {token}"
+
+          assert "gb-chip" in html, "The original category filter component is missing"
+          assert "onboardTourLauncher" in html, "The original guided tour entry point is missing"
+
+          # The restored page is expected to remain dark by default.
+          assert "--bg:#0b1111" in html, "Arena dark palette token was not found"
+
+          assert '.arena-hero-title' in html and '.arena-hero-visual' in html, "Arena hero markup is missing"
+          assert "ecosystem" in html, "Arena sample card content is missing"
+          print(f"PASS: {len(entries)} unique real designs, all bound to English Science")
+          print("PASS: 2 original Science card models with front/back/CSS")
+          print("PASS: original category filters, onboarding, live preview, selection, and flip controls retained")
+          print("PASS: dark-first theme token present")
+          PY
+
+      - name: Install Chromium for browser interaction tests
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install playwright
+          python -m playwright install --with-deps chromium
+
+      - name: Start a local server for the exact checked-in HTML
+        run: |
+          python -m http.server 8765 >/tmp/ensci-http.log 2>&1 &
+          for attempt in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8765/ensci.html >/dev/null; then
+              echo "Local page server is ready."
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/ensci-http.log
+          exit 1
+
+      - name: Test first visit, all template cards, and individual preview in Chromium
+        run: |
+          mkdir -p qa-artifacts
+          cat > /tmp/qa_ensci.py <<'PY'
+          import json
+          from pathlib import Path
+          from playwright.sync_api import sync_playwright
+
+          errors = []
+          results = {}
+
+          with sync_playwright() as p:
+              browser = p.chromium.launch(headless=True)
+              context = browser.new_context(
+                  viewport={"width": 1440, "height": 1000},
+                  device_scale_factor=1,
+              )
+              page = context.new_page()
+              page.on("pageerror", lambda error: errors.append(str(error)))
+
+              response = page.goto(
+                  "http://127.0.0.1:8765/ensci.html",
+                  wait_until="domcontentloaded",
+                  timeout=60000,
+              )
+              assert response and response.status == 200, "The local ENSCI page did not return HTTP 200"
+              page.wait_for_selector("#gxWelcome", state="visible", timeout=20000)
+              results["page_title"] = page.title()
+              results["first_visit_welcome"] = page.locator("#gxWelcomeTitle").inner_text()
+              page.screenshot(path="qa-artifacts/01-first-visit-desktop.png", full_page=True)
+
+              page.locator("#gxWelcomeExplore").click()
+              page.wait_for_selector("#gbGrid .gb-item", timeout=20000)
+              page.wait_for_timeout(1200)
+
+              cards = page.locator("#gbGrid .gb-item").count()
+              assert cards == 100, f"Real browser rendered {cards} cards instead of 100"
+              category_controls = page.locator("#gbFilters .gb-chip").count()
+              assert category_controls > 0, "Original category filters are not rendered"
+              live_frames = page.locator("#gbGrid .gb-preview-frame").count()
+              assert live_frames == 100, f"Expected 100 live preview frames; got {live_frames}"
+
+              first_frame = page.locator("#gbGrid .gb-preview-frame").first
+              first_frame.scroll_into_view_if_needed()
+              page.wait_for_function(
+                  """() => {
+                    const f=document.querySelector('#gbGrid .gb-preview-frame');
+                    return !!(f && f.contentDocument && f.contentDocument.body &&
+                      (f.contentDocument.body.children.length ||
+                       (f.contentDocument.body.textContent || '').trim().length));
+                  }""",
+                  timeout=20000,
+              )
+              frame_text = first_frame.evaluate("(f) => (f.contentDocument.body.innerText || '').trim().slice(0,120)")
+              assert frame_text, "The first live template preview frame is blank"
+              results["cards_rendered"] = cards
+              results["category_filter_controls"] = category_controls
+              results["live_preview_frames"] = live_frames
+              results["first_preview_text"] = frame_text
+              results["dark_body_background"] = page.locator("body").evaluate(
+                  "(el) => getComputedStyle(el).backgroundImage + ' | ' + getComputedStyle(el).backgroundColor"
+              )
+              page.screenshot(path="qa-artifacts/02-template-library-desktop.png", full_page=True)
+
+              first_card = page.locator("#gbGrid .gb-item").first
+              first_card.click()
+              page.wait_for_timeout(800)
+              results["individual_preview_visible"] = page.locator("#gvStage").is_visible()
+              results["selection_control_count"] = page.locator("#gvSelectBtn").count()
+              results["flip_control_count"] = page.locator("#fsFlipBtn").count()
+              assert results["selection_control_count"] == 1, "Individual preview selection control is missing"
+              assert results["individual_preview_visible"], "Clicking a template did not open the individual preview"
+              page.screenshot(path="qa-artifacts/03-individual-preview-desktop.png", full_page=True)
+
+              # The same working library is also exercised at a phone-sized viewport.
+              page.set_viewport_size({"width": 390, "height": 844})
+              page.wait_for_timeout(500)
+              metrics = page.evaluate(
+                  """() => ({
+                    viewport: document.documentElement.clientWidth,
+                    document: document.documentElement.scrollWidth,
+                    grid: document.querySelector('#gbGrid')?.getBoundingClientRect().width,
+                    cards: document.querySelectorAll('#gbGrid .gb-item').length
+                  })"""
+              )
+              results["mobile_layout"] = metrics
+              assert metrics["document"] <= metrics["viewport"] + 2, f"Horizontal page overflow on mobile: {metrics}"
+              page.screenshot(path="qa-artifacts/04-individual-preview-mobile.png", full_page=True)
+
+              results["page_errors"] = errors
+              assert not errors, "JavaScript page errors: " + json.dumps(errors, ensure_ascii=False)
+
+              Path("qa-artifacts/browser-results.json").write_text(
+                  json.dumps(results, ensure_ascii=False, indent=2),
+                  encoding="utf-8",
+              )
+              print(json.dumps(results, ensure_ascii=False, indent=2))
+              browser.close()
+          PY
+          python /tmp/qa_ensci.py
+
+      - name: Upload original v6 page, browser screenshots, and test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: ensci-v6-real-browser-qa
+          path: |
+            ensci.html
+            qa-artifacts/
+          if-no-files-found: error
+          retention-days: 30
